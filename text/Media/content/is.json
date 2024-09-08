@@ -1,0 +1,256 @@
+{
+    "Shows": "Sýnir",
+    "Clips": "Klemmur",
+    "Video": "Myndband",
+    "Audio": "Hljóð",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "Þættir"
+    },
+    "NewEpisode": "Nýr þáttur",
+    "NewClip": "Ný bút",
+    "LiveShow": "Bein sýning",
+    "Save": "Vista",
+    "ViewFullEpisode": "Skoða þáttinn í heild sinni",
+    "CreditsEarned": "Einingar fengnar",
+    "VideoTitle": "Titill eða slóð vídeós",
+    "NewClipTitlePlaceholder": "Sláðu inn titil myndbands",
+    "NewClipDescriptionPlaceholder": "Sláðu inn Clip Description",
+    "switchVisualization": "Skiptu um sjónmynd",
+    "joinLiveShow": "Vertu með í beinni sýningu",
+    "showTwitchLiveStream": "Sýndu Twitch straum í beinni",
+    "showVoiceChat": "Sýna raddspjall",
+    "AreYouSureKick": "Ertu viss um að þú viljir ræsa þennan notanda?",
+    "AreYouSureDeleteEpisode": "Ertu viss um að þú viljir eyða þessum þætti?",
+    "Yes": "Já",
+    "No": "Nei",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Klipp",
+            "description": "fjölmiðlaklippa"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Fjarfundur",
+            "description": "mynd-\/hljóðráðstefnu á netinu"
+        },
+        "Media\/calls": {
+            "displayType": "Símtöl",
+            "description": "flokki fyrir Media\/WebRTC",
+            "MaxRelationsExceeded": "Hámarks símtöl náð"
+        }
+    },
+    "feeds": {
+        "Title": "Myndavélar",
+        "filterByTitle": "Finndu strauma eftir titli",
+        "RequestFeedAccess": "Biðja um aðgang að straumi",
+        "New": "+ Nýr straumur",
+        "filterFeeds": "Sía strauma",
+        "NewFeed": "Nýtt straum",
+        "NoneYet": "Engir straumar hafa myndast ennþá.",
+        "AreYouSure": "Ertu viss?",
+        "FilterByDate": "Sía eftir dagsetningu",
+        "newFeeds": "Þú ert með {{1}} nýja strauma",
+        "Description": "{{1}} straumar",
+        "Keywords": "{{1}} straumar"
+    },
+    "feed": {
+        "HostedBy": "Hýst af {{name}}",
+        "Name": "Nafn",
+        "Conversation": "Samtal",
+        "CloseFeed": {
+            "button": "Lokaðu straumi",
+            "Cancel": "Ertu viss um að þú viljir loka þessum straumi?",
+            "Participant": "Það er 1 þátttakandi í þessu straumi",
+            "Participants": "Það eru {{count}} þátttakendur í þessum straumi"
+        },
+        "Calendar": "Dagatal",
+        "TitleOfFeed": "Heiti straums:",
+        "EmptyList": "Tómur listi",
+        "EmptyVideos": "Engar klippur ennþá",
+        "AccessReason": "vinsamlegast tilgreinið ástæðuna",
+        "Proceed": "Haltu áfram",
+        "FeedAlreadyClosed": "Þessum straumi er þegar lokað",
+        "RtmpLinkNote": "Smelltu til að afrita þennan hlekk á klemmuspjald",
+        "SelectClip": "Veldu dagsetninguna sem þú vilt sjá",
+        "Request": "Beiðni"
+    },
+    "newFeed": {
+        "Title": "Nýtt straum",
+        "locationTitle": "Stilltu staðsetningu þína",
+        "SetLocation": "Stilltu staðsetningu mína",
+        "Starting": "Byrjar",
+        "Day": "Dagur",
+        "Create": "Búa til",
+        "Continue": "Halda áfram",
+        "FeedTitle": "Heiti straums",
+        "SetTitle": "Vinsamlega stilltu heiti straums"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} bað um aðgang að {{& stream.fields.title}} með ástæðunni „{{& instructions.reason}}}“",
+        "JoinedWebRTC": "tók þátt í símtali þínu",
+        "SubjectJoinedYourCall": "{{subject}} tók þátt í símtalinu þínu"
+    },
+    "RealTimeCall": "Rauntímasímtal",
+    "JoinWebRTC": "Fjarfundur",
+    "webrtc": {
+        "notAllowedToJoinCall": "Þú hefur ekki leyfi til að tengjast þessum straumi.",
+        "streamTitle": "{{1}} hóf símafund",
+        "allow": {
+            "dialogTitle": "Tengist",
+            "microphoneBtn": "Virkja hljóðnema",
+            "cameraBtn": "Virkja myndavél",
+            "cameraAndMicrophoneBtn": "Virkja myndavél og hljóðnema"
+        },
+        "preparing": {
+            "dialogTitle": "Kveiktu\/slökktu á myndavél eða hljóðnema áður en þú tekur þátt",
+            "micIsOff": "Slökkt er á hljóðnemanum",
+            "micIsOn": "Hljóðneminn er á",
+            "cameraIsOff": "Slökkt er á myndavélinni",
+            "cameraIsOn": "Kveikt er á myndavélinni",
+            "screenSharingIsOn": "Kveikt er á skjádeilingu",
+            "screenSharingIsOff": "Deila skjá",
+            "joinNow": "Skráðu þig í símtalið"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Leiðbeiningar",
+            "permissionDenied": "Leyfi fyrir {{kind}} hafnað. Til að nota það vinsamlegast fylgdu þessum skrefum:",
+            "point1": "Farðu í &quot;Stillingar&quot; -&gt; &quot;Ítarlegar&quot; -&gt; &quot;Persónuvernd og öryggi&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; eða &quot;Site Settings&quot; -&gt; &quot;Hljóðnemi&quot;",
+            "point2": "Fjarlægðu {{hostname}} af &quot;Blokka&quot; listanum"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Leiðbeiningar",
+            "permissionDenied": "Leyfi fyrir {{kind}} hafnað. Vinsamlegast endurhlaða þessa síðu og staðfesta aðgang að {{kind}} til að taka þátt í ráðstefnunni."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Leiðbeiningar",
+            "permissionDenied": "Leyfi fyrir {{kind}} hafnað. Til að nota það vinsamlegast fylgdu þessum skrefum:",
+            "point1": "Farðu í Android stillingarnar þínar",
+            "point2": "Opnaðu „Forrit og tilkynningar“",
+            "point3": "Finndu &quot; {{communityName}} &quot; og opnaðu það",
+            "point4": "Bankaðu á Heimildir",
+            "point5": "Virkja {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Leiðbeiningar",
+            "permissionDenied": "Leyfi fyrir {{kind}} hafnað. Til að nota það vinsamlegast fylgdu þessum skrefum:",
+            "point1": "Farðu í iOS stillingarnar þínar",
+            "point2": "Opnaðu „Persónuvernd“",
+            "point3": "Finndu {{kind}} og opnaðu það",
+            "point4": "Finndu &quot; {{communityName}} &quot; og virkjaðu"
+        },
+        "fbLive": {
+            "dialogTitle": "Bein útsending á Facebook hófst"
+        },
+        "notices": {
+            "youJoinedRoom": "Þú gekkst inn í herbergið",
+            "joining": "Skráðir: {{userName}}",
+            "sbLeftRoom": "{{userName}} fóru út úr herberginu",
+            "switchingRoom": "Skiptir um herbergi...",
+            "forceDisconnecting": "Þú verður aftengdur innan 5 sekúndna",
+            "forceDisconnectingImmediately": "Þú varst aftengdur af gestgjafa",
+            "youLeftRoom": "Þú fórst út úr herberginu",
+            "codeCopied": "Þú fórst út úr herberginu",
+            "sbBeganFbLive": "{{userName}} byrjaði að senda þetta símtal á Facebook",
+            "sbStoppedFbLive": "{{userName}} hætti að senda þetta símtal á Facebook",
+            "youBeganFbLive": "Þú byrjaðir að senda út þetta símtal á Facebook",
+            "youStoppedFbLive": "Þú hættir að senda þetta símtal á Facebook",
+            "youStartedLive": "Þú byrjaðir að senda þetta símtal til sérsniðinnar RTMP",
+            "youStoppedLive": "Þú hættir að senda þetta símtal í sérsniðið RTMP",
+            "sbStartedLiveStreaming": "{{userName}} byrjuðu í beinni",
+            "sbStoppedLiveStreaming": "{{userName}} endaði í beinni",
+            "liveStopped": "Villa kom upp við að senda myndskeið á endapunkt",
+            "youBeganVideoRecording": "Þú byrjaðir að taka upp þessa ráðstefnu",
+            "youStoppedVideoRecording": "Þú hættir að taka upp þessa ráðstefnu",
+            "linkCopiedToCb": "Tengill afritaður á klippiborð",
+            "codeCopiedToCb": "Kóði afritaður á klemmuspjald",
+            "userHasNoVideo": "Þátttakandi hefur ekkert myndband",
+            "openInBrowserAlert": "Opnaðu tengil í Safari vafra til að taka þátt í ráðstefnunni.",
+            "allowedVideoLimit": "Aðeins {{limit}} myndbönd leyfð í þessu herbergi",
+            "allowedAudioLimit": "Aðeins {{limit}} hljóðnemar leyfðir í þessu herbergi"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Myndskeiðsstillingar",
+            "webCamera": "Vefmyndavél",
+            "screenSharing": "Skjádeiling",
+            "shareAnotherScreen": "Deildu öðrum skjá",
+            "turnOffCameras": "Slökktu á myndavélinni",
+            "turnOffVideo": "Slökktu á myndavél\/skjádeilingu",
+            "turnOffAudioInput": "Slökkva á hljóðnema",
+            "turnOffScreenSharing": "Slökktu á skjádeilingu",
+            "cameraIsTurnedOff": "Slökkt er á myndavélinni",
+            "micIsTurnedOff": "Slökkt er á hljóðnema",
+            "startFBLive": "Byrjaðu Facebook Livestream",
+            "stopFBLive": "Stöðva Facebook Livestream",
+            "startRecording": "Byrjaðu upptöku",
+            "stopRecording": "Hætta upptöku",
+            "start": "Byrjaðu",
+            "stop": "Hættu",
+            "recordingInProgress": "Upptaka stendur yfir...",
+            "fbLiveTitle": "Titill Livestream",
+            "fbLiveDescription": "Lýstu straumnum þínum í beinni. Um hvað snýst þetta?",
+            "fbOnlyMeLiveAccess": "Bara ég",
+            "fbFriendsAccess": "Vinir",
+            "fbPublicAccess": "Opinber",
+            "publishOnTimeline": "Birta á tímalínu",
+            "publishToGroup": "Birta í hóp",
+            "fbStartLive": "Fara í loftið",
+            "fbStopLive": "Ljúka beinni útsendingu",
+            "streamingSettings": "Stillingar",
+            "manageStream": "Stjórna straumi í beinni",
+            "fbEmbedCode": "Fella inn",
+            "copy": "Afrita",
+            "streamToRTMP": "Straumaðu í sérsniðið RTMP",
+            "startBroadcasting": "Byrjaðu að senda út",
+            "broadcastingInProgress": "Útsending stendur yfir",
+            "share": "Deila",
+            "startClodRecording": "Byrjaðu skýjaupptöku",
+            "startLocRecording": "Byrjaðu staðbundna upptöku",
+            "stopClodRecording": "Stöðva skýjaupptöku",
+            "stopLocRecording": "Stöðva staðbundna upptöku"
+        },
+        "audioSettings": {
+            "dialogTitle": "Hljóðstillingar",
+            "speakers": "Hátalarar",
+            "microphone": "Hljóðnemi"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Stjórna útsendingu"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Stillingar þátttakanda",
+            "disconnect": "Aftengjast",
+            "floatingScreens": "Fljótandi skjáir",
+            "tiledScreens": "Flísalagt skjár",
+            "loudestExceptMe": "Háværast nema ég",
+            "maximizeLoudest": "Hámarka háværast",
+            "staticMaximized": "Static hámörkuð",
+            "fullScreen": "Fullur skjár",
+            "manual": "Handbók",
+            "turnOffCamera": "Fela myndband",
+            "turnOffAudio": "Slökkva á hljóði",
+            "turnOffScreenSharing": "Fela skjádeilingu",
+            "turnOnCamera": "Sýna myndband",
+            "turnOnAudio": "Kveikja á hljóði",
+            "turnOnScreenSharing": "Sýna skjádeilingu"
+        },
+        "streamingSettings": {
+            "title": "Bein útsending"
+        },
+        "preview": {
+            "Meeting": "Fjarfundur",
+            "MeetingEnded": "Símafundi lokið"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Beiðni um að tala",
+            "msg": "Núna eru {{count}} manns sem tala á fundinum. Viltu skipta út einum þeirra eftir að hafa leyft þeim {{seconds}} sekúndur til að klára að tala?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Verður þú að kynna? Þú getur notað þetta rými til að hlaða saman efni fyrir kynninguna þína. Notaðu plús hnappinn.",
+        "Alert": "Þegar viðburðir hefjast munu samsvarandi kynningar þeirra byrja að birtast á þessari síðu",
+        "ClickHereForFullscreen": "Kynningar munu birtast hér. Smelltu hér til að fara á allan skjáinn.",
+        "question": {
+            "ScanThisQRCode": "Skannaðu þennan QR kóða til að svara"
+        }
+    }
+}

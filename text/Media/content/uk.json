@@ -1,0 +1,256 @@
+{
+    "Shows": "Показує",
+    "Clips": "Затискачі",
+    "Video": "Відео",
+    "Audio": "Аудіо",
+    "categories": {
+        "Clips": "Медіакліпи",
+        "Episodes": "Епізоди"
+    },
+    "NewEpisode": "Новий епізод",
+    "NewClip": "Новий кліп",
+    "LiveShow": "Шоу в прямому ефірі",
+    "Save": "Зберегти",
+    "ViewFullEpisode": "Переглянути повний епізод",
+    "CreditsEarned": "Зароблені кредити",
+    "VideoTitle": "Заголовок або URL-адреса відео",
+    "NewClipTitlePlaceholder": "Введіть назву кліпу",
+    "NewClipDescriptionPlaceholder": "Введіть опис кліпу",
+    "switchVisualization": "Переключити візуалізацію",
+    "joinLiveShow": "Приєднуйтесь до прямого ефіру",
+    "showTwitchLiveStream": "Показати пряму трансляцію Twitch",
+    "showVoiceChat": "Показати голосовий чат",
+    "AreYouSureKick": "Ви впевнені, що хочете викинути цього користувача?",
+    "AreYouSureDeleteEpisode": "Ви впевнені, що хочете видалити цю серію?",
+    "Yes": "Так",
+    "No": "Ні",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Кліп",
+            "description": "медіа-ролик"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Телеконференція",
+            "description": "онлайн-відео\/аудіоконференція"
+        },
+        "Media\/calls": {
+            "displayType": "Дзвінки",
+            "description": "категорія для Media\/WebRTC",
+            "MaxRelationsExceeded": "Перевищено максимальну кількість викликів"
+        }
+    },
+    "feeds": {
+        "Title": "Фотоапарати",
+        "filterByTitle": "Знайдіть канали за назвою",
+        "RequestFeedAccess": "Запит на доступ до каналу",
+        "New": "+ Нова стрічка",
+        "filterFeeds": "Фільтрувати канали",
+        "NewFeed": "Новий канал",
+        "NoneYet": "Канали ще не сформовано.",
+        "AreYouSure": "Ти впевнений?",
+        "FilterByDate": "Фільтрувати за датою",
+        "newFeeds": "У вас є {{1}} нових каналів",
+        "Description": "{{1}} каналів",
+        "Keywords": "{{1}} каналів"
+    },
+    "feed": {
+        "HostedBy": "Розміщує {{name}}",
+        "Name": "Ім&#39;я",
+        "Conversation": "Розмова",
+        "CloseFeed": {
+            "button": "Закрити канал",
+            "Cancel": "Ви впевнені, що бажаєте закрити цю стрічку?",
+            "Participant": "У цій стрічці 1 учасник",
+            "Participants": "У цій стрічці {{count}} учасників"
+        },
+        "Calendar": "Календар",
+        "TitleOfFeed": "Назва каналу:",
+        "EmptyList": "Порожній список",
+        "EmptyVideos": "Кліпів ще немає",
+        "AccessReason": "будь ласка, вкажіть причину",
+        "Proceed": "Продовжуйте",
+        "FeedAlreadyClosed": "Ця стрічка вже закрита",
+        "RtmpLinkNote": "Натисніть, щоб скопіювати це посилання в буфер обміну",
+        "SelectClip": "Виберіть дату, яку хочете побачити",
+        "Request": "запит"
+    },
+    "newFeed": {
+        "Title": "Новий канал",
+        "locationTitle": "Встановіть своє місцезнаходження",
+        "SetLocation": "Установити моє місцезнаходження",
+        "Starting": "Запуск",
+        "Day": "День",
+        "Create": "Створити",
+        "Continue": "Продовжити",
+        "FeedTitle": "Назва каналу",
+        "SetTitle": "Установіть назву каналу"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} запитує доступ до {{& stream.fields.title}} з причини &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "приєднався до вашого дзвінка",
+        "SubjectJoinedYourCall": "{{subject}} приєднався до вашого дзвінка"
+    },
+    "RealTimeCall": "Дзвінок у реальному часі",
+    "JoinWebRTC": "Телеконференція",
+    "webrtc": {
+        "notAllowedToJoinCall": "Ви не маєте дозволу приєднатися до цього потоку.",
+        "streamTitle": "{{1}} почав телеконференцію",
+        "allow": {
+            "dialogTitle": "Підключення",
+            "microphoneBtn": "Увімкнути мікрофон",
+            "cameraBtn": "Увімкнути камеру",
+            "cameraAndMicrophoneBtn": "Увімкніть камеру та мікрофон"
+        },
+        "preparing": {
+            "dialogTitle": "Перш ніж приєднатися, увімкніть або вимкніть камеру або мікрофон",
+            "micIsOff": "Мікрофон вимкнено",
+            "micIsOn": "Мікрофон увімкнено",
+            "cameraIsOff": "Камера вимкнена",
+            "cameraIsOn": "Камера включена",
+            "screenSharingIsOn": "Показ екрана ввімкнено",
+            "screenSharingIsOff": "Поділитися екраном",
+            "joinNow": "Приєднуйтесь до виклику"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Інструкції",
+            "permissionDenied": "Дозвіл для {{kind}} відхилено. Щоб використовувати його, виконайте такі дії:",
+            "point1": "Перейдіть у «Налаштування» -&gt; «Додатково» -&gt; «Конфіденційність і безпека» -&gt; «Налаштування сайту» -&gt; «Камера» або «Налаштування сайту» -&gt; «Мікрофон»",
+            "point2": "Видалити {{hostname}} зі списку &quot;Заблокувати&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Інструкції",
+            "permissionDenied": "Дозвіл для {{kind}} відхилено. Перезавантажте цю сторінку та підтвердьте доступ до {{kind}} , щоб приєднатися до конференції."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Інструкції",
+            "permissionDenied": "Дозвіл для {{kind}} відхилено. Щоб використовувати його, виконайте такі дії:",
+            "point1": "Перейдіть у налаштування Android",
+            "point2": "Відкрийте «Програми та сповіщення»",
+            "point3": "Знайдіть « {{communityName}} » і відкрийте його",
+            "point4": "Торкніться Дозволи",
+            "point5": "Увімкнути {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Інструкції",
+            "permissionDenied": "Дозвіл для {{kind}} відхилено. Щоб використовувати його, виконайте такі дії:",
+            "point1": "Перейдіть до налаштувань iOS",
+            "point2": "Відкрийте «Конфіденційність»",
+            "point3": "Знайдіть {{kind}} і відкрийте його",
+            "point4": "Знайдіть « {{communityName}} » і ввімкніть"
+        },
+        "fbLive": {
+            "dialogTitle": "Почалася пряма трансляція у Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Ви приєдналися до кімнати",
+            "joining": "Приєднання: {{userName}}",
+            "sbLeftRoom": "{{userName}} вийшли з кімнати",
+            "switchingRoom": "Перехідна кімната...",
+            "forceDisconnecting": "Вас буде відключено протягом 5 секунд",
+            "forceDisconnectingImmediately": "Вас від’єднав хост",
+            "youLeftRoom": "Ви вийшли з кімнати",
+            "codeCopied": "Ви вийшли з кімнати",
+            "sbBeganFbLive": "{{userName}} почав транслювати цей дзвінок у Facebook",
+            "sbStoppedFbLive": "{{userName}} припинив трансляцію цього дзвінка у Facebook",
+            "youBeganFbLive": "Ви почали транслювати цей дзвінок у Facebook",
+            "youStoppedFbLive": "Ви припинили трансляцію цього дзвінка у Facebook",
+            "youStartedLive": "Ви почали трансляцію цього виклику на спеціальний RTMP",
+            "youStoppedLive": "Ви припинили трансляцію цього виклику на спеціальний RTMP",
+            "sbStartedLiveStreaming": "{{userName}} почав ефір",
+            "sbStoppedLiveStreaming": "{{userName}} закінчився в прямому ефірі",
+            "liveStopped": "Під час надсилання відео до кінцевої точки сталася помилка",
+            "youBeganVideoRecording": "Ви почали запис цієї конференції",
+            "youStoppedVideoRecording": "Ви припинили запис цієї конференції",
+            "linkCopiedToCb": "Посилання скопійовано в буфер обміну",
+            "codeCopiedToCb": "Код скопійовано в буфер обміну",
+            "userHasNoVideo": "В учасника немає відео",
+            "openInBrowserAlert": "Відкрийте посилання в браузері Safari, щоб приєднатися до конференції.",
+            "allowedVideoLimit": "У цій кімнаті дозволено лише {{limit}} відео",
+            "allowedAudioLimit": "У цій кімнаті дозволено лише {{limit}} мікрофонів"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Налаштування відео",
+            "webCamera": "веб-камера",
+            "screenSharing": "Спільний доступ до екрана",
+            "shareAnotherScreen": "Поділіться іншим екраном",
+            "turnOffCameras": "Вимкніть камеру",
+            "turnOffVideo": "Вимкніть спільний доступ до камери\/екрана",
+            "turnOffAudioInput": "Вимкнути мікрофон",
+            "turnOffScreenSharing": "Вимкніть спільний доступ до екрана",
+            "cameraIsTurnedOff": "Камера вимкнена",
+            "micIsTurnedOff": "Мікрофон вимкнено",
+            "startFBLive": "Запустіть пряму трансляцію Facebook",
+            "stopFBLive": "Зупинити пряму трансляцію Facebook",
+            "startRecording": "Почати запис",
+            "stopRecording": "Зупинити запис",
+            "start": "старт",
+            "stop": "СТІЙ",
+            "recordingInProgress": "Триває запис...",
+            "fbLiveTitle": "Назва прямого ефіру",
+            "fbLiveDescription": "Опишіть свою пряму трансляцію. Про що це?",
+            "fbOnlyMeLiveAccess": "Тільки я",
+            "fbFriendsAccess": "друзі",
+            "fbPublicAccess": "Громадський",
+            "publishOnTimeline": "Опублікувати на шкалі часу",
+            "publishToGroup": "Опублікувати в групі",
+            "fbStartLive": "Йти жити",
+            "fbStopLive": "Завершити пряму трансляцію",
+            "streamingSettings": "Налаштування",
+            "manageStream": "Керувати прямою трансляцією",
+            "fbEmbedCode": "Вставити",
+            "copy": "Копіювати",
+            "streamToRTMP": "Потокова передача на спеціальний RTMP",
+            "startBroadcasting": "Почати трансляцію",
+            "broadcastingInProgress": "Трансляція триває",
+            "share": "Поділіться",
+            "startClodRecording": "Запустіть Cloud Recording",
+            "startLocRecording": "Почніть локальний запис",
+            "stopClodRecording": "Зупинити запис у хмарі",
+            "stopLocRecording": "Зупинити локальний запис"
+        },
+        "audioSettings": {
+            "dialogTitle": "Параметри звуку",
+            "speakers": "Доповідачі",
+            "microphone": "мікрофон"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Керувати трансляцією"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Налаштування учасника",
+            "disconnect": "Відключити",
+            "floatingScreens": "Плаваючі екрани",
+            "tiledScreens": "Плиткові екрани",
+            "loudestExceptMe": "Найгучніший, крім мене",
+            "maximizeLoudest": "Збільшити найгучніше",
+            "staticMaximized": "Статичний розгорнутий",
+            "fullScreen": "Повноекранний",
+            "manual": "Інструкція",
+            "turnOffCamera": "Приховати відео",
+            "turnOffAudio": "Вимкнути звук",
+            "turnOffScreenSharing": "Приховати спільний доступ до екрана",
+            "turnOnCamera": "Показати відео",
+            "turnOnAudio": "Увімкнути звук",
+            "turnOnScreenSharing": "Показати спільний доступ до екрана"
+        },
+        "streamingSettings": {
+            "title": "Наживо"
+        },
+        "preview": {
+            "Meeting": "Телеконференція",
+            "MeetingEnded": "Телеконференцію завершено"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Запит на виступ",
+            "msg": "Зараз на засіданні виступає {{count}} осіб. Ви хочете замінити одного з них після {{seconds}} секунд, щоб вони закінчили говорити?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Ви будете презентувати? Ви можете використовувати це місце для спільного завантаження матеріалів для вашої презентації. Використовуйте кнопку «Плюс».",
+        "Alert": "З початком подій відповідні презентації почнуть з’являтися на цій сторінці",
+        "ClickHereForFullscreen": "Тут з’являться презентації. Натисніть тут, щоб перейти в повноекранний режим.",
+        "question": {
+            "ScanThisQRCode": "Відскануйте цей QR-код, щоб відповісти"
+        }
+    }
+}

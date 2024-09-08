@@ -1,0 +1,256 @@
+{
+    "Shows": "Viser sig",
+    "Clips": "Klip",
+    "Video": "Video",
+    "Audio": "Lyd",
+    "categories": {
+        "Clips": "Medieklip",
+        "Episodes": "Episoder"
+    },
+    "NewEpisode": "Ny episode",
+    "NewClip": "Nyt klip",
+    "LiveShow": "Direkte show",
+    "Save": "Gemme",
+    "ViewFullEpisode": "Se hele episoden",
+    "CreditsEarned": "Optjente kreditter",
+    "VideoTitle": "Videotitel eller URL",
+    "NewClipTitlePlaceholder": "Indtast kliptitel",
+    "NewClipDescriptionPlaceholder": "Indtast klipbeskrivelse",
+    "switchVisualization": "Skift visualisering",
+    "joinLiveShow": "Deltag i Live Show",
+    "showTwitchLiveStream": "Vis Twitch Live Stream",
+    "showVoiceChat": "Vis Voice Chat",
+    "AreYouSureKick": "Er du sikker på, at du vil starte denne bruger?",
+    "AreYouSureDeleteEpisode": "Er du sikker på, at du vil slette denne episode?",
+    "Yes": "Ja",
+    "No": "Ingen",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Klip",
+            "description": "medieklip"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Telekonference",
+            "description": "en online video\/lydkonference"
+        },
+        "Media\/calls": {
+            "displayType": "Opkald",
+            "description": "kategori for Media\/WebRTC",
+            "MaxRelationsExceeded": "Det maksimale antal opkald er overskredet"
+        }
+    },
+    "feeds": {
+        "Title": "Kameraer",
+        "filterByTitle": "Find feeds efter titel",
+        "RequestFeedAccess": "Anmod om feedadgang",
+        "New": "+ Nyt feed",
+        "filterFeeds": "Filtrer feeds",
+        "NewFeed": "Nyt feed",
+        "NoneYet": "Der er ikke dannet feeds endnu.",
+        "AreYouSure": "Er du sikker?",
+        "FilterByDate": "Filtrer efter dato",
+        "newFeeds": "Du har {{1}} nye feeds",
+        "Description": "{{1}} feeds",
+        "Keywords": "{{1}} feeds"
+    },
+    "feed": {
+        "HostedBy": "Hostet af {{name}}",
+        "Name": "Navn",
+        "Conversation": "Samtale",
+        "CloseFeed": {
+            "button": "Luk feed",
+            "Cancel": "Er du sikker på, at du vil lukke dette feed?",
+            "Participant": "Der er 1 deltager i dette feed",
+            "Participants": "Der er {{count}} deltagere i dette feed"
+        },
+        "Calendar": "Kalender",
+        "TitleOfFeed": "Titel på feed:",
+        "EmptyList": "Tom liste",
+        "EmptyVideos": "Ingen klip endnu",
+        "AccessReason": "angiv venligst årsagen",
+        "Proceed": "Fortsæt",
+        "FeedAlreadyClosed": "Dette feed er allerede lukket",
+        "RtmpLinkNote": "Klik for at kopiere dette link til udklipsholder",
+        "SelectClip": "Vælg den dato, du vil se",
+        "Request": "Anmodning"
+    },
+    "newFeed": {
+        "Title": "Nyt feed",
+        "locationTitle": "Indstil din placering",
+        "SetLocation": "Indstil min placering",
+        "Starting": "Starter",
+        "Day": "Dag",
+        "Create": "skab",
+        "Continue": "Blive ved",
+        "FeedTitle": "Feed titel",
+        "SetTitle": "Indstil venligst feed-titel"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} anmodede om adgang til {{& stream.fields.title}} med årsagen &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "sluttede sig til dit opkald",
+        "SubjectJoinedYourCall": "{{subject}} sluttede sig til dit opkald"
+    },
+    "RealTimeCall": "Realtidsopkald",
+    "JoinWebRTC": "Telekonference",
+    "webrtc": {
+        "notAllowedToJoinCall": "Du har ikke tilladelse til at deltage i denne strøm.",
+        "streamTitle": "{{1}} startede en telekonference",
+        "allow": {
+            "dialogTitle": "Tilslutning",
+            "microphoneBtn": "Aktiver mikrofon",
+            "cameraBtn": "Aktiver kamera",
+            "cameraAndMicrophoneBtn": "Aktiver kamera og mikrofon"
+        },
+        "preparing": {
+            "dialogTitle": "Tænd\/sluk kamera eller mikrofon, før du deltager",
+            "micIsOff": "Mikrofonen er slukket",
+            "micIsOn": "Mic er tændt",
+            "cameraIsOff": "Kameraet er slukket",
+            "cameraIsOn": "Kameraet er tændt",
+            "screenSharingIsOn": "Skærmdeling er aktiveret",
+            "screenSharingIsOff": "Del skærm",
+            "joinNow": "Deltag i opkaldet"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instruktioner",
+            "permissionDenied": "Tilladelse til {{kind}} nægtet. Følg disse trin for at bruge det:",
+            "point1": "Gå til &quot;Indstillinger&quot; -&gt; &quot;Avanceret&quot; -&gt; &quot;Privatliv og sikkerhed&quot; -&gt; &quot;Siteindstillinger&quot; -&gt; &quot;Kamera&quot; eller &quot;Siteindstillinger&quot; -&gt; &quot;Mikrofon&quot;",
+            "point2": "Fjern {{hostname}} fra &quot;Bloker&quot;-listen"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instruktioner",
+            "permissionDenied": "Tilladelse til {{kind}} nægtet. Genindlæs denne side og bekræft adgangen til {{kind}} for at deltage i konferencen."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instruktioner",
+            "permissionDenied": "Tilladelse til {{kind}} nægtet. Følg disse trin for at bruge det:",
+            "point1": "Gå til dine Android-indstillinger",
+            "point2": "Åbn &quot;Apps og notifikationer&quot;",
+            "point3": "Find &quot; {{communityName}} &quot; og åbn den",
+            "point4": "Tryk på Tilladelser",
+            "point5": "Aktiver {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instruktioner",
+            "permissionDenied": "Tilladelse til {{kind}} nægtet. Følg disse trin for at bruge det:",
+            "point1": "Gå til dine iOS-indstillinger",
+            "point2": "Åbn &quot;Privatliv&quot;",
+            "point3": "Find {{kind}} og åbn den",
+            "point4": "Find &quot; {{communityName}} &quot; og aktiver"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook livestreaming startede"
+        },
+        "notices": {
+            "youJoinedRoom": "Du kom med i rummet",
+            "joining": "Tilmelding: {{userName}}",
+            "sbLeftRoom": "{{userName}} forlod lokalet",
+            "switchingRoom": "Skifter værelse...",
+            "forceDisconnecting": "Du vil blive afbrudt inden for 5 sekunder",
+            "forceDisconnectingImmediately": "Du blev afbrudt af en vært",
+            "youLeftRoom": "Du forlod rummet",
+            "codeCopied": "Du forlod rummet",
+            "sbBeganFbLive": "{{userName}} begyndte at udsende dette opkald på Facebook",
+            "sbStoppedFbLive": "{{userName}} stoppede med at udsende dette opkald på Facebook",
+            "youBeganFbLive": "Du begyndte at udsende dette opkald på Facebook",
+            "youStoppedFbLive": "Du stoppede med at udsende dette opkald på Facebook",
+            "youStartedLive": "Du begyndte at udsende dette opkald til brugerdefineret RTMP",
+            "youStoppedLive": "Du stoppede med at udsende dette opkald til brugerdefineret RTMP",
+            "sbStartedLiveStreaming": "{{userName}} startede live",
+            "sbStoppedLiveStreaming": "{{userName}} sluttede live",
+            "liveStopped": "Der opstod en fejl under afsendelse af video til slutpunktet",
+            "youBeganVideoRecording": "Du begyndte at optage denne konference",
+            "youStoppedVideoRecording": "Du stoppede med at optage denne konference",
+            "linkCopiedToCb": "Linket er kopieret til udklipsholderen",
+            "codeCopiedToCb": "Kode kopieret til udklipsholder",
+            "userHasNoVideo": "Deltageren har ingen video",
+            "openInBrowserAlert": "Åbn linket i Safari-browseren for at deltage i konferencen.",
+            "allowedVideoLimit": "Kun {{limit}} videoer tilladt i dette rum",
+            "allowedAudioLimit": "Kun {{limit}} mikrofoner tilladt i dette rum"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Videoindstillinger",
+            "webCamera": "Web kamera",
+            "screenSharing": "Skærmdeling",
+            "shareAnotherScreen": "Del en anden skærm",
+            "turnOffCameras": "Sluk kameraet",
+            "turnOffVideo": "Slå kamera\/skærmdeling fra",
+            "turnOffAudioInput": "Slå mikrofon fra",
+            "turnOffScreenSharing": "Slå skærmdeling fra",
+            "cameraIsTurnedOff": "Kameraet er slukket",
+            "micIsTurnedOff": "Mikrofonen er slukket",
+            "startFBLive": "Start Facebook Livestream",
+            "stopFBLive": "Stop Facebook Livestream",
+            "startRecording": "Start optagelse",
+            "stopRecording": "Stop optagelse",
+            "start": "Start",
+            "stop": "Hold op",
+            "recordingInProgress": "Optagelse er i gang...",
+            "fbLiveTitle": "Titel på livestream",
+            "fbLiveDescription": "Beskriv din livestream. Hvad handler det om?",
+            "fbOnlyMeLiveAccess": "Kun mig",
+            "fbFriendsAccess": "Venner",
+            "fbPublicAccess": "Offentlig",
+            "publishOnTimeline": "Udgiv på tidslinjen",
+            "publishToGroup": "Udgiv til gruppe",
+            "fbStartLive": "Gå live",
+            "fbStopLive": "Afslut livestream",
+            "streamingSettings": "Indstillinger",
+            "manageStream": "Administrer livestream",
+            "fbEmbedCode": "Indlejre",
+            "copy": "Kopi",
+            "streamToRTMP": "Stream til brugerdefineret RTMP",
+            "startBroadcasting": "Begynd at udsende",
+            "broadcastingInProgress": "Udsendelsen er i gang",
+            "share": "Del",
+            "startClodRecording": "Start skyoptagelse",
+            "startLocRecording": "Start lokal optagelse",
+            "stopClodRecording": "Stop Cloud-optagelse",
+            "stopLocRecording": "Stop lokal optagelse"
+        },
+        "audioSettings": {
+            "dialogTitle": "Lydindstillinger",
+            "speakers": "Højttalere",
+            "microphone": "Mikrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Administrer udsendelse"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Deltagerindstillinger",
+            "disconnect": "Koble fra",
+            "floatingScreens": "Flydende skærme",
+            "tiledScreens": "Flisebelagte skærme",
+            "loudestExceptMe": "Højeste undtagen mig",
+            "maximizeLoudest": "Maksimer højest",
+            "staticMaximized": "Statisk maksimeret",
+            "fullScreen": "Fuld skærm",
+            "manual": "brugervejledning",
+            "turnOffCamera": "Skjul video",
+            "turnOffAudio": "Slå lyd fra",
+            "turnOffScreenSharing": "Skjul skærmdeling",
+            "turnOnCamera": "Vis video",
+            "turnOnAudio": "Slå lyden til",
+            "turnOnScreenSharing": "Vis skærmdeling"
+        },
+        "streamingSettings": {
+            "title": "Live stream"
+        },
+        "preview": {
+            "Meeting": "Telekonference",
+            "MeetingEnded": "Telekonference afsluttet"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Anmodning om at tale",
+            "msg": "Der er i øjeblikket {{count}} personer, der taler i mødet. Vil du udskifte en af dem efter at have givet dem {{seconds}} sekunder til at tale færdig?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Vil du præsentere? Du kan bruge denne plads til at uploade materialer til din præsentation sammen. Brug Plus-knappen.",
+        "Alert": "Når begivenheder starter, vil deres tilsvarende præsentationer begynde at blive vist på denne side",
+        "ClickHereForFullscreen": "Præsentationer vil blive vist her. Klik her for at gå til fuld skærm.",
+        "question": {
+            "ScanThisQRCode": "Scan denne QR-kode for at svare"
+        }
+    }
+}

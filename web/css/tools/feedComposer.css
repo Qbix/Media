@@ -1,0 +1,114 @@
+.Media_feed_composer_tool .Media_feed_composer_section {
+    width: 100%;
+    padding: 5px 5px 10px 45px;
+    box-sizing: border-box;
+    vertical-align: middle; min-height: 40px;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+    background-position: left 5px;
+    position: relative;
+}
+.Media_feed_composer_tool input {
+    min-height: 40px;
+}
+.Media_feed_composer_tool .Media_feed_composer_title.Media_feed_composer_section {
+    padding-left: 5px;
+    padding-top: 10px;
+}
+.Media_feed_composer_tool .Media_feed_composer_section:not(:last-of-type) {
+    border-bottom: 5px solid silver;
+    margin-bottom: 10px;
+}
+.Media_feed_composer_tool .Media_feed_composer_title {
+    width: 100%;
+    color: black;
+}
+.Media_feed_composer_tool .Media_feed_composer_section::before {
+    font-family: 'qplatform-media' !important; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    color: #444;
+    font-size: 32px;
+    position: absolute;
+    left: 5px;
+    top: 14px;
+}
+.Media_feed_composer_tool .Media_feed_composer_section.Media_feed_composer_location::before {
+    content: "\e908";
+}
+.Media_feed_composer_tool .Media_feed_composer_section.Media_feed_composer_times {
+    padding-left: 20px;
+}
+.Media_feed_composer_tool .Media_feed_composer_section.Media_feed_composer_times label {
+    width: 70px;
+    display: inline-block;
+    text-align: right;
+}
+.Media_feed_composer_tool .Media_feed_composer_section.Media_feed_composer_times .Media_feed_composer_date_container,
+.Media_feed_composer_tool .Media_feed_composer_section.Media_feed_composer_times .Media_feed_composer_time_container {
+    margin-bottom: 5px;
+}
+.Media_feed_composer_tool .Media_feed_composer_section.Media_feed_composer_times::before {
+    content: "\e90c";
+}
+.Media_feed_composer_tool .Media_feed_composer_section.Media_feed_composer_privacy::before {
+    content: "\e903";
+}
+
+.Media_feed_composer_tool .Q_button {
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.Media_feed_composer_tool .Media_feed_composer_location_button {
+    width: 100%;
+    cursor: pointer;
+}
+
+.Media_feed_composer_location[data-locationDefined=false] .Places_location_tool,
+.Media_feed_composer_location[data-locationDefined=true] .Media_feed_composer_location_button {
+    display: none !important;
+}
+
+.Media_feed_composer_tool .Media_feed_composer_date {
+    padding: 5px;
+    width: 150px;
+    text-align: center;
+    background: white;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.Media_feed_composer_tool input,
+.Media_feed_composer_tool select {
+    font-size: 16px;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 4px;
+}
+.Media_feed_composer_tool .Media_feed_composer_create {
+    padding: 10px 50px 10px 50px;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0 auto;
+}
+
+.Media_feed_composer_location .Places_location_tool div[data-location=address] {
+    padding-left: 5px;
+}
+.Media_feed_composer_location .Places_location_tool .Places_location_preview_contents {
+    max-width: 190px;
+}
+
+.Media_feed_composer_location .Places_location_tool div[data-location=address] label {
+    display: none;
+}
+.Media_feed_composer_location .Places_location_tool .Places_location_address,
+.Media_feed_composer_location .Places_location_tool .Places_location_address .Q_filter_tool,
+.Media_feed_composer_location .Places_location_tool .Places_areas_filter.Q_filter_tool,
+.Media_feed_composer_location .Places_location_tool .Places_areas_filter.Q_filter_tool .Q_filter_input,
+.Media_feed_composer_location .Places_location_tool .Places_location_address .Q_filter_tool .Q_filter_input {
+    display: inline-block;
+    width: 100%;
+}
+.Media_feed_composer_location .Places_location_tool .Places_location_address.Q_selected {
+    width: auto;
+}

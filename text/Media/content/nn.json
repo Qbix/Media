@@ -1,0 +1,17 @@
+{
+    "Shows": "Viser",
+    "Clips": "Klipp",
+    "Video": "Video",
+    "Audio": "Lyd",
+    "categories": {
+        "Clips": "Medieklipp",
+        "Episodes": "Episoder"
+    },
+    "NewEpisode": "Ny episode",
+    "NewClip": "Nytt klipp",
+    "LiveShow": "Live show",
+    "Save": "Lagre",
+    "ViewFullEpisode": "Se hele episoden",
+    "CreditsEarned": "Opptjente studiepoeng",
+    "VideoTitle": "Videotittel eller URL"
+}

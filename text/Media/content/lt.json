@@ -1,0 +1,256 @@
+{
+    "Shows": "Laidos",
+    "Clips": "Įrašai",
+    "Video": "Vaizdo įrašas",
+    "Audio": "Garsas",
+    "categories": {
+        "Clips": "Žiniasklaidos įrašai",
+        "Episodes": "Epizodai"
+    },
+    "NewEpisode": "Naujas epizodas",
+    "NewClip": "Naujas įrašas",
+    "LiveShow": "Tiesioginė laida",
+    "Save": "Sutaupyti",
+    "ViewFullEpisode": "Žiūrėti visą seriją",
+    "CreditsEarned": "Uždirbti kreditai",
+    "VideoTitle": "Vaizdo įrašo pavadinimas arba URL",
+    "NewClipTitlePlaceholder": "Įveskite klipo pavadinimą",
+    "NewClipDescriptionPlaceholder": "Įveskite klipo aprašymą",
+    "switchVisualization": "Perjungti vizualizaciją",
+    "joinLiveShow": "Prisijunkite prie tiesioginio šou",
+    "showTwitchLiveStream": "Rodyti „Twitch“ tiesioginę transliaciją",
+    "showVoiceChat": "Rodyti balso pokalbį",
+    "AreYouSureKick": "Ar tikrai norite atšaukti šį naudotoją?",
+    "AreYouSureDeleteEpisode": "Ar tikrai norite ištrinti šią seriją?",
+    "Yes": "Taip",
+    "No": "Nr",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Klipas",
+            "description": "žiniasklaidos klipas"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Telekonferencija",
+            "description": "internetinė vaizdo \/ garso konferencija"
+        },
+        "Media\/calls": {
+            "displayType": "Skambučiai",
+            "description": "Media \/ WebRTC kategorija",
+            "MaxRelationsExceeded": "Viršytas maksimalus skambučių skaičius"
+        }
+    },
+    "feeds": {
+        "Title": "Fotoaparatai",
+        "filterByTitle": "Raskite sklaidos kanalus pagal pavadinimą",
+        "RequestFeedAccess": "Prašyti prieigos prie sklaidos kanalo",
+        "New": "+ Naujas kanalas",
+        "filterFeeds": "Filtruoti kanalus",
+        "NewFeed": "Naujas kanalas",
+        "NoneYet": "Dar nesudaryta jokių kanalų.",
+        "AreYouSure": "Ar tu tuo tikras?",
+        "FilterByDate": "Filtruoti pagal datą",
+        "newFeeds": "Turite {{1}} naujų kanalų",
+        "Description": "{{1}} sklaidos kanalų",
+        "Keywords": "{{1}} sklaidos kanalų"
+    },
+    "feed": {
+        "HostedBy": "Priima {{name}}",
+        "Name": "vardas",
+        "Conversation": "Pokalbis",
+        "CloseFeed": {
+            "button": "Uždaryti tiekimą",
+            "Cancel": "Ar tikrai norite uždaryti šį sklaidos kanalą?",
+            "Participant": "Šiame sklaidos kanale yra 1 dalyvis",
+            "Participants": "Šiame sklaidos kanale yra {{count}} dalyvių"
+        },
+        "Calendar": "Kalendorius",
+        "TitleOfFeed": "Sklaidos kanalo pavadinimas:",
+        "EmptyList": "Tuščias sąrašas",
+        "EmptyVideos": "Dar nėra klipų",
+        "AccessReason": "prašome nurodyti priežastį",
+        "Proceed": "Tęskite",
+        "FeedAlreadyClosed": "Šis sklaidos kanalas jau uždarytas",
+        "RtmpLinkNote": "Spustelėkite, jei norite nukopijuoti šią nuorodą į mainų sritį",
+        "SelectClip": "Pasirinkite datą, kurią norite matyti",
+        "Request": "Prašymas"
+    },
+    "newFeed": {
+        "Title": "Naujas kanalas",
+        "locationTitle": "Nustatykite savo vietą",
+        "SetLocation": "Nustatyti Mano vietą",
+        "Starting": "Pradedama",
+        "Day": "Diena",
+        "Create": "Sukurti",
+        "Continue": "Tęsti",
+        "FeedTitle": "Sklaidos kanalo pavadinimas",
+        "SetTitle": "Nustatykite sklaidos kanalo pavadinimą"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} paprašė prieigos prie {{& stream.fields.title}} su priežastimi {{& instructions.reason}}}",
+        "JoinedWebRTC": "prisijungė prie jūsų skambučio",
+        "SubjectJoinedYourCall": "{{subject}} prisijungė prie jūsų skambučio"
+    },
+    "RealTimeCall": "Skambutis realiu laiku",
+    "JoinWebRTC": "Telekonferencija",
+    "webrtc": {
+        "notAllowedToJoinCall": "Neturite leidimo prisijungti prie šio srauto.",
+        "streamTitle": "{{1}} pradėjo telekonferenciją",
+        "allow": {
+            "dialogTitle": "Prisijungimas",
+            "microphoneBtn": "Įjungti mikrofoną",
+            "cameraBtn": "Įgalinti fotoaparatą",
+            "cameraAndMicrophoneBtn": "Įjungti kamerą ir mikrofoną"
+        },
+        "preparing": {
+            "dialogTitle": "Prieš prisijungdami įjunkite \/ išjunkite fotoaparatą arba mikrofoną",
+            "micIsOff": "Mikrofonas išjungtas",
+            "micIsOn": "Mikrofonas įjungtas",
+            "cameraIsOff": "Kamera išjungta",
+            "cameraIsOn": "Kamera įjungta",
+            "screenSharingIsOn": "Ekrano bendrinimas įjungtas",
+            "screenSharingIsOff": "Bendrinti ekraną",
+            "joinNow": "Prisijunkite prie skambučio"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instrukcijos",
+            "permissionDenied": "Leidimas {{kind}} atmestas. Norėdami jį naudoti, atlikite šiuos veiksmus:",
+            "point1": "Eikite į „Nustatymai“ -&gt; „Išplėstiniai“ -&gt; „Privatumas ir sauga“ -&gt; „Svetainės nustatymai“ -&gt; „Kamera“ arba „Svetainės nustatymai“ -&gt; „Mikrofonas“",
+            "point2": "Pašalinkite {{hostname}} iš „Blokuoti“ sąrašo"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instrukcijos",
+            "permissionDenied": "Leidimas {{kind}} atmestas. Įkelkite šį puslapį iš naujo ir patvirtinkite prieigą prie {{kind}} , kad galėtumėte prisijungti prie konferencijos."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instrukcijos",
+            "permissionDenied": "Leidimas {{kind}} atmestas. Norėdami jį naudoti, atlikite šiuos veiksmus:",
+            "point1": "Eikite į „Android“ nustatymus",
+            "point2": "Atidarykite „Programos ir pranešimai“",
+            "point3": "Raskite „ {{communityName}} “ ir atidarykite jį",
+            "point4": "Bakstelėkite Leidimai",
+            "point5": "Įgalinti {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instrukcijos",
+            "permissionDenied": "Leidimas {{kind}} atmestas. Norėdami jį naudoti, atlikite šiuos veiksmus:",
+            "point1": "Eikite į „iOS“ nustatymus",
+            "point2": "Atidarykite „Privatumas“",
+            "point3": "Raskite {{kind}} ir atidarykite",
+            "point4": "Raskite „ {{communityName}} “ ir įjunkite"
+        },
+        "fbLive": {
+            "dialogTitle": "Pradėta tiesioginė transliacija „Facebook“."
+        },
+        "notices": {
+            "youJoinedRoom": "Jūs prisijungėte prie kambario",
+            "joining": "Prisijungimas: {{userName}}",
+            "sbLeftRoom": "{{userName}} išėjo iš kambario",
+            "switchingRoom": "Persijungimo kambarys...",
+            "forceDisconnecting": "Per 5 sekundes būsite atjungti",
+            "forceDisconnectingImmediately": "Jus atjungė šeimininkas",
+            "youLeftRoom": "Tu išėjai iš kambario",
+            "codeCopied": "Tu išėjai iš kambario",
+            "sbBeganFbLive": "{{userName}} pradėjo transliuoti šį skambutį „Facebook“.",
+            "sbStoppedFbLive": "{{userName}} nustojo transliuoti šį skambutį „Facebook“.",
+            "youBeganFbLive": "Pradėjote transliuoti šį skambutį „Facebook“.",
+            "youStoppedFbLive": "Nustojote transliuoti šį skambutį „Facebook“.",
+            "youStartedLive": "Pradėjote transliuoti šį skambutį į tinkintą RTMP",
+            "youStoppedLive": "Nustojote transliuoti šį skambutį į tinkintą RTMP",
+            "sbStartedLiveStreaming": "{{userName}} pradėjo tiesiogiai",
+            "sbStoppedLiveStreaming": "{{userName}} baigėsi tiesiogiai",
+            "liveStopped": "Įvyko klaida siunčiant vaizdo įrašą į galinį tašką",
+            "youBeganVideoRecording": "Pradėjote įrašyti šią konferenciją",
+            "youStoppedVideoRecording": "Sustabdėte šios konferencijos įrašymą",
+            "linkCopiedToCb": "Nuoroda nukopijuota į mainų sritį",
+            "codeCopiedToCb": "Kodas nukopijuotas į mainų sritį",
+            "userHasNoVideo": "Dalyvis neturi vaizdo įrašo",
+            "openInBrowserAlert": "Norėdami prisijungti prie konferencijos, atidarykite nuorodą „Safari“ naršyklėje.",
+            "allowedVideoLimit": "Šiame kambaryje leidžiama rodyti tik {{limit}} vaizdo įrašus",
+            "allowedAudioLimit": "Šiame kambaryje leidžiami tik {{limit}} mikrofonai"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Vaizdo įrašo nustatymai",
+            "webCamera": "Internetinė kamera",
+            "screenSharing": "Ekrano bendrinimas",
+            "shareAnotherScreen": "Bendrinkite kitą ekraną",
+            "turnOffCameras": "Išjunkite kamerą",
+            "turnOffVideo": "Išjunkite fotoaparato \/ ekrano bendrinimą",
+            "turnOffAudioInput": "Nutildyti mikrofoną",
+            "turnOffScreenSharing": "Išjunkite ekrano bendrinimą",
+            "cameraIsTurnedOff": "Kamera išjungta",
+            "micIsTurnedOff": "Mikrofonas išjungtas",
+            "startFBLive": "Pradėkite „Facebook“ tiesioginę transliaciją",
+            "stopFBLive": "Sustabdykite „Facebook“ tiesioginę transliaciją",
+            "startRecording": "Pradėti įrašymą",
+            "stopRecording": "Sustabdykite įrašymą",
+            "start": "Pradėti",
+            "stop": "Sustabdyti",
+            "recordingInProgress": "Įrašymas vyksta...",
+            "fbLiveTitle": "Tiesioginės transliacijos pavadinimas",
+            "fbLiveDescription": "Aprašykite savo tiesioginį srautą. Apie ką tai?",
+            "fbOnlyMeLiveAccess": "Tik aš",
+            "fbFriendsAccess": "Draugai",
+            "fbPublicAccess": "Viešas",
+            "publishOnTimeline": "Paskelbti laiko juostoje",
+            "publishToGroup": "Paskelbti grupėje",
+            "fbStartLive": "Tiesiogiai",
+            "fbStopLive": "Baigti tiesioginę transliaciją",
+            "streamingSettings": "Nustatymai",
+            "manageStream": "Tvarkyti tiesioginę transliaciją",
+            "fbEmbedCode": "Įterpti",
+            "copy": "Kopijuoti",
+            "streamToRTMP": "Perduokite srautu į tinkintą RTMP",
+            "startBroadcasting": "Pradėkite transliuoti",
+            "broadcastingInProgress": "Transliacija vyksta",
+            "share": "Dalintis",
+            "startClodRecording": "Pradėkite įrašymą iš debesies",
+            "startLocRecording": "Pradėti vietinį įrašymą",
+            "stopClodRecording": "Sustabdykite įrašymą iš debesies",
+            "stopLocRecording": "Sustabdykite vietinį įrašymą"
+        },
+        "audioSettings": {
+            "dialogTitle": "Garso nustatymai",
+            "speakers": "Garsiakalbiai",
+            "microphone": "Mikrofonas"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Valdykite transliaciją"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Dalyvio nustatymai",
+            "disconnect": "Atsijungti",
+            "floatingScreens": "Plaukiojantys ekranai",
+            "tiledScreens": "Plytelių ekranai",
+            "loudestExceptMe": "Garsiausias, išskyrus mane",
+            "maximizeLoudest": "Maksimalus garsiausias",
+            "staticMaximized": "Statinis maksimalus",
+            "fullScreen": "Per visą ekraną",
+            "manual": "vadovas",
+            "turnOffCamera": "Slėpti vaizdo įrašą",
+            "turnOffAudio": "Nutildyti garsą",
+            "turnOffScreenSharing": "Slėpti ekrano bendrinimą",
+            "turnOnCamera": "Rodyti vaizdo įrašą",
+            "turnOnAudio": "Įjungti garsą",
+            "turnOnScreenSharing": "Rodyti ekrano bendrinimą"
+        },
+        "streamingSettings": {
+            "title": "Tiesiogiai"
+        },
+        "preview": {
+            "Meeting": "Telekonferencija",
+            "MeetingEnded": "Telekonferencija baigėsi"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Prašymas kalbėti",
+            "msg": "Šiuo metu posėdyje kalba {{count}} žmonės. Ar norite pakeisti vieną iš jų, suteikę jiems {{seconds}} sekundžių, kad baigtų kalbėti?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Ar pristatysite? Galite naudoti šią erdvę norėdami kartu įkelti medžiagą savo pristatymui. Naudokite pliuso mygtuką.",
+        "Alert": "Prasidėjus įvykiams, atitinkami jų pristatymai bus rodomi šiame puslapyje",
+        "ClickHereForFullscreen": "Pristatymai pasirodys čia. Spustelėkite čia, kad pereitumėte į visą ekraną.",
+        "question": {
+            "ScanThisQRCode": "Norėdami atsakyti, nuskaitykite šį QR kodą"
+        }
+    }
+}

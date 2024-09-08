@@ -1,0 +1,256 @@
+{
+    "Shows": "બતાવે છે",
+    "Clips": "ક્લિપ્સ",
+    "Video": "વિડિઓ",
+    "Audio": "Audioડિઓ",
+    "categories": {
+        "Clips": "મીડિયા ક્લિપ્સ",
+        "Episodes": "એપિસોડ્સ"
+    },
+    "NewEpisode": "નવો એપિસોડ",
+    "NewClip": "નવી ક્લિપ",
+    "LiveShow": "લાઇવ શો",
+    "Save": "સાચવો",
+    "ViewFullEpisode": "સંપૂર્ણ એપિસોડ જુઓ",
+    "CreditsEarned": "કમાણી",
+    "VideoTitle": "વિડિઓ શીર્ષક અથવા URL",
+    "NewClipTitlePlaceholder": "ક્લિપ શીર્ષક દાખલ કરો",
+    "NewClipDescriptionPlaceholder": "ક્લિપ વર્ણન દાખલ કરો",
+    "switchVisualization": "વિઝ્યુલાઇઝેશન સ્વિચ કરો",
+    "joinLiveShow": "લાઈવ શોમાં જોડાઓ",
+    "showTwitchLiveStream": "Twitch લાઇવ સ્ટ્રીમ બતાવો",
+    "showVoiceChat": "વૉઇસ ચેટ બતાવો",
+    "AreYouSureKick": "શું તમે ખરેખર આ વપરાશકર્તાને બહાર કાઢવા માંગો છો?",
+    "AreYouSureDeleteEpisode": "શું તમે ખરેખર આ એપિસોડ કાઢી નાખવા માંગો છો?",
+    "Yes": "હા",
+    "No": "ના",
+    "types": {
+        "Media\/clip": {
+            "displayType": "ક્લિપ",
+            "description": "મીડિયા ક્લિપ"
+        },
+        "Media\/WebRTC": {
+            "displayType": "ટેલિકોન્ફરન્સ",
+            "description": "ઓનલાઈન વિડિયો\/ઓડિયો કોન્ફરન્સ"
+        },
+        "Media\/calls": {
+            "displayType": "કૉલ્સ",
+            "description": "મીડિયા\/વેબઆરટીસી માટે શ્રેણી",
+            "MaxRelationsExceeded": "મહત્તમ કૉલ્સ ઓળંગી ગયા"
+        }
+    },
+    "feeds": {
+        "Title": "કેમેરા",
+        "filterByTitle": "શીર્ષક દ્વારા ફીડ્સ શોધો",
+        "RequestFeedAccess": "ફીડ ઍક્સેસની વિનંતી કરો",
+        "New": "+ નવી ફીડ",
+        "filterFeeds": "ફિલ્ટર ફીડ્સ",
+        "NewFeed": "નવું ઉમેરો",
+        "NoneYet": "હજુ સુધી કોઈ ફીડ્સ રચાયા નથી.",
+        "AreYouSure": "શું તમને ખાતરી છે?",
+        "FilterByDate": "તારીખ દ્વારા ફિલ્ટર કરો",
+        "newFeeds": "તમારી પાસે {{1}} નવી ફીડ્સ છે",
+        "Description": "{{1}} ફીડ્સ",
+        "Keywords": "{{1}} ફીડ્સ"
+    },
+    "feed": {
+        "HostedBy": "{{name}} દ્વારા હોસ્ટ કરેલ",
+        "Name": "નામ",
+        "Conversation": "વાતચીત",
+        "CloseFeed": {
+            "button": "ફીડ બંધ કરો",
+            "Cancel": "શું તમે ખરેખર આ ફીડ બંધ કરવા માંગો છો?",
+            "Participant": "આ ફીડમાં 1 સહભાગી છે",
+            "Participants": "આ ફીડમાં {{count}} સહભાગીઓ છે"
+        },
+        "Calendar": "કેલેન્ડર",
+        "TitleOfFeed": "ફીડનું શીર્ષક:",
+        "EmptyList": "ખાલી યાદી",
+        "EmptyVideos": "હજુ સુધી કોઈ ક્લિપ્સ નથી",
+        "AccessReason": "કૃપા કરીને કારણ જણાવો",
+        "Proceed": "આગળ વધો",
+        "FeedAlreadyClosed": "આ ફીડ પહેલેથી જ બંધ છે",
+        "RtmpLinkNote": "આ લિંકને ક્લિપબોર્ડ પર કૉપિ કરવા માટે ક્લિક કરો",
+        "SelectClip": "તમે જોવા માંગો છો તે તારીખ પસંદ કરો",
+        "Request": "વિનંતી"
+    },
+    "newFeed": {
+        "Title": "નવું ઉમેરો",
+        "locationTitle": "તમારું સ્થાન સેટ કરો",
+        "SetLocation": "મારું સ્થાન સેટ કરો",
+        "Starting": "શરૂ કરી રહ્યા છીએ",
+        "Day": "દિવસ",
+        "Create": "બનાવો",
+        "Continue": "ચાલુ રાખો",
+        "FeedTitle": "ફીડ શીર્ષક",
+        "SetTitle": "કૃપા કરીને ફીડ શીર્ષક સેટ કરો"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} એ &quot;{{& instructions.reason}}&quot; કારણ સાથે {{& stream.fields.title}}}ની ઍક્સેસની વિનંતી કરી",
+        "JoinedWebRTC": "તમારા કૉલમાં જોડાયા",
+        "SubjectJoinedYourCall": "{{subject}} તમારા કૉલમાં જોડાયા"
+    },
+    "RealTimeCall": "રીઅલ ટાઇમ કૉલ",
+    "JoinWebRTC": "ટેલિકોન્ફરન્સ",
+    "webrtc": {
+        "notAllowedToJoinCall": "તમને આ સ્ટ્રીમમાં જોડાવાની પરવાનગી નથી.",
+        "streamTitle": "{{1}} એ ટેલીકોન્ફરન્સ શરૂ કરી",
+        "allow": {
+            "dialogTitle": "કનેક્ટિંગ",
+            "microphoneBtn": "માઇક્રોફોન સક્ષમ કરો",
+            "cameraBtn": "કૅમેરા સક્ષમ કરો",
+            "cameraAndMicrophoneBtn": "કૅમેરા અને માઇક્રોફોનને સક્ષમ કરો"
+        },
+        "preparing": {
+            "dialogTitle": "તમે જોડાઓ તે પહેલા કેમેરા અથવા માઈક ચાલુ\/બંધ કરો",
+            "micIsOff": "માઈક બંધ છે",
+            "micIsOn": "માઈક ચાલુ છે",
+            "cameraIsOff": "કૅમેરો બંધ છે",
+            "cameraIsOn": "કેમેરા ચાલુ છે",
+            "screenSharingIsOn": "સ્ક્રીનશેરિંગ ચાલુ છે",
+            "screenSharingIsOff": "સ્ક્રીન શેર કરો",
+            "joinNow": "કૉલમાં જોડાઓ"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "સૂચનાઓ",
+            "permissionDenied": "{{kind}} માટે પરવાનગી નકારી. તેનો ઉપયોગ કરવા માટે, કૃપા કરીને આ પગલાં અનુસરો:",
+            "point1": "&quot;સેટિંગ્સ&quot; -&gt; &quot;એડવાન્સ્ડ&quot; -&gt; &quot;ગોપનીયતા અને સુરક્ષા&quot; -&gt; &quot;સાઇટ સેટિંગ્સ&quot; -&gt; &quot;કેમેરા&quot; અથવા &quot;સાઇટ સેટિંગ્સ&quot; -&gt; &quot;માઇક્રોફોન&quot; પર જાઓ",
+            "point2": "&quot;બ્લોક&quot; સૂચિમાંથી {{hostname}} દૂર કરો"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "સૂચનાઓ",
+            "permissionDenied": "{{kind}} માટે પરવાનગી નકારી. કૃપા કરીને આ પૃષ્ઠને ફરીથી લોડ કરો અને કોન્ફરન્સમાં જોડાવા માટે {{kind}} ની ઍક્સેસની પુષ્ટિ કરો."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "સૂચનાઓ",
+            "permissionDenied": "{{kind}} માટે પરવાનગી નકારી. તેનો ઉપયોગ કરવા માટે, કૃપા કરીને આ પગલાં અનુસરો:",
+            "point1": "તમારી Android સેટિંગ્સ પર જાઓ",
+            "point2": "&quot;એપ્લિકેશનો અને સૂચનાઓ&quot; ખોલો",
+            "point3": "&quot; {{communityName}} &quot; શોધો અને તેને ખોલો",
+            "point4": "પરવાનગીઓ પર ટેપ કરો",
+            "point5": "{{kind}} સક્ષમ કરો"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "સૂચનાઓ",
+            "permissionDenied": "{{kind}} માટે પરવાનગી નકારી. તેનો ઉપયોગ કરવા માટે, કૃપા કરીને આ પગલાં અનુસરો:",
+            "point1": "તમારા iOS સેટિંગ્સ પર જાઓ",
+            "point2": "&quot;ગોપનીયતા&quot; ખોલો",
+            "point3": "{{kind}} શોધો અને તેને ખોલો",
+            "point4": "&quot; {{communityName}} &quot; શોધો અને સક્ષમ કરો"
+        },
+        "fbLive": {
+            "dialogTitle": "ફેસબુક લાઇવ સ્ટ્રીમિંગ શરૂ થયું"
+        },
+        "notices": {
+            "youJoinedRoom": "તમે રૂમમાં જોડાયા",
+            "joining": "જોડાવું: {{userName}}",
+            "sbLeftRoom": "{{userName}} રૂમમાંથી બહાર નીકળ્યા",
+            "switchingRoom": "રૂમ સ્વિચ કરી રહ્યું છે...",
+            "forceDisconnecting": "તમે 5 સેકન્ડમાં ડિસ્કનેક્ટ થઈ જશો",
+            "forceDisconnectingImmediately": "તમે હોસ્ટ દ્વારા ડિસ્કનેક્ટ થયા હતા",
+            "youLeftRoom": "તમે રૂમ છોડી ગયા",
+            "codeCopied": "તમે રૂમ છોડી ગયા",
+            "sbBeganFbLive": "{{userName}} ફેસબુકમાં આ કૉલનું પ્રસારણ કરવાનું શરૂ કર્યું",
+            "sbStoppedFbLive": "{{userName}} ફેસબુકમાં આ કૉલનું પ્રસારણ બંધ કરી દીધું",
+            "youBeganFbLive": "તમે ફેસબુકમાં આ કૉલનું પ્રસારણ કરવાનું શરૂ કર્યું",
+            "youStoppedFbLive": "તમે Facebook માં આ કૉલનું પ્રસારણ બંધ કર્યું છે",
+            "youStartedLive": "તમે આ કૉલને કસ્ટમ RTMP પર બ્રોડકાસ્ટ કરવાનું શરૂ કર્યું",
+            "youStoppedLive": "તમે કસ્ટમ RTMP પર આ કૉલનું પ્રસારણ કરવાનું બંધ કર્યું છે",
+            "sbStartedLiveStreaming": "{{userName}} લાઇવ શરૂ કર્યું",
+            "sbStoppedLiveStreaming": "{{userName}} લાઈવ સમાપ્ત",
+            "liveStopped": "અંતિમ બિંદુ પર વિડિઓ મોકલતી વખતે ભૂલ આવી",
+            "youBeganVideoRecording": "તમે આ કોન્ફરન્સ રેકોર્ડ કરવાનું શરૂ કર્યું",
+            "youStoppedVideoRecording": "તમે આ કોન્ફરન્સ રેકોર્ડ કરવાનું બંધ કર્યું",
+            "linkCopiedToCb": "લિંક ક્લિપબોર્ડ પર કૉપિ કરી",
+            "codeCopiedToCb": "કોડ ક્લિપબોર્ડ પર કૉપિ કર્યો",
+            "userHasNoVideo": "સહભાગી પાસે કોઈ વિડિઓ નથી",
+            "openInBrowserAlert": "કોન્ફરન્સમાં જોડાવા માટે સફારી બ્રાઉઝરમાં લિંક ખોલો.",
+            "allowedVideoLimit": "આ રૂમમાં માત્ર {{limit}} વીડિયોની મંજૂરી છે",
+            "allowedAudioLimit": "આ રૂમમાં માત્ર {{limit}} માઇક્રોફોનની મંજૂરી છે"
+        },
+        "settingsPopup": {
+            "dialogTitle": "વિડિઓ સેટિંગ્સ",
+            "webCamera": "વેબ કેમેરા",
+            "screenSharing": "સ્ક્રીન શેરિંગ",
+            "shareAnotherScreen": "બીજી સ્ક્રીન શેર કરો",
+            "turnOffCameras": "કેમેરા બંધ કરો",
+            "turnOffVideo": "કેમેરા\/સ્ક્રીન શેરિંગ બંધ કરો",
+            "turnOffAudioInput": "માઇક્રોફોન મ્યૂટ કરો",
+            "turnOffScreenSharing": "સ્ક્રીન શેરિંગ બંધ કરો",
+            "cameraIsTurnedOff": "કેમેરા બંધ છે",
+            "micIsTurnedOff": "માઇક્રોફોન બંધ છે",
+            "startFBLive": "ફેસબુક લાઇવસ્ટ્રીમ શરૂ કરો",
+            "stopFBLive": "ફેસબુક લાઇવસ્ટ્રીમ રોકો",
+            "startRecording": "રેકોર્ડિંગ શરૂ કરો",
+            "stopRecording": "રેકોર્ડિંગ બંધ કરો",
+            "start": "શરૂઆત",
+            "stop": "બંધ",
+            "recordingInProgress": "રેકોર્ડિંગ ચાલુ છે...",
+            "fbLiveTitle": "લાઇવસ્ટ્રીમનું શીર્ષક",
+            "fbLiveDescription": "તમારી લાઇવસ્ટ્રીમનું વર્ણન કરો. તે શાના વિશે છે?",
+            "fbOnlyMeLiveAccess": "માત્ર મને",
+            "fbFriendsAccess": "મિત્રો",
+            "fbPublicAccess": "જાહેર",
+            "publishOnTimeline": "સમયરેખા પર પ્રકાશિત કરો",
+            "publishToGroup": "જૂથમાં પ્રકાશિત કરો",
+            "fbStartLive": "લાઈવ જાઓ",
+            "fbStopLive": "લાઇવસ્ટ્રીમ સમાપ્ત કરો",
+            "streamingSettings": "સેટિંગ્સ",
+            "manageStream": "લાઇવસ્ટ્રીમ મેનેજ કરો",
+            "fbEmbedCode": "એમ્બેડ કરો",
+            "copy": "નકલ કરો",
+            "streamToRTMP": "કસ્ટમ RTMP પર સ્ટ્રીમ કરો",
+            "startBroadcasting": "પ્રસારણ શરૂ કરો",
+            "broadcastingInProgress": "પ્રસારણ ચાલુ છે",
+            "share": "શેર કરો",
+            "startClodRecording": "ક્લાઉડ રેકોર્ડિંગ શરૂ કરો",
+            "startLocRecording": "સ્થાનિક રેકોર્ડિંગ શરૂ કરો",
+            "stopClodRecording": "મેઘ રેકોર્ડિંગ રોકો",
+            "stopLocRecording": "સ્થાનિક રેકોર્ડિંગ રોકો"
+        },
+        "audioSettings": {
+            "dialogTitle": "ઑડિઓ સેટિંગ્સ",
+            "speakers": "સ્પીકર્સ",
+            "microphone": "માઇક્રોફોન"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "બ્રોડકાસ્ટ મેનેજ કરો"
+        },
+        "participantsPopup": {
+            "dialogTitle": "સહભાગી સેટિંગ્સ",
+            "disconnect": "ડિસ્કનેક્ટ કરો",
+            "floatingScreens": "ફ્લોટિંગ સ્ક્રીન્સ",
+            "tiledScreens": "ટાઇલ્ડ સ્ક્રીન",
+            "loudestExceptMe": "મારા સિવાય સૌથી મોટેથી",
+            "maximizeLoudest": "સૌથી મોટેથી મોટા કરો",
+            "staticMaximized": "સ્થિર મહત્તમ",
+            "fullScreen": "પૂર્ણ - પટ, આખો પડદો",
+            "manual": "મેન્યુઅલ",
+            "turnOffCamera": "વિડિઓ છુપાવો",
+            "turnOffAudio": "ઑડિયો મ્યૂટ કરો",
+            "turnOffScreenSharing": "સ્ક્રીન શેરિંગ છુપાવો",
+            "turnOnCamera": "વિડિઓ બતાવો",
+            "turnOnAudio": "ઑડિયો અનમ્યૂટ કરો",
+            "turnOnScreenSharing": "સ્ક્રીન શેરિંગ બતાવો"
+        },
+        "streamingSettings": {
+            "title": "લાઇવસ્ટ્રીમ"
+        },
+        "preview": {
+            "Meeting": "ટેલિકોન્ફરન્સ",
+            "MeetingEnded": "ટેલીકોન્ફરન્સ સમાપ્ત થઈ"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "બોલવા વિનંતી",
+            "msg": "મીટિંગમાં હાલમાં {{count}} લોકો બોલી રહ્યા છે. શું તમે તેમને બોલવાનું સમાપ્ત કરવા માટે {{seconds}} સેકન્ડની મંજૂરી આપ્યા પછી તેમાંથી એકને બદલવા માંગો છો?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "શું તમે પ્રસ્તુત કરશો? તમે તમારી પ્રસ્તુતિ માટે એકસાથે સામગ્રી અપલોડ કરવા માટે આ જગ્યાનો ઉપયોગ કરી શકો છો. પ્લસ બટનનો ઉપયોગ કરો.",
+        "Alert": "ઇવેન્ટ્સ શરૂ થતાં, તેમની અનુરૂપ પ્રસ્તુતિઓ આ પૃષ્ઠ પર દેખાવાનું શરૂ થશે",
+        "ClickHereForFullscreen": "પ્રસ્તુતિઓ અહીં દેખાશે. પૂર્ણ-સ્ક્રીન પર જવા માટે અહીં ક્લિક કરો.",
+        "question": {
+            "ScanThisQRCode": "જવાબ આપવા માટે આ QR કોડ સ્કેન કરો"
+        }
+    }
+}

@@ -1,0 +1,39 @@
+table.Media_feeds_access {
+    min-width: 100%;
+}
+table.Media_feeds_access tr.Media_feeds_access_empty {
+    display: none;
+}
+table.Media_feeds_access[data-count="0"] tr.Media_feeds_access_empty {
+    display: table-row;
+}
+table.Media_feeds_access[data-count="0"] tr {
+    display: none;
+}
+table.Media_feeds_access th {
+    border-bottom: 1px solid #d4d4d4;
+    text-align: center;
+    white-space: nowrap;
+}
+table.Media_feeds_access td:not(.Media_no_items) {
+    border-bottom: 1px solid #d4d4d4;
+    text-align: center;
+    white-space: nowrap;
+    font-size: .8em;
+    padding: 0 3px;
+}
+table.Media_feeds_access td.Media_access_reason {
+    text-align: left;
+}
+table.Media_feeds_access td.Media_access_user .Users_avatar_tool .Users_avatar_name {
+    display: block;
+}
+table.Media_feeds_access td:not(:first-child) {
+    border-left: 1px solid #d4d4d4;
+}
+table.Media_feeds_access .Users_avatar_tool {
+    cursor: pointer;
+}
+#Communities_profile_feedsAccess {
+    overflow-x: auto;
+}

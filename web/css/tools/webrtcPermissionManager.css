@@ -1,0 +1,37 @@
+
+.webrtc-permissions-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+.webrtc-permissions-item-con {
+    border-top: 1px solid #e2e2e2;
+}
+.webrtc-permissions-container {
+    padding: 10px;
+    max-width: 100%;
+}
+.webrtc-permissions-container th{
+    text-align: center;
+}
+.webrtc-permissions-container td{
+    padding: 5px 0;
+}
+.webrtc-permissions-container td.webrtc-permissions-item-box {
+    text-align: center;
+}
+.webrtc-permissions-item-controls-reset {
+    cursor: pointer;
+}
+.webrtc-permissions-item-controls svg{
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.webrtc-permissions-access {
+    margin-right: 5px;
+}
+
+.webrtc-permissions-access .webrtc-permissions-access-privacy span {
+    margin-right: 10px;
+}
+

@@ -1,0 +1,256 @@
+{
+    "Shows": "Shows",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "Episodes"
+    },
+    "presentation": {
+        "PutTogether": "Will you be presenting? You can use this space to upload together materials for your presentation. Use the Plus button.",
+        "Alert": "As events start, this page will start to show their corresponding presentations",
+        "ClickHereForFullscreen": "Presentations will appear here. Click here to go full-screen.",
+        "question": {
+            "ScanThisQRCode": "Scan this QR code to answer"
+        }
+    },
+    "NewEpisode": "New Episode",
+    "NewClip": "Make a New Clip",
+    "NewClipTitlePlaceholder": "Enter Clip Title",
+    "NewClipDescriptionPlaceholder": "Enter Clip Description",
+    "switchVisualization": "Switch visualization",
+    "joinLiveShow": "Join Live Show",
+    "showTwitchLiveStream": "Show Twitch Live Stream",
+    "showVoiceChat": "Show Voice Chat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Are you sure you want to kick off this user?",
+    "Save": "Save",
+    "ViewFullEpisode": "View Full Episode",
+    "CreditsEarned": "Credits earned",
+    "VideoTitle": "Video Title or URL",
+    "AreYouSureDeleteEpisode": "Are you sure you want to delete this episode?",
+    "Yes": "Yes",
+    "No": "No",
+    "RealTimeCall": "Real Time Call",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "an online video\/audio conference"
+        },
+        "Media\/calls": {
+            "displayType": "Calls",
+            "description": "category for Media\/WebRTC",
+            "MaxRelationsExceeded": "Max calls exceeded"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "media clip"
+        }
+    },
+    "feeds": {
+        "Title": "Cameras",
+        "filterByTitle": "Find feeds by title",
+        "RequestFeedAccess": "Request feed access",
+        "New": "+ New Feed",
+        "filterFeeds": "Filter feeds",
+        "NewFeed": "New Feed",
+        "NoneYet": "No feeds formed yet.",
+        "AreYouSure": "Are you sure?",
+        "FilterByDate": "Filter By Date",
+        "newFeeds": "You have {{1}} new feeds",
+        "Description": "{{1}} feeds",
+        "Keywords": "{{1}} feeds"
+    },
+    "feed": {
+        "HostedBy": "Hosted by {{name}}",
+        "Name": "Name",
+        "Conversation": "Conversation",
+        "CloseFeed": {
+            "button": "Close Feed",
+            "Cancel": "Are you sure you want to close this feed?",
+            "Participant": "There is 1 participant in this feed",
+            "Participants": "There are {{count}} participants in this feed"
+        },
+        "Calendar": "Calendar",
+        "TitleOfFeed": "Title of feed:",
+        "EmptyList": "Empty list",
+        "EmptyVideos": "No clips yet",
+        "AccessReason": "please state the reason",
+        "Proceed": "Proceed",
+        "FeedAlreadyClosed": "This feed already closed",
+        "RtmpLinkNote": "Click to copy this link to clipboard",
+        "SelectClip": "Select the date you want to see",
+        "Request": "Request"
+    },
+    "newFeed": {
+        "Title": "New Feed",
+        "locationTitle": "Set Your Location",
+        "SetLocation": "Set My Location",
+        "Starting": "Starting",
+        "Day": "Day",
+        "Create": "Create",
+        "Continue": "Continue",
+        "FeedTitle": "Feed title",
+        "SetTitle": "Please set feed title"
+    },
+    "notifications": {
+        "JoinedWebRTC": "joined your call",
+        "SubjectJoinedYourCall": "{{subject}} joined your call"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "You don't have permission to join this stream.",
+        "streamTitle": "{{1}} started a Teleconference",
+        "allow": {
+            "dialogTitle": "Connecting",
+            "microphoneBtn": "Enable Microphone",
+            "cameraBtn": "Enable Camera",
+            "cameraAndMicrophoneBtn": "Enable Camera and Microphone"
+        },
+        "preparing": {
+            "dialogTitle": "Turn camera or mic on\/off before you join",
+            "micIsOff": "Mic is off",
+            "micIsOn": "Mic is on",
+            "cameraIsOff": "Camera is off",
+            "cameraIsOn": "Camera is on",
+            "screenSharingIsOn": "Screensharing is on",
+            "screenSharingIsOff": "Share screen",
+            "joinNow": "Join the Call"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Permission for {{kind}} denied. To use it please follow these steps:",
+            "point1": "Go to \"Settings\" -> \"Advanced\" -> \"Privacy and security\" -> \"Site Settings\" -> \"Camera\" or \"Site Settings\" -> \"Microphone\"",
+            "point2": "Remove {{hostname}} from \"Block\" list"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Permission for {{kind}} denied. Please reload this page and confirm access to {{kind}} to join the conference."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Permission for {{kind}} denied. To use it please follow these steps:",
+            "point1": "Go to your Android Settings",
+            "point2": "Open \"Apps & notifications\"",
+            "point3": "Find \"{{communityName}}\" and open it",
+            "point4": "Tap on Permissions",
+            "point5": "Enable {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Permission for {{kind}} denied. To use it please follow these steps:",
+            "point1": "Go to your iOS Settings",
+            "point2": "Open \"Privacy\"",
+            "point3": "Find {{kind}} and open it",
+            "point4": "Find \"{{communityName}}\" and enable"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming started"
+        },
+        "notices": {
+            "youJoinedRoom": "You joined the room",
+            "joining": "Joining: {{userName}}",
+            "sbLeftRoom": "{{userName}} left the room",
+            "switchingRoom": "Switching room...",
+            "forceDisconnecting": "You will be disconnected within 5 seconds",
+            "forceDisconnectingImmediately": "You were disconnected by a host",
+            "youLeftRoom": "You left the room",
+            "codeCopied": "You left the room",
+            "sbBeganFbLive": "{{userName}} began broadcasting this call in Facebook",
+            "sbStoppedFbLive": "{{userName}} stopped broadcasting this call in Facebook",
+            "youBeganFbLive": "You began broadcasting this call in Facebook",
+            "youStoppedFbLive": "You stopped broadcasting this call in Facebook",
+            "youStartedLive": "You began broadcasting this call to custom RTMP",
+            "youStoppedLive": "You stopped broadcasting  this call to custom RTMP",
+            "sbStartedLiveStreaming": "{{userName}} started live",
+            "sbStoppedLiveStreaming": "{{userName}} ended live",
+            "liveStopped": "Error while sending video to endpoint occurred",
+            "youBeganVideoRecording": "You began recording this conference",
+            "youStoppedVideoRecording": "You stopped recording this conference",
+            "linkCopiedToCb": "Link copied to clipboard",
+            "codeCopiedToCb": "Code copied to clipboard",
+            "userHasNoVideo": "Participant has no video",
+            "openInBrowserAlert": "Open link in Safari browser to join the conference.",
+            "allowedVideoLimit": "Only {{limit}} video allowed in this room",
+            "allowedAudioLimit": "Only {{limit}} microphones allowed in this room",
+            "processingRecording": "Processing the recording..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Settings",
+            "webCamera": "Web Camera",
+            "screenSharing": "Screen Sharing",
+            "shareAnotherScreen": "Share another screen",
+            "turnOffCameras": "Turn off camera",
+            "turnOffVideo": "Turn off camera\/screen sharing",
+            "turnOffAudioInput": "Mute microphone",
+            "turnOffScreenSharing": "Turn off screen sharing",
+            "cameraIsTurnedOff": "Camera is turned off",
+            "micIsTurnedOff": "Microphone is turned off",
+            "startFBLive": "Start Facebook Livestream",
+            "stopFBLive": "Stop Facebook Livestream",
+            "startRecording": "Start Recording",
+            "stopRecording": "Stop Recording",
+            "start": "Start",
+            "startClodRecording": "Start Cloud Recording",
+            "startLocRecording": "Start Local Recording",
+            "stopClodRecording": "Stop Cloud Recording",
+            "stopLocRecording": "Stop Local Recording",
+            "stop": "Stop",
+            "share": "Share",
+            "recordingInProgress": "Recording is in progress...",
+            "fbLiveTitle": "Title of Livestream",
+            "fbLiveDescription": "Describe your Livestream. What is it about?",
+            "fbOnlyMeLiveAccess": "Only Me",
+            "fbFriendsAccess": "Friends",
+            "fbPublicAccess": "Public",
+            "publishOnTimeline": "Publish on timeline",
+            "publishToGroup": "Publish to group",
+            "fbStartLive": "Go Live",
+            "fbStopLive": "End Livestream",
+            "streamingSettings": "Settings",
+            "manageStream": "Manage Livestream",
+            "fbEmbedCode": "Embed",
+            "copy": "Copy",
+            "streamToRTMP": "Stream to custom RTMP",
+            "startBroadcasting": "Start broadcasting",
+            "broadcastingInProgress": "Broadcasting is in progress"
+        },
+        "audioSettings": {
+            "dialogTitle": "Audio Settings",
+            "speakers": "Speakers",
+            "microphone": "Microphone"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Manage Broadcast"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Participant Settings",
+            "disconnect": "Disconnect",
+            "floatingScreens": "Floating Screens",
+            "tiledScreens": "Tiled Screens",
+            "loudestExceptMe": "Loudest Except Me",
+            "maximizeLoudest": "Maximize Loudest",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Full Screen",
+            "manual": "Manual",
+            "turnOffCamera": "Hide video",
+            "turnOffAudio": "Mute audio",
+            "turnOffScreenSharing": "Hide screen sharing",
+            "turnOnCamera": "Show video",
+            "turnOnAudio": "Unmute audio",
+            "turnOnScreenSharing": "Show screen sharing"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Teleconference ended"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Request to Speak",
+            "msg": "There are currently {{count}} people speaking in the meeting. Do you want to replace one of them after allowing them {{seconds}} seconds to finish speaking?"
+        }
+    }
+}

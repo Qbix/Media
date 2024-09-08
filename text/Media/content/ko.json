@@ -1,0 +1,256 @@
+{
+    "Shows": "쇼",
+    "Clips": "클립",
+    "Video": "비디오",
+    "Audio": "오디오",
+    "categories": {
+        "Clips": "미디어 클립",
+        "Episodes": "에피소드"
+    },
+    "NewEpisode": "새로운 에피소드",
+    "NewClip": "새 클립",
+    "LiveShow": "라이브 쇼",
+    "Save": "저장",
+    "ViewFullEpisode": "전체 에피소드보기",
+    "CreditsEarned": "획득 한 크레딧",
+    "VideoTitle": "비디오 제목 또는 URL",
+    "NewClipTitlePlaceholder": "클립 제목 입력",
+    "NewClipDescriptionPlaceholder": "클립 설명 입력",
+    "switchVisualization": "시각화 전환",
+    "joinLiveShow": "라이브 쇼에 참여",
+    "showTwitchLiveStream": "Twitch 라이브 스트림 보기",
+    "showVoiceChat": "음성 채팅 표시",
+    "AreYouSureKick": "이 사용자를 퇴장시키시겠습니까?",
+    "AreYouSureDeleteEpisode": "이 에피소드를 삭제하시겠습니까?",
+    "Yes": "예",
+    "No": "아니",
+    "types": {
+        "Media\/clip": {
+            "displayType": "클립",
+            "description": "미디어 클립"
+        },
+        "Media\/WebRTC": {
+            "displayType": "원격회의",
+            "description": "온라인 비디오\/오디오 컨퍼런스"
+        },
+        "Media\/calls": {
+            "displayType": "통화",
+            "description": "미디어\/WebRTC 카테고리",
+            "MaxRelationsExceeded": "최대 통화 초과"
+        }
+    },
+    "feeds": {
+        "Title": "카메라",
+        "filterByTitle": "제목으로 피드 찾기",
+        "RequestFeedAccess": "피드 액세스 요청",
+        "New": "+ 새 피드",
+        "filterFeeds": "피드 필터링",
+        "NewFeed": "새 피드",
+        "NoneYet": "아직 형성된 피드가 없습니다.",
+        "AreYouSure": "확실합니까?",
+        "FilterByDate": "날짜별 필터링",
+        "newFeeds": "새 피드가 {{1}}개 있습니다.",
+        "Description": "{{1}} 피드",
+        "Keywords": "{{1}} 피드"
+    },
+    "feed": {
+        "HostedBy": "{{name}} 주최",
+        "Name": "이름",
+        "Conversation": "대화",
+        "CloseFeed": {
+            "button": "피드 닫기",
+            "Cancel": "이 피드를 닫으시겠습니까?",
+            "Participant": "이 피드에는 1명의 참가자가 있습니다.",
+            "Participants": "이 피드에 {{count}}명의 참가자가 있습니다."
+        },
+        "Calendar": "달력",
+        "TitleOfFeed": "피드 제목:",
+        "EmptyList": "빈 목록",
+        "EmptyVideos": "아직 클립이 없습니다.",
+        "AccessReason": "이유를 말해주세요",
+        "Proceed": "진행하다",
+        "FeedAlreadyClosed": "이 피드는 이미 닫혔습니다.",
+        "RtmpLinkNote": "이 링크를 클립보드에 복사하려면 클릭하세요.",
+        "SelectClip": "보고 싶은 날짜를 선택하세요",
+        "Request": "요구"
+    },
+    "newFeed": {
+        "Title": "새 피드",
+        "locationTitle": "위치 설정",
+        "SetLocation": "내 위치 설정",
+        "Starting": "시작",
+        "Day": "낮",
+        "Create": "만들다",
+        "Continue": "계속하다",
+        "FeedTitle": "피드 제목",
+        "SetTitle": "피드 제목을 설정하세요"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}}이(가) 이유가 &quot;{1001}}&quot;인 {{& stream.fields.title}}}에 대한 액세스를 요청했습니다.",
+        "JoinedWebRTC": "통화에 참여했습니다",
+        "SubjectJoinedYourCall": "{{subject}} 통화에 참여했습니다."
+    },
+    "RealTimeCall": "실시간 통화",
+    "JoinWebRTC": "원격회의",
+    "webrtc": {
+        "notAllowedToJoinCall": "이 스트림에 참여할 권한이 없습니다.",
+        "streamTitle": "{{1}} 원격회의 시작",
+        "allow": {
+            "dialogTitle": "연결 중",
+            "microphoneBtn": "마이크 활성화",
+            "cameraBtn": "카메라 활성화",
+            "cameraAndMicrophoneBtn": "카메라 및 마이크 활성화"
+        },
+        "preparing": {
+            "dialogTitle": "참여하기 전에 카메라 또는 마이크 켜기\/끄기",
+            "micIsOff": "마이크가 꺼져 있습니다",
+            "micIsOn": "마이크 켜짐",
+            "cameraIsOff": "카메라가 꺼져 있습니다.",
+            "cameraIsOn": "카메라가 켜져 있습니다.",
+            "screenSharingIsOn": "화면 공유 사용 중",
+            "screenSharingIsOff": "화면 공유",
+            "joinNow": "통화에 참여"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "지침",
+            "permissionDenied": "{{kind}} 에 대한 허가가 거부되었습니다. 사용하려면 다음 단계를 따르십시오.",
+            "point1": "&quot;설정&quot; -&gt; &quot;고급&quot; -&gt; &quot;개인 정보 및 보안&quot; -&gt; &quot;사이트 설정&quot; -&gt; &quot;카메라&quot; 또는 &quot;사이트 설정&quot; -&gt; &quot;마이크&quot;로 이동합니다.",
+            "point2": "&quot;차단&quot; 목록에서 {{hostname}} 제거"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "지침",
+            "permissionDenied": "{{kind}} 에 대한 허가가 거부되었습니다. 회의에 참여하려면 이 페이지를 새로고침하고 {{kind}} 에 대한 액세스를 확인하십시오."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "지침",
+            "permissionDenied": "{{kind}} 에 대한 허가가 거부되었습니다. 사용하려면 다음 단계를 따르십시오.",
+            "point1": "Android 설정으로 이동",
+            "point2": "&quot;앱 및 알림&quot; 열기",
+            "point3": "&quot; {{communityName}} &quot;를 찾아 엽니다.",
+            "point4": "권한을 누릅니다",
+            "point5": "{{kind}} 활성화"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "지침",
+            "permissionDenied": "{{kind}} 에 대한 허가가 거부되었습니다. 사용하려면 다음 단계를 따르십시오.",
+            "point1": "iOS 설정으로 이동",
+            "point2": "&quot;프라이버시&quot; 열기",
+            "point3": "{{kind}} 찾아 엽니다.",
+            "point4": "&quot; {{communityName}} &quot;를 찾아 활성화"
+        },
+        "fbLive": {
+            "dialogTitle": "페이스북 라이브 스트리밍 시작"
+        },
+        "notices": {
+            "youJoinedRoom": "방에 참여했습니다.",
+            "joining": "가입: {{userName}}",
+            "sbLeftRoom": "{{userName}} 방을 나갔다",
+            "switchingRoom": "방을 바꾸다...",
+            "forceDisconnecting": "5초 이내에 연결이 끊어집니다.",
+            "forceDisconnectingImmediately": "호스트에 의해 연결이 끊어졌습니다.",
+            "youLeftRoom": "당신은 방을 나갔다",
+            "codeCopied": "당신은 방을 나갔다",
+            "sbBeganFbLive": "{{userName}} 이 통화를 Facebook에서 방송하기 시작했습니다.",
+            "sbStoppedFbLive": "{{userName}} Facebook에서 이 통화 방송을 중지했습니다.",
+            "youBeganFbLive": "Facebook에서 이 통화를 방송하기 시작했습니다.",
+            "youStoppedFbLive": "Facebook에서 이 통화 방송을 중지했습니다.",
+            "youStartedLive": "이 호출을 사용자 지정 RTMP에 브로드캐스팅하기 시작했습니다.",
+            "youStoppedLive": "맞춤 RTMP에 대한 이 호출 브로드캐스팅을 중지했습니다.",
+            "sbStartedLiveStreaming": "{{userName}} 라이브 시작",
+            "sbStoppedLiveStreaming": "{{userName}} 라이브 종료",
+            "liveStopped": "끝점에 비디오를 보내는 중 오류가 발생했습니다.",
+            "youBeganVideoRecording": "이 회의를 녹화하기 시작했습니다.",
+            "youStoppedVideoRecording": "이 회의 녹화를 중지했습니다.",
+            "linkCopiedToCb": "클립보드에 복사된 링크",
+            "codeCopiedToCb": "클립보드에 복사된 코드",
+            "userHasNoVideo": "참가자에게 비디오가 없습니다.",
+            "openInBrowserAlert": "회의에 참여하려면 Safari 브라우저에서 링크를 여세요.",
+            "allowedVideoLimit": "이 방에는 {{limit}} 비디오만 허용됩니다.",
+            "allowedAudioLimit": "이 방에는 {{limit}} 마이크만 허용됩니다."
+        },
+        "settingsPopup": {
+            "dialogTitle": "비디오 설정",
+            "webCamera": "웹 카메라",
+            "screenSharing": "화면 공유",
+            "shareAnotherScreen": "다른 화면 공유",
+            "turnOffCameras": "카메라 끄기",
+            "turnOffVideo": "카메라\/화면 공유 끄기",
+            "turnOffAudioInput": "마이크 음소거",
+            "turnOffScreenSharing": "화면 공유 끄기",
+            "cameraIsTurnedOff": "카메라가 꺼져 있습니다.",
+            "micIsTurnedOff": "마이크가 꺼져 있습니다.",
+            "startFBLive": "페이스북 라이브스트림 시작하기",
+            "stopFBLive": "페이스북 라이브스트림 중지",
+            "startRecording": "녹음 시작",
+            "stopRecording": "녹음 중지",
+            "start": "시작",
+            "stop": "멈추다",
+            "recordingInProgress": "녹음이 진행 중입니다...",
+            "fbLiveTitle": "생중계 제목",
+            "fbLiveDescription": "귀하의 라이브스트림을 설명하십시오. 무엇에 관한 것입니까?",
+            "fbOnlyMeLiveAccess": "나만",
+            "fbFriendsAccess": "친구",
+            "fbPublicAccess": "공공의",
+            "publishOnTimeline": "타임라인에 게시",
+            "publishToGroup": "그룹에 게시",
+            "fbStartLive": "생중계",
+            "fbStopLive": "생중계 종료",
+            "streamingSettings": "설정",
+            "manageStream": "라이브스트림 관리",
+            "fbEmbedCode": "포함시키다",
+            "copy": "복사",
+            "streamToRTMP": "맞춤형 RTMP로 스트리밍",
+            "startBroadcasting": "방송 시작",
+            "broadcastingInProgress": "방송중입니다",
+            "share": "공유하다",
+            "startClodRecording": "클라우드 녹화 시작",
+            "startLocRecording": "로컬 녹음 시작",
+            "stopClodRecording": "클라우드 녹음 중지",
+            "stopLocRecording": "로컬 녹음 중지"
+        },
+        "audioSettings": {
+            "dialogTitle": "오디오 설정",
+            "speakers": "스피커",
+            "microphone": "마이크로폰"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "방송 관리"
+        },
+        "participantsPopup": {
+            "dialogTitle": "참가자 설정",
+            "disconnect": "연결 끊기",
+            "floatingScreens": "플로팅 스크린",
+            "tiledScreens": "타일 스크린",
+            "loudestExceptMe": "나 빼고 시끄러워",
+            "maximizeLoudest": "가장 크게 최대화",
+            "staticMaximized": "정적 최대화",
+            "fullScreen": "전체 화면",
+            "manual": "수동",
+            "turnOffCamera": "비디오 숨기기",
+            "turnOffAudio": "오디오 음소거",
+            "turnOffScreenSharing": "화면 공유 숨기기",
+            "turnOnCamera": "비디오 보기",
+            "turnOnAudio": "오디오 음소거 해제",
+            "turnOnScreenSharing": "화면 공유 표시"
+        },
+        "streamingSettings": {
+            "title": "생중계"
+        },
+        "preview": {
+            "Meeting": "원격회의",
+            "MeetingEnded": "원격회의 종료"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "발언 요청",
+            "msg": "현재 {{count}} 명이 회의에서 발언하고 있습니다. {{seconds}} 초 동안 말을 마칠 수 있도록 허용한 후 그 중 하나를 교체하시겠습니까?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "발표하실 건가요? 이 공간을 사용하여 프레젠테이션 자료를 함께 업로드할 수 있습니다. 플러스 버튼을 사용하세요.",
+        "Alert": "이벤트가 시작되면 해당 프레젠테이션이 이 페이지에 표시되기 시작합니다.",
+        "ClickHereForFullscreen": "프리젠테이션이 여기에 표시됩니다. 전체 화면으로 이동하려면 여기를 클릭하세요.",
+        "question": {
+            "ScanThisQRCode": "답변하려면 이 QR 코드를 스캔하세요."
+        }
+    }
+}

@@ -1,0 +1,61 @@
+button.Media_clip_preview_tool {
+    padding: 0;
+}
+button.Media_clip_preview_tool .Streams_preview_container {
+    padding: 0.4em 1em 0.4em 1em;
+    width: 100%;
+}
+
+.Media_clip_dialog {
+    min-width: 330px;
+}
+
+.Media_clip_dialog .Q_tabbing_container .Q_tabbing_item {
+    min-height: 100px;
+}
+.Media_clip_dialog .Q_tabbing_container .Q_tabbing_item input[name=title],
+.Media_clip_dialog .Q_tabbing_container .Q_tabbing_item textarea[name=content] {
+    display: block;
+    margin: 10px auto 0;
+    width: 90%;
+}
+.Media_clip_dialog .Q_tabbing_container .Q_tabbing_item input[name=title].Q_error,
+.Media_clip_dialog .Q_tabbing_container .Q_tabbing_item textarea[name=content].Q_error {
+    border-color: red;
+}
+.Media_clip_dialog .Media_clip_composer_preview {
+    margin-top: 10px;
+    height: auto;
+}
+.Media_clip_dialog .Media_clip_composer {
+    padding: 10px 5px;
+}
+.Media_clip_dialog .Media_clip_composer .Q_tabbing_tabs > .Q_tabbing_tab {
+    width: 100px;
+    background-repeat: no-repeat;
+    background-position: top center;
+    padding-top: 40px;
+}
+.Media_clip_dialog .Media_clip_composer .Q_tabbing_tabs > .Q_tabbing_tab[data-name=video] {
+    background-image: url(../../../Streams/img/icons/Streams/video/40.png);
+}
+.Media_clip_dialog .Media_clip_composer .Q_tabbing_tabs > .Q_tabbing_tab[data-name=audio] {
+    background-image: url(../../../Streams/img/icons/Streams/audio/40.png);
+}
+.Media_clip_composer .Media_clip_composer_submit {
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 10px;
+}
+.Media_clip_composer .Media_clip_composer_submit button {
+    display: inline-block;
+    margin: 0 2%;
+    width: 95%;
+}
+.Media_clip_dialog .Q_tabbing_container .Media_clip_composer_clip {
+    margin-top: 10px;
+}
+.Media_clip_dialog button,
+.Media_clip_dialog input {
+    height: 40px;
+}

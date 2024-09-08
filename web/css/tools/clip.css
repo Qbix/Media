@@ -1,0 +1,189 @@
+.Media_clip_tool {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.Media_clip_tool .Streams_chat_tool {
+    width: 100%;
+}
+.Media_episode_tool .Media_clip_tool {
+    height: 100%;
+}
+html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
+    display: none;
+}
+.Media_clip_tool .Media_clip_credits {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    z-index: 1;
+    padding: 5px 10px;
+    background: red;
+}
+.Media_clip_tool .Media_clip_credits span {
+    font-weight: bold;
+}
+.Media_column_clip {
+    overflow-y: hidden;
+}
+.Media_column_clip .Q_columns_title * {
+    width: unset;
+}
+.Media_clip_tool .Streams_chat_tool .Streams_chat_messages {
+    overflow-y: auto;
+}
+.Media_clip_tool .Streams_participants_tool {
+    text-align: center;
+    width: 100%;
+}
+.Media_clip_tool .Streams_participants_tool.Media_clip_hosts_participants {
+    padding: 0;
+}
+.Media_clip_tool .Streams_participants_tool.Media_clip_hosts_participants .Streams_participants_container {
+    margin-right: 0;
+}
+.Media_clip_tool .Media_clip_questions {
+    margin: 0 10px;
+}
+.Media_clip_tool .Media_clip_hosts {
+    display: none;
+}
+.Media_clip_tool.Media_clip_live .Media_clip_hosts {
+    display: block;
+}
+.Media_clip_tool .Media_clip_player {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+.Q_mobile .Media_clip_tool .Media_clip_player {
+    flex-direction: column;
+}
+.Media_clip_tool .Media_clip_player_inner {
+    flex-basis: 100%;
+}
+.Media_clip_tool.Media_clip_live .Streams_chat_call,
+.Media_clip_tool.Media_clip_live .Media_clip_player,
+.Media_clip_tool.Media_clip_live .Media_tabs {
+    display: none;
+}
+.Media_clip_tool.Media_clip_live[data-visualization=clip] .Media_clip_player,
+.Media_clip_tool.Media_clip_live[data-visualization=clip] .Media_tabs {
+    display: block;
+}
+.Media_clip_tool .Media_tab {
+    background: rgba(0, 0, 0, 0.2);
+}
+.Media_clip_tool .Media_tab.Q_current {
+    background: #999;
+}
+.Media_clip_tool.Media_clip_live[data-visualization=clip] .Media_clip_hosts_participants {
+    display: none;
+}
+.Media_clip_tool.Media_clip_live .Media_clip_hosts_participants {
+    height: 120px;
+}
+html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_switch_visualization,
+html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_join_main_room {
+    display: none;
+}
+
+/*WebRTC audio layout*/
+.Media_clip_tool .Media_clip_hosts_participants > svg > rect{
+    opacity:  0.5;
+}
+.Media_clip_tool.Media_clip_live .Media_clip_hosts_participants .Media_webrtc_audio-screens-grid .Media_webrtc_participant-name-text{
+    color: white;
+    font-weight: normal;
+}
+.Media_webrtc_desktop-screen .Media_webrtc_chat-participant-audio-screen .Media_webrtc_chat-participant-name {
+    margin-top:0 !important;
+    font-size: 14px;
+}
+
+.Media_clip_tool.Media_clip_live .Media_clip_hosts_participants .Media_webrtc_room-media {
+    overflow-y: hidden;
+}
+
+/*end: WebRTC audio layout*/
+
+.Q_mobile .Media_clip_tool.Media_clip_live .Media_clip_hosts_participants {
+    height: 70px;
+}
+.Media_webrtc_desktop-screen .Media_webrtc_chat-participant .Media_webrtc_chat-participant-audio-screen .Media_webrtc_chat-participant-name {
+    margin-top: 0;
+}
+.Media_clip_tool.Media_clip_live .Media_clip_hosts_participants .Users_avatar_icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+.Q_mobile .Media_clip_tool.Media_clip_live .Media_clip_hosts_participants .Users_avatar_icon {
+    width: 50px;
+    height: 50px;
+}
+.Media_clip_tool.Media_clip_live[data-visualization=hosts] .Media_clip_participants .Media_clip_host,
+.Media_clip_tool.Media_clip_live[data-visualization=hosts] .Media_clip_participants .Media_clip_guest {
+
+}
+.Media_clip_tool.Media_clip_live .Media_clip_hosts_participants .Media_webrtc_chat-participant-audio-screen .Users_avatar_tool {
+    display: none;
+}
+.Media_clip_tool.Media_clip_live[data-visualization=hosts] .Media_clip_hosts_participants .Users_avatar_tool.Media_clip_host,
+.Media_clip_tool.Media_clip_live[data-visualization=hosts] .Media_clip_hosts_participants .Users_avatar_tool.Media_clip_guest {
+    display: inline-block;
+}
+
+.Media_clips_list {
+    display: none;
+}
+.Media_clips_list.Q_current {
+    display: block;
+}
+.Media_clips_list_segments {
+    max-height: 150px;
+    overflow-y: scroll;
+}
+.Q_notMobile .Media_clips_list_segments {
+
+}
+.Media_clips_list_segments .Media_clip_preview_tool{
+    cursor: pointer;
+}
+.Media_clips_list_segments img{
+    display: none;
+}
+
+.Media_clips_list_segments .Media_clips_list_segments_viewFull {
+    cursor: pointer;
+    padding-bottom:10px;
+}
+.Media_clip_tool .Media_episode_description  {
+    padding: 20px 0 10px 0;
+    overflow: auto;
+    padding: 5px;
+}
+.Q_mobile .Media_episode_description  {
+    max-height: 50px;
+}
+
+.Media_clips_settings_btn,
+.Media_clips_call_btn {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    cursor: pointer;
+}
+.Media_clips_settings_btn svg,
+.Media_clips_call_btn svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+.Media_clips_call_btn svg path{
+    fill: #024fbd;
+}

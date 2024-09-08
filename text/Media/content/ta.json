@@ -1,0 +1,256 @@
+{
+    "Shows": "நிகழ்ச்சிகள்",
+    "Clips": "கிளிப்புகள்",
+    "Video": "காணொளி",
+    "Audio": "ஆடியோ",
+    "categories": {
+        "Clips": "மீடியா கிளிப்புகள்",
+        "Episodes": "அத்தியாயங்கள்"
+    },
+    "NewEpisode": "புதிய அத்தியாயம்",
+    "NewClip": "புதிய கிளிப்",
+    "LiveShow": "நேரடி நிகழ்ச்சி",
+    "Save": "சேமி",
+    "ViewFullEpisode": "முழு அத்தியாயத்தைக் காண்க",
+    "CreditsEarned": "சம்பாதித்த வரவு",
+    "VideoTitle": "வீடியோ தலைப்பு அல்லது URL",
+    "NewClipTitlePlaceholder": "கிளிப் தலைப்பை உள்ளிடவும்",
+    "NewClipDescriptionPlaceholder": "கிளிப் விளக்கத்தை உள்ளிடவும்",
+    "switchVisualization": "காட்சிப்படுத்தலை மாற்றவும்",
+    "joinLiveShow": "லைவ் ஷோவில் சேரவும்",
+    "showTwitchLiveStream": "ட்விட்ச் லைவ் ஸ்ட்ரீமைக் காட்டு",
+    "showVoiceChat": "குரல் அரட்டையைக் காட்டு",
+    "AreYouSureKick": "இந்தப் பயனரை நிச்சயமாக வெளியேற்ற விரும்புகிறீர்களா?",
+    "AreYouSureDeleteEpisode": "இந்த அத்தியாயத்தை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
+    "Yes": "ஆம்",
+    "No": "இல்லை",
+    "types": {
+        "Media\/clip": {
+            "displayType": "கிளிப்",
+            "description": "ஊடக கிளிப்"
+        },
+        "Media\/WebRTC": {
+            "displayType": "தொலைதொடர்பு",
+            "description": "ஆன்லைன் வீடியோ\/ஆடியோ மாநாடு"
+        },
+        "Media\/calls": {
+            "displayType": "அழைப்புகள்",
+            "description": "மீடியா\/WebRTC க்கான வகை",
+            "MaxRelationsExceeded": "அதிகபட்ச அழைப்புகள் மீறப்பட்டுள்ளன"
+        }
+    },
+    "feeds": {
+        "Title": "கேமராக்கள்",
+        "filterByTitle": "தலைப்பு மூலம் ஊட்டங்களைக் கண்டறியவும்",
+        "RequestFeedAccess": "ஊட்ட அணுகலைக் கோருங்கள்",
+        "New": "+ புதிய ஊட்டம்",
+        "filterFeeds": "ஃபில்டர் ஃபீட்கள்",
+        "NewFeed": "புதிய ஊட்டம்",
+        "NoneYet": "இதுவரை ஊட்டங்கள் எதுவும் உருவாக்கப்படவில்லை.",
+        "AreYouSure": "நீ சொல்வது உறுதியா?",
+        "FilterByDate": "தேதி வாரியாக வடிகட்டவும்",
+        "newFeeds": "உங்களிடம் {{1}} புதிய ஊட்டங்கள் உள்ளன",
+        "Description": "{{1}} ஊட்டங்கள்",
+        "Keywords": "{{1}} ஊட்டங்கள்"
+    },
+    "feed": {
+        "HostedBy": "ஹோஸ்ட் செய்தவர் {{name}}",
+        "Name": "பெயர்",
+        "Conversation": "உரையாடல்",
+        "CloseFeed": {
+            "button": "ஊட்டத்தை மூடு",
+            "Cancel": "இந்த ஊட்டத்தை நிச்சயமாக மூட விரும்புகிறீர்களா?",
+            "Participant": "இந்த ஊட்டத்தில் 1 பங்கேற்பாளர் உள்ளார்",
+            "Participants": "இந்த ஊட்டத்தில் {{count}} பங்கேற்பாளர்கள் உள்ளனர்"
+        },
+        "Calendar": "நாட்காட்டி",
+        "TitleOfFeed": "ஊட்டத்தின் தலைப்பு:",
+        "EmptyList": "காலியான பட்டியல்",
+        "EmptyVideos": "இன்னும் கிளிப்புகள் இல்லை",
+        "AccessReason": "தயவுசெய்து காரணத்தை கூறுங்கள்",
+        "Proceed": "தொடரவும்",
+        "FeedAlreadyClosed": "இந்த ஊட்டம் ஏற்கனவே மூடப்பட்டுள்ளது",
+        "RtmpLinkNote": "இந்த இணைப்பை கிளிப்போர்டுக்கு நகலெடுக்க கிளிக் செய்யவும்",
+        "SelectClip": "நீங்கள் பார்க்க விரும்பும் தேதியைத் தேர்ந்தெடுக்கவும்",
+        "Request": "கோரிக்கை"
+    },
+    "newFeed": {
+        "Title": "புதிய ஊட்டம்",
+        "locationTitle": "உங்கள் இருப்பிடத்தை அமைக்கவும்",
+        "SetLocation": "எனது இருப்பிடத்தை அமைக்கவும்",
+        "Starting": "தொடங்குகிறது",
+        "Day": "நாள்",
+        "Create": "உருவாக்கு",
+        "Continue": "தொடரவும்",
+        "FeedTitle": "ஊட்டத்தின் தலைப்பு",
+        "SetTitle": "ஊட்டத்தின் தலைப்பை அமைக்கவும்"
+    },
+    "notifications": {
+        "Media\/feed\/access": "&quot;{{{ instructions.reason}}&quot; காரணத்துடன் {{& stream.fields.title}}க்கு {{&call 'avatar.displayName'}}} அணுகலைக் கோரினார்",
+        "JoinedWebRTC": "உங்கள் அழைப்பில் சேர்ந்தார்",
+        "SubjectJoinedYourCall": "{{subject}} உங்கள் அழைப்பில் சேர்ந்துள்ளது"
+    },
+    "RealTimeCall": "நிகழ் நேர அழைப்பு",
+    "JoinWebRTC": "தொலைதொடர்பு",
+    "webrtc": {
+        "notAllowedToJoinCall": "இந்த ஸ்ட்ரீமில் சேர உங்களுக்கு அனுமதி இல்லை.",
+        "streamTitle": "{{1}} ஒரு டெலி கான்பரன்ஸ் தொடங்கியது",
+        "allow": {
+            "dialogTitle": "இணைக்கிறது",
+            "microphoneBtn": "மைக்ரோஃபோனை இயக்கு",
+            "cameraBtn": "கேமராவை இயக்கு",
+            "cameraAndMicrophoneBtn": "கேமரா மற்றும் மைக்ரோஃபோனை இயக்கவும்"
+        },
+        "preparing": {
+            "dialogTitle": "சேர்வதற்கு முன் கேமரா அல்லது மைக்கை ஆன்\/ஆஃப் செய்யவும்",
+            "micIsOff": "மைக் ஆஃப் செய்யப்பட்டுள்ளது",
+            "micIsOn": "மைக் இயக்கத்தில் உள்ளது",
+            "cameraIsOff": "கேமரா ஆஃப் செய்யப்பட்டுள்ளது",
+            "cameraIsOn": "கேமரா இயக்கத்தில் உள்ளது",
+            "screenSharingIsOn": "திரைப் பகிர்வு இயக்கத்தில் உள்ளது",
+            "screenSharingIsOff": "திரையைப் பகிரவும்",
+            "joinNow": "அழைப்பில் சேரவும்"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "வழிமுறைகள்",
+            "permissionDenied": "{{kind}} க்கான அனுமதி மறுக்கப்பட்டது. அதைப் பயன்படுத்த, பின்வரும் படிகளைப் பின்பற்றவும்:",
+            "point1": "&quot;அமைப்புகள்&quot; -&gt; &quot;மேம்பட்டது&quot; -&gt; &quot;தனியுரிமை மற்றும் பாதுகாப்பு&quot; -&gt; &quot;தள அமைப்புகள்&quot; -&gt; &quot;கேமரா&quot; அல்லது &quot;தள அமைப்புகள்&quot; -&gt; &quot;மைக்ரோஃபோன்&quot; என்பதற்குச் செல்லவும்",
+            "point2": "&quot;தடுப்பு&quot; பட்டியலில் இருந்து {{hostname}} அகற்று"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "வழிமுறைகள்",
+            "permissionDenied": "{{kind}} க்கான அனுமதி மறுக்கப்பட்டது. மாநாட்டில் சேர இந்தப் பக்கத்தை மீண்டும் ஏற்றி, {{kind}} க்கான அணுகலை உறுதிப்படுத்தவும்."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "வழிமுறைகள்",
+            "permissionDenied": "{{kind}} க்கான அனுமதி மறுக்கப்பட்டது. அதைப் பயன்படுத்த, பின்வரும் படிகளைப் பின்பற்றவும்:",
+            "point1": "உங்கள் Android அமைப்புகளுக்குச் செல்லவும்",
+            "point2": "&quot;பயன்பாடுகள் &amp; அறிவிப்புகள்&quot; திறக்கவும்",
+            "point3": "&quot; {{communityName}} &quot; ஐக் கண்டுபிடித்து திறக்கவும்",
+            "point4": "அனுமதிகளைத் தட்டவும்",
+            "point5": "{{kind}} இயக்கு"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "வழிமுறைகள்",
+            "permissionDenied": "{{kind}} க்கான அனுமதி மறுக்கப்பட்டது. அதைப் பயன்படுத்த, பின்வரும் படிகளைப் பின்பற்றவும்:",
+            "point1": "உங்கள் iOS அமைப்புகளுக்குச் செல்லவும்",
+            "point2": "&quot;தனியுரிமை&quot; திறக்கவும்",
+            "point3": "{{kind}} கண்டுபிடித்து திறக்கவும்",
+            "point4": "&quot; {{communityName}} &quot; ஐக் கண்டுபிடித்து இயக்கவும்"
+        },
+        "fbLive": {
+            "dialogTitle": "பேஸ்புக் லைவ் ஸ்ட்ரீமிங் தொடங்கியது"
+        },
+        "notices": {
+            "youJoinedRoom": "நீங்கள் அறைக்குச் சேர்ந்தீர்கள்",
+            "joining": "சேர்வது: {{userName}}",
+            "sbLeftRoom": "{{userName}} அறையை விட்டு வெளியேறியது",
+            "switchingRoom": "மாறுதல் அறை...",
+            "forceDisconnecting": "5 வினாடிகளில் நீங்கள் துண்டிக்கப்படுவீர்கள்",
+            "forceDisconnectingImmediately": "ஹோஸ்ட்டால் நீங்கள் துண்டிக்கப்பட்டீர்கள்",
+            "youLeftRoom": "நீங்கள் அறையை விட்டு வெளியேறினீர்கள்",
+            "codeCopied": "நீங்கள் அறையை விட்டு வெளியேறினீர்கள்",
+            "sbBeganFbLive": "{{userName}} இந்த அழைப்பை Facebook இல் ஒளிபரப்பத் தொடங்கியது",
+            "sbStoppedFbLive": "{{userName}} இந்த அழைப்பை Facebook இல் ஒளிபரப்புவதை நிறுத்தியது",
+            "youBeganFbLive": "இந்த அழைப்பை Facebook இல் ஒளிபரப்பத் தொடங்கியுள்ளீர்கள்",
+            "youStoppedFbLive": "இந்த அழைப்பை Facebook இல் ஒளிபரப்புவதை நிறுத்திவிட்டீர்கள்",
+            "youStartedLive": "இந்த அழைப்பை தனிப்பயன் RTMPக்கு ஒளிபரப்பத் தொடங்கியுள்ளீர்கள்",
+            "youStoppedLive": "இந்த அழைப்பை தனிப்பயன் RTMPக்கு ஒளிபரப்புவதை நிறுத்திவிட்டீர்கள்",
+            "sbStartedLiveStreaming": "{{userName}} நேரலை தொடங்கியது",
+            "sbStoppedLiveStreaming": "{{userName}} நேரலையில் முடிந்தது",
+            "liveStopped": "இறுதிப்புள்ளிக்கு வீடியோவை அனுப்புவதில் பிழை ஏற்பட்டது",
+            "youBeganVideoRecording": "நீங்கள் இந்த மாநாட்டை பதிவு செய்ய ஆரம்பித்தீர்கள்",
+            "youStoppedVideoRecording": "இந்த மாநாட்டைப் பதிவு செய்வதை நிறுத்திவிட்டீர்கள்",
+            "linkCopiedToCb": "இணைப்பு கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது",
+            "codeCopiedToCb": "குறியீடு கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது",
+            "userHasNoVideo": "பங்கேற்பாளரிடம் வீடியோ இல்லை",
+            "openInBrowserAlert": "மாநாட்டில் சேர சஃபாரி உலாவியில் இணைப்பைத் திறக்கவும்.",
+            "allowedVideoLimit": "இந்த அறையில் {{limit}} வீடியோ மட்டுமே அனுமதிக்கப்படுகிறது",
+            "allowedAudioLimit": "இந்த அறையில் {{limit}} மைக்ரோஃபோன்கள் மட்டுமே அனுமதிக்கப்படுகின்றன"
+        },
+        "settingsPopup": {
+            "dialogTitle": "வீடியோ அமைப்புகள்",
+            "webCamera": "வெப் கேமரா",
+            "screenSharing": "திரை பகிர்வு",
+            "shareAnotherScreen": "மற்றொரு திரையைப் பகிரவும்",
+            "turnOffCameras": "கேமராவை அணைக்கவும்",
+            "turnOffVideo": "கேமரா\/திரை பகிர்வை முடக்கவும்",
+            "turnOffAudioInput": "மைக்ரோஃபோனை முடக்கு",
+            "turnOffScreenSharing": "திரைப் பகிர்வை முடக்கு",
+            "cameraIsTurnedOff": "கேமரா ஆஃப் செய்யப்பட்டுள்ளது",
+            "micIsTurnedOff": "மைக்ரோஃபோன் அணைக்கப்பட்டுள்ளது",
+            "startFBLive": "Facebook லைவ்ஸ்ட்ரீமைத் தொடங்கவும்",
+            "stopFBLive": "பேஸ்புக் லைவ்ஸ்ட்ரீமை நிறுத்துங்கள்",
+            "startRecording": "பதிவைத் தொடங்கவும்",
+            "stopRecording": "பதிவு செய்வதை நிறுத்து",
+            "start": "தொடங்கு",
+            "stop": "நிறுத்து",
+            "recordingInProgress": "பதிவு நடைபெறுகிறது...",
+            "fbLiveTitle": "லைவ்ஸ்ட்ரீமின் தலைப்பு",
+            "fbLiveDescription": "உங்கள் லைவ்ஸ்ட்ரீமை விவரிக்கவும். அது எதைப்பற்றி?",
+            "fbOnlyMeLiveAccess": "நான் மட்டும்",
+            "fbFriendsAccess": "நண்பர்கள்",
+            "fbPublicAccess": "பொது",
+            "publishOnTimeline": "காலவரிசையில் வெளியிடவும்",
+            "publishToGroup": "குழுவில் வெளியிடவும்",
+            "fbStartLive": "போய் வாழ்",
+            "fbStopLive": "லைவ்ஸ்ட்ரீமை முடிக்கவும்",
+            "streamingSettings": "அமைப்புகள்",
+            "manageStream": "லைவ்ஸ்ட்ரீமை நிர்வகி",
+            "fbEmbedCode": "உட்பொதிக்கவும்",
+            "copy": "நகலெடுக்கவும்",
+            "streamToRTMP": "தனிப்பயன் RTMPக்கு ஸ்ட்ரீம் செய்யவும்",
+            "startBroadcasting": "ஒளிபரப்பத் தொடங்குங்கள்",
+            "broadcastingInProgress": "ஒளிபரப்பு நடந்து கொண்டிருக்கிறது",
+            "share": "பகிர்",
+            "startClodRecording": "கிளவுட் ரெக்கார்டிங்கைத் தொடங்கவும்",
+            "startLocRecording": "உள்ளூர் பதிவைத் தொடங்கவும்",
+            "stopClodRecording": "கிளவுட் ரெக்கார்டிங்கை நிறுத்துங்கள்",
+            "stopLocRecording": "உள்ளூர் பதிவை நிறுத்து"
+        },
+        "audioSettings": {
+            "dialogTitle": "ஆடியோ அமைப்புகள்",
+            "speakers": "பேச்சாளர்கள்",
+            "microphone": "ஒலிவாங்கி"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "ஒளிபரப்பை நிர்வகிக்கவும்"
+        },
+        "participantsPopup": {
+            "dialogTitle": "பங்கேற்பாளர் அமைப்புகள்",
+            "disconnect": "துண்டிக்கவும்",
+            "floatingScreens": "மிதக்கும் திரைகள்",
+            "tiledScreens": "டைல்ஸ் திரைகள்",
+            "loudestExceptMe": "என்னைத் தவிர சத்தமாக",
+            "maximizeLoudest": "சத்தமாக அதிகரிக்கவும்",
+            "staticMaximized": "நிலையான அதிகபட்சம்",
+            "fullScreen": "முழு திரை",
+            "manual": "கையேடு",
+            "turnOffCamera": "வீடியோவை மறை",
+            "turnOffAudio": "ஆடியோவை முடக்கு",
+            "turnOffScreenSharing": "திரைப் பகிர்வை மறை",
+            "turnOnCamera": "வீடியோவைக் காட்டு",
+            "turnOnAudio": "ஆடியோவை இயக்கு",
+            "turnOnScreenSharing": "திரைப் பகிர்வைக் காட்டு"
+        },
+        "streamingSettings": {
+            "title": "லைவ்ஸ்ட்ரீம்"
+        },
+        "preview": {
+            "Meeting": "தொலைதொடர்பு",
+            "MeetingEnded": "டெலிகான்பரன்ஸ் முடிந்தது"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "பேச கோரிக்கை",
+            "msg": "கூட்டத்தில் தற்போது {{count}} பேர் பேசுகின்றனர். பேசி முடிக்க {{seconds}} வினாடிகள் அனுமதித்த பிறகு, அவற்றில் ஒன்றை மாற்ற விரும்புகிறீர்களா?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "நீங்கள் வழங்குவீர்களா? உங்கள் விளக்கக்காட்சிக்கான பொருட்களை ஒன்றாகப் பதிவேற்ற இந்த இடத்தைப் பயன்படுத்தலாம். பிளஸ் பொத்தானைப் பயன்படுத்தவும்.",
+        "Alert": "நிகழ்வுகள் தொடங்கும் போது, அவற்றின் தொடர்புடைய விளக்கக்காட்சிகள் இந்தப் பக்கத்தில் தோன்றத் தொடங்கும்",
+        "ClickHereForFullscreen": "விளக்கக்காட்சிகள் இங்கே தோன்றும். முழுத்திரைக்கு செல்ல இங்கே கிளிக் செய்யவும்.",
+        "question": {
+            "ScanThisQRCode": "பதிலளிக்க இந்த QR குறியீட்டை ஸ்கேன் செய்யவும்"
+        }
+    }
+}

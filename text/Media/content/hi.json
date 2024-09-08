@@ -1,0 +1,256 @@
+{
+    "Shows": "दिखाता है",
+    "Clips": "क्लिप्स",
+    "Video": "वीडियो",
+    "Audio": "ऑडियो",
+    "categories": {
+        "Clips": "मीडिया क्लिप्स",
+        "Episodes": "एपिसोड"
+    },
+    "NewEpisode": "नई कड़ी",
+    "NewClip": "नई क्लिप",
+    "LiveShow": "सजीव दृश्य",
+    "Save": "सहेजें",
+    "ViewFullEpisode": "देखें पूरा एपिसोड",
+    "CreditsEarned": "क्रेडिट अर्जित किया",
+    "VideoTitle": "वीडियो शीर्षक या URL",
+    "NewClipTitlePlaceholder": "क्लिप शीर्षक दर्ज करें",
+    "NewClipDescriptionPlaceholder": "क्लिप विवरण दर्ज करें",
+    "switchVisualization": "विज़ुअलाइज़ेशन स्विच करें",
+    "joinLiveShow": "लाइव शो में शामिल हों",
+    "showTwitchLiveStream": "ट्विच लाइव स्ट्रीम दिखाएं",
+    "showVoiceChat": "वॉयस चैट दिखाएं",
+    "AreYouSureKick": "क्या आप वाकई इस उपयोगकर्ता को शुरू करना चाहते हैं?",
+    "AreYouSureDeleteEpisode": "क्या आप वाकई इस एपिसोड को हटाना चाहते हैं?",
+    "Yes": "हाँ",
+    "No": "नहीं",
+    "types": {
+        "Media\/clip": {
+            "displayType": "क्लिप",
+            "description": "मीडिया क्लिप"
+        },
+        "Media\/WebRTC": {
+            "displayType": "दूर संवाद",
+            "description": "एक ऑनलाइन वीडियो\/ऑडियो सम्मेलन"
+        },
+        "Media\/calls": {
+            "displayType": "कॉल",
+            "description": "मीडिया\/वेबआरटीसी के लिए श्रेणी",
+            "MaxRelationsExceeded": "अधिकतम कॉल पार हो गई"
+        }
+    },
+    "feeds": {
+        "Title": "कैमरों",
+        "filterByTitle": "शीर्षक के अनुसार फ़ीड खोजें",
+        "RequestFeedAccess": "फ़ीड एक्सेस का अनुरोध करें",
+        "New": "+ नई फ़ीड",
+        "filterFeeds": "फ़िल्टर फ़ीड",
+        "NewFeed": "नए फीड",
+        "NoneYet": "अभी तक कोई फ़ीड नहीं बना है.",
+        "AreYouSure": "क्या आपको यकीन है?",
+        "FilterByDate": "तिथि के अनुसार फ़िल्टर करें",
+        "newFeeds": "आपके पास {{1}} नए फ़ीड हैं",
+        "Description": "{{1}} फ़ीड",
+        "Keywords": "{{1}} फ़ीड"
+    },
+    "feed": {
+        "HostedBy": "{{name}} द्वारा होस्ट किया गया",
+        "Name": "नाम",
+        "Conversation": "बातचीत",
+        "CloseFeed": {
+            "button": "फ़ीड बंद करें",
+            "Cancel": "क्या आप वाकई इस फ़ीड को बंद करना चाहते हैं?",
+            "Participant": "इस फ़ीड में 1 प्रतिभागी है",
+            "Participants": "इस फ़ीड में {{count}} प्रतिभागी हैं"
+        },
+        "Calendar": "पंचांग",
+        "TitleOfFeed": "फ़ीड का शीर्षक:",
+        "EmptyList": "खाली सूची",
+        "EmptyVideos": "अभी तक कोई क्लिप नहीं",
+        "AccessReason": "कृपया कारण बताएं",
+        "Proceed": "आगे बढ़ना",
+        "FeedAlreadyClosed": "यह फ़ीड पहले ही बंद है",
+        "RtmpLinkNote": "इस लिंक को क्लिपबोर्ड पर कॉपी करने के लिए क्लिक करें",
+        "SelectClip": "वह तिथि चुनें जिसे आप देखना चाहते हैं",
+        "Request": "प्रार्थना"
+    },
+    "newFeed": {
+        "Title": "नए फीड",
+        "locationTitle": "अपना स्थान तय करे",
+        "SetLocation": "मेरा स्थान सेट करें",
+        "Starting": "शुरुआत",
+        "Day": "दिन",
+        "Create": "सृजन करना",
+        "Continue": "जारी रखना",
+        "FeedTitle": "फ़ीड शीर्षक",
+        "SetTitle": "कृपया फ़ीड शीर्षक सेट करें"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} ने &quot;{{& instructions.reason}}&quot; कारण से {{& stream.fields.title}}} तक पहुंच का अनुरोध किया",
+        "JoinedWebRTC": "आपकी कॉल में शामिल हो गया",
+        "SubjectJoinedYourCall": "{{subject}} आपकी कॉल में शामिल हुए"
+    },
+    "RealTimeCall": "रीयल टाइम कॉल",
+    "JoinWebRTC": "दूर संवाद",
+    "webrtc": {
+        "notAllowedToJoinCall": "आपके पास इस स्ट्रीम में शामिल होने की अनुमति नहीं है.",
+        "streamTitle": "{{1}} ने एक टेलीकांफ्रेंस शुरू की",
+        "allow": {
+            "dialogTitle": "कनेक्ट",
+            "microphoneBtn": "माइक्रोफ़ोन सक्षम करें",
+            "cameraBtn": "कैमरा सक्षम करें",
+            "cameraAndMicrophoneBtn": "कैमरा और माइक्रोफ़ोन सक्षम करें"
+        },
+        "preparing": {
+            "dialogTitle": "शामिल होने से पहले कैमरा या माइक चालू\/बंद करें",
+            "micIsOff": "माइक बंद है",
+            "micIsOn": "माइक चालू है",
+            "cameraIsOff": "कैमरा बंद है",
+            "cameraIsOn": "कैमरा चालू है",
+            "screenSharingIsOn": "स्क्रीन शेयरिंग चालू है",
+            "screenSharingIsOff": "स्क्रीन साझा करना",
+            "joinNow": "कॉल में शामिल हों"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "निर्देश",
+            "permissionDenied": "{{kind}} के लिए अनुमति अस्वीकृत। इसका उपयोग करने के लिए कृपया इन चरणों का पालन करें:",
+            "point1": "&quot;सेटिंग&quot; -&gt; &quot;उन्नत&quot; -&gt; &quot;गोपनीयता और सुरक्षा&quot; -&gt; &quot;साइट सेटिंग&quot; -&gt; &quot;कैमरा&quot; या &quot;साइट सेटिंग&quot; -&gt; &quot;माइक्रोफ़ोन&quot; पर जाएं",
+            "point2": "{{hostname}} &quot;ब्लॉक&quot; सूची से हटाएं"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "निर्देश",
+            "permissionDenied": "{{kind}} के लिए अनुमति अस्वीकृत। कृपया इस पृष्ठ को पुनः लोड करें और सम्मेलन में शामिल होने के लिए {{kind}} तक पहुंच की पुष्टि करें।"
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "निर्देश",
+            "permissionDenied": "{{kind}} के लिए अनुमति अस्वीकृत। इसका उपयोग करने के लिए कृपया इन चरणों का पालन करें:",
+            "point1": "अपनी एंड्रॉइड सेटिंग्स पर जाएं",
+            "point2": "&quot;एप्लिकेशन और सूचनाएं&quot; खोलें",
+            "point3": "&quot; {{communityName}} &quot; ढूंढें और इसे खोलें",
+            "point4": "अनुमतियों पर टैप करें",
+            "point5": "{{kind}} सक्षम करें"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "निर्देश",
+            "permissionDenied": "{{kind}} के लिए अनुमति अस्वीकृत। इसका उपयोग करने के लिए कृपया इन चरणों का पालन करें:",
+            "point1": "अपनी आईओएस सेटिंग में जाएं",
+            "point2": "&quot;गोपनीयता&quot; खोलें",
+            "point3": "{{kind}} ढूंढें और इसे खोलें",
+            "point4": "&quot; {{communityName}} &quot; ढूंढें और सक्षम करें"
+        },
+        "fbLive": {
+            "dialogTitle": "फेसबुक लाइव स्ट्रीमिंग शुरू"
+        },
+        "notices": {
+            "youJoinedRoom": "आप कमरे में शामिल हो गए",
+            "joining": "शामिल होना: {{userName}}",
+            "sbLeftRoom": "{{userName}} ने कमरा छोड़ दिया",
+            "switchingRoom": "स्विचिंग रूम...",
+            "forceDisconnecting": "आप 5 सेकंड के भीतर डिस्कनेक्ट हो जाएंगे",
+            "forceDisconnectingImmediately": "आपको किसी होस्ट ने डिसकनेक्ट कर दिया था",
+            "youLeftRoom": "आपने कमरा छोड़ दिया",
+            "codeCopied": "आपने कमरा छोड़ दिया",
+            "sbBeganFbLive": "{{userName}} इस कॉल को फेसबुक में प्रसारित करना शुरू किया",
+            "sbStoppedFbLive": "{{userName}} फेसबुक में इस कॉल का प्रसारण बंद कर दिया",
+            "youBeganFbLive": "आपने इस कॉल को Facebook में प्रसारित करना प्रारंभ किया",
+            "youStoppedFbLive": "आपने इस कॉल को Facebook में प्रसारित करना बंद कर दिया है",
+            "youStartedLive": "आपने इस कॉल को कस्टम आरटीएमपी पर प्रसारित करना शुरू किया",
+            "youStoppedLive": "आपने इस कॉल को कस्टम RTMP पर प्रसारित करना बंद कर दिया है",
+            "sbStartedLiveStreaming": "{{userName}} लाइव शुरू किया",
+            "sbStoppedLiveStreaming": "{{userName}} लाइव समाप्त हुआ",
+            "liveStopped": "एंडपॉइंट पर वीडियो भेजते समय गड़बड़ी हुई",
+            "youBeganVideoRecording": "आपने इस सम्मेलन की रिकॉर्डिंग शुरू की",
+            "youStoppedVideoRecording": "आपने इस कॉन्फ़्रेंस की रिकॉर्डिंग बंद कर दी है",
+            "linkCopiedToCb": "लिंक को क्लिपबोर्ड पर कॉपी किया गया",
+            "codeCopiedToCb": "कोड को क्लिपबोर्ड पर कॉपी किया गया",
+            "userHasNoVideo": "प्रतिभागी के पास कोई वीडियो नहीं है",
+            "openInBrowserAlert": "कॉन्फ़्रेंस में शामिल होने के लिए सफ़ारी ब्राउज़र में लिंक खोलें।",
+            "allowedVideoLimit": "इस कमरे में केवल {{limit}} वीडियो की अनुमति है",
+            "allowedAudioLimit": "इस कमरे में केवल {{limit}} माइक्रोफोन की अनुमति है"
+        },
+        "settingsPopup": {
+            "dialogTitle": "वीडियो सेटिंग्स",
+            "webCamera": "वेब कैमेरा",
+            "screenSharing": "स्क्रीन साझेदारी",
+            "shareAnotherScreen": "दूसरी स्क्रीन साझा करें",
+            "turnOffCameras": "कैमरा बंद करो",
+            "turnOffVideo": "कैमरा\/स्क्रीन शेयरिंग बंद करें",
+            "turnOffAudioInput": "म्यूट माइक्रोफोन",
+            "turnOffScreenSharing": "स्क्रीन शेयरिंग बंद करें",
+            "cameraIsTurnedOff": "कैमरा बंद है",
+            "micIsTurnedOff": "माइक्रोफ़ोन बंद है",
+            "startFBLive": "फेसबुक लाइवस्ट्रीम शुरू करें",
+            "stopFBLive": "फेसबुक लाइवस्ट्रीम बंद करो",
+            "startRecording": "रिकॉर्डिंग शुरू",
+            "stopRecording": "रिकॉर्डिंग बंद करें",
+            "start": "शुरू",
+            "stop": "रुकना",
+            "recordingInProgress": "रिकॉर्डिंग चल रही है...",
+            "fbLiveTitle": "लाइवस्ट्रीम का शीर्षक",
+            "fbLiveDescription": "अपने लाइवस्ट्रीम का वर्णन करें। यह किस बारे में है?",
+            "fbOnlyMeLiveAccess": "केवल मैं",
+            "fbFriendsAccess": "दोस्त",
+            "fbPublicAccess": "जनता",
+            "publishOnTimeline": "टाइमलाइन पर प्रकाशित करें",
+            "publishToGroup": "समूह में प्रकाशित करें",
+            "fbStartLive": "रहने जाओ",
+            "fbStopLive": "लाइवस्ट्रीम समाप्त करें",
+            "streamingSettings": "समायोजन",
+            "manageStream": "लाइवस्ट्रीम प्रबंधित करें",
+            "fbEmbedCode": "एम्बेड",
+            "copy": "प्रतिलिपि",
+            "streamToRTMP": "कस्टम RTMP पर स्ट्रीम करें",
+            "startBroadcasting": "प्रसारण शुरू करें",
+            "broadcastingInProgress": "प्रसारण हो रहा है",
+            "share": "शेयर करना",
+            "startClodRecording": "क्लाउड रिकॉर्डिंग शुरू करें",
+            "startLocRecording": "स्थानीय रिकॉर्डिंग प्रारंभ करें",
+            "stopClodRecording": "क्लाउड रिकॉर्डिंग रोकें",
+            "stopLocRecording": "स्थानीय रिकॉर्डिंग रोकें"
+        },
+        "audioSettings": {
+            "dialogTitle": "श्रव्य विन्यास",
+            "speakers": "वक्ताओं",
+            "microphone": "माइक्रोफ़ोन"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "प्रसारण प्रबंधित करें"
+        },
+        "participantsPopup": {
+            "dialogTitle": "प्रतिभागी सेटिंग्स",
+            "disconnect": "डिस्कनेक्ट",
+            "floatingScreens": "फ्लोटिंग स्क्रीन",
+            "tiledScreens": "टाइल वाली स्क्रीन",
+            "loudestExceptMe": "मेरे अलावा सबसे जोर से",
+            "maximizeLoudest": "जोर से अधिकतम करें",
+            "staticMaximized": "स्थैतिक अधिकतम",
+            "fullScreen": "पूर्ण स्क्रीन",
+            "manual": "नियमावली",
+            "turnOffCamera": "वीडियो छुपाएं",
+            "turnOffAudio": "ऑडियो म्यूट करें",
+            "turnOffScreenSharing": "स्क्रीन शेयरिंग छुपाएं",
+            "turnOnCamera": "वीडियो दिखाओ",
+            "turnOnAudio": "ऑडियो अनम्यूट करें",
+            "turnOnScreenSharing": "स्क्रीन शेयरिंग दिखाएं"
+        },
+        "streamingSettings": {
+            "title": "लाइव स्ट्रीम"
+        },
+        "preview": {
+            "Meeting": "दूर संवाद",
+            "MeetingEnded": "टेलीकांफ्रेंस समाप्त हो गई"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "बोलने का अनुरोध",
+            "msg": "बैठक में वर्तमान में {{count}} लोग बोल रहे हैं। क्या आप उनमें से एक को बोलना समाप्त करने के लिए {{seconds}} सेकंड की अनुमति देने के बाद बदलना चाहते हैं?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "क्या आप प्रस्तुतिकरण देंगे? आप अपनी प्रस्तुति के लिए सामग्री अपलोड करने के लिए इस स्थान का उपयोग कर सकते हैं। प्लस बटन का उपयोग करें।",
+        "Alert": "जैसे ही कार्यक्रम शुरू होंगे, उनकी संबंधित प्रस्तुतियाँ इस पृष्ठ पर दिखाई देने लगेंगी",
+        "ClickHereForFullscreen": "प्रस्तुतियाँ यहाँ दिखाई देंगी। पूर्ण स्क्रीन पर जाने के लिए यहाँ क्लिक करें।",
+        "question": {
+            "ScanThisQRCode": "उत्तर देने के लिए इस QR कोड को स्कैन करें"
+        }
+    }
+}

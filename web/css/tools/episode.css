@@ -1,0 +1,10 @@
+.Media_episode_tool .Streams_participants_tool,
+.Media_episode_tool .Streams_chat_tool {
+    margin: 0 auto;
+}
+.Media_episode_tool .Streams_chat_tool {
+    background: inherit;
+ }
+.Media_episode_tool .Streams_participants_tool .Streams_participants_summary {
+    /* margin-top: 0; */
+}

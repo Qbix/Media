@@ -1,0 +1,133 @@
+@import "icons.css";
+
+.Media_clip_tool .Q_video_tool {
+	display: none;
+}
+.Media_clip_tool .Q_audio_tool {
+	display: none;
+}
+.Media_clip_tool .Q_video_tool.Q_current,
+.Media_clip_tool .Q_audio_tool.Q_current {
+	display: block;
+}
+.Q_notMobile .Media_tabs {
+	/*position: absolute;
+	top: 0;
+	right: 0;
+	width: 10%;*/
+	flex:1;
+}
+.Q_mobile .Media_tabs {
+	display: flex;
+	justify-content: center;
+}
+.Media_clip_player .Media_tabs {
+	margin-bottom: 10px;
+}
+.Media_tab {
+	cursor: pointer;
+	padding: 0 10px;
+	border-radius: 5px;
+	height: 40px;
+	line-height: 40px;
+	white-space: nowrap;
+}
+.Media_tab.Q_current {
+	background: rgba(100, 100, 100, 0.5);
+}
+
+.Media_column_clips {
+	box-sizing: border-box;
+	text-align: center;
+}
+html.Media_clip #content .Q_button {
+	height: 40px;
+	display: block;
+	margin: auto;
+	background: #1c6518;
+	border-color: #fff;
+}
+html.Media_clip #content .Q_button.Media_clip_preview_tool .Streams_preview_container,
+html.Media_clip #content .Q_button.Media_clip_preview_tool .Streams_preview_container .Streams_preview_contents {
+	padding: 0;
+	vertical-align: unset;
+}
+html.Media_clip #content .Q_button[name=addClip],
+html.Media_clip #content .Q_button.Media_newEpisode {
+	width: 100%;
+}
+html.Media_clip #content .Q_button.Q_pulsate {
+	width: 90%;
+}
+html.Media_clip #content .Q_button.Media_liveShow {
+	display: none;
+}
+html.Media_clip #content .Q_button.Media_liveShow.Q_current {
+	display: block;
+}
+html.Media_clip #content .Q_button:hover {
+	background-color: rgba(20, 210, 49, 0.7);
+}
+
+input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_input:focus {
+	width: 100%;
+	background: transparent;
+	border: 0;
+	border-bottom: solid 1px #394ad5;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 0 4px 0 4px;
+	margin-bottom: 10px;
+	color: black;
+	font-size: 16px;
+	height: 40px;
+}
+
+.Communities_tabs[data-style=icons] .Communities_tab[data-val=feeds]::before {
+	font-family: "qplatform-media";
+	content: "\e92d";
+}
+.Communities_tabs[data-style=icons] .Communities_tab[data-val=feedsAccess]::before {
+	font-family: "qplatform-media";
+	content: "\e959";
+}
+.Users_avatar_tool .Media_badge_host {
+	background-color: rgba(0, 0, 0, 0.25);
+	border-radius: 50%;
+	background-size: 80% 80%;
+	background-position: center center;
+	border: 1px solid red;
+}
+
+.Media_presentation #content {
+	animation: Media_backgroundColors 5s infinite alternate;
+	border: dotted 1px rgba(100, 100, 100, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.Media_presentation_clickhere {
+	font-size: 18px;
+	text-shadow: 2px 2px rgba(0, 0, 0, 0.5);
+	text-align: center;
+}
+
+.Media_presentation_tool,
+.Media_presentation_title_screen {
+	background: black;
+	color: white;
+}
+
+.Q_column_shows {
+	min-width: 320px !important;
+}
+  
+@keyframes Media_backgroundColors {
+	0% { background-color: red; }
+	25% { background-color: blue; }
+	50% { background-color: green; }
+	75% { background-color: yellow; }
+}

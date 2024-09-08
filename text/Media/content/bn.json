@@ -1,0 +1,256 @@
+{
+    "Shows": "শো",
+    "Clips": "ক্লিপস",
+    "Video": "ভিডিও",
+    "Audio": "শ্রুতি",
+    "categories": {
+        "Clips": "মিডিয়া ক্লিপস",
+        "Episodes": "পর্ব"
+    },
+    "NewEpisode": "নতুন পর্ব",
+    "NewClip": "নতুন ক্লিপ",
+    "LiveShow": "সরাসরি অনুষ্ঠান",
+    "Save": "সংরক্ষণ",
+    "ViewFullEpisode": "সম্পূর্ণ পর্ব দেখুন",
+    "CreditsEarned": "ক্রেডিট অর্জিত",
+    "VideoTitle": "ভিডিও শিরোনাম বা URL",
+    "NewClipTitlePlaceholder": "ক্লিপ শিরোনাম লিখুন",
+    "NewClipDescriptionPlaceholder": "ক্লিপ বিবরণ লিখুন",
+    "switchVisualization": "ভিজ্যুয়ালাইজেশন পরিবর্তন করুন",
+    "joinLiveShow": "লাইভ শোতে যোগ দিন",
+    "showTwitchLiveStream": "টুইচ লাইভ স্ট্রিম দেখান",
+    "showVoiceChat": "ভয়েস চ্যাট দেখান",
+    "AreYouSureKick": "আপনি কি নিশ্চিত আপনি এই ব্যবহারকারী বন্ধ করতে চান?",
+    "AreYouSureDeleteEpisode": "আপনি কি এই পর্বটি মুছে ফেলার বিষয়ে নিশ্চিত?",
+    "Yes": "হ্যাঁ",
+    "No": "না",
+    "types": {
+        "Media\/clip": {
+            "displayType": "ক্লিপ",
+            "description": "মিডিয়া ক্লিপ"
+        },
+        "Media\/WebRTC": {
+            "displayType": "টেলিকনফারেন্স",
+            "description": "একটি অনলাইন ভিডিও\/অডিও সম্মেলন"
+        },
+        "Media\/calls": {
+            "displayType": "কল",
+            "description": "মিডিয়া\/ওয়েবআরটিসির জন্য বিভাগ",
+            "MaxRelationsExceeded": "সর্বাধিক কলগুলি অতিক্রম করেছে৷"
+        }
+    },
+    "feeds": {
+        "Title": "ক্যামেরা",
+        "filterByTitle": "শিরোনাম দ্বারা ফিড খুঁজুন",
+        "RequestFeedAccess": "ফিড অ্যাক্সেস অনুরোধ",
+        "New": "+ নতুন ফিড",
+        "filterFeeds": "ফিল্টার ফিড",
+        "NewFeed": "নতুন ফিড",
+        "NoneYet": "কোন ফিড এখনো গঠিত.",
+        "AreYouSure": "তুমি কি নিশ্চিত?",
+        "FilterByDate": "তারিখ অনুসারে ফিল্টার করুন",
+        "newFeeds": "আপনার কাছে {{1}}টি নতুন ফিড আছে৷",
+        "Description": "{{1}} ফিড",
+        "Keywords": "{{1}} ফিড"
+    },
+    "feed": {
+        "HostedBy": "হোস্ট করেছে {{name}}",
+        "Name": "নাম",
+        "Conversation": "কথোপকথন",
+        "CloseFeed": {
+            "button": "ফিড বন্ধ করুন",
+            "Cancel": "আপনি কি এই ফিডটি বন্ধ করার বিষয়ে নিশ্চিত?",
+            "Participant": "এই ফিডে 1 জন অংশগ্রহণকারী আছে",
+            "Participants": "এই ফিডে {{count}} জন অংশগ্রহণকারী আছে৷"
+        },
+        "Calendar": "ক্যালেন্ডার",
+        "TitleOfFeed": "ফিডের শিরোনাম:",
+        "EmptyList": "খালি তালিকা",
+        "EmptyVideos": "এখনো কোনো ক্লিপ নেই",
+        "AccessReason": "অনুগ্রহ করে কারণটি বলুন",
+        "Proceed": "এগিয়ে যান",
+        "FeedAlreadyClosed": "এই ফিড ইতিমধ্যে বন্ধ",
+        "RtmpLinkNote": "ক্লিপবোর্ডে এই লিঙ্কটি অনুলিপি করতে ক্লিক করুন",
+        "SelectClip": "আপনি যে তারিখটি দেখতে চান তা নির্বাচন করুন",
+        "Request": "অনুরোধ"
+    },
+    "newFeed": {
+        "Title": "নতুন ফিড",
+        "locationTitle": "আপনার অবস্থান নির্ধারন করুন",
+        "SetLocation": "আমার অবস্থান সেট করুন",
+        "Starting": "শুরু হচ্ছে",
+        "Day": "দিন",
+        "Create": "সৃষ্টি",
+        "Continue": "চালিয়ে যান",
+        "FeedTitle": "ফিড শিরোনাম",
+        "SetTitle": "ফিড শিরোনাম সেট করুন"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} &quot;{1001}}&quot; কারণ সহ {{& stream.fields.title}}}-এ অ্যাক্সেসের অনুরোধ করেছেন",
+        "JoinedWebRTC": "আপনার কল যোগদান",
+        "SubjectJoinedYourCall": "{{subject}} আপনার কলে যোগদান করেছে"
+    },
+    "RealTimeCall": "রিয়েল টাইম কল",
+    "JoinWebRTC": "টেলিকনফারেন্স",
+    "webrtc": {
+        "notAllowedToJoinCall": "আপনার এই স্ট্রীমে যোগ দেওয়ার অনুমতি নেই৷",
+        "streamTitle": "{{1}} একটি টেলিকনফারেন্স শুরু করেছে",
+        "allow": {
+            "dialogTitle": "সংযোগ করা হচ্ছে",
+            "microphoneBtn": "মাইক্রোফোন সক্ষম করুন",
+            "cameraBtn": "ক্যামেরা সক্ষম করুন",
+            "cameraAndMicrophoneBtn": "ক্যামেরা এবং মাইক্রোফোন সক্ষম করুন"
+        },
+        "preparing": {
+            "dialogTitle": "আপনি যোগদানের আগে ক্যামেরা বা মাইক চালু\/বন্ধ করুন",
+            "micIsOff": "মাইক বন্ধ",
+            "micIsOn": "মাইক চালু আছে",
+            "cameraIsOff": "ক্যামেরা বন্ধ",
+            "cameraIsOn": "ক্যামেরা চালু আছে",
+            "screenSharingIsOn": "স্ক্রিন শেয়ারিং চালু আছে",
+            "screenSharingIsOff": "ভাগ পর্দা",
+            "joinNow": "কলে যোগ দিন"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "নির্দেশনা",
+            "permissionDenied": "{{kind}} এর জন্য অনুমতি অস্বীকার করা হয়েছে। এটি ব্যবহার করতে অনুগ্রহ করে এই পদক্ষেপগুলি অনুসরণ করুন:",
+            "point1": "&quot;সেটিংস&quot; -&gt; &quot;উন্নত&quot; -&gt; &quot;গোপনীয়তা এবং নিরাপত্তা&quot; -&gt; &quot;সাইট সেটিংস&quot; -&gt; &quot;ক্যামেরা&quot; বা &quot;সাইট সেটিংস&quot; -&gt; &quot;মাইক্রোফোন&quot; এ যান",
+            "point2": "&quot;ব্লক&quot; তালিকা থেকে {{hostname}} সরান"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "নির্দেশনা",
+            "permissionDenied": "{{kind}} এর জন্য অনুমতি অস্বীকার করা হয়েছে। অনুগ্রহ করে এই পৃষ্ঠাটি পুনরায় লোড করুন এবং সম্মেলনে যোগদানের জন্য {{kind}} এ অ্যাক্সেস নিশ্চিত করুন৷"
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "নির্দেশনা",
+            "permissionDenied": "{{kind}} এর জন্য অনুমতি অস্বীকার করা হয়েছে। এটি ব্যবহার করতে অনুগ্রহ করে এই পদক্ষেপগুলি অনুসরণ করুন:",
+            "point1": "আপনার অ্যান্ড্রয়েড সেটিংসে যান",
+            "point2": "&quot;অ্যাপস এবং বিজ্ঞপ্তি&quot; খুলুন",
+            "point3": "&quot; {{communityName}} &quot; খুঁজুন এবং এটি খুলুন",
+            "point4": "অনুমতিগুলিতে আলতো চাপুন",
+            "point5": "{{kind}} সক্ষম করুন"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "নির্দেশনা",
+            "permissionDenied": "{{kind}} এর জন্য অনুমতি অস্বীকার করা হয়েছে। এটি ব্যবহার করতে অনুগ্রহ করে এই পদক্ষেপগুলি অনুসরণ করুন:",
+            "point1": "আপনার iOS সেটিংসে যান",
+            "point2": "&quot;গোপনীয়তা&quot; খুলুন",
+            "point3": "{{kind}} খুঁজুন এবং এটি খুলুন",
+            "point4": "&quot; {{communityName}} &quot; খুঁজুন এবং সক্ষম করুন"
+        },
+        "fbLive": {
+            "dialogTitle": "শুরু হলো ফেসবুক লাইভ স্ট্রিমিং"
+        },
+        "notices": {
+            "youJoinedRoom": "আপনি রুমে যোগদান করেছেন",
+            "joining": "যোগদান: {{userName}}",
+            "sbLeftRoom": "{{userName}} রুম ছেড়ে",
+            "switchingRoom": "রুম পাল্টানো হচ্ছে...",
+            "forceDisconnecting": "আপনি 5 সেকেন্ডের মধ্যে সংযোগ বিচ্ছিন্ন করা হবে",
+            "forceDisconnectingImmediately": "আপনি একটি হোস্ট দ্বারা সংযোগ বিচ্ছিন্ন করা হয়েছে",
+            "youLeftRoom": "তুমি রুম থেকে চলে গেলে",
+            "codeCopied": "তুমি রুম থেকে চলে গেলে",
+            "sbBeganFbLive": "{{userName}} ফেসবুকে এই কল সম্প্রচার শুরু করেছে",
+            "sbStoppedFbLive": "{{userName}} ফেসবুকে এই কল সম্প্রচার বন্ধ করে দিয়েছে",
+            "youBeganFbLive": "আপনি ফেসবুকে এই কল সম্প্রচার শুরু করেছেন",
+            "youStoppedFbLive": "আপনি Facebook-এ এই কল সম্প্রচার বন্ধ করে দিয়েছেন",
+            "youStartedLive": "আপনি এই কলটি কাস্টম RTMP-তে সম্প্রচার করা শুরু করেছেন৷",
+            "youStoppedLive": "আপনি কাস্টম RTMP-তে এই কল সম্প্রচার বন্ধ করেছেন",
+            "sbStartedLiveStreaming": "{{userName}} লাইভ শুরু হয়েছে",
+            "sbStoppedLiveStreaming": "{{userName}} লাইভ শেষ হয়েছে",
+            "liveStopped": "এন্ডপয়েন্টে ভিডিও পাঠানোর সময় ত্রুটি ঘটেছে৷",
+            "youBeganVideoRecording": "আপনি এই সম্মেলন রেকর্ড করা শুরু করেছেন",
+            "youStoppedVideoRecording": "আপনি এই সম্মেলন রেকর্ড করা বন্ধ করেছেন",
+            "linkCopiedToCb": "ক্লিপবোর্ডে লিঙ্ক কপি করা হয়েছে",
+            "codeCopiedToCb": "ক্লিপবোর্ডে কোড কপি করা হয়েছে",
+            "userHasNoVideo": "অংশগ্রহণকারীর কোন ভিডিও নেই",
+            "openInBrowserAlert": "সম্মেলনে যোগ দিতে সাফারি ব্রাউজারে লিঙ্ক খুলুন।",
+            "allowedVideoLimit": "এই রুমে শুধুমাত্র {{limit}} ভিডিও অনুমোদিত",
+            "allowedAudioLimit": "এই রুমে শুধুমাত্র {{limit}} মাইক্রোফোন অনুমোদিত"
+        },
+        "settingsPopup": {
+            "dialogTitle": "ভিডিও সেটিংস",
+            "webCamera": "ওয়েব ক্যামেরা",
+            "screenSharing": "স্ক্রিন শেয়ারিং",
+            "shareAnotherScreen": "অন্য স্ক্রিন শেয়ার করুন",
+            "turnOffCameras": "ক্যামেরা বন্ধ করুন",
+            "turnOffVideo": "ক্যামেরা\/স্ক্রিন শেয়ারিং বন্ধ করুন",
+            "turnOffAudioInput": "মাইক্রোফোন নিঃশব্দ করুন",
+            "turnOffScreenSharing": "স্ক্রিন শেয়ারিং বন্ধ করুন",
+            "cameraIsTurnedOff": "ক্যামেরা বন্ধ",
+            "micIsTurnedOff": "মাইক্রোফোন বন্ধ আছে",
+            "startFBLive": "ফেসবুক লাইভস্ট্রিম শুরু করুন",
+            "stopFBLive": "ফেসবুক লাইভস্ট্রিম বন্ধ করুন",
+            "startRecording": "রেকর্ড শুরু কর",
+            "stopRecording": "রেকর্ডিং বন্ধ করুন",
+            "start": "শুরু করুন",
+            "stop": "থামো",
+            "recordingInProgress": "রেকর্ডিং চলছে...",
+            "fbLiveTitle": "লাইভস্ট্রিমের শিরোনাম",
+            "fbLiveDescription": "আপনার লাইভস্ট্রিম বর্ণনা করুন। এটা কিসের ব্যাপারে?",
+            "fbOnlyMeLiveAccess": "শুধু আমি",
+            "fbFriendsAccess": "বন্ধুরা",
+            "fbPublicAccess": "পাবলিক",
+            "publishOnTimeline": "টাইমলাইনে প্রকাশ করুন",
+            "publishToGroup": "গ্রুপে প্রকাশ করুন",
+            "fbStartLive": "সরাসরি যাও",
+            "fbStopLive": "লাইভস্ট্রিম শেষ করুন",
+            "streamingSettings": "সেটিংস",
+            "manageStream": "লাইভস্ট্রিম পরিচালনা করুন",
+            "fbEmbedCode": "বসান",
+            "copy": "কপি",
+            "streamToRTMP": "কাস্টম RTMP-তে স্ট্রিম করুন",
+            "startBroadcasting": "সম্প্রচার শুরু করুন",
+            "broadcastingInProgress": "সম্প্রচার চলছে",
+            "share": "শেয়ার করুন",
+            "startClodRecording": "ক্লাউড রেকর্ডিং শুরু করুন",
+            "startLocRecording": "স্থানীয় রেকর্ডিং শুরু করুন",
+            "stopClodRecording": "ক্লাউড রেকর্ডিং বন্ধ করুন",
+            "stopLocRecording": "স্থানীয় রেকর্ডিং বন্ধ করুন"
+        },
+        "audioSettings": {
+            "dialogTitle": "অডিও সেটিংস",
+            "speakers": "বক্তারা",
+            "microphone": "মাইক্রোফোন"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "সম্প্রচার পরিচালনা করুন"
+        },
+        "participantsPopup": {
+            "dialogTitle": "অংশগ্রহণকারী সেটিংস",
+            "disconnect": "সংযোগ বিচ্ছিন্ন করুন",
+            "floatingScreens": "ভাসমান পর্দা",
+            "tiledScreens": "টাইল্ড স্ক্রিন",
+            "loudestExceptMe": "আমি ছাড়া সবচেয়ে জোরে",
+            "maximizeLoudest": "সর্বোচ্চ জোরে",
+            "staticMaximized": "স্ট্যাটিক ম্যাক্সিমাইজড",
+            "fullScreen": "পূর্ণ পর্দা",
+            "manual": "ম্যানুয়াল",
+            "turnOffCamera": "ভিডিও লুকান",
+            "turnOffAudio": "অডিও নিঃশব্দ করুন",
+            "turnOffScreenSharing": "স্ক্রিন শেয়ারিং লুকান",
+            "turnOnCamera": "ভিডিও দেখান",
+            "turnOnAudio": "অডিও আনমিউট করুন",
+            "turnOnScreenSharing": "স্ক্রিন শেয়ারিং দেখান"
+        },
+        "streamingSettings": {
+            "title": "সরাসরি সম্প্রচার"
+        },
+        "preview": {
+            "Meeting": "টেলিকনফারেন্স",
+            "MeetingEnded": "টেলিকনফারেন্স শেষ"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "কথা বলার অনুরোধ",
+            "msg": "সভায় বর্তমানে {{count}} জন লোক কথা বলছেন। কথা শেষ করার জন্য {{seconds}} সেকেন্ড সময় দেওয়ার পরে আপনি কি তাদের একটিকে প্রতিস্থাপন করতে চান?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "আপনি উপস্থাপন করা হবে? আপনি আপনার উপস্থাপনার জন্য একসাথে উপকরণ আপলোড করতে এই স্থান ব্যবহার করতে পারেন. প্লাস বোতামটি ব্যবহার করুন।",
+        "Alert": "ইভেন্টগুলি শুরু হওয়ার সাথে সাথে তাদের সংশ্লিষ্ট উপস্থাপনাগুলি এই পৃষ্ঠায় প্রদর্শিত হতে শুরু করবে৷",
+        "ClickHereForFullscreen": "উপস্থাপনা এখানে প্রদর্শিত হবে. পূর্ণ পর্দায় যেতে এখানে ক্লিক করুন.",
+        "question": {
+            "ScanThisQRCode": "উত্তর দিতে এই QR কোড স্ক্যান করুন"
+        }
+    }
+}

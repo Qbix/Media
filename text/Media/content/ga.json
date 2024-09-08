@@ -1,0 +1,256 @@
+{
+    "Shows": "Seónna",
+    "Clips": "Gearrthóga",
+    "Video": "Físeán",
+    "Audio": "Fuaim",
+    "categories": {
+        "Clips": "Gearrthóga Meán",
+        "Episodes": "Eipeasóidí"
+    },
+    "NewEpisode": "Eipeasóid Nua",
+    "NewClip": "Gearrthóg Nua",
+    "LiveShow": "Seó Beo",
+    "Save": "Sábháil",
+    "ViewFullEpisode": "Féach ar Eipeasóid Iomlán",
+    "CreditsEarned": "Creidmheasanna tuillte",
+    "VideoTitle": "Teideal Físe nó URL",
+    "NewClipTitlePlaceholder": "Iontráil Teideal Gearrthóg",
+    "NewClipDescriptionPlaceholder": "Iontráil Cur Síos Gearrthóg",
+    "switchVisualization": "Athraigh léirshamhlú",
+    "joinLiveShow": "Glac páirt sa Seó Beo",
+    "showTwitchLiveStream": "Taispeáin Sruth Beo Twitch",
+    "showVoiceChat": "Taispeáin Comhrá Gutha",
+    "AreYouSureKick": "An bhfuil tú cinnte gur mhaith leat an t-úsáideoir seo a thosú?",
+    "AreYouSureDeleteEpisode": "An bhfuil tú cinnte gur mhaith leat an eipeasóid seo a scriosadh?",
+    "Yes": "Tá",
+    "No": "Níl",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Gearrthóg",
+            "description": "gearrthóg meáin"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Teileachomhdháil",
+            "description": "comhdháil físe\/fuaime ar líne"
+        },
+        "Media\/calls": {
+            "displayType": "Glaonna",
+            "description": "catagóir do na Meáin Chumarsáide\/WebRTC",
+            "MaxRelationsExceeded": "Sáraíodh uasghlaonna"
+        }
+    },
+    "feeds": {
+        "Title": "Ceamaraí",
+        "filterByTitle": "Aimsigh fothaí de réir teidil",
+        "RequestFeedAccess": "Iarr rochtain ar fhothaí",
+        "New": "+ Beatha Nua",
+        "filterFeeds": "Fothaí scagaire",
+        "NewFeed": "Fotha Nua",
+        "NoneYet": "Níl aon fhothaí déanta fós.",
+        "AreYouSure": "An bhfuil tú cinnte?",
+        "FilterByDate": "Scag De réir Dáta",
+        "newFeeds": "Tá {{1}} fotha nua agat",
+        "Description": "{{1}} fothaí",
+        "Keywords": "{{1}} fothaí"
+    },
+    "feed": {
+        "HostedBy": "Arna óstáil ag {{name}}",
+        "Name": "Ainm",
+        "Conversation": "Comhrá",
+        "CloseFeed": {
+            "button": "Dún Feed",
+            "Cancel": "An bhfuil tú cinnte gur mhaith leat an fotha seo a dhúnadh?",
+            "Participant": "Tá rannpháirtí amháin sa bheathú seo",
+            "Participants": "Tá {{count}} rannpháirtí san fhotha seo"
+        },
+        "Calendar": "Féilire",
+        "TitleOfFeed": "Teideal an fhotha:",
+        "EmptyList": "Liosta folamh",
+        "EmptyVideos": "Níl clips fós",
+        "AccessReason": "luaigh an fáth le do thoil",
+        "Proceed": "Lean ar aghaidh",
+        "FeedAlreadyClosed": "Dúnadh an fotha seo cheana féin",
+        "RtmpLinkNote": "Cliceáil chun an nasc seo a chóipeáil chuig an ngearrthaisce",
+        "SelectClip": "Roghnaigh an dáta is mian leat a fheiceáil",
+        "Request": "Iarratas"
+    },
+    "newFeed": {
+        "Title": "Fotha Nua",
+        "locationTitle": "Socraigh Do Shuíomh",
+        "SetLocation": "Socraigh Mo Shuíomh",
+        "Starting": "Ag tosú",
+        "Day": "Lá",
+        "Create": "Cruthaigh",
+        "Continue": "Leanúint ar aghaidh",
+        "FeedTitle": "Teideal beathaithe",
+        "SetTitle": "Socraigh teideal an fhotha"
+    },
+    "notifications": {
+        "Media\/feed\/access": "D&#39;iarr {{{call 'avatar.displayName'}} rochtain ar {{& stream.fields.title}} mar gheall ar &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "isteach le do ghlao",
+        "SubjectJoinedYourCall": "Tháinig {{subject}} isteach le do ghlao"
+    },
+    "RealTimeCall": "Glao Fíor-Ama",
+    "JoinWebRTC": "Teileachomhdháil",
+    "webrtc": {
+        "notAllowedToJoinCall": "Níl cead agat páirt a ghlacadh sa sruth seo.",
+        "streamTitle": "Chuir {{1}} tús le Teilechomhdháil",
+        "allow": {
+            "dialogTitle": "Ag nascadh",
+            "microphoneBtn": "Cumasaigh Micreafón",
+            "cameraBtn": "Cumasaigh Ceamara",
+            "cameraAndMicrophoneBtn": "Cumasaigh Ceamara agus Micreafón"
+        },
+        "preparing": {
+            "dialogTitle": "Cuir an ceamara nó an micreafón ar siúl \/ as sula nglacann tú páirt ann",
+            "micIsOff": "Tá mic múchta",
+            "micIsOn": "Tá Mic ar siúl",
+            "cameraIsOff": "Tá an ceamara múchta",
+            "cameraIsOn": "Tá an ceamara ar siúl",
+            "screenSharingIsOn": "Tá comhroinnt scáileáin ar siúl",
+            "screenSharingIsOff": "Comhroinn scáileán",
+            "joinNow": "Bí ar an nGlao"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Treoracha",
+            "permissionDenied": "Cead do {{kind}} diúltaithe. Chun é a úsáid lean na céimeanna seo le do thoil:",
+            "point1": "Téigh go dtí &quot;Socruithe&quot; -&gt; &quot;Ard-&quot; -&gt; &quot;Príobháideacht agus slándáil&quot; -&gt; &quot;Socruithe Suímh&quot; -&gt; &quot;Ceamara&quot; nó &quot;Socruithe Suímh&quot; -&gt; &quot;Micreafón&quot;",
+            "point2": "Bain {{hostname}} ón liosta &quot;Bloc&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Treoracha",
+            "permissionDenied": "Cead do {{kind}} diúltaithe. Athlódáil an leathanach seo agus deimhnigh rochtain ar {{kind}} chun páirt a ghlacadh sa chomhdháil."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Treoracha",
+            "permissionDenied": "Cead do {{kind}} diúltaithe. Chun é a úsáid lean na céimeanna seo le do thoil:",
+            "point1": "Téigh go dtí do shocruithe Android",
+            "point2": "Oscail &quot;Aipeanna &amp; fógraí&quot;",
+            "point3": "Aimsigh &quot; {{communityName}} &quot; agus oscail é",
+            "point4": "Tap ar Ceadanna",
+            "point5": "Cumasaigh {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Treoracha",
+            "permissionDenied": "Cead do {{kind}} diúltaithe. Chun é a úsáid lean na céimeanna seo le do thoil:",
+            "point1": "Téigh go dtí do chuid Socruithe iOS",
+            "point2": "Oscail &quot;Príobháideacht&quot;",
+            "point3": "Faigh {{kind}} agus oscail é",
+            "point4": "Aimsigh &quot; {{communityName}} &quot; agus cumasaigh"
+        },
+        "fbLive": {
+            "dialogTitle": "Cuireadh tús le sruthú beo Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Chuaigh tú isteach sa seomra",
+            "joining": "Clárú: {{userName}}",
+            "sbLeftRoom": "D’fhág {{userName}} an seomra",
+            "switchingRoom": "Seomra á aistriú...",
+            "forceDisconnecting": "Déanfar tú a dhínascadh laistigh de 5 soicind",
+            "forceDisconnectingImmediately": "Dhícheangail ósta thú",
+            "youLeftRoom": "D&#39;fhág tú an seomra",
+            "codeCopied": "D&#39;fhág tú an seomra",
+            "sbBeganFbLive": "Thosaigh {{userName}} ag craoladh an ghlao seo ar Facebook",
+            "sbStoppedFbLive": "Stop {{userName}} den ghlao seo a chraoladh ar Facebook",
+            "youBeganFbLive": "Thosaigh tú ag craoladh an ghlao seo ar Facebook",
+            "youStoppedFbLive": "Stop tú den ghlao seo a chraoladh ar Facebook",
+            "youStartedLive": "Thosaigh tú ag craoladh an ghlao seo chuig RTMP saincheaptha",
+            "youStoppedLive": "Stop tú den ghlao seo a chraoladh chuig RTMP saincheaptha",
+            "sbStartedLiveStreaming": "Thosaigh {{userName}} beo",
+            "sbStoppedLiveStreaming": "Chríochnaigh {{userName}} beo",
+            "liveStopped": "Tharla earráid agus an físeán á sheoladh chuig an gcríochphointe",
+            "youBeganVideoRecording": "Thosaigh tú ag taifeadadh na comhdhála seo",
+            "youStoppedVideoRecording": "Stop tú ag taifeadadh na comhdhála seo",
+            "linkCopiedToCb": "Cóipeáladh an nasc chuig an ngearrthaisce",
+            "codeCopiedToCb": "Cóipeáladh an cód chuig an ngearrthaisce",
+            "userHasNoVideo": "Níl físeán ar bith ag an rannpháirtí",
+            "openInBrowserAlert": "Oscail nasc i mbrabhsálaí Safari chun páirt a ghlacadh sa chomhdháil.",
+            "allowedVideoLimit": "Ní cheadaítear ach {{limit}} físeán sa seomra seo",
+            "allowedAudioLimit": "Ní cheadaítear ach {{limit}} micreafón sa seomra seo"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Socruithe Físeáin",
+            "webCamera": "Ceamara gréasáin",
+            "screenSharing": "Comhroinnt Scáileáin",
+            "shareAnotherScreen": "Roinn scáileán eile",
+            "turnOffCameras": "Múch an ceamara",
+            "turnOffVideo": "Cas as comhroinnt ceamara\/scáileáin",
+            "turnOffAudioInput": "Balbhaigh micreafón",
+            "turnOffScreenSharing": "Múch comhroinnt scáileáin",
+            "cameraIsTurnedOff": "Tá an ceamara múchta",
+            "micIsTurnedOff": "Tá an micreafón múchta",
+            "startFBLive": "Tosaigh Facebook Livestream",
+            "stopFBLive": "Stop Facebook Livestream",
+            "startRecording": "Tosaigh Taifeadadh",
+            "stopRecording": "Stop Taifeadadh",
+            "start": "Tosaigh",
+            "stop": "Stop",
+            "recordingInProgress": "Tá an taifeadadh ar siúl...",
+            "fbLiveTitle": "Teideal an Livestream",
+            "fbLiveDescription": "Déan cur síos ar do Livestream. Cad é faoi?",
+            "fbOnlyMeLiveAccess": "Mise amháin",
+            "fbFriendsAccess": "Cairde",
+            "fbPublicAccess": "Poiblí",
+            "publishOnTimeline": "Foilsigh ar amlíne",
+            "publishToGroup": "Foilsigh don ghrúpa",
+            "fbStartLive": "Téigh Beo",
+            "fbStopLive": "Cuir deireadh le sruth beo",
+            "streamingSettings": "Socruithe",
+            "manageStream": "Bainistigh Livestream",
+            "fbEmbedCode": "Leabú",
+            "copy": "Cóip",
+            "streamToRTMP": "Sruth go RTMP saincheaptha",
+            "startBroadcasting": "Tosaigh ag craoladh",
+            "broadcastingInProgress": "Tá an craoladh ar siúl",
+            "share": "Comhroinn",
+            "startClodRecording": "Tosaigh Taifeadadh Cloud",
+            "startLocRecording": "Tosaigh Taifeadadh Áitiúil",
+            "stopClodRecording": "Stop Taifeadadh Cloud",
+            "stopLocRecording": "Stop Taifeadadh Áitiúil"
+        },
+        "audioSettings": {
+            "dialogTitle": "Socruithe Fuaime",
+            "speakers": "Cainteoirí",
+            "microphone": "Micreafón"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Bainistigh Craoladh"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Socruithe Rannpháirtí",
+            "disconnect": "Dícheangail",
+            "floatingScreens": "Scáileáin Snámh",
+            "tiledScreens": "Scáileáin Tílithe",
+            "loudestExceptMe": "Is glóraí seachas Mise",
+            "maximizeLoudest": "Uasmhéadaigh Loudest",
+            "staticMaximized": "Statach Uasmhéadaithe",
+            "fullScreen": "Scáileán iomlán",
+            "manual": "Lámhleabhar",
+            "turnOffCamera": "Folaigh físeán",
+            "turnOffAudio": "Balbhaigh fuaime",
+            "turnOffScreenSharing": "Folaigh comhroinnt scáileáin",
+            "turnOnCamera": "Taispeáin físeán",
+            "turnOnAudio": "Díbhalbhaigh an fhuaim",
+            "turnOnScreenSharing": "Taispeáin comhroinnt scáileáin"
+        },
+        "streamingSettings": {
+            "title": "Sruth beo"
+        },
+        "preview": {
+            "Meeting": "Teileachomhdháil",
+            "MeetingEnded": "Tháinig deireadh le teileachomhdháil"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Iarratas ar Labhairt",
+            "msg": "Tá {{count}} duine ag labhairt sa chruinniú faoi láthair. Ar mhaith leat ceann amháin acu a athsholáthar tar éis dóibh {{seconds}} soicind a cheadú chun labhairt?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "An mbeidh tú ag cur i láthair? Is féidir leat an spás seo a úsáid chun ábhair do do chur i láthair a uaslódáil le chéile. Bain úsáid as an gcnaipe Plus.",
+        "Alert": "De réir mar a thosaíonn imeachtaí, tosóidh a gcur i láthair comhfhreagracha le feiceáil ar an leathanach seo",
+        "ClickHereForFullscreen": "Beidh léirithe anseo. Cliceáil anseo chun dul ar scáileán iomlán.",
+        "question": {
+            "ScanThisQRCode": "Scan an cód QR seo le freagairt"
+        }
+    }
+}

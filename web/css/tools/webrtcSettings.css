@@ -1,0 +1,51 @@
+.webrtc-settings {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
+.webrtc-settings .settings-navigation {
+  box-shadow: 1px 2px 6px 1px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 1px 2px 6px 1px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 1px 2px 6px 1px rgba(0, 0, 0, 0.5);
+}
+
+.webrtc-settings .settings-navigation-inner {
+  display: flex;
+  padding: 5px;
+}
+
+.webrtc-settings .settings-navigation .settings-item {
+  display: flex;
+  margin-left: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.webrtc-settings .settings-navigation .settings-item.settings-item-active {
+  /* background-color: #f0f2f5; */
+  border: 1px #ccc solid;
+}
+
+.webrtc-settings .settings-navigation .settings-item:first-child {
+  margin-left: 0;
+}
+
+.webrtc-settings .settings-navigation .settings-item .settings-item-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+}
+
+.webrtc-settings .settings-navigation .settings-item .settings-item-icon svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.webrtc-settings .settings-params {
+  padding: 10px;
+  flex: 1;
+}

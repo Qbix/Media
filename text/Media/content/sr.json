@@ -1,0 +1,256 @@
+{
+    "Shows": "Емисије",
+    "Clips": "Исјечци",
+    "Video": "Видео",
+    "Audio": "Аудио",
+    "categories": {
+        "Clips": "Медијски исечци",
+        "Episodes": "Епизоде"
+    },
+    "NewEpisode": "Нова епизода",
+    "NewClip": "Нев Цлип",
+    "LiveShow": "Свирка уживо",
+    "Save": "сачувати",
+    "ViewFullEpisode": "Погледајте целу епизоду",
+    "CreditsEarned": "Зарађени кредити",
+    "VideoTitle": "Наслов или УРЛ видеа",
+    "NewClipTitlePlaceholder": "Унесите наслов клипа",
+    "NewClipDescriptionPlaceholder": "Унесите опис клипа",
+    "switchVisualization": "Пребаците визуелизацију",
+    "joinLiveShow": "Придружите се емисији уживо",
+    "showTwitchLiveStream": "Прикажи Твитцх пренос уживо",
+    "showVoiceChat": "Прикажи гласовно ћаскање",
+    "AreYouSureKick": "Да ли сте сигурни да желите да избаците овог корисника?",
+    "AreYouSureDeleteEpisode": "Да ли сте сигурни да желите да избришете ову епизоду?",
+    "Yes": "да",
+    "No": "Не",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Цлип",
+            "description": "медијски снимак"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Телеконференција",
+            "description": "онлајн видео\/аудио конференцију"
+        },
+        "Media\/calls": {
+            "displayType": "Позиви",
+            "description": "категорија за Медиа\/ВебРТЦ",
+            "MaxRelationsExceeded": "Максимални број позива је премашен"
+        }
+    },
+    "feeds": {
+        "Title": "камере",
+        "filterByTitle": "Пронађите фидове по наслову",
+        "RequestFeedAccess": "Затражите приступ фиду",
+        "New": "+ Нови феед",
+        "filterFeeds": "Филтрирајте фидове",
+        "NewFeed": "Нова храна",
+        "NoneYet": "Још увек нема формираних фидова.",
+        "AreYouSure": "Да ли сте сигурни?",
+        "FilterByDate": "Филтрирај по датуму",
+        "newFeeds": "Имате {{1}} нових фидова",
+        "Description": "{{1}} феедс",
+        "Keywords": "{{1}} феедс"
+    },
+    "feed": {
+        "HostedBy": "Организатор: {{name}}",
+        "Name": "Име",
+        "Conversation": "Разговор",
+        "CloseFeed": {
+            "button": "Затвори феед",
+            "Cancel": "Да ли сте сигурни да желите да затворите овај фид?",
+            "Participant": "Постоји 1 учесник у овом фиду",
+            "Participants": "У овом фиду има {{count}} учесника"
+        },
+        "Calendar": "Календар",
+        "TitleOfFeed": "Наслов фида:",
+        "EmptyList": "Празна листа",
+        "EmptyVideos": "Још нема клипова",
+        "AccessReason": "молимо наведите разлог",
+        "Proceed": "Настави",
+        "FeedAlreadyClosed": "Овај фид је већ затворен",
+        "RtmpLinkNote": "Кликните да копирате ову везу у међуспремник",
+        "SelectClip": "Изаберите датум који желите да видите",
+        "Request": "Захтев"
+    },
+    "newFeed": {
+        "Title": "Нова храна",
+        "locationTitle": "Подесите своју локацију",
+        "SetLocation": "Подесите моју локацију",
+        "Starting": "Почиње",
+        "Day": "Дан",
+        "Create": "Креирај",
+        "Continue": "Настави",
+        "FeedTitle": "Наслов фееда",
+        "SetTitle": "Подесите наслов фида"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} је затражио приступ за {{& stream.fields.title}} са разлогом „{{& instructions.reason}}}“",
+        "JoinedWebRTC": "придружио се вашем позиву",
+        "SubjectJoinedYourCall": "{{subject}} се придружио вашем позиву"
+    },
+    "RealTimeCall": "Позив у реалном времену",
+    "JoinWebRTC": "Телеконференција",
+    "webrtc": {
+        "notAllowedToJoinCall": "Немате дозволу да се придружите овом стриму.",
+        "streamTitle": "{{1}} је започео телеконференцију",
+        "allow": {
+            "dialogTitle": "Повезивање",
+            "microphoneBtn": "Омогући микрофон",
+            "cameraBtn": "Омогући камеру",
+            "cameraAndMicrophoneBtn": "Омогућите камеру и микрофон"
+        },
+        "preparing": {
+            "dialogTitle": "Укључите\/искључите камеру или микрофон пре него што се придружите",
+            "micIsOff": "Микрофон је искључен",
+            "micIsOn": "Микрофон је укључен",
+            "cameraIsOff": "Камера је искључена",
+            "cameraIsOn": "Камера је укључена",
+            "screenSharingIsOn": "Дељење екрана је укључено",
+            "screenSharingIsOff": "Дели екран",
+            "joinNow": "Придружите се позиву"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Упутства",
+            "permissionDenied": "Дозвола за {{kind}} одбијена. Да бисте га користили, следите ове кораке:",
+            "point1": "Идите на &quot;Подешавања&quot; -&gt; &quot;Напредно&quot; -&gt; &quot;Приватност и безбедност&quot; -&gt; &quot;Подешавања сајта&quot; -&gt; &quot;Камера&quot; или &quot;Подешавања сајта&quot; -&gt; &quot;Микрофон&quot;",
+            "point2": "Уклоните {{hostname}} са листе „Блокирај“."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Упутства",
+            "permissionDenied": "Дозвола за {{kind}} одбијена. Поново учитајте ову страницу и потврдите приступ на {{kind}} да бисте се придружили конференцији."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Упутства",
+            "permissionDenied": "Дозвола за {{kind}} одбијена. Да бисте га користили, следите ове кораке:",
+            "point1": "Идите на подешавања за Андроид",
+            "point2": "Отворите „Апликације и обавештења“",
+            "point3": "Пронађите „ {{communityName}} “ и отворите га",
+            "point4": "Додирните Дозволе",
+            "point5": "Омогући {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Упутства",
+            "permissionDenied": "Дозвола за {{kind}} одбијена. Да бисте га користили, следите ове кораке:",
+            "point1": "Идите на подешавања иОС-а",
+            "point2": "Отворите „Приватност“",
+            "point3": "Пронађите {{kind}} и отворите га",
+            "point4": "Пронађите „ {{communityName}} “ и омогућите"
+        },
+        "fbLive": {
+            "dialogTitle": "Фацебоок ливе стреаминг је почео"
+        },
+        "notices": {
+            "youJoinedRoom": "Придружили сте се соби",
+            "joining": "Придруживање: {{userName}}",
+            "sbLeftRoom": "{{userName}} је напустио собу",
+            "switchingRoom": "Замена соба...",
+            "forceDisconnecting": "Бићете искључени у року од 5 секунди",
+            "forceDisconnectingImmediately": "Домаћин вам је прекинуо везу",
+            "youLeftRoom": "Напустио си собу",
+            "codeCopied": "Напустио си собу",
+            "sbBeganFbLive": "{{userName}} је почео да емитује овај позив на Фејсбуку",
+            "sbStoppedFbLive": "{{userName}} је прекинуо емитовање овог позива на Фејсбуку",
+            "youBeganFbLive": "Почели сте да емитујете овај позив на Фејсбуку",
+            "youStoppedFbLive": "Престали сте да емитујете овај позив на Фејсбуку",
+            "youStartedLive": "Почели сте да емитујете овај позив на прилагођени РТМП",
+            "youStoppedLive": "Престали сте да емитујете овај позив на прилагођени РТМП",
+            "sbStartedLiveStreaming": "{{userName}} је почео уживо",
+            "sbStoppedLiveStreaming": "{{userName}} је завршило уживо",
+            "liveStopped": "Дошло је до грешке при слању видеа на крајњу тачку",
+            "youBeganVideoRecording": "Почели сте да снимате ову конференцију",
+            "youStoppedVideoRecording": "Престали сте да снимате ову конференцију",
+            "linkCopiedToCb": "Веза је копирана у међуспремник",
+            "codeCopiedToCb": "Код је копиран у међуспремник",
+            "userHasNoVideo": "Учесник нема видео снимак",
+            "openInBrowserAlert": "Отворите везу у Сафари претраживачу да бисте се придружили конференцији.",
+            "allowedVideoLimit": "У овој просторији је дозвољено само {{limit}} видео записа",
+            "allowedAudioLimit": "У овој просторији је дозвољено само {{limit}} микрофона"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Видео Сеттингс",
+            "webCamera": "Веб камера",
+            "screenSharing": "Дељење екрана",
+            "shareAnotherScreen": "Делите други екран",
+            "turnOffCameras": "Искључите камеру",
+            "turnOffVideo": "Искључите дељење камере\/екрана",
+            "turnOffAudioInput": "Искључите микрофон",
+            "turnOffScreenSharing": "Искључите дељење екрана",
+            "cameraIsTurnedOff": "Камера је искључена",
+            "micIsTurnedOff": "Микрофон је искључен",
+            "startFBLive": "Покрените Фацебоок Ливестреам",
+            "stopFBLive": "Зауставите Фацебоок Ливестреам",
+            "startRecording": "Почели са снимањем",
+            "stopRecording": "Заустави снимање",
+            "start": "Почетак",
+            "stop": "Зауставити",
+            "recordingInProgress": "Снимање је у току...",
+            "fbLiveTitle": "Наслов преноса уживо",
+            "fbLiveDescription": "Опишите свој пренос уживо. О чему се ради?",
+            "fbOnlyMeLiveAccess": "Само ја",
+            "fbFriendsAccess": "Пријатељи",
+            "fbPublicAccess": "Јавно",
+            "publishOnTimeline": "Објавите на временској линији",
+            "publishToGroup": "Објави у групи",
+            "fbStartLive": "Уживо",
+            "fbStopLive": "Заврши пренос уживо",
+            "streamingSettings": "Подешавања",
+            "manageStream": "Управљајте стримом уживо",
+            "fbEmbedCode": "Уграђивање",
+            "copy": "Копирај",
+            "streamToRTMP": "Стреам на прилагођени РТМП",
+            "startBroadcasting": "Почните са емитовањем",
+            "broadcastingInProgress": "Емитовање је у току",
+            "share": "Објави",
+            "startClodRecording": "Покрените снимање у облаку",
+            "startLocRecording": "Покрените локално снимање",
+            "stopClodRecording": "Зауставите снимање у облаку",
+            "stopLocRecording": "Зауставите локално снимање"
+        },
+        "audioSettings": {
+            "dialogTitle": "Аудио подешавања",
+            "speakers": "Звучници",
+            "microphone": "Микрофон"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Управљајте емитовањем"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Подешавања учесника",
+            "disconnect": "Прекини везу",
+            "floatingScreens": "Плутајући екрани",
+            "tiledScreens": "Тилед Сцреенс",
+            "loudestExceptMe": "Најгласнији осим мене",
+            "maximizeLoudest": "Максимално најгласније",
+            "staticMaximized": "Статиц Макимизед",
+            "fullScreen": "Цео екран",
+            "manual": "Упутство",
+            "turnOffCamera": "Сакриј видео",
+            "turnOffAudio": "Искључи звук",
+            "turnOffScreenSharing": "Сакриј дељење екрана",
+            "turnOnCamera": "Прикажи видео",
+            "turnOnAudio": "Укључи звук",
+            "turnOnScreenSharing": "Прикажи дељење екрана"
+        },
+        "streamingSettings": {
+            "title": "Ливестреам"
+        },
+        "preview": {
+            "Meeting": "Телеконференција",
+            "MeetingEnded": "Телеконференција је завршена"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Захтев за говор",
+            "msg": "На састанку тренутно говори {{count}} људи. Да ли желите да замените једног од њих након што им дате {{seconds}} секунди да заврше са говором?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Хоћете ли представљати? Можете користити овај простор да заједно отпремите материјале за своју презентацију. Користите дугме Плус.",
+        "Alert": "Како догађаји почну, њихове одговарајуће презентације ће почети да се појављују на овој страници",
+        "ClickHereForFullscreen": "Овде ће се појавити презентације. Кликните овде да пређете преко целог екрана.",
+        "question": {
+            "ScanThisQRCode": "Скенирајте овај КР код да бисте одговорили"
+        }
+    }
+}
