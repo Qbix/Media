@@ -1,0 +1,256 @@
+{
+    "Shows": "შოუები",
+    "Clips": "კლიპები",
+    "Video": "ვიდეო",
+    "Audio": "აუდიო",
+    "categories": {
+        "Clips": "მედია კლიპები",
+        "Episodes": "ეპიზოდები"
+    },
+    "NewEpisode": "ახალი ეპიზოდი",
+    "NewClip": "ახალი კლიპი",
+    "LiveShow": "ცოცხალი შოუ",
+    "Save": "Გადარჩენა",
+    "ViewFullEpisode": "იხილეთ სრული ეპიზოდი",
+    "CreditsEarned": "მიღებული კრედიტები",
+    "VideoTitle": "ვიდეოს სათაური ან URL",
+    "NewClipTitlePlaceholder": "შეიყვანეთ კლიპის სათაური",
+    "NewClipDescriptionPlaceholder": "შეიყვანეთ კლიპის აღწერა",
+    "switchVisualization": "ვიზუალიზაციის შეცვლა",
+    "joinLiveShow": "შეუერთდი ლაივ შოუს",
+    "showTwitchLiveStream": "Twitch Live Stream-ის ჩვენება",
+    "showVoiceChat": "ხმოვანი ჩატის ჩვენება",
+    "AreYouSureKick": "დარწმუნებული ხართ, რომ გსურთ ამ მომხმარებლის გაშვება?",
+    "AreYouSureDeleteEpisode": "დარწმუნებული ხართ, რომ გსურთ ამ ეპიზოდის წაშლა?",
+    "Yes": "დიახ",
+    "No": "არა",
+    "types": {
+        "Media\/clip": {
+            "displayType": "კლიპი",
+            "description": "მედია კლიპი"
+        },
+        "Media\/WebRTC": {
+            "displayType": "ტელეკონფერენცია",
+            "description": "ონლაინ ვიდეო\/აუდიო კონფერენცია"
+        },
+        "Media\/calls": {
+            "displayType": "რეკავს",
+            "description": "კატეგორია მედია\/WebRTC",
+            "MaxRelationsExceeded": "ზარების მაქსიმუმი გადააჭარბა"
+        }
+    },
+    "feeds": {
+        "Title": "კამერები",
+        "filterByTitle": "იპოვეთ არხები სათაურის მიხედვით",
+        "RequestFeedAccess": "მოითხოვეთ არხზე წვდომა",
+        "New": "+ ახალი არხი",
+        "filterFeeds": "არხების გაფილტვრა",
+        "NewFeed": "ახალი არხი",
+        "NoneYet": "ჯერ არ არის ჩამოყალიბებული არხები.",
+        "AreYouSure": "Დარწმუნებული ხარ?",
+        "FilterByDate": "გაფილტვრა თარიღის მიხედვით",
+        "newFeeds": "თქვენ გაქვთ {{1}} ახალი არხები",
+        "Description": "{{1}} არხები",
+        "Keywords": "{{1}} არხები"
+    },
+    "feed": {
+        "HostedBy": "მასპინძლობს {{name}}",
+        "Name": "სახელი",
+        "Conversation": "Საუბარი",
+        "CloseFeed": {
+            "button": "არხის დახურვა",
+            "Cancel": "დარწმუნებული ხართ, რომ გსურთ ამ არხის დახურვა?",
+            "Participant": "ამ არხში არის 1 მონაწილე",
+            "Participants": "ამ არხში არის {{count}} მონაწილე"
+        },
+        "Calendar": "Კალენდარი",
+        "TitleOfFeed": "არხის სათაური:",
+        "EmptyList": "ცარიელი სია",
+        "EmptyVideos": "კლიპები ჯერ არ არის",
+        "AccessReason": "გთხოვთ დაასახელოთ მიზეზი",
+        "Proceed": "გაგრძელება",
+        "FeedAlreadyClosed": "ეს არხი უკვე დახურულია",
+        "RtmpLinkNote": "დააწკაპუნეთ ამ ბმულის ბუფერში დასაკოპირებლად",
+        "SelectClip": "აირჩიეთ თარიღი, რომლის ნახვაც გსურთ",
+        "Request": "მოთხოვნა"
+    },
+    "newFeed": {
+        "Title": "ახალი არხი",
+        "locationTitle": "დააყენეთ თქვენი მდებარეობა",
+        "SetLocation": "ჩემი მდებარეობის დაყენება",
+        "Starting": "დაწყებული",
+        "Day": "Დღის",
+        "Create": "Შექმნა",
+        "Continue": "განაგრძეთ",
+        "FeedTitle": "არხის სათაური",
+        "SetTitle": "გთხოვთ დააყენოთ არხის სათაური"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} მოითხოვა წვდომა {{& stream.fields.title}} მიზეზით „{{& instructions.reason}}}“",
+        "JoinedWebRTC": "შეუერთდა თქვენს ზარს",
+        "SubjectJoinedYourCall": "{{subject}} შემოუერთდა თქვენს ზარს"
+    },
+    "RealTimeCall": "რეალურ დროში ზარი",
+    "JoinWebRTC": "ტელეკონფერენცია",
+    "webrtc": {
+        "notAllowedToJoinCall": "თქვენ არ გაქვთ ნებართვა შეუერთდეთ ამ ნაკადს.",
+        "streamTitle": "{{1}} დაიწყო ტელეკონფერენცია",
+        "allow": {
+            "dialogTitle": "დაკავშირება",
+            "microphoneBtn": "მიკროფონის ჩართვა",
+            "cameraBtn": "კამერის ჩართვა",
+            "cameraAndMicrophoneBtn": "ჩართეთ კამერა და მიკროფონი"
+        },
+        "preparing": {
+            "dialogTitle": "ჩართეთ\/გამორთეთ კამერა ან მიკროფონი, სანამ შეუერთდებით",
+            "micIsOff": "მიკროფონი გამორთულია",
+            "micIsOn": "მიკროფონი ჩართულია",
+            "cameraIsOff": "კამერა გამორთულია",
+            "cameraIsOn": "კამერა ჩართულია",
+            "screenSharingIsOn": "ეკრანის გაზიარება ჩართულია",
+            "screenSharingIsOff": "ეკრანის გაზიარება",
+            "joinNow": "შეუერთდი ზარს"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "ინსტრუქციები",
+            "permissionDenied": "ნებართვა {{kind}} ზე უარყოფილია. მის გამოსაყენებლად გთხოვთ მიჰყევით ამ ნაბიჯებს:",
+            "point1": "გადადით &quot;პარამეტრები&quot; -&gt; &quot;გაფართოებული&quot; -&gt; &quot;კონფიდენციალურობა და უსაფრთხოება&quot; -&gt; &quot;საიტის პარამეტრები&quot; -&gt; &quot;კამერა&quot; ან &quot;საიტის პარამეტრები&quot; -&gt; &quot;მიკროფონი&quot;",
+            "point2": "ამოიღეთ {{hostname}} &quot;ბლოკის&quot; სიიდან"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "ინსტრუქციები",
+            "permissionDenied": "ნებართვა {{kind}} ზე უარყოფილია. გთხოვთ, გადატვირთოთ ეს გვერდი და დაადასტუროთ წვდომა {{kind}} ზე, რათა შეუერთდეთ კონფერენციას."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "ინსტრუქციები",
+            "permissionDenied": "ნებართვა {{kind}} ზე უარყოფილია. მის გამოსაყენებლად გთხოვთ მიჰყევით ამ ნაბიჯებს:",
+            "point1": "გადადით თქვენს Android პარამეტრებში",
+            "point2": "გახსენით &quot;აპები და შეტყობინებები&quot;",
+            "point3": "იპოვეთ &quot; {{communityName}} &quot; და გახსენით იგი",
+            "point4": "შეეხეთ ნებართვებს",
+            "point5": "ჩართეთ {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "ინსტრუქციები",
+            "permissionDenied": "ნებართვა {{kind}} ზე უარყოფილია. მის გამოსაყენებლად გთხოვთ მიჰყევით ამ ნაბიჯებს:",
+            "point1": "გადადით თქვენს iOS პარამეტრებში",
+            "point2": "გახსენით &quot;კონფიდენციალურობა&quot;",
+            "point3": "იპოვე {{kind}} და გახსენი",
+            "point4": "იპოვეთ &quot; {{communityName}} &quot; და ჩართეთ"
+        },
+        "fbLive": {
+            "dialogTitle": "ფეისბუქის პირდაპირი ტრანსლაცია დაიწყო"
+        },
+        "notices": {
+            "youJoinedRoom": "შენ შეუერთდი ოთახს",
+            "joining": "გაწევრიანება: {{userName}}",
+            "sbLeftRoom": "{{userName}} ოთახიდან გავიდა",
+            "switchingRoom": "გადართვის ოთახი...",
+            "forceDisconnecting": "5 წამში გაითიშება",
+            "forceDisconnectingImmediately": "თქვენ გათიშეთ მასპინძელმა",
+            "youLeftRoom": "ოთახიდან გამოხვედი",
+            "codeCopied": "ოთახიდან გამოხვედი",
+            "sbBeganFbLive": "{{userName}} დაიწყო ამ ზარის მაუწყებლობა ფეისბუქზე",
+            "sbStoppedFbLive": "{{userName}} შეწყვიტა ამ ზარის მაუწყებლობა ფეისბუქზე",
+            "youBeganFbLive": "თქვენ დაიწყეთ ამ ზარის მაუწყებლობა ფეისბუქზე",
+            "youStoppedFbLive": "თქვენ შეწყვიტეთ ამ ზარის მაუწყებლობა Facebook-ზე",
+            "youStartedLive": "თქვენ დაიწყეთ ამ ზარის მაუწყებლობა მორგებულ RTMP-ზე",
+            "youStoppedLive": "თქვენ შეწყვიტეთ ამ ზარის მაუწყებლობა მორგებულ RTMP-ზე",
+            "sbStartedLiveStreaming": "{{userName}} დაიწყო პირდაპირ ეთერში",
+            "sbStoppedLiveStreaming": "{{userName}} დასრულდა პირდაპირ ეთერში",
+            "liveStopped": "მოხდა შეცდომა ვიდეოს საბოლოო წერტილში გაგზავნისას",
+            "youBeganVideoRecording": "თქვენ დაიწყეთ ამ კონფერენციის ჩაწერა",
+            "youStoppedVideoRecording": "თქვენ შეწყვიტეთ ამ კონფერენციის ჩაწერა",
+            "linkCopiedToCb": "ბმული კოპირებულია ბუფერში",
+            "codeCopiedToCb": "კოდი კოპირებულია ბუფერში",
+            "userHasNoVideo": "მონაწილეს არ აქვს ვიდეო",
+            "openInBrowserAlert": "გახსენით ბმული Safari ბრაუზერში, რათა შეუერთდეთ კონფერენციას.",
+            "allowedVideoLimit": "ამ ოთახში დაშვებულია მხოლოდ {{limit}} ვიდეო",
+            "allowedAudioLimit": "ამ ოთახში დაშვებულია მხოლოდ {{limit}} მიკროფონი"
+        },
+        "settingsPopup": {
+            "dialogTitle": "ვიდეოს პარამეტრები",
+            "webCamera": "Ვებ კამერა",
+            "screenSharing": "ეკრანის გაზიარება",
+            "shareAnotherScreen": "გააზიარეთ სხვა ეკრანი",
+            "turnOffCameras": "გამორთეთ კამერა",
+            "turnOffVideo": "გამორთეთ კამერა\/ეკრანის გაზიარება",
+            "turnOffAudioInput": "მიკროფონის დადუმება",
+            "turnOffScreenSharing": "ეკრანის გაზიარების გამორთვა",
+            "cameraIsTurnedOff": "კამერა გამორთულია",
+            "micIsTurnedOff": "მიკროფონი გამორთულია",
+            "startFBLive": "დაიწყეთ Facebook Livestream",
+            "stopFBLive": "შეაჩერე Facebook Livestream",
+            "startRecording": "ჩაწერის დაწყება",
+            "stopRecording": "ჩაწერის შეწყვეტა",
+            "start": "დაწყება",
+            "stop": "გაჩერდი",
+            "recordingInProgress": "მიმდინარეობს ჩაწერა...",
+            "fbLiveTitle": "Livestream-ის სათაური",
+            "fbLiveDescription": "აღწერეთ თქვენი Livestream. Რის შესახებაა?",
+            "fbOnlyMeLiveAccess": "Მხოლოდ მე",
+            "fbFriendsAccess": "Მეგობრები",
+            "fbPublicAccess": "საჯარო",
+            "publishOnTimeline": "გამოაქვეყნეთ ვადებში",
+            "publishToGroup": "გამოქვეყნება ჯგუფში",
+            "fbStartLive": "გადადით პირდაპირ ეთერში",
+            "fbStopLive": "დაასრულეთ Livestream",
+            "streamingSettings": "პარამეტრები",
+            "manageStream": "მართეთ Livestream",
+            "fbEmbedCode": "ჩაშენება",
+            "copy": "კოპირება",
+            "streamToRTMP": "სტრიმინგი მორგებულ RTMP-ზე",
+            "startBroadcasting": "დაიწყეთ მაუწყებლობა",
+            "broadcastingInProgress": "მაუწყებლობა მიმდინარეობს",
+            "share": "გააზიარეთ",
+            "startClodRecording": "დაიწყეთ ღრუბლოვანი ჩაწერა",
+            "startLocRecording": "დაიწყეთ ადგილობრივი ჩაწერა",
+            "stopClodRecording": "შეაჩერე ღრუბლოვანი ჩაწერა",
+            "stopLocRecording": "შეაჩერე ადგილობრივი ჩაწერა"
+        },
+        "audioSettings": {
+            "dialogTitle": "აუდიო პარამეტრები",
+            "speakers": "სპიკერები",
+            "microphone": "მიკროფონი"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "მაუწყებლობის მართვა"
+        },
+        "participantsPopup": {
+            "dialogTitle": "მონაწილის პარამეტრები",
+            "disconnect": "გათიშვა",
+            "floatingScreens": "მცურავი ეკრანები",
+            "tiledScreens": "კრამიტით მოპირკეთებული ეკრანები",
+            "loudestExceptMe": "ყველაზე ხმამაღალი ჩემს გარდა",
+            "maximizeLoudest": "მაქსიმალურად ხმამაღალი",
+            "staticMaximized": "სტატიკური მაქსიმალური",
+            "fullScreen": "Მთლიანი ეკრანი",
+            "manual": "სახელმძღვანელო",
+            "turnOffCamera": "ვიდეოს დამალვა",
+            "turnOffAudio": "აუდიოს დადუმება",
+            "turnOffScreenSharing": "ეკრანის გაზიარების დამალვა",
+            "turnOnCamera": "ვიდეოს ჩვენება",
+            "turnOnAudio": "აუდიოს დადუმების მოხსნა",
+            "turnOnScreenSharing": "ეკრანის გაზიარების ჩვენება"
+        },
+        "streamingSettings": {
+            "title": "Პირდაპირი ეთერი"
+        },
+        "preview": {
+            "Meeting": "ტელეკონფერენცია",
+            "MeetingEnded": "ტელეკონფერენცია დასრულდა"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "საუბრის მოთხოვნა",
+            "msg": "შეხვედრაზე ამჟამად {{count}} ადამიანი საუბრობს. გსურთ შეცვალოთ ერთი მათგანი მას შემდეგ, რაც მათ {{seconds}} წამის მიცემას მისცემთ საუბრის დასრულების შემდეგ?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "წარადგენთ? თქვენ შეგიძლიათ გამოიყენოთ ეს სივრცე თქვენი პრეზენტაციისთვის მასალების ერთად ატვირთვისთვის. გამოიყენეთ პლუს ღილაკი.",
+        "Alert": "მოვლენების დაწყებისთანავე, მათი შესაბამისი პრეზენტაციები გამოჩნდება ამ გვერდზე",
+        "ClickHereForFullscreen": "პრეზენტაციები გამოჩნდება აქ. დააწკაპუნეთ აქ სრულ ეკრანზე გადასასვლელად.",
+        "question": {
+            "ScanThisQRCode": "პასუხის გასაცემად დაასკანირეთ ეს QR კოდი"
+        }
+    }
+}

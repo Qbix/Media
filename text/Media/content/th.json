@@ -1,0 +1,256 @@
+{
+    "Shows": "การแสดง",
+    "Clips": "คลิป",
+    "Video": "วิดีโอ",
+    "Audio": "เสียง",
+    "categories": {
+        "Clips": "คลิปสื่อ",
+        "Episodes": "ตอน"
+    },
+    "NewEpisode": "ตอนใหม่",
+    "NewClip": "คลิปใหม่",
+    "LiveShow": "การแสดงสด",
+    "Save": "บันทึก",
+    "ViewFullEpisode": "ดูตอนเต็ม",
+    "CreditsEarned": "เครดิตที่ได้รับ",
+    "VideoTitle": "ชื่อวิดีโอหรือ URL",
+    "NewClipTitlePlaceholder": "ใส่ชื่อคลิป",
+    "NewClipDescriptionPlaceholder": "ใส่คำอธิบายคลิป",
+    "switchVisualization": "สลับการแสดงภาพ",
+    "joinLiveShow": "เข้าร่วมการแสดงสด",
+    "showTwitchLiveStream": "แสดง Twitch Live Stream",
+    "showVoiceChat": "แสดงแชทด้วยเสียง",
+    "AreYouSureKick": "คุณแน่ใจหรือไม่ว่าต้องการเริ่มต้นผู้ใช้รายนี้",
+    "AreYouSureDeleteEpisode": "คุณแน่ใจหรือไม่ว่าต้องการลบตอนนี้",
+    "Yes": "ใช่",
+    "No": "ไม่",
+    "types": {
+        "Media\/clip": {
+            "displayType": "คลิป",
+            "description": "คลิปสื่อ"
+        },
+        "Media\/WebRTC": {
+            "displayType": "การประชุมทางไกล",
+            "description": "การประชุมทางวิดีโอ\/เสียงออนไลน์"
+        },
+        "Media\/calls": {
+            "displayType": "โทร",
+            "description": "หมวดหมู่สำหรับสื่อ\/WebRTC",
+            "MaxRelationsExceeded": "เกินจำนวนการโทรสูงสุด"
+        }
+    },
+    "feeds": {
+        "Title": "กล้อง",
+        "filterByTitle": "ค้นหาฟีดตามชื่อ",
+        "RequestFeedAccess": "ขอการเข้าถึงฟีด",
+        "New": "+ ฟีดใหม่",
+        "filterFeeds": "กรองฟีด",
+        "NewFeed": "ฟีดใหม่",
+        "NoneYet": "ยังไม่มีฟีดที่เกิดขึ้น",
+        "AreYouSure": "คุณแน่ใจไหม?",
+        "FilterByDate": "กรองตามวันที่",
+        "newFeeds": "คุณมี {{1}} ฟีดใหม่",
+        "Description": "{{1}} ฟีด",
+        "Keywords": "{{1}} ฟีด"
+    },
+    "feed": {
+        "HostedBy": "เป็นเจ้าภาพโดย {{name}}",
+        "Name": "ชื่อ",
+        "Conversation": "การสนทนา",
+        "CloseFeed": {
+            "button": "ปิดฟีด",
+            "Cancel": "คุณแน่ใจหรือไม่ว่าต้องการปิดฟีดนี้",
+            "Participant": "มีผู้เข้าร่วม 1 คนในฟีดนี้",
+            "Participants": "มีผู้เข้าร่วม {{count}} คนในฟีดนี้"
+        },
+        "Calendar": "ปฏิทิน",
+        "TitleOfFeed": "ชื่อฟีด:",
+        "EmptyList": "รายการว่าง",
+        "EmptyVideos": "ยังไม่มีคลิป",
+        "AccessReason": "โปรดระบุเหตุผล",
+        "Proceed": "ดำเนินการ",
+        "FeedAlreadyClosed": "ฟีดนี้ปิดแล้ว",
+        "RtmpLinkNote": "คลิกเพื่อคัดลอกลิงก์นี้ไปยังคลิปบอร์ด",
+        "SelectClip": "เลือกวันที่ต้องการดู",
+        "Request": "ขอ"
+    },
+    "newFeed": {
+        "Title": "ฟีดใหม่",
+        "locationTitle": "ตั้งค่าตำแหน่งของคุณ",
+        "SetLocation": "ตั้งค่าตำแหน่งของฉัน",
+        "Starting": "เริ่มต้น",
+        "Day": "วัน",
+        "Create": "สร้าง",
+        "Continue": "ดำเนินการต่อ",
+        "FeedTitle": "ชื่อฟีด",
+        "SetTitle": "กรุณาตั้งชื่อฟีด"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} ขอเข้าถึง {{& stream.fields.title}} ด้วยเหตุผล &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "เข้าร่วมการโทรของคุณ",
+        "SubjectJoinedYourCall": "{{subject}} เข้าร่วมสายของคุณ"
+    },
+    "RealTimeCall": "โทรตามเวลาจริง",
+    "JoinWebRTC": "การประชุมทางไกล",
+    "webrtc": {
+        "notAllowedToJoinCall": "คุณไม่มีสิทธิ์เข้าร่วมสตรีมนี้",
+        "streamTitle": "{{1}} เริ่มการประชุมทางไกล",
+        "allow": {
+            "dialogTitle": "กำลังเชื่อมต่อ",
+            "microphoneBtn": "เปิดใช้งานไมโครโฟน",
+            "cameraBtn": "เปิดใช้งานกล้อง",
+            "cameraAndMicrophoneBtn": "เปิดใช้งานกล้องและไมโครโฟน"
+        },
+        "preparing": {
+            "dialogTitle": "เปิด\/ปิดกล้องหรือไมค์ก่อนเข้าร่วม",
+            "micIsOff": "ไมค์ปิดอยู่",
+            "micIsOn": "ไมค์เปิดอยู่",
+            "cameraIsOff": "กล้องปิดอยู่",
+            "cameraIsOn": "กล้องเปิดอยู่",
+            "screenSharingIsOn": "การแชร์หน้าจอเปิดอยู่",
+            "screenSharingIsOff": "แบ่งปันหน้าจอ",
+            "joinNow": "เข้าร่วมการโทร"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "คำแนะนำ",
+            "permissionDenied": "การอนุญาตสำหรับ {{kind}} ถูกปฏิเสธ หากต้องการใช้ โปรดทำตามขั้นตอนเหล่านี้:",
+            "point1": "ไปที่ &quot;การตั้งค่า&quot; -&gt; &quot;ขั้นสูง&quot; -&gt; &quot;ความเป็นส่วนตัวและความปลอดภัย&quot; -&gt; &quot;การตั้งค่าไซต์&quot; -&gt; &quot;กล้อง&quot; หรือ &quot;การตั้งค่าไซต์&quot; -&gt; &quot;ไมโครโฟน&quot;",
+            "point2": "ลบ {{hostname}} ออกจากรายการ &quot;บล็อก&quot;"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "คำแนะนำ",
+            "permissionDenied": "การอนุญาตสำหรับ {{kind}} ถูกปฏิเสธ โปรดโหลดหน้านี้ซ้ำและยืนยันการเข้าถึง {{kind}} เพื่อเข้าร่วมการประชุม"
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "คำแนะนำ",
+            "permissionDenied": "การอนุญาตสำหรับ {{kind}} ถูกปฏิเสธ หากต้องการใช้ โปรดทำตามขั้นตอนเหล่านี้:",
+            "point1": "ไปที่การตั้งค่า Android ของคุณ",
+            "point2": "เปิด &quot;แอปและการแจ้งเตือน&quot;",
+            "point3": "ค้นหา &quot; {{communityName}} &quot; แล้วเปิด",
+            "point4": "แตะที่สิทธิ์",
+            "point5": "เปิดใช้งาน {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "คำแนะนำ",
+            "permissionDenied": "การอนุญาตสำหรับ {{kind}} ถูกปฏิเสธ หากต้องการใช้ โปรดทำตามขั้นตอนเหล่านี้:",
+            "point1": "ไปที่การตั้งค่า iOS ของคุณ",
+            "point2": "เปิด &quot;ความเป็นส่วนตัว&quot;",
+            "point3": "ค้นหา {{kind}} และเปิด",
+            "point4": "ค้นหา &quot; {{communityName}} &quot; และเปิดใช้งาน"
+        },
+        "fbLive": {
+            "dialogTitle": "เริ่มสตรีมสดบน Facebook แล้ว"
+        },
+        "notices": {
+            "youJoinedRoom": "คุณเข้าร่วมห้อง",
+            "joining": "เข้าร่วม: {{userName}}",
+            "sbLeftRoom": "{{userName}} ออกจากห้อง",
+            "switchingRoom": "เปลี่ยนห้อง...",
+            "forceDisconnecting": "คุณจะถูกตัดการเชื่อมต่อภายใน 5 วินาที",
+            "forceDisconnectingImmediately": "คุณถูกตัดการเชื่อมต่อโดยโฮสต์",
+            "youLeftRoom": "คุณออกจากห้อง",
+            "codeCopied": "คุณออกจากห้อง",
+            "sbBeganFbLive": "{{userName}} เริ่มออกอากาศการโทรนี้ใน Facebook",
+            "sbStoppedFbLive": "{{userName}} หยุดออกอากาศการโทรนี้ใน Facebook",
+            "youBeganFbLive": "คุณเริ่มแพร่ภาพการโทรนี้ใน Facebook",
+            "youStoppedFbLive": "คุณหยุดเผยแพร่การโทรนี้ใน Facebook",
+            "youStartedLive": "คุณเริ่มออกอากาศการโทรนี้ไปยัง RTMP ที่กำหนดเอง",
+            "youStoppedLive": "คุณหยุดเผยแพร่การโทรนี้ไปยัง RTMP ที่กำหนดเองแล้ว",
+            "sbStartedLiveStreaming": "{{userName}} เริ่มถ่ายทอดสด",
+            "sbStoppedLiveStreaming": "{{userName}} จบการถ่ายทอดสด",
+            "liveStopped": "เกิดข้อผิดพลาดขณะส่งวิดีโอไปยังปลายทาง",
+            "youBeganVideoRecording": "คุณเริ่มบันทึกการประชุมนี้",
+            "youStoppedVideoRecording": "คุณหยุดบันทึกการประชุมนี้",
+            "linkCopiedToCb": "คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว",
+            "codeCopiedToCb": "คัดลอกโค้ดไปยังคลิปบอร์ดแล้ว",
+            "userHasNoVideo": "ผู้เข้าร่วมไม่มีวิดีโอ",
+            "openInBrowserAlert": "เปิดลิงก์ในเบราว์เซอร์ Safari เพื่อเข้าร่วมการประชุม",
+            "allowedVideoLimit": "อนุญาตวิดีโอเพียง {{limit}} ในห้องนี้",
+            "allowedAudioLimit": "อนุญาตให้ใช้ไมโครโฟนเพียง {{limit}} ในห้องนี้"
+        },
+        "settingsPopup": {
+            "dialogTitle": "การตั้งค่าวิดีโอ",
+            "webCamera": "กล้องเว็บ",
+            "screenSharing": "การแชร์หน้าจอ",
+            "shareAnotherScreen": "แบ่งปันหน้าจออื่น",
+            "turnOffCameras": "ปิดกล้อง",
+            "turnOffVideo": "ปิดการแชร์กล้อง\/หน้าจอ",
+            "turnOffAudioInput": "ปิดเสียงไมโครโฟน",
+            "turnOffScreenSharing": "ปิดการแชร์หน้าจอ",
+            "cameraIsTurnedOff": "กล้องปิดอยู่",
+            "micIsTurnedOff": "ไมโครโฟนปิดอยู่",
+            "startFBLive": "เริ่ม Facebook Livestream",
+            "stopFBLive": "หยุด Facebook Livestream",
+            "startRecording": "เริ่มการบันทึก",
+            "stopRecording": "หยุดการบันทึก",
+            "start": "เริ่ม",
+            "stop": "หยุด",
+            "recordingInProgress": "กำลังบันทึก...",
+            "fbLiveTitle": "ชื่อเรื่อง Livestream",
+            "fbLiveDescription": "อธิบายสตรีมสดของคุณ มันเกี่ยวกับอะไร?",
+            "fbOnlyMeLiveAccess": "แค่ฉัน",
+            "fbFriendsAccess": "เพื่อน",
+            "fbPublicAccess": "สาธารณะ",
+            "publishOnTimeline": "เผยแพร่บนไทม์ไลน์",
+            "publishToGroup": "เผยแพร่ไปยังกลุ่ม",
+            "fbStartLive": "ถ่ายทอดสด",
+            "fbStopLive": "จบการถ่ายทอดสด",
+            "streamingSettings": "การตั้งค่า",
+            "manageStream": "จัดการสตรีมสด",
+            "fbEmbedCode": "ฝัง",
+            "copy": "สำเนา",
+            "streamToRTMP": "สตรีมไปยัง RTMP ที่กำหนดเอง",
+            "startBroadcasting": "เริ่มออกอากาศ",
+            "broadcastingInProgress": "กำลังดำเนินการออกอากาศ",
+            "share": "แบ่งปัน",
+            "startClodRecording": "เริ่มการบันทึกบนคลาวด์",
+            "startLocRecording": "เริ่มการบันทึกในเครื่อง",
+            "stopClodRecording": "หยุดการบันทึกบนคลาวด์",
+            "stopLocRecording": "หยุดการบันทึกในเครื่อง"
+        },
+        "audioSettings": {
+            "dialogTitle": "การตั้งค่าเสียง",
+            "speakers": "ลำโพง",
+            "microphone": "ไมโครโฟน"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "จัดการการออกอากาศ"
+        },
+        "participantsPopup": {
+            "dialogTitle": "การตั้งค่าผู้เข้าร่วม",
+            "disconnect": "ตัดการเชื่อมต่อ",
+            "floatingScreens": "หน้าจอลอย",
+            "tiledScreens": "หน้าจอกระเบื้อง",
+            "loudestExceptMe": "ดังที่สุดยกเว้นฉัน",
+            "maximizeLoudest": "เพิ่มเสียงดังที่สุด",
+            "staticMaximized": "คงที่สูงสุด",
+            "fullScreen": "เต็มจอ",
+            "manual": "คู่มือ",
+            "turnOffCamera": "ซ่อนวิดีโอ",
+            "turnOffAudio": "ปิดเสียง",
+            "turnOffScreenSharing": "ซ่อนการแชร์หน้าจอ",
+            "turnOnCamera": "แสดงวิดีโอ",
+            "turnOnAudio": "เปิดเสียง",
+            "turnOnScreenSharing": "แสดงการแชร์หน้าจอ"
+        },
+        "streamingSettings": {
+            "title": "สตรีมสด"
+        },
+        "preview": {
+            "Meeting": "การประชุมทางไกล",
+            "MeetingEnded": "การประชุมทางไกลสิ้นสุดลง"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "ขอให้พูด",
+            "msg": "ขณะนี้มีผู้พูด {{count}} คนในการประชุม คุณต้องการแทนที่หนึ่งในนั้นหลังจากปล่อยให้พวกเขาพูดจบ {{seconds}} วินาทีหรือไม่?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "คุณจะนำเสนอไหม? คุณสามารถใช้พื้นที่นี้เพื่ออัปโหลดสื่อสำหรับการนำเสนอของคุณร่วมกัน ใช้ปุ่มบวก",
+        "Alert": "เมื่อกิจกรรมเริ่มต้น การนำเสนอที่เกี่ยวข้องจะเริ่มปรากฏในหน้านี้",
+        "ClickHereForFullscreen": "การนำเสนอจะปรากฏที่นี่ คลิกที่นี่เพื่อดูแบบเต็มหน้าจอ",
+        "question": {
+            "ScanThisQRCode": "สแกนรหัส QR นี้เพื่อตอบ"
+        }
+    }
+}

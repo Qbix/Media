@@ -1,0 +1,26 @@
+.Media_feed_preview_tool {
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px silver;
+    cursor: pointer;
+}
+.Media_feed_access_mask {
+    z-index: 9999 !important;
+
+}
+.Q_overlay.Media_feed_access {
+    z-index: 10000 !important;
+}
+.Q_overlay.Media_feed_access .Q_dialog_content {
+    padding: 10px;
+}
+.Q_overlay.Media_feed_access .Q_dialog_content .picker__input,
+.Q_overlay.Media_feed_access .Q_dialog_content textarea,
+.Q_overlay.Media_feed_access .Q_dialog_content button {
+    height: 40px;
+    width: 300px;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 10px;
+    display: block;
+}

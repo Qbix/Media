@@ -1,0 +1,122 @@
+
+
+/*toggle checkbox: start*/
+.webrtc-permissions-limits-toggle {
+    display: flex;
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 10px 20px 10px;
+    justify-content: flex-end;
+  }
+  
+  .webrtc-permissions-limits-toggle-cover {
+    user-select: none;
+  }
+  .webrtc-permissions-limits-toggle-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+  }
+  
+  .webrtc-permissions-limits-toggle-knobs,
+  .webrtc-permissions-limits-toggle-layer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  
+  .webrtc-permissions-limits-toggle-button {
+    position: relative;
+    width: 74px;
+    height: 36px;
+    overflow: hidden;
+  }
+  
+  .webrtc-permissions-limits-toggle-button.toggle-button-r,
+  .webrtc-permissions-limits-toggle-button.toggle-button-r .webrtc-permissions-limits-toggle-layer {
+    border-radius: 100px;
+    display: block;
+  }
+
+  
+.webrtc-permissions-limits-toggle-checkbox {
+    z-index: 3;
+    position: absolute;
+    top: -999999px;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .webrtc-permissions-limits-toggle-knobs {
+    z-index: 2;
+  }
+  
+  .webrtc-permissions-limits-toggle-layer {
+    width: 100%;
+    background-color: #ebf7fc;
+    transition: 0.3s ease all;
+    z-index: 1;
+  }
+  
+  .webrtc-permissions-limits-toggle-button .webrtc-permissions-limits-toggle-knobs:before {
+    box-sizing: content-box;
+    content: "OFF";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 20px;
+    height: 10px;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1;
+    padding: 9px 4px;
+    background-color: #878787;
+    border-radius: 50%;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+  }
+  
+  .webrtc-permissions-limits-toggle-button .webrtc-permissions-limits-toggle-checkbox:checked + .webrtc-permissions-limits-toggle-knobs:before {
+    content: "ON";
+    left: 42px;
+    background-color: #00bf0f;
+  }
+  
+  .webrtc-permissions-limits-toggle-button .webrtc-permissions-limits-toggle-checkbox:checked ~ .webrtc-permissions-limits-toggle-layer {
+    background-color: #ebfcec;
+  }
+  
+  .webrtc-permissions-limits-toggle-button .webrtc-permissions-limits-toggle-knobs,
+  .webrtc-permissions-limits-toggle-button .webrtc-permissions-limits-toggle-knobs:before,
+  .webrtc-permissions-limits-toggle-button .webrtc-permissions-limits-toggle-layer {
+    transition: 0.3s ease all;
+  }
+  /*toggle checkbox: end*/
+
+
+  .webrtc-limits-manager .limits-form-container {
+    display: table;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+  .webrtc-limits-manager .limits-form-param {
+    display: table-row;
+    padding: 10px 0;
+  }
+  .webrtc-limits-manager .limits-form-param .limits-form-label {
+    display: table-cell;
+    padding-right: 10px;
+  }
+  .webrtc-limits-manager .limits-form-param .limits-form-input {
+    display: table-cell;
+  }

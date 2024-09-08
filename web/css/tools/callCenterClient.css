@@ -1,0 +1,81 @@
+.media-callcenter-c-waiting-content {
+    padding: 10px;
+    text-align: center;
+}
+
+.media-callcenter-c-loader-ring  {
+    --uib-size: 40px;
+    --uib-speed: 2s;
+    --uib-color: #006fce;
+
+    height: var(--uib-size);
+    width: var(--uib-size);
+    vertical-align: middle;
+    transform-origin: center;
+    animation: rotate var(--uib-speed) linear infinite;
+}
+
+.media-callcenter-c-loader-ring  circle {
+    fill: none;
+    stroke: var(--uib-color);
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    animation: stretch calc(var(--uib-speed) * 0.75) ease-in-out infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes stretch {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 90, 200;
+        stroke-dashoffset: -35px;
+    }
+
+    100% {
+        stroke-dashoffset: -124px;
+    }
+}
+
+
+.media-callcenter-c-waiting-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.media-callcenter-c-waiting-buttons .media-callcenter-c-waiting-hang-up {
+    width: 50px;
+    cursor: pointer;
+}
+.media-callcenter-c-waiting-buttons .media-callcenter-c-waiting-hang-up svg{
+    max-width: 100%;
+    height: auto;
+}
+.media-callcenter-c-waiting-buttons .media-callcenter-c-waiting-hang-up:hover svg path{
+    fill: #d93c3c !important;
+}
+.media-callcenter-c-waiting-chat .Streams_chat_call.Streams_chat_submit_replacement {
+    display: none;
+}
+.media-callcenter-c-waiting .Q_dialog_title {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+}
+.media-callcenter-c-waiting .Q_dialog_title .media-callcenter-c-waiting-hang-up {
+    height: 24px;
+    cursor: pointer;
+}
+.media-callcenter-c-waiting .Q_dialog_title .media-callcenter-c-waiting-hang-up svg{
+    height: 100%;
+    width: auto;
+}

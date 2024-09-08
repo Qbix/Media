@@ -1,0 +1,256 @@
+{
+    "Shows": "Παραστάσεις",
+    "Clips": "Κλιπ",
+    "Video": "βίντεο",
+    "Audio": "Ήχος",
+    "categories": {
+        "Clips": "Κλιπ πολυμέσων",
+        "Episodes": "Επεισόδια"
+    },
+    "NewEpisode": "Νέο επεισόδιο",
+    "NewClip": "Νέο κλιπ",
+    "LiveShow": "Ζωντανό πρόγραμμα",
+    "Save": "Αποθηκεύσετε",
+    "ViewFullEpisode": "Δείτε το πλήρες επεισόδιο",
+    "CreditsEarned": "Κερδισμένες πιστώσεις",
+    "VideoTitle": "Τίτλος ή διεύθυνση βίντεο",
+    "NewClipTitlePlaceholder": "Εισαγάγετε τον τίτλο του κλιπ",
+    "NewClipDescriptionPlaceholder": "Εισαγάγετε Περιγραφή κλιπ",
+    "switchVisualization": "Εναλλαγή οπτικοποίησης",
+    "joinLiveShow": "Εγγραφείτε στο Live Show",
+    "showTwitchLiveStream": "Εμφάνιση ζωντανής ροής Twitch",
+    "showVoiceChat": "Εμφάνιση φωνητικής συνομιλίας",
+    "AreYouSureKick": "Είστε βέβαιοι ότι θέλετε να ξεκινήσετε αυτόν τον χρήστη;",
+    "AreYouSureDeleteEpisode": "Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτό το επεισόδιο;",
+    "Yes": "Ναί",
+    "No": "Οχι",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Συνδετήρας",
+            "description": "κλιπ πολυμέσων"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Τηλεδιάσκεψη",
+            "description": "μια διαδικτυακή διάσκεψη βίντεο\/ήχου"
+        },
+        "Media\/calls": {
+            "displayType": "κλήσεις",
+            "description": "κατηγορία Media\/WebRTC",
+            "MaxRelationsExceeded": "Υπέρβαση του μέγιστου αριθμού κλήσεων"
+        }
+    },
+    "feeds": {
+        "Title": "Κάμερες",
+        "filterByTitle": "Βρείτε ροές ανά τίτλο",
+        "RequestFeedAccess": "Ζητήστε πρόσβαση στη ροή",
+        "New": "+ Νέα ροή",
+        "filterFeeds": "Φιλτράρισμα ροών",
+        "NewFeed": "Νέα ροή",
+        "NoneYet": "Δεν έχουν δημιουργηθεί ακόμα ροές.",
+        "AreYouSure": "Είσαι σίγουρος?",
+        "FilterByDate": "Φιλτράρισμα κατά ημερομηνία",
+        "newFeeds": "Έχετε {{1}} νέες ροές",
+        "Description": "{{1}} ροές",
+        "Keywords": "{{1}} ροές"
+    },
+    "feed": {
+        "HostedBy": "Φιλοξενείται από {{name}}",
+        "Name": "Ονομα",
+        "Conversation": "Συνομιλία",
+        "CloseFeed": {
+            "button": "Κλείσιμο ροής",
+            "Cancel": "Είστε βέβαιοι ότι θέλετε να κλείσετε αυτήν τη ροή;",
+            "Participant": "Υπάρχει 1 συμμετέχων σε αυτήν τη ροή",
+            "Participants": "Υπάρχουν {{count}} συμμετέχοντες σε αυτήν τη ροή"
+        },
+        "Calendar": "Ημερολόγιο",
+        "TitleOfFeed": "Τίτλος ροής:",
+        "EmptyList": "Κενή λίστα",
+        "EmptyVideos": "Δεν υπάρχουν ακόμα κλιπ",
+        "AccessReason": "αναφέρετε τον λόγο",
+        "Proceed": "Προχωρώ",
+        "FeedAlreadyClosed": "Αυτή η ροή έχει ήδη κλείσει",
+        "RtmpLinkNote": "Κάντε κλικ για να αντιγράψετε αυτόν τον σύνδεσμο στο πρόχειρο",
+        "SelectClip": "Επιλέξτε την ημερομηνία που θέλετε να δείτε",
+        "Request": "Αίτηση"
+    },
+    "newFeed": {
+        "Title": "Νέα ροή",
+        "locationTitle": "Ορίστε την τοποθεσία σας",
+        "SetLocation": "Ορισμός τοποθεσίας μου",
+        "Starting": "Εκκίνηση",
+        "Day": "Ημέρα",
+        "Create": "Δημιουργώ",
+        "Continue": "Να συνεχίσει",
+        "FeedTitle": "Τίτλος ροής",
+        "SetTitle": "Ορίστε τον τίτλο ροής"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} ζήτησε πρόσβαση στο {{& stream.fields.title}} με τον λόγο &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "συμμετείχε στην κλήση σας",
+        "SubjectJoinedYourCall": "{{subject}} συμμετείχε στην κλήση σας"
+    },
+    "RealTimeCall": "Κλήση σε πραγματικό χρόνο",
+    "JoinWebRTC": "Τηλεδιάσκεψη",
+    "webrtc": {
+        "notAllowedToJoinCall": "Δεν έχετε άδεια συμμετοχής σε αυτήν τη ροή.",
+        "streamTitle": "{{1}} ξεκίνησε μια τηλεδιάσκεψη",
+        "allow": {
+            "dialogTitle": "Συνδετικός",
+            "microphoneBtn": "Ενεργοποίηση μικροφώνου",
+            "cameraBtn": "Ενεργοποίηση κάμερας",
+            "cameraAndMicrophoneBtn": "Ενεργοποιήστε την κάμερα και το μικρόφωνο"
+        },
+        "preparing": {
+            "dialogTitle": "Ενεργοποιήστε\/απενεργοποιήστε την κάμερα ή το μικρόφωνο πριν εγγραφείτε",
+            "micIsOff": "Το μικρόφωνο είναι απενεργοποιημένο",
+            "micIsOn": "Το μικρόφωνο είναι ενεργοποιημένο",
+            "cameraIsOff": "Η κάμερα είναι απενεργοποιημένη",
+            "cameraIsOn": "Η κάμερα είναι ενεργοποιημένη",
+            "screenSharingIsOn": "Η κοινή χρήση οθόνης είναι ενεργοποιημένη",
+            "screenSharingIsOff": "Κοινή χρήση οθόνης",
+            "joinNow": "Εγγραφείτε στην κλήση"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Οδηγίες",
+            "permissionDenied": "Απορρίφθηκε η άδεια για {{kind}} . Για να το χρησιμοποιήσετε, ακολουθήστε τα παρακάτω βήματα:",
+            "point1": "Μεταβείτε στις &quot;Ρυθμίσεις&quot; -&gt; &quot;Σύνθετες&quot; -&gt; &quot;Απόρρητο και ασφάλεια&quot; -&gt; &quot;Ρυθμίσεις τοποθεσίας&quot; -&gt; &quot;Κάμερα&quot; ή &quot;Ρυθμίσεις τοποθεσίας&quot; -&gt; &quot;Μικρόφωνο&quot;",
+            "point2": "Καταργήστε {{hostname}} από τη λίστα &quot;Αποκλεισμός&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Οδηγίες",
+            "permissionDenied": "Απορρίφθηκε η άδεια για {{kind}} . Επαναλάβετε τη φόρτωση αυτής της σελίδας και επιβεβαιώστε την πρόσβαση στο {{kind}} για να συμμετάσχετε στη διάσκεψη."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Οδηγίες",
+            "permissionDenied": "Απορρίφθηκε η άδεια για {{kind}} . Για να το χρησιμοποιήσετε, ακολουθήστε τα παρακάτω βήματα:",
+            "point1": "Μεταβείτε στις Ρυθμίσεις Android",
+            "point2": "Ανοίξτε &quot;Εφαρμογές και ειδοποιήσεις&quot;",
+            "point3": "Βρείτε το &quot; {{communityName}} &quot; και ανοίξτε το",
+            "point4": "Πατήστε Δικαιώματα",
+            "point5": "Ενεργοποίηση {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Οδηγίες",
+            "permissionDenied": "Απορρίφθηκε η άδεια για {{kind}} . Για να το χρησιμοποιήσετε, ακολουθήστε τα παρακάτω βήματα:",
+            "point1": "Μεταβείτε στις Ρυθμίσεις iOS",
+            "point2": "Ανοίξτε το &quot;Απόρρητο&quot;",
+            "point3": "Βρείτε {{kind}} και ανοίξτε το",
+            "point4": "Βρείτε το &quot; {{communityName}} &quot; και ενεργοποιήστε το"
+        },
+        "fbLive": {
+            "dialogTitle": "Ξεκίνησε η ζωντανή ροή στο Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Μπήκατε στο δωμάτιο",
+            "joining": "Συμμετοχή: {{userName}}",
+            "sbLeftRoom": "{{userName}} έφυγαν από το δωμάτιο",
+            "switchingRoom": "Εναλλάκτης...",
+            "forceDisconnecting": "Θα αποσυνδεθείτε μέσα σε 5 δευτερόλεπτα",
+            "forceDisconnectingImmediately": "Έχετε αποσυνδεθεί από έναν κεντρικό υπολογιστή",
+            "youLeftRoom": "Έφυγες από το δωμάτιο",
+            "codeCopied": "Έφυγες από το δωμάτιο",
+            "sbBeganFbLive": "{{userName}} άρχισε να μεταδίδει αυτήν την κλήση στο Facebook",
+            "sbStoppedFbLive": "{{userName}} σταμάτησε να μεταδίδει αυτήν την κλήση στο Facebook",
+            "youBeganFbLive": "Ξεκινήσατε να μεταδίδετε αυτήν την κλήση στο Facebook",
+            "youStoppedFbLive": "Σταματήσατε τη μετάδοση αυτής της κλήσης στο Facebook",
+            "youStartedLive": "Ξεκινήσατε τη μετάδοση αυτής της κλήσης σε προσαρμοσμένο RTMP",
+            "youStoppedLive": "Σταματήσατε τη μετάδοση αυτής της κλήσης σε προσαρμοσμένο RTMP",
+            "sbStartedLiveStreaming": "{{userName}} ξεκίνησε ζωντανά",
+            "sbStoppedLiveStreaming": "{{userName}} τελείωσε ζωντανά",
+            "liveStopped": "Παρουσιάστηκε σφάλμα κατά την αποστολή του βίντεο στο τελικό σημείο",
+            "youBeganVideoRecording": "Αρχίσατε να ηχογραφείτε αυτό το συνέδριο",
+            "youStoppedVideoRecording": "Σταματήσατε την εγγραφή αυτής της διάσκεψης",
+            "linkCopiedToCb": "Ο σύνδεσμος αντιγράφηκε στο πρόχειρο",
+            "codeCopiedToCb": "Ο κώδικας αντιγράφηκε στο πρόχειρο",
+            "userHasNoVideo": "Ο συμμετέχων δεν έχει βίντεο",
+            "openInBrowserAlert": "Ανοίξτε τον σύνδεσμο στο πρόγραμμα περιήγησης Safari για να συμμετάσχετε στη διάσκεψη.",
+            "allowedVideoLimit": "Επιτρέπονται μόνο {{limit}} βίντεο σε αυτό το δωμάτιο",
+            "allowedAudioLimit": "Επιτρέπονται μόνο {{limit}} μικρόφωνα σε αυτό το δωμάτιο"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Ρυθμίσεις βίντεο",
+            "webCamera": "Web Camera",
+            "screenSharing": "Κοινή χρήση οθόνης",
+            "shareAnotherScreen": "Κοινή χρήση άλλης οθόνης",
+            "turnOffCameras": "Απενεργοποιήστε την κάμερα",
+            "turnOffVideo": "Απενεργοποιήστε την κοινή χρήση κάμερας\/οθόνης",
+            "turnOffAudioInput": "Σίγαση μικροφώνου",
+            "turnOffScreenSharing": "Απενεργοποιήστε την κοινή χρήση οθόνης",
+            "cameraIsTurnedOff": "Η κάμερα είναι απενεργοποιημένη",
+            "micIsTurnedOff": "Το μικρόφωνο είναι απενεργοποιημένο",
+            "startFBLive": "Ξεκινήστε το Facebook Livestream",
+            "stopFBLive": "Σταματήστε τη ζωντανή ροή του Facebook",
+            "startRecording": "Ξεκινήστε την εγγραφή",
+            "stopRecording": "Διακοπή εγγραφής",
+            "start": "Αρχή",
+            "stop": "Να σταματήσει",
+            "recordingInProgress": "Η ηχογράφηση είναι σε εξέλιξη...",
+            "fbLiveTitle": "Τίτλος Livestream",
+            "fbLiveDescription": "Περιγράψτε τη ζωντανή ροή σας. Περί τίνος πρόκειται?",
+            "fbOnlyMeLiveAccess": "Μόνο εγώ",
+            "fbFriendsAccess": "Οι φιλοι",
+            "fbPublicAccess": "Δημόσιο",
+            "publishOnTimeline": "Δημοσίευση στο χρονοδιάγραμμα",
+            "publishToGroup": "Δημοσίευση στην ομάδα",
+            "fbStartLive": "Μεταβείτε ζωντανά",
+            "fbStopLive": "Τερματίστε τη ζωντανή ροή",
+            "streamingSettings": "Ρυθμίσεις",
+            "manageStream": "Διαχειριστείτε τη ζωντανή ροή",
+            "fbEmbedCode": "Ενθέτω",
+            "copy": "αντίγραφο",
+            "streamToRTMP": "Ροή σε προσαρμοσμένο RTMP",
+            "startBroadcasting": "Ξεκινήστε τη μετάδοση",
+            "broadcastingInProgress": "Η μετάδοση είναι σε εξέλιξη",
+            "share": "Μερίδιο",
+            "startClodRecording": "Ξεκινήστε την εγγραφή στο Cloud",
+            "startLocRecording": "Ξεκινήστε την τοπική εγγραφή",
+            "stopClodRecording": "Διακοπή εγγραφής στο Cloud",
+            "stopLocRecording": "Διακοπή τοπικής εγγραφής"
+        },
+        "audioSettings": {
+            "dialogTitle": "Ρυθμίσεις ήχου",
+            "speakers": "Ηχεία",
+            "microphone": "Μικρόφωνο"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Διαχείριση εκπομπής"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Ρυθμίσεις συμμετεχόντων",
+            "disconnect": "Αποσυνδέω",
+            "floatingScreens": "Πλωτές Οθόνες",
+            "tiledScreens": "Σίτες με πλακάκια",
+            "loudestExceptMe": "Πιο δυνατά εκτός από εμένα",
+            "maximizeLoudest": "Μεγιστοποίηση πιο δυνατά",
+            "staticMaximized": "Στατική μεγιστοποίηση",
+            "fullScreen": "ΠΛΗΡΗΣ ΟΘΟΝΗ",
+            "manual": "Εγχειρίδιο",
+            "turnOffCamera": "Απόκρυψη βίντεο",
+            "turnOffAudio": "Σίγαση ήχου",
+            "turnOffScreenSharing": "Απόκρυψη κοινής χρήσης οθόνης",
+            "turnOnCamera": "Εμφάνιση βίντεο",
+            "turnOnAudio": "Κατάργηση σίγασης ήχου",
+            "turnOnScreenSharing": "Εμφάνιση κοινής χρήσης οθόνης"
+        },
+        "streamingSettings": {
+            "title": "Απευθείας μετάδοση"
+        },
+        "preview": {
+            "Meeting": "Τηλεδιάσκεψη",
+            "MeetingEnded": "Ολοκληρώθηκε η τηλεδιάσκεψη"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Αίτημα για ομιλία",
+            "msg": "Αυτή τη στιγμή μιλούν {{count}} άτομα στη συνάντηση. Θέλετε να αντικαταστήσετε ένα από αυτά αφού τους αφήσετε {{seconds}} δευτερόλεπτα να ολοκληρώσουν την ομιλία τους;"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Θα παρουσιάσεις; Μπορείτε να χρησιμοποιήσετε αυτόν τον χώρο για να ανεβάσετε μαζί υλικό για την παρουσίασή σας. Χρησιμοποιήστε το κουμπί Συν.",
+        "Alert": "Καθώς ξεκινούν οι εκδηλώσεις, οι αντίστοιχες παρουσιάσεις τους θα αρχίσουν να εμφανίζονται σε αυτήν τη σελίδα",
+        "ClickHereForFullscreen": "Οι παρουσιάσεις θα εμφανιστούν εδώ. Κάντε κλικ εδώ για να μεταβείτε σε πλήρη οθόνη.",
+        "question": {
+            "ScanThisQRCode": "Σαρώστε αυτόν τον κωδικό QR για να απαντήσετε"
+        }
+    }
+}

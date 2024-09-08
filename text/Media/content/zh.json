@@ -1,0 +1,256 @@
+{
+    "Shows": "演出",
+    "Clips": "短片",
+    "Video": "视频",
+    "Audio": "音讯",
+    "categories": {
+        "Clips": "媒体片段",
+        "Episodes": "集数"
+    },
+    "NewEpisode": "新剧集",
+    "NewClip": "新剪辑",
+    "LiveShow": "直播",
+    "Save": "救",
+    "ViewFullEpisode": "查看完整剧集",
+    "CreditsEarned": "获得的学分",
+    "VideoTitle": "影片标题或网址",
+    "NewClipTitlePlaceholder": "输入剪辑标题",
+    "NewClipDescriptionPlaceholder": "输入剪辑描述",
+    "switchVisualization": "切换可视化",
+    "joinLiveShow": "加入现场表演",
+    "showTwitchLiveStream": "显示 Twitch 直播",
+    "showVoiceChat": "显示语音聊天",
+    "AreYouSureKick": "您确定要启动此用户吗？",
+    "AreYouSureDeleteEpisode": "确定要删除此剧集吗？",
+    "Yes": "是的",
+    "No": "不",
+    "types": {
+        "Media\/clip": {
+            "displayType": "夹子",
+            "description": "媒体剪辑"
+        },
+        "Media\/WebRTC": {
+            "displayType": "电话会议",
+            "description": "在线视频\/音频会议"
+        },
+        "Media\/calls": {
+            "displayType": "来电",
+            "description": "媒体\/WebRTC 类别",
+            "MaxRelationsExceeded": "超出最大通话次数"
+        }
+    },
+    "feeds": {
+        "Title": "相机",
+        "filterByTitle": "按标题查找提要",
+        "RequestFeedAccess": "请求提要访问权限",
+        "New": "+ 新饲料",
+        "filterFeeds": "过滤提要",
+        "NewFeed": "新饲料",
+        "NoneYet": "尚未形成提要。",
+        "AreYouSure": "你确定吗？",
+        "FilterByDate": "按日期过滤",
+        "newFeeds": "您有 {{1}} 个新供稿",
+        "Description": "{{1}} 个供稿",
+        "Keywords": "{{1}} 个供稿"
+    },
+    "feed": {
+        "HostedBy": "由 {{name}} 主持",
+        "Name": "姓名",
+        "Conversation": "对话",
+        "CloseFeed": {
+            "button": "关闭提要",
+            "Cancel": "您确定要关闭此提要吗？",
+            "Participant": "此供稿中有 1 位参与者",
+            "Participants": "此供稿中有 {{count}} 个参与者"
+        },
+        "Calendar": "日历",
+        "TitleOfFeed": "饲料标题：",
+        "EmptyList": "空列表",
+        "EmptyVideos": "还没有剪辑",
+        "AccessReason": "请说明原因",
+        "Proceed": "继续",
+        "FeedAlreadyClosed": "此 Feed 已关闭",
+        "RtmpLinkNote": "单击以将此链接复制到剪贴板",
+        "SelectClip": "选择您要查看的日期",
+        "Request": "要求"
+    },
+    "newFeed": {
+        "Title": "新饲料",
+        "locationTitle": "设置您的位置",
+        "SetLocation": "设置我的位置",
+        "Starting": "开始",
+        "Day": "天",
+        "Create": "创造",
+        "Continue": "继续",
+        "FeedTitle": "提要标题",
+        "SetTitle": "请设置提要标题"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} 请求访问 {{& stream.fields.title}}，原因为“{{& instructions.reason}}}”",
+        "JoinedWebRTC": "加入了你的通话",
+        "SubjectJoinedYourCall": "{{subject}}加入了你的通话"
+    },
+    "RealTimeCall": "实时通话",
+    "JoinWebRTC": "电话会议",
+    "webrtc": {
+        "notAllowedToJoinCall": "您无权加入此信息流。",
+        "streamTitle": "{{1}}开始电话会议",
+        "allow": {
+            "dialogTitle": "连接中",
+            "microphoneBtn": "启用麦克风",
+            "cameraBtn": "启用相机",
+            "cameraAndMicrophoneBtn": "启用摄像头和麦克风"
+        },
+        "preparing": {
+            "dialogTitle": "加入前打开\/关闭摄像头或麦克风",
+            "micIsOff": "麦克风已关闭",
+            "micIsOn": "麦克风开启",
+            "cameraIsOff": "相机已关闭",
+            "cameraIsOn": "相机开启",
+            "screenSharingIsOn": "屏幕共享已开启",
+            "screenSharingIsOff": "共享屏幕",
+            "joinNow": "加入通话"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "指示",
+            "permissionDenied": "{{kind}}的权限被拒绝。要使用它，请按照以下步骤操作：",
+            "point1": "转到“设置”-&gt;“高级”-&gt;“隐私和安全”-&gt;“网站设置”-&gt;“相机”或“网站设置”-&gt;“麦克风”",
+            "point2": "从“阻止”列表中删除{{hostname}}"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "指示",
+            "permissionDenied": "{{kind}}的权限被拒绝。请重新加载此页面并确认访问{{kind}}以加入会议。"
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "指示",
+            "permissionDenied": "{{kind}}的权限被拒绝。要使用它，请按照以下步骤操作：",
+            "point1": "转到您的 Android 设置",
+            "point2": "打开“应用和通知”",
+            "point3": "找到“ {{communityName}} ”并打开",
+            "point4": "点击权限",
+            "point5": "启用{{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "指示",
+            "permissionDenied": "{{kind}}的权限被拒绝。要使用它，请按照以下步骤操作：",
+            "point1": "转到您的 iOS 设置",
+            "point2": "打开“隐私”",
+            "point3": "找到{{kind}}并打开它",
+            "point4": "找到“ {{communityName}} ”并启用"
+        },
+        "fbLive": {
+            "dialogTitle": "脸书直播开始"
+        },
+        "notices": {
+            "youJoinedRoom": "你加入了房间",
+            "joining": "加入人数： {{userName}}",
+            "sbLeftRoom": "{{userName}}离开房间",
+            "switchingRoom": "切换室...",
+            "forceDisconnecting": "您将在 5 秒内断开连接",
+            "forceDisconnectingImmediately": "您已被主机断开连接",
+            "youLeftRoom": "你离开了房间",
+            "codeCopied": "你离开了房间",
+            "sbBeganFbLive": "{{userName}}开始在 Facebook 上广播此电话",
+            "sbStoppedFbLive": "{{userName}}停止在 Facebook 上广播此电话",
+            "youBeganFbLive": "您开始在 Facebook 广播此通话",
+            "youStoppedFbLive": "您已停止在 Facebook 广播此通话",
+            "youStartedLive": "您开始将此调用广播到自定义 RTMP",
+            "youStoppedLive": "您已停止将此调用广播到自定义 RTMP",
+            "sbStartedLiveStreaming": "{{userName}}开始直播",
+            "sbStoppedLiveStreaming": "{{userName}}直播结束",
+            "liveStopped": "向端点发送视频时出错",
+            "youBeganVideoRecording": "您开始录制此会议",
+            "youStoppedVideoRecording": "您已停止录制此会议",
+            "linkCopiedToCb": "链接已复制到剪贴板",
+            "codeCopiedToCb": "代码复制到剪贴板",
+            "userHasNoVideo": "参与者没有视频",
+            "openInBrowserAlert": "在 Safari 浏览器中打开链接以加入会议。",
+            "allowedVideoLimit": "此房间仅允许播放{{limit}}视频",
+            "allowedAudioLimit": "这个房间只允许{{limit}}麦克风"
+        },
+        "settingsPopup": {
+            "dialogTitle": "视频设置",
+            "webCamera": "网络摄像头",
+            "screenSharing": "屏幕共享",
+            "shareAnotherScreen": "共享另一个屏幕",
+            "turnOffCameras": "关闭相机",
+            "turnOffVideo": "关闭相机\/屏幕共享",
+            "turnOffAudioInput": "静音麦克风",
+            "turnOffScreenSharing": "关闭屏幕共享",
+            "cameraIsTurnedOff": "相机已关闭",
+            "micIsTurnedOff": "麦克风已关闭",
+            "startFBLive": "开始 Facebook 直播",
+            "stopFBLive": "停止 Facebook 直播",
+            "startRecording": "开始录音",
+            "stopRecording": "停止录音",
+            "start": "开始",
+            "stop": "停止",
+            "recordingInProgress": "正在录制中...",
+            "fbLiveTitle": "直播标题",
+            "fbLiveDescription": "描述您的直播。它是关于什么的？",
+            "fbOnlyMeLiveAccess": "只有我",
+            "fbFriendsAccess": "朋友们",
+            "fbPublicAccess": "民众",
+            "publishOnTimeline": "在时间轴上发布",
+            "publishToGroup": "发布到群组",
+            "fbStartLive": "上线",
+            "fbStopLive": "结束直播",
+            "streamingSettings": "设置",
+            "manageStream": "管理直播",
+            "fbEmbedCode": "嵌入",
+            "copy": "复制",
+            "streamToRTMP": "流式传输到自定义 RTMP",
+            "startBroadcasting": "开始广播",
+            "broadcastingInProgress": "广播进行中",
+            "share": "分享",
+            "startClodRecording": "开始云录制",
+            "startLocRecording": "开始本地录制",
+            "stopClodRecording": "停止云录制",
+            "stopLocRecording": "停止本地录制"
+        },
+        "audioSettings": {
+            "dialogTitle": "音频设置",
+            "speakers": "音箱",
+            "microphone": "麦克风"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "管理广播"
+        },
+        "participantsPopup": {
+            "dialogTitle": "参与者设置",
+            "disconnect": "断开",
+            "floatingScreens": "浮动屏幕",
+            "tiledScreens": "平铺屏幕",
+            "loudestExceptMe": "除了我最响",
+            "maximizeLoudest": "最大化最响",
+            "staticMaximized": "静态最大化",
+            "fullScreen": "全屏",
+            "manual": "手动的",
+            "turnOffCamera": "隐藏视频",
+            "turnOffAudio": "静音",
+            "turnOffScreenSharing": "隐藏屏幕共享",
+            "turnOnCamera": "显示视频",
+            "turnOnAudio": "取消静音",
+            "turnOnScreenSharing": "显示屏幕共享"
+        },
+        "streamingSettings": {
+            "title": "现场直播"
+        },
+        "preview": {
+            "Meeting": "电话会议",
+            "MeetingEnded": "电话会议结束"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "请求发言",
+            "msg": "目前有{{count}}人在会上发言。在让他们说完{{seconds}}秒后，你想更换其中一个吗？"
+        }
+    },
+    "presentation": {
+        "PutTogether": "您要演讲吗？您可以使用此空间上传演讲材料。使用加号按钮。",
+        "Alert": "随着活动的开始，其相应的演示文稿将开始出现在此页面上",
+        "ClickHereForFullscreen": "演示文稿将在此处显示。单击此处可全屏显示。",
+        "question": {
+            "ScanThisQRCode": "扫描此二维码即可回答"
+        }
+    }
+}

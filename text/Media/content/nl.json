@@ -1,0 +1,256 @@
+{
+    "Shows": "Shows",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Mediafragmenten",
+        "Episodes": "Afleveringen"
+    },
+    "NewEpisode": "Nieuwe aflevering",
+    "NewClip": "Nieuwe clip",
+    "LiveShow": "Live show",
+    "Save": "Opslaan",
+    "ViewFullEpisode": "Bekijk de volledige aflevering",
+    "CreditsEarned": "Credits verdiend",
+    "VideoTitle": "Videotitel of URL",
+    "NewClipTitlePlaceholder": "Titel van clip invoeren",
+    "NewClipDescriptionPlaceholder": "Voer de clipbeschrijving in",
+    "switchVisualization": "Schakel visualisatie",
+    "joinLiveShow": "Doe mee met de liveshow",
+    "showTwitchLiveStream": "Twitch Live-stream weergeven",
+    "showVoiceChat": "Spraakchat tonen",
+    "AreYouSureKick": "Weet je zeker dat je deze gebruiker wilt verwijderen?",
+    "AreYouSureDeleteEpisode": "Weet je zeker dat je deze aflevering wilt verwijderen?",
+    "Yes": "Ja",
+    "No": "Nee",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Klem",
+            "description": "mediaclip"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Teleconferentie",
+            "description": "een online video-\/audioconferentie"
+        },
+        "Media\/calls": {
+            "displayType": "Oproepen",
+            "description": "categorie voor Media\/WebRTC",
+            "MaxRelationsExceeded": "Max aantal oproepen overschreden"
+        }
+    },
+    "feeds": {
+        "Title": "Camera&#39;s",
+        "filterByTitle": "Zoek feeds op titel",
+        "RequestFeedAccess": "Feedtoegang aanvragen",
+        "New": "+ Nieuwe feed",
+        "filterFeeds": "Filterfeeds",
+        "NewFeed": "Nieuwe feed",
+        "NoneYet": "Er zijn nog geen feeds gevormd.",
+        "AreYouSure": "Weet je het zeker?",
+        "FilterByDate": "Filteren op datum",
+        "newFeeds": "U heeft {{1}} nieuwe feeds",
+        "Description": "{{1}} feeds",
+        "Keywords": "{{1}} feeds"
+    },
+    "feed": {
+        "HostedBy": "Gehost door {{name}}",
+        "Name": "Naam",
+        "Conversation": "Gesprek",
+        "CloseFeed": {
+            "button": "Sluit feed",
+            "Cancel": "Weet u zeker dat u deze feed wilt sluiten?",
+            "Participant": "Er is 1 deelnemer in deze feed",
+            "Participants": "Er zijn {{count}} deelnemers in deze feed"
+        },
+        "Calendar": "Kalender",
+        "TitleOfFeed": "Titel van de feed:",
+        "EmptyList": "Lege lijst",
+        "EmptyVideos": "Nog geen clips",
+        "AccessReason": "vermeld de reden a.u.b",
+        "Proceed": "Doorgaan",
+        "FeedAlreadyClosed": "Deze feed is al gesloten",
+        "RtmpLinkNote": "Klik om deze link naar het klembord te kopiëren",
+        "SelectClip": "Selecteer de datum die u wilt zien",
+        "Request": "Verzoek"
+    },
+    "newFeed": {
+        "Title": "Nieuwe feed",
+        "locationTitle": "Bepaal jouw locatie",
+        "SetLocation": "Mijn locatie instellen",
+        "Starting": "Beginnend",
+        "Day": "Dag",
+        "Create": "Creëren",
+        "Continue": "Doorgaan",
+        "FeedTitle": "Feedtitel",
+        "SetTitle": "Stel de feedtitel in"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} heeft toegang gevraagd tot {{& stream.fields.title}} met reden &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "heeft zich bij uw oproep aangesloten",
+        "SubjectJoinedYourCall": "{{subject}} heeft zich bij uw oproep aangesloten"
+    },
+    "RealTimeCall": "Realtime oproep",
+    "JoinWebRTC": "Teleconferentie",
+    "webrtc": {
+        "notAllowedToJoinCall": "Je hebt geen toestemming om deel te nemen aan deze stream.",
+        "streamTitle": "{{1}} startte een teleconferentie",
+        "allow": {
+            "dialogTitle": "Verbinden",
+            "microphoneBtn": "Microfoon inschakelen",
+            "cameraBtn": "Camera inschakelen",
+            "cameraAndMicrophoneBtn": "Schakel camera en microfoon in"
+        },
+        "preparing": {
+            "dialogTitle": "Zet de camera of microfoon aan\/uit voordat je deelneemt",
+            "micIsOff": "Microfoon staat uit",
+            "micIsOn": "Microfoon staat aan",
+            "cameraIsOff": "Camera staat uit",
+            "cameraIsOn": "Camera staat aan",
+            "screenSharingIsOn": "Scherm delen staat aan",
+            "screenSharingIsOff": "Scherm delen",
+            "joinNow": "Doe mee aan de oproep"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instructies",
+            "permissionDenied": "Toestemming voor {{kind}} geweigerd. Volg deze stappen om het te gebruiken:",
+            "point1": "Ga naar &quot;Instellingen&quot; -&gt; &quot;Geavanceerd&quot; -&gt; &quot;Privacy en beveiliging&quot; -&gt; &quot;Site-instellingen&quot; -&gt; &quot;Camera&quot; of &quot;Site-instellingen&quot; -&gt; &quot;Microfoon&quot;",
+            "point2": "Verwijder {{hostname}} uit de lijst &quot;Blokkeren&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instructies",
+            "permissionDenied": "Toestemming voor {{kind}} geweigerd. Laad deze pagina opnieuw en bevestig de toegang tot {{kind}} om deel te nemen aan de conferentie."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instructies",
+            "permissionDenied": "Toestemming voor {{kind}} geweigerd. Volg deze stappen om het te gebruiken:",
+            "point1": "Ga naar je Android-instellingen",
+            "point2": "Open &quot;Apps &amp; meldingen&quot;",
+            "point3": "Zoek &quot; {{communityName}} &quot; en open het",
+            "point4": "Tik op Machtigingen",
+            "point5": "Schakel {{kind}} in"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instructies",
+            "permissionDenied": "Toestemming voor {{kind}} geweigerd. Volg deze stappen om het te gebruiken:",
+            "point1": "Ga naar je iOS-instellingen",
+            "point2": "&quot;Privacy&quot; openen",
+            "point3": "Zoek {{kind}} en open het",
+            "point4": "Zoek &quot; {{communityName}} &quot; en schakel in"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook-livestreaming is gestart"
+        },
+        "notices": {
+            "youJoinedRoom": "Je kwam bij de kamer",
+            "joining": "Deelname: {{userName}}",
+            "sbLeftRoom": "{{userName}} verliet de kamer",
+            "switchingRoom": "Schakelkamer...",
+            "forceDisconnecting": "Binnen 5 seconden wordt de verbinding verbroken",
+            "forceDisconnectingImmediately": "Je verbinding is verbroken door een host",
+            "youLeftRoom": "Je verliet de kamer",
+            "codeCopied": "Je verliet de kamer",
+            "sbBeganFbLive": "{{userName}} begon deze oproep op Facebook uit te zenden",
+            "sbStoppedFbLive": "{{userName}} stopte met het uitzenden van deze oproep op Facebook",
+            "youBeganFbLive": "Je begon deze oproep op Facebook uit te zenden",
+            "youStoppedFbLive": "Je bent gestopt met het uitzenden van deze oproep op Facebook",
+            "youStartedLive": "Je bent begonnen met het uitzenden van deze oproep naar aangepaste RTMP",
+            "youStoppedLive": "Je bent gestopt met het uitzenden van dit gesprek naar aangepaste RTMP",
+            "sbStartedLiveStreaming": "{{userName}} live gestart",
+            "sbStoppedLiveStreaming": "{{userName}} eindigde live",
+            "liveStopped": "Er is een fout opgetreden tijdens het verzenden van video naar het eindpunt",
+            "youBeganVideoRecording": "Je bent begonnen met het opnemen van deze conferentie",
+            "youStoppedVideoRecording": "U bent gestopt met het opnemen van deze conferentie",
+            "linkCopiedToCb": "Link gekopieerd naar klembord",
+            "codeCopiedToCb": "Code gekopieerd naar klembord",
+            "userHasNoVideo": "Deelnemer heeft geen video",
+            "openInBrowserAlert": "Open de link in de Safari-browser om deel te nemen aan de conferentie.",
+            "allowedVideoLimit": "Slechts {{limit}} video toegestaan in deze kamer",
+            "allowedAudioLimit": "In deze ruimte zijn slechts {{limit}} microfoons toegestaan"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Beeldinstellingen",
+            "webCamera": "Web Camera",
+            "screenSharing": "Scherm delen",
+            "shareAnotherScreen": "Deel een ander scherm",
+            "turnOffCameras": "Schakel de camera uit",
+            "turnOffVideo": "Schakel camera\/scherm delen uit",
+            "turnOffAudioInput": "Microfoon dempen",
+            "turnOffScreenSharing": "Schakel scherm delen uit",
+            "cameraIsTurnedOff": "Camera is uitgeschakeld",
+            "micIsTurnedOff": "Microfoon is uitgeschakeld",
+            "startFBLive": "Start Facebook Livestream",
+            "stopFBLive": "Stop Facebook Livestream",
+            "startRecording": "Begin met opnemen",
+            "stopRecording": "Stop met opnemen",
+            "start": "Begin",
+            "stop": "Stop",
+            "recordingInProgress": "Opname is bezig...",
+            "fbLiveTitle": "Titel van livestream",
+            "fbLiveDescription": "Beschrijf je livestream. Waar gaat het over?",
+            "fbOnlyMeLiveAccess": "Alleen ik",
+            "fbFriendsAccess": "Vrienden",
+            "fbPublicAccess": "Openbaar",
+            "publishOnTimeline": "Publiceer op tijdlijn",
+            "publishToGroup": "Publiceren naar groep",
+            "fbStartLive": "Ga leven",
+            "fbStopLive": "Livestream beëindigen",
+            "streamingSettings": "Instellingen",
+            "manageStream": "Livestream beheren",
+            "fbEmbedCode": "Integreren",
+            "copy": "Kopiëren",
+            "streamToRTMP": "Stream naar aangepaste RTMP",
+            "startBroadcasting": "Begin met uitzenden",
+            "broadcastingInProgress": "Er wordt uitgezonden",
+            "share": "Deel",
+            "startClodRecording": "Cloudopname starten",
+            "startLocRecording": "Lokale opname starten",
+            "stopClodRecording": "Stop de cloudopname",
+            "stopLocRecording": "Stop lokale opname"
+        },
+        "audioSettings": {
+            "dialogTitle": "Geluidsinstellingen",
+            "speakers": "Sprekers",
+            "microphone": "Microfoon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Uitzending beheren"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Instellingen voor deelnemers",
+            "disconnect": "Loskoppelen",
+            "floatingScreens": "Zwevende schermen",
+            "tiledScreens": "Betegelde schermen",
+            "loudestExceptMe": "Luidste behalve ik",
+            "maximizeLoudest": "Maximaliseer het hardst",
+            "staticMaximized": "Statisch gemaximaliseerd",
+            "fullScreen": "Volledig scherm",
+            "manual": "Handmatig",
+            "turnOffCamera": "Video verbergen",
+            "turnOffAudio": "Geluid dempen",
+            "turnOffScreenSharing": "Scherm delen verbergen",
+            "turnOnCamera": "Video tonen",
+            "turnOnAudio": "Geluid dempen opheffen",
+            "turnOnScreenSharing": "Scherm delen weergeven"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconferentie",
+            "MeetingEnded": "Teleconferentie beëindigd"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Verzoek om te spreken",
+            "msg": "Er spreken momenteel {{count}} mensen in de vergadering. Wil je een van hen vervangen nadat je ze {{seconds}} seconden de tijd hebt gegeven om te spreken?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Ga jij presenteren? U kunt deze ruimte gebruiken om materiaal voor uw presentatie samen te uploaden. Gebruik de Plus-knop.",
+        "Alert": "Zodra evenementen beginnen, verschijnen de bijbehorende presentaties op deze pagina",
+        "ClickHereForFullscreen": "Hier verschijnen presentaties. Klik hier om naar volledig scherm te gaan.",
+        "question": {
+            "ScanThisQRCode": "Scan deze QR-code om te antwoorden"
+        }
+    }
+}

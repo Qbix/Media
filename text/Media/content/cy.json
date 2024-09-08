@@ -1,0 +1,256 @@
+{
+    "Shows": "Dangos",
+    "Clips": "Clipiau",
+    "Video": "Fideo",
+    "Audio": "Sain",
+    "categories": {
+        "Clips": "Clipiau Cyfryngau",
+        "Episodes": "Episodau"
+    },
+    "NewEpisode": "Pennod Newydd",
+    "NewClip": "Clip Newydd",
+    "LiveShow": "Sioe Fyw",
+    "Save": "Arbedwch",
+    "ViewFullEpisode": "Gweld y Pennod Llawn",
+    "CreditsEarned": "Credydau a enillwyd",
+    "VideoTitle": "Teitl Fideo neu URL",
+    "NewClipTitlePlaceholder": "Rhowch Deitl y Clip",
+    "NewClipDescriptionPlaceholder": "Rhowch Disgrifiad o&#39;r Clip",
+    "switchVisualization": "Newid delweddu",
+    "joinLiveShow": "Ymunwch â Sioe Fyw",
+    "showTwitchLiveStream": "Dangos Twitch Live Stream",
+    "showVoiceChat": "Dangos Sgwrs Llais",
+    "AreYouSureKick": "Ydych chi&#39;n siŵr eich bod am gychwyn y defnyddiwr hwn?",
+    "AreYouSureDeleteEpisode": "Ydych chi&#39;n siŵr eich bod am ddileu&#39;r bennod hon?",
+    "Yes": "Oes",
+    "No": "Nac ydw",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "clip cyfryngau"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Telegynhadledd",
+            "description": "cynhadledd fideo\/sain ar-lein"
+        },
+        "Media\/calls": {
+            "displayType": "Galwadau",
+            "description": "categori ar gyfer Cyfryngau\/WebRTC",
+            "MaxRelationsExceeded": "Rhagor o alwadau"
+        }
+    },
+    "feeds": {
+        "Title": "Camerâu",
+        "filterByTitle": "Dod o hyd i ffrydiau yn ôl teitl",
+        "RequestFeedAccess": "Gofyn am fynediad porthiant",
+        "New": "+ Porthiant Newydd",
+        "filterFeeds": "Hidlo bwydo",
+        "NewFeed": "Porthiant Newydd",
+        "NoneYet": "Dim porthiant wedi&#39;i ffurfio eto.",
+        "AreYouSure": "Wyt ti&#39;n siwr?",
+        "FilterByDate": "Hidlo Erbyn Dyddiad",
+        "newFeeds": "Mae gennych {{1}} borthiant newydd",
+        "Description": "{{1}} porthiant",
+        "Keywords": "{{1}} porthiant"
+    },
+    "feed": {
+        "HostedBy": "Wedi&#39;i westeio gan {{name}}",
+        "Name": "Enw",
+        "Conversation": "Sgwrs",
+        "CloseFeed": {
+            "button": "Cau Porthiant",
+            "Cancel": "Ydych chi&#39;n siŵr eich bod am gau&#39;r porthwr hwn?",
+            "Participant": "Mae 1 cyfranogwr yn y porthiant hwn",
+            "Participants": "Mae {{count}} o gyfranogwyr yn y crynodeb hwn"
+        },
+        "Calendar": "Calendr",
+        "TitleOfFeed": "Teitl y porthiant:",
+        "EmptyList": "Rhestr wag",
+        "EmptyVideos": "Dim clipiau eto",
+        "AccessReason": "nodwch y rheswm",
+        "Proceed": "Ymlaen",
+        "FeedAlreadyClosed": "Mae&#39;r porthiant hwn eisoes wedi cau",
+        "RtmpLinkNote": "Cliciwch i gopïo&#39;r ddolen hon i&#39;r clipfwrdd",
+        "SelectClip": "Dewiswch y dyddiad rydych chi am ei weld",
+        "Request": "Cais"
+    },
+    "newFeed": {
+        "Title": "Porthiant Newydd",
+        "locationTitle": "Gosod Eich Lleoliad",
+        "SetLocation": "Gosod Fy Lleoliad",
+        "Starting": "Yn dechrau",
+        "Day": "Dydd",
+        "Create": "Creu",
+        "Continue": "Parhau",
+        "FeedTitle": "Teitl porthiant",
+        "SetTitle": "Gosodwch deitl porthiant"
+    },
+    "notifications": {
+        "Media\/feed\/access": "Gofynnodd {{{call 'avatar.displayName'}} am fynediad i {{& stream.fields.title}} gyda rheswm &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "ymuno â&#39;ch galwad",
+        "SubjectJoinedYourCall": "Ymunodd {{subject}} â&#39;ch galwad"
+    },
+    "RealTimeCall": "Galwad Amser Real",
+    "JoinWebRTC": "Telegynhadledd",
+    "webrtc": {
+        "notAllowedToJoinCall": "Nid oes gennych ganiatâd i ymuno â&#39;r ffrwd hon.",
+        "streamTitle": "Dechreuodd {{1}} Delegynhadledd",
+        "allow": {
+            "dialogTitle": "Cysylltu",
+            "microphoneBtn": "Galluogi Meicroffon",
+            "cameraBtn": "Galluogi Camera",
+            "cameraAndMicrophoneBtn": "Galluogi Camera a Meicroffon"
+        },
+        "preparing": {
+            "dialogTitle": "Trowch y camera neu&#39;r meic ymlaen \/ i ffwrdd cyn i chi ymuno",
+            "micIsOff": "Mae meic i ffwrdd",
+            "micIsOn": "Mae meic ymlaen",
+            "cameraIsOff": "Mae&#39;r camera i ffwrdd",
+            "cameraIsOn": "Mae&#39;r camera ymlaen",
+            "screenSharingIsOn": "Mae rhannu sgrin ymlaen",
+            "screenSharingIsOff": "Rhannu sgrin",
+            "joinNow": "Ymunwch â&#39;r Alwad"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Cyfarwyddiadau",
+            "permissionDenied": "Caniatâd ar gyfer {{kind}} wedi&#39;i wrthod. Er mwyn ei ddefnyddio, dilynwch y camau hyn:",
+            "point1": "Ewch i &quot;Gosodiadau&quot; -&gt; &quot;Uwch&quot; -&gt; &quot;Preifatrwydd a diogelwch&quot; -&gt; &quot;Gosodiadau Safle&quot; -&gt; &quot;Camera&quot; neu &quot;Gosodiadau Safle&quot; -&gt; &quot;Meicroffon&quot;",
+            "point2": "Tynnu {{hostname}} o&#39;r rhestr &quot;Bloc&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Cyfarwyddiadau",
+            "permissionDenied": "Caniatâd ar gyfer {{kind}} wedi&#39;i wrthod. Ail-lwythwch y dudalen hon a chadarnhewch fynediad i {{kind}} i ymuno â&#39;r gynhadledd."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Cyfarwyddiadau",
+            "permissionDenied": "Caniatâd ar gyfer {{kind}} wedi&#39;i wrthod. Er mwyn ei ddefnyddio, dilynwch y camau hyn:",
+            "point1": "Ewch i&#39;ch Gosodiadau Android",
+            "point2": "Agor &quot;Apiau a hysbysiadau&quot;",
+            "point3": "Darganfod &quot; {{communityName}} &quot; a&#39;i agor",
+            "point4": "Tap ar Caniatâd",
+            "point5": "Galluogi {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Cyfarwyddiadau",
+            "permissionDenied": "Caniatâd ar gyfer {{kind}} wedi&#39;i wrthod. Er mwyn ei ddefnyddio, dilynwch y camau hyn:",
+            "point1": "Ewch i&#39;ch Gosodiadau iOS",
+            "point2": "Agor &quot;Preifatrwydd&quot;",
+            "point3": "Dewch o hyd i {{kind}} a&#39;i agor",
+            "point4": "Darganfod &quot; {{communityName}} &quot; a galluogi"
+        },
+        "fbLive": {
+            "dialogTitle": "Dechreuodd ffrydio byw Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Fe wnaethoch chi ymuno â&#39;r ystafell",
+            "joining": "Yn ymuno: {{userName}}",
+            "sbLeftRoom": "Gadawodd {{userName}} yr ystafell",
+            "switchingRoom": "Wrthi&#39;n newid ystafell...",
+            "forceDisconnecting": "Byddwch yn cael eich datgysylltu o fewn 5 eiliad",
+            "forceDisconnectingImmediately": "Cawsoch eich datgysylltu gan westeiwr",
+            "youLeftRoom": "Gadawsoch yr ystafell",
+            "codeCopied": "Gadawsoch yr ystafell",
+            "sbBeganFbLive": "Dechreuodd {{userName}} ddarlledu&#39;r alwad hon yn Facebook",
+            "sbStoppedFbLive": "Rhoddodd {{userName}} y gorau i ddarlledu&#39;r alwad hon ar Facebook",
+            "youBeganFbLive": "Dechreuoch ddarlledu&#39;r alwad hon yn Facebook",
+            "youStoppedFbLive": "Fe wnaethoch chi roi&#39;r gorau i ddarlledu&#39;r alwad hon yn Facebook",
+            "youStartedLive": "Dechreuoch ddarlledu&#39;r alwad hon i RTMP personol",
+            "youStoppedLive": "Fe wnaethoch chi roi&#39;r gorau i ddarlledu&#39;r alwad hon i RTMP personol",
+            "sbStartedLiveStreaming": "Dechreuodd {{userName}} yn fyw",
+            "sbStoppedLiveStreaming": "Daeth {{userName}} i ben yn fyw",
+            "liveStopped": "Digwyddodd gwall wrth anfon fideo i endpoint",
+            "youBeganVideoRecording": "Dechreuoch chi recordio&#39;r gynhadledd hon",
+            "youStoppedVideoRecording": "Fe wnaethoch chi roi&#39;r gorau i recordio&#39;r gynhadledd hon",
+            "linkCopiedToCb": "Dolen wedi&#39;i chopïo i&#39;r clipfwrdd",
+            "codeCopiedToCb": "Cod wedi&#39;i gopïo i&#39;r clipfwrdd",
+            "userHasNoVideo": "Nid oes gan y cyfranogwr unrhyw fideo",
+            "openInBrowserAlert": "Agorwch y ddolen ym mhorwr Safari i ymuno â&#39;r gynhadledd.",
+            "allowedVideoLimit": "Dim ond {{limit}} fideo a ganiateir yn yr ystafell hon",
+            "allowedAudioLimit": "Dim ond {{limit}} meicroffonau a ganiateir yn yr ystafell hon"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Gosodiadau Fideo",
+            "webCamera": "Camera Gwe",
+            "screenSharing": "Rhannu Sgrin",
+            "shareAnotherScreen": "Rhannwch sgrin arall",
+            "turnOffCameras": "Trowch y camera i ffwrdd",
+            "turnOffVideo": "Diffodd rhannu camera\/sgrîn",
+            "turnOffAudioInput": "Tewi meicroffon",
+            "turnOffScreenSharing": "Diffodd rhannu sgrin",
+            "cameraIsTurnedOff": "Mae&#39;r camera wedi&#39;i ddiffodd",
+            "micIsTurnedOff": "Meicroffon wedi&#39;i ddiffodd",
+            "startFBLive": "Cychwyn Facebook Livestream",
+            "stopFBLive": "Stopiwch Facebook Livestream",
+            "startRecording": "Dechrau Recordio",
+            "stopRecording": "Stopio Recordio",
+            "start": "Dechrau",
+            "stop": "Stopio",
+            "recordingInProgress": "Mae recordio ar y gweill...",
+            "fbLiveTitle": "Teitl Livestream",
+            "fbLiveDescription": "Disgrifiwch eich Livestream. Am beth mae&#39;n sôn?",
+            "fbOnlyMeLiveAccess": "Dim ond fi",
+            "fbFriendsAccess": "Ffrindiau",
+            "fbPublicAccess": "Cyhoeddus",
+            "publishOnTimeline": "Cyhoeddi ar yr amserlen",
+            "publishToGroup": "Cyhoeddi i&#39;r grŵp",
+            "fbStartLive": "Ewch yn Fyw",
+            "fbStopLive": "Diwedd Livestream",
+            "streamingSettings": "Gosodiadau",
+            "manageStream": "Rheoli Livestream",
+            "fbEmbedCode": "Gwreiddio",
+            "copy": "Copi",
+            "streamToRTMP": "Ffrydio i RTMP personol",
+            "startBroadcasting": "Dechrau darlledu",
+            "broadcastingInProgress": "Mae darlledu ar y gweill",
+            "share": "Rhannu",
+            "startClodRecording": "Dechrau Recordio Cwmwl",
+            "startLocRecording": "Dechrau Recordio Lleol",
+            "stopClodRecording": "Stopio Recordio Cwmwl",
+            "stopLocRecording": "Stopio Recordio Lleol"
+        },
+        "audioSettings": {
+            "dialogTitle": "Gosodiadau Sain",
+            "speakers": "Siaradwyr",
+            "microphone": "Meicroffon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Rheoli Darllediad"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Gosodiadau Cyfranogwr",
+            "disconnect": "Datgysylltu",
+            "floatingScreens": "Sgriniau arnofiol",
+            "tiledScreens": "Sgriniau Teils",
+            "loudestExceptMe": "Cryf Ac eithrio Fi",
+            "maximizeLoudest": "Mwyhau Cryf",
+            "staticMaximized": "Mwyhau Statig",
+            "fullScreen": "Sgrin llawn",
+            "manual": "Llawlyfr",
+            "turnOffCamera": "Cuddio fideo",
+            "turnOffAudio": "Tewi sain",
+            "turnOffScreenSharing": "Cuddio rhannu sgrin",
+            "turnOnCamera": "Dangos fideo",
+            "turnOnAudio": "Dad-dewi sain",
+            "turnOnScreenSharing": "Dangos rhannu sgrin"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telegynhadledd",
+            "MeetingEnded": "Daeth telegynhadledd i ben"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Cais i Siarad",
+            "msg": "Ar hyn o bryd mae {{count}} o bobl yn siarad yn y cyfarfod. Ydych chi am ddisodli un ohonynt ar ôl caniatáu {{seconds}} eiliad iddynt orffen siarad?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "A fyddwch chi&#39;n cyflwyno? Gallwch ddefnyddio&#39;r gofod hwn i lanlwytho deunyddiau gyda&#39;ch gilydd ar gyfer eich cyflwyniad. Defnyddiwch y botwm Plus.",
+        "Alert": "Wrth i ddigwyddiadau ddechrau, bydd eu cyflwyniadau cyfatebol yn dechrau ymddangos ar y dudalen hon",
+        "ClickHereForFullscreen": "Bydd cyflwyniadau yn ymddangos yma. Cliciwch yma i fynd ar sgrin lawn.",
+        "question": {
+            "ScanThisQRCode": "Sganiwch y cod QR hwn i ateb"
+        }
+    }
+}

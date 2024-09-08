@@ -1,0 +1,256 @@
+{
+    "Shows": "Pořady",
+    "Clips": "Klipy",
+    "Video": "Video",
+    "Audio": "Zvuk",
+    "categories": {
+        "Clips": "Mediální klipy",
+        "Episodes": "Epizody"
+    },
+    "NewEpisode": "Nová epizoda",
+    "NewClip": "Nový klip",
+    "LiveShow": "Živé vystoupení",
+    "Save": "Uložit",
+    "ViewFullEpisode": "Zobrazit celou epizodu",
+    "CreditsEarned": "Získané kredity",
+    "VideoTitle": "Název videa nebo URL",
+    "NewClipTitlePlaceholder": "Zadejte název klipu",
+    "NewClipDescriptionPlaceholder": "Zadejte popis klipu",
+    "switchVisualization": "Přepnout vizualizaci",
+    "joinLiveShow": "Připojte se k živé show",
+    "showTwitchLiveStream": "Zobrazit Twitch Live Stream",
+    "showVoiceChat": "Zobrazit hlasový chat",
+    "AreYouSureKick": "Opravdu chcete tohoto uživatele vyhodit?",
+    "AreYouSureDeleteEpisode": "Opravdu chcete smazat tuto epizodu?",
+    "Yes": "Ano",
+    "No": "Ne",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Klip",
+            "description": "mediální klip"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Telekonference",
+            "description": "online video\/audio konference"
+        },
+        "Media\/calls": {
+            "displayType": "hovory",
+            "description": "kategorie pro Media\/WebRTC",
+            "MaxRelationsExceeded": "Překročen maximální počet hovorů"
+        }
+    },
+    "feeds": {
+        "Title": "Kamery",
+        "filterByTitle": "Vyhledejte zdroje podle názvu",
+        "RequestFeedAccess": "Požádejte o přístup ke zdroji",
+        "New": "+ Nový zdroj",
+        "filterFeeds": "Filtrovat kanály",
+        "NewFeed": "Nový zdroj",
+        "NoneYet": "Dosud nebyly vytvořeny žádné zdroje.",
+        "AreYouSure": "Jsi si jistá?",
+        "FilterByDate": "Filtrovat podle data",
+        "newFeeds": "Máte {{1}} nových zdrojů",
+        "Description": "{{1}} zdroje",
+        "Keywords": "{{1}} zdroje"
+    },
+    "feed": {
+        "HostedBy": "Pořádá {{name}}",
+        "Name": "název",
+        "Conversation": "Konverzace",
+        "CloseFeed": {
+            "button": "Zavřít kanál",
+            "Cancel": "Opravdu chcete tento zdroj zavřít?",
+            "Participant": "V tomto zdroji je 1 účastník",
+            "Participants": "V tomto zdroji je {{count}} účastníků"
+        },
+        "Calendar": "Kalendář",
+        "TitleOfFeed": "Název zdroje:",
+        "EmptyList": "Prázdný seznam",
+        "EmptyVideos": "Zatím žádné klipy",
+        "AccessReason": "uveďte prosím důvod",
+        "Proceed": "Pokračovat",
+        "FeedAlreadyClosed": "Tento zdroj je již uzavřen",
+        "RtmpLinkNote": "Kliknutím zkopírujete tento odkaz do schránky",
+        "SelectClip": "Vyberte datum, které chcete zobrazit",
+        "Request": "Žádost"
+    },
+    "newFeed": {
+        "Title": "Nový zdroj",
+        "locationTitle": "Nastavte svou polohu",
+        "SetLocation": "Nastavte moji polohu",
+        "Starting": "Začíná",
+        "Day": "Den",
+        "Create": "Vytvořit",
+        "Continue": "Pokračovat",
+        "FeedTitle": "Název zdroje",
+        "SetTitle": "Nastavte název zdroje"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} požádal o přístup k {{& stream.fields.title}} s důvodem „{{& instructions.reason}}}“",
+        "JoinedWebRTC": "se připojil k vašemu hovoru",
+        "SubjectJoinedYourCall": "{{subject}} se připojilo k vašemu hovoru"
+    },
+    "RealTimeCall": "Volání v reálném čase",
+    "JoinWebRTC": "Telekonference",
+    "webrtc": {
+        "notAllowedToJoinCall": "Nemáte oprávnění připojit se k tomuto streamu.",
+        "streamTitle": "{{1}} zahájila telekonferenci",
+        "allow": {
+            "dialogTitle": "Spojovací",
+            "microphoneBtn": "Povolit mikrofon",
+            "cameraBtn": "Povolit fotoaparát",
+            "cameraAndMicrophoneBtn": "Povolit fotoaparát a mikrofon"
+        },
+        "preparing": {
+            "dialogTitle": "Než se připojíte, zapněte\/vypněte kameru nebo mikrofon",
+            "micIsOff": "Mikrofon je vypnutý",
+            "micIsOn": "Mikrofon je zapnutý",
+            "cameraIsOff": "Kamera je vypnutá",
+            "cameraIsOn": "Kamera je zapnutá",
+            "screenSharingIsOn": "Sdílení obrazovky je zapnuto",
+            "screenSharingIsOff": "Sdílet obrazovku",
+            "joinNow": "Připojte se k výzvě"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instrukce",
+            "permissionDenied": "Povolení pro {{kind}} odepřeno. Chcete-li jej použít, postupujte takto:",
+            "point1": "Přejděte na &quot;Nastavení&quot; -&gt; &quot;Pokročilé&quot; -&gt; &quot;Ochrana soukromí a zabezpečení&quot; -&gt; &quot;Nastavení webu&quot; -&gt; &quot;Fotoaparát&quot; nebo &quot;Nastavení webu&quot; -&gt; &quot;Mikrofon&quot;",
+            "point2": "Odebrat {{hostname}} ze seznamu &quot;Blokovat&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instrukce",
+            "permissionDenied": "Povolení pro {{kind}} odepřeno. Znovu načtěte tuto stránku a potvrďte přístup k {{kind}} , abyste se mohli připojit ke konferenci."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instrukce",
+            "permissionDenied": "Povolení pro {{kind}} odepřeno. Chcete-li jej použít, postupujte takto:",
+            "point1": "Přejděte do Nastavení systému Android",
+            "point2": "Otevřete „Aplikace a oznámení“",
+            "point3": "Najděte &quot; {{communityName}} &quot; a otevřete jej",
+            "point4": "Klepněte na Oprávnění",
+            "point5": "Povolit {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instrukce",
+            "permissionDenied": "Povolení pro {{kind}} odepřeno. Chcete-li jej použít, postupujte takto:",
+            "point1": "Přejděte do Nastavení iOS",
+            "point2": "Otevřete &quot;Soukromí&quot;",
+            "point3": "Najděte {{kind}} a otevřete jej",
+            "point4": "Najděte &quot; {{communityName}} &quot; a povolte"
+        },
+        "fbLive": {
+            "dialogTitle": "Začalo živé vysílání na Facebooku"
+        },
+        "notices": {
+            "youJoinedRoom": "Připojil jsi se k místnosti",
+            "joining": "Připojování: {{userName}}",
+            "sbLeftRoom": "{{userName}} opustilo místnost",
+            "switchingRoom": "Přepínací místnost...",
+            "forceDisconnecting": "Do 5 sekund budete odpojeni",
+            "forceDisconnectingImmediately": "Byli jste odpojeni hostitelem",
+            "youLeftRoom": "Odešel jsi z místnosti",
+            "codeCopied": "Odešel jsi z místnosti",
+            "sbBeganFbLive": "{{userName}} začala vysílat tuto výzvu na Facebooku",
+            "sbStoppedFbLive": "{{userName}} přestalo vysílat tento hovor na Facebooku",
+            "youBeganFbLive": "Tuto výzvu jste začali vysílat na Facebooku",
+            "youStoppedFbLive": "Přestali jste tento hovor vysílat na Facebooku",
+            "youStartedLive": "Toto volání jste začali vysílat do vlastního RTMP",
+            "youStoppedLive": "Přestali jste vysílat toto volání na vlastní RTMP",
+            "sbStartedLiveStreaming": "{{userName}} začalo živě",
+            "sbStoppedLiveStreaming": "{{userName}} skončilo živě",
+            "liveStopped": "Při odesílání videa do koncového bodu došlo k chybě",
+            "youBeganVideoRecording": "Začal jste nahrávat tuto konferenci",
+            "youStoppedVideoRecording": "Přestali jste nahrávat tuto konferenci",
+            "linkCopiedToCb": "Odkaz zkopírován do schránky",
+            "codeCopiedToCb": "Kód byl zkopírován do schránky",
+            "userHasNoVideo": "Účastník nemá žádné video",
+            "openInBrowserAlert": "Otevřete odkaz v prohlížeči Safari a připojte se ke konferenci.",
+            "allowedVideoLimit": "V této místnosti je povoleno pouze {{limit}} videí",
+            "allowedAudioLimit": "V této místnosti je povoleno pouze {{limit}} mikrofonů"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Nastavení videa",
+            "webCamera": "Webová kamera",
+            "screenSharing": "Sdílení obrazovky",
+            "shareAnotherScreen": "Sdílejte další obrazovku",
+            "turnOffCameras": "Vypněte fotoaparát",
+            "turnOffVideo": "Vypněte sdílení kamery\/obrazovky",
+            "turnOffAudioInput": "Ztlumit mikrofon",
+            "turnOffScreenSharing": "Vypněte sdílení obrazovky",
+            "cameraIsTurnedOff": "Kamera je vypnutá",
+            "micIsTurnedOff": "Mikrofon je vypnutý",
+            "startFBLive": "Spusťte Facebook Livestream",
+            "stopFBLive": "Zastavte Facebook Livestream",
+            "startRecording": "Začít nahrávat",
+            "stopRecording": "Zastavit nahrávání",
+            "start": "Start",
+            "stop": "Stop",
+            "recordingInProgress": "Nahrávání probíhá...",
+            "fbLiveTitle": "Název živého přenosu",
+            "fbLiveDescription": "Popište svůj přímý přenos. O čem to je?",
+            "fbOnlyMeLiveAccess": "Jen já",
+            "fbFriendsAccess": "Přátelé",
+            "fbPublicAccess": "Veřejnost",
+            "publishOnTimeline": "Publikovat na časové ose",
+            "publishToGroup": "Publikovat do skupiny",
+            "fbStartLive": "Běž žít",
+            "fbStopLive": "Ukončit přímý přenos",
+            "streamingSettings": "Nastavení",
+            "manageStream": "Správa živého přenosu",
+            "fbEmbedCode": "Vložit",
+            "copy": "kopírovat",
+            "streamToRTMP": "Streamujte do vlastního RTMP",
+            "startBroadcasting": "Začněte vysílat",
+            "broadcastingInProgress": "Probíhá vysílání",
+            "share": "Podíl",
+            "startClodRecording": "Spusťte Cloud Recording",
+            "startLocRecording": "Spusťte místní nahrávání",
+            "stopClodRecording": "Zastavit nahrávání z cloudu",
+            "stopLocRecording": "Zastavit místní nahrávání"
+        },
+        "audioSettings": {
+            "dialogTitle": "Nastavení zvuku",
+            "speakers": "Řečníci",
+            "microphone": "Mikrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Spravovat vysílání"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Nastavení účastníka",
+            "disconnect": "Odpojit",
+            "floatingScreens": "Plovoucí obrazovky",
+            "tiledScreens": "Dlaždicové obrazovky",
+            "loudestExceptMe": "Nejhlasitější Kromě mě",
+            "maximizeLoudest": "Maximalizovat nejhlasitější",
+            "staticMaximized": "Statické Maximalizováno",
+            "fullScreen": "Celá obrazovka",
+            "manual": "Manuál",
+            "turnOffCamera": "Skrýt video",
+            "turnOffAudio": "Ztlumit zvuk",
+            "turnOffScreenSharing": "Skrýt sdílení obrazovky",
+            "turnOnCamera": "Zobrazit video",
+            "turnOnAudio": "Zapnout zvuk",
+            "turnOnScreenSharing": "Zobrazit sdílení obrazovky"
+        },
+        "streamingSettings": {
+            "title": "Živý přenos"
+        },
+        "preview": {
+            "Meeting": "Telekonference",
+            "MeetingEnded": "Telekonference skončila"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Žádost o mluvení",
+            "msg": "Aktuálně na schůzi hovoří {{count}} lidí. Chcete jednoho z nich vyměnit poté, co mu dáte {{seconds}} sekund na domluvení?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Budete prezentovat? Tento prostor můžete využít ke společnému nahrání materiálů pro vaši prezentaci. Použijte tlačítko Plus.",
+        "Alert": "Jakmile události začnou, jejich odpovídající prezentace se začnou objevovat na této stránce",
+        "ClickHereForFullscreen": "Zde se objeví prezentace. Kliknutím sem přejdete na celou obrazovku.",
+        "question": {
+            "ScanThisQRCode": "Pro odpověď naskenujte tento QR kód"
+        }
+    }
+}

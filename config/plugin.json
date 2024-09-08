@@ -1,0 +1,339 @@
+{
+	"Q": {
+		"pluginInfo": {
+			"Media": {
+				"version": "0.4.2",
+				"compatible": "0.1",
+				"requires": {
+					"Q": "1.0",
+					"Users": "1.0",
+					"Streams": "1.0",
+					"Websites": "1.0",
+					"Calendars": "0.1"
+				},
+				"permissions": [],
+				"connections": ["Users", "Streams", "Websites"]
+			}
+		},
+		"handlersBeforeEvent": {
+			"Q/responseExtras": ["Media/before/Q_responseExtras"],
+			"Streams/close/Media/feed": ["Media/before/Streams_close_Media_feed"],
+			"Streams/close/Media/webrtc/waitingRoom": ["Media/before/Streams_close_Media_webrtc_waitingRoom"]
+		},
+		"handlersAfterEvent": {
+			"Streams/create/Media/episode": ["Media/after/Streams_create_Media_episode"],
+			"Streams/create/Media/clip": ["Media/after/Streams_create_Media_clip"],
+			"Streams/relateTo/Streams/chat": ["Media/after/Streams_relateTo_Streams_chat"],
+			"Streams/message/Streams/closed": ["Media/after/Streams_message_Streams_closed"],
+			"Communities/community/tabs": ["Media/after/Communities_community_tabs"],
+			"Communities/profile/tabs": ["Media/after/Communities_profile_tabs"],
+			"Db/Row/Users_Contact/saveExecute": ["Media/after/Users_Contact_saveExecute"],
+			"Db/Row/Users_Contact/removeExecute": ["Media/after/Users_Contact_removeExecute"],
+			"Users/Label/can": ["Media/after/Users_Label_can"]
+		},
+		"text": {
+			"Media": {
+				"*": ["Streams/content", "Media/content"]
+			}
+		},
+		"routes@start": {
+			"clip/:clipId": {"module": "Media", "action": "clip"},
+			"clip/:publisherId/:clipId": {"module":  "Media", "action":  "clip"},
+			"livestream/:publisherId/:livestreamId": { "module": "Media", "action": "livestream" },
+			"livestream/:publisherId/:livestreamId[]": {"module": "Media", "action": "livestream"},
+		    "meeting": { "module": "Media", "action": "meeting" },
+		    "livestreamAuth": { "module": "Media", "action": "livestreamAuth" },
+			"games": {"module":  "Media", "action":  "games"},
+			"games/:publisherId/:clipId": {"module":  "Media", "action":  "games"},
+		    "callCenter": { "module": "Media", "action": "callCenter" },
+			"feeds": {"module": "Media", "action": "feeds"},
+			"feed/:feedId": { "module": "Media", "action": "feed" },
+			"newFeed": {"module": "Media", "action": "newFeed"},
+			"presentation/:calendarId": {"module": "Media", "action": "presentation"},
+			"presentation/:communityId/:calendarId": {"module": "Media", "action": "presentation"}
+		},
+		"web": {
+			"contentSecurityPolicy": {
+				"script": ["https://www.youtube.com", "https://cdnjs.cloudflare.com"]
+			}
+		}
+	},
+	"Users": {
+		"quotas": {
+			"Media/webrtc": {
+				"86400": {
+					"": 10,
+					"Users/owners": 1000,
+					"Users/admins": 1000
+				}
+			}
+		},
+		"onInsert": {
+			"roles": ["Media/admins", "Users/hosts", "Users/screeners"]
+		},
+		"roles": {
+			"Users/owners": {
+				"canGrant": ["Media/admins"],
+				"canRevoke": ["Media/admins"]
+			},
+			"Users/admins": {
+				"canGrant": ["Media/admins"],
+				"canRevoke": ["Media/admins"]
+			},
+			"Users/members": {
+				"canSee": ["Users/hosts", "Users/screeners"]
+			},
+			"Users/guests": {
+				"canSee": ["Users/hosts", "Users/screeners"]
+			},
+			"Users/hosts": {
+				"title": "Show Hosts",
+				"icon": "{{baseUrl}}/Q/plugins/Media/img/icons/labels/Media/hosts",
+				"canGrant": ["Users/members", "Users/guests", "Users/screeners"],
+				"canRevoke": ["Users/members", "Users/guests", "Users/screeners"],
+				"canSee": ["Users/owners", "Users/admins", "Users/members", "Users/guests", "Media/admins", "Users/hosts", "Users/screeners"]
+			},
+			"Media/admins": {
+				"title": "Media Admins",
+				"icon": "{{baseUrl}}/Q/plugins/Media/img/icons/labels/Media/admins",
+				"canGrant": ["Media/admins", "Users/hosts", "Users/screeners"],
+				"canRevoke": ["Media/admins", "Users/hosts", "Users/screeners"],
+				"canSee": ["Users/owners", "Users/admins", "Users/members", "Users/guests", "Media/admins", "Users/hosts", "Users/screeners"]
+			},
+			"Users/screeners": {
+				"title": "Call Screeners",
+				"icon": "{{baseUrl}}/Q/plugins/Media/img/icons/labels/Media/screeners",
+				"canGrant": [],
+				"canRevoke": [],
+				"canSee": ["Users/owners", "Users/admins", "Users/members", "Users/guests", "Media/admins", "Users/hosts", "Users/screeners"]
+			},
+			"": {
+				"canSee": ["Media/admins", "Media/hosts"]
+			}
+		},
+		"capability": {
+			"public": {
+				"presentation/:calendarId": ["s"],
+				"livestream/:publisherId/:livestreamId[]": ["s"]
+			}
+		}
+	},
+	"Streams": {
+		"chat": {
+			"allowedRelatedStreams": ["Media/webrtc"]
+		},
+		"userStreams": {
+			"Media": "streams.json"
+		},
+		"onInsert": { /* streams to insert when a row is inserted */
+			"community": [
+				"Media/calls/main"
+			]
+		},
+		"types": {
+			"*": {
+				"relatedTo": {
+					"Media/webrtc": {
+						"description": ["Streams/content", ["notifications", "Streams/relatedTo/Streams/call"]]
+					}
+				}
+			},
+			"Media/presentation": {
+				"emoji": "👨🏻‍🏫",
+				"create": true,
+				"edit": true,
+				"defaults": {
+					"title": "Presentation",
+					"icon": "{{Media}}/img/icons/Media/presentation",
+					"readLevel": 40,
+					"writeLevel": 0,
+					"adminLevel": 10
+				},
+				"ephemerals": {
+					"Media/presentation/show": {}
+				}
+			},
+			"Media/presentation/slide": {
+				"emoji": "🌠",
+				"create": true,
+				"edit": true,
+				"defaults": {
+					"title": "Untitled Slide",
+					"icon": "{{Media}}/img/icons/Media/presentation/slide",
+					"readLevel": 20,
+					"writeLevel": 0,
+					"adminLevel": 10
+				},
+				"extend": ["Media_Slide"]
+			},
+			"Media/webrtc": {
+				"emoji": "🧑🏻‍💻",
+				"defaults": {
+					"title": "Teleconference",
+					"icon": "{{Media}}/img/icons/Media/webrtc"
+				},
+				"edit": ["title", "content", "attributes"],
+				"messages": {
+					"Media/webrtc/joined": {}
+				}
+			},
+			"Media/webrtc/livestream": {
+				"emoji": "📡",
+				"defaults": {
+					"title": "Livestream",
+					"icon": "{{Media}}/img/icons/Media/webrtc/livestream",
+					"readLevel": 40,
+					"writeLevel": 23,
+					"adminLevel": 20
+				},
+				"edit": ["title"],
+				"url": "{{baseUrl}}/livestream/{{publisherId}}/{{name}}",
+				"ephemerals": {
+					"Media/livestream/reaction": {}
+				}
+			},
+			"Media/webrtc/chat": {
+				"emoji": "💭",
+				"defaults": {
+					"title": "Chat",
+					"icon": "Streams/chat",
+					"readLevel": 40,
+					"writeLevel": 10,
+					"adminLevel": 20
+				},
+				"edit": ["title"],
+				"create": true,
+				"url": "{{baseUrl}}/livestream/{{publisherId}}/{{name}}"
+			},
+			"Media/calls": {
+				"emoji": "🧏",
+				"create": false,
+				"edit": ["attributes"]
+			},
+			"Media/clip": {
+				"emoji": "🎬",
+				"defaults": {
+					"icon": "{{Media}}/img/icons/Media/clip",
+					"title": "Untitled Media Clip",
+					"readLevel": 40,
+					"writeLevel": 10,
+					"adminLevel": 20
+				},
+				"create": true,
+				"close": true,
+				"edit": [
+					"title",
+					"content",
+					"attributes"
+				],
+				"uri": "Media/clip publisherId={{publisherId}} clipId={{streamName.[2]}}",
+				"url": "{{baseUrl}}/clip/{{publisherId}}/{{streamName.[2]}}"
+			},
+			"Media/episode": {
+				"emoji": "📺",
+				"defaults": {
+					"icon": "{{Media}}/img/icons/Media/clip",
+					"title": "Untitled Episode",
+					"readLevel": 40,
+					"writeLevel": 10,
+					"adminLevel": 20
+				},
+				"create": true,
+				"close": true,
+				"edit": [
+					"title",
+					"content",
+					"attributes"
+				],
+				"uri": "Media/clip publisherId={{publisherId}} clipId={{streamName.[2]}}",
+				"url": "{{baseUrl}}/clip/{{publisherId}}/{{streamName.[2]}}"
+			},
+			"Media/movie": {
+				"emoji": "📽️",
+				"create": true
+			},
+			"Media/feed": {
+				"emoji": "🎥",
+				"create": false,
+				"close": true,
+				"edit": [
+					"title",
+					"content",
+					"attributes"
+				],
+				"defaults": {
+					"icon": "{{Media}}/img/icons/Media/feed",
+					"readLevel": 0,
+					"writeLevel": 0,
+					"adminLevel": 0
+				},
+				"messages": {
+					"Media/feed/started": {
+						"description": "Media feed started",
+						"subject": [
+							"Media/content",
+							[
+								"notifications",
+								"Media/feed/started"
+							]
+						]
+					},
+					"Media/feed/access": {
+						"description": "Media feed access requested",
+						"subject": [
+							"Media/content",
+							[
+								"notifications",
+								"Media/feed/access"
+							]
+						]
+					}
+				}
+			}
+		}
+	},
+	"Assets": {
+		"credits": {
+			"amounts": {
+				"watching": "1"
+			},
+			"commissions": {
+				"watching": "1%"
+			}
+		}
+	},
+	"Media": {
+		"clip": {
+			"openFirstClip": { /* if no clipId defined expand first clip and open */
+				"desktop": true,
+				"mobile": false
+			},
+			"watching": {
+				"earnPeriod": 60 /* seconds */
+			},
+			"createCost": { /* charge credits for clip create */
+				"amount": 20,
+				"currency": "credits"
+			},
+			"webrtc": {
+				"relations": {
+					"main": "Media/webrtc/main",
+					"waiting": "Media/webrtc/waiting"
+				}
+			}
+		},
+		"episode": {
+			"templateStyle": "classic" /* can be "classic", "square", "tall" */
+		},
+		"pageSizes": {
+			"clips": 50,
+			"feeds": 100
+		},
+		"access": {
+			"feeds": {
+				"admins": ["Users/owners", "Users/admins", "Media/admins"]
+			}
+		},
+		"admins": ["Users/owners", "Users/admins", "Media/admins"]
+	}
+}

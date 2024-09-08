@@ -1,0 +1,256 @@
+{
+    "Shows": "Spectacole",
+    "Clips": "Clipuri",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Clipuri media",
+        "Episodes": "Episoade"
+    },
+    "NewEpisode": "Episod nou",
+    "NewClip": "Clip nou",
+    "LiveShow": "Spectacol în direct",
+    "Save": "Salvați",
+    "ViewFullEpisode": "Vezi episodul complet",
+    "CreditsEarned": "Credite câștigate",
+    "VideoTitle": "Titlul sau adresa URL a videoclipului",
+    "NewClipTitlePlaceholder": "Introduceți titlul clipului",
+    "NewClipDescriptionPlaceholder": "Introduceți descrierea clipului",
+    "switchVisualization": "Comutați vizualizarea",
+    "joinLiveShow": "Alăturați-vă emisiunii live",
+    "showTwitchLiveStream": "Afișați fluxul live Twitch",
+    "showVoiceChat": "Afișați chatul vocal",
+    "AreYouSureKick": "Sigur vrei să dai startul acestui utilizator?",
+    "AreYouSureDeleteEpisode": "Sigur doriți să ștergeți acest episod?",
+    "Yes": "da",
+    "No": "Nu",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Clamă",
+            "description": "clip media"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Teleconferinta",
+            "description": "o conferință video\/audio online"
+        },
+        "Media\/calls": {
+            "displayType": "Apeluri",
+            "description": "categorie pentru Media\/WebRTC",
+            "MaxRelationsExceeded": "Numărul maxim de apeluri a fost depășit"
+        }
+    },
+    "feeds": {
+        "Title": "Camere de luat vederi",
+        "filterByTitle": "Găsiți fluxuri după titlu",
+        "RequestFeedAccess": "Solicitați acces la feed",
+        "New": "+ Feed nou",
+        "filterFeeds": "Fluxuri de filtrare",
+        "NewFeed": "Feed nou",
+        "NoneYet": "Nu s-au format încă feeduri.",
+        "AreYouSure": "Esti sigur?",
+        "FilterByDate": "Filtrați după dată",
+        "newFeeds": "Aveți {{1}} fluxuri noi",
+        "Description": "{{1}} feeduri",
+        "Keywords": "{{1}} feeduri"
+    },
+    "feed": {
+        "HostedBy": "Găzduit de {{name}}",
+        "Name": "Nume",
+        "Conversation": "Conversaţie",
+        "CloseFeed": {
+            "button": "Închide Feed",
+            "Cancel": "Sigur doriți să închideți acest feed?",
+            "Participant": "Există 1 participant în acest flux",
+            "Participants": "Există {{count}} participanți la acest feed"
+        },
+        "Calendar": "Calendar",
+        "TitleOfFeed": "Titlul feedului:",
+        "EmptyList": "Lista goală",
+        "EmptyVideos": "Niciun clip încă",
+        "AccessReason": "va rog sa precizati motivul",
+        "Proceed": "Continua",
+        "FeedAlreadyClosed": "Acest feed a fost deja închis",
+        "RtmpLinkNote": "Faceți clic pentru a copia acest link în clipboard",
+        "SelectClip": "Selectați data pe care doriți să o vedeți",
+        "Request": "Cerere"
+    },
+    "newFeed": {
+        "Title": "Feed nou",
+        "locationTitle": "Setați locația",
+        "SetLocation": "Setați locația mea",
+        "Starting": "Pornire",
+        "Day": "Zi",
+        "Create": "Crea",
+        "Continue": "Continua",
+        "FeedTitle": "Titlul feedului",
+        "SetTitle": "Vă rugăm să setați titlul feedului"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} a solicitat acces la {{& stream.fields.title}} cu motivul „{{& instructions.reason}}}”",
+        "JoinedWebRTC": "s-a alăturat apelului dvs",
+        "SubjectJoinedYourCall": "{{subject}} s-a alăturat apelului dvs"
+    },
+    "RealTimeCall": "Apel în timp real",
+    "JoinWebRTC": "Teleconferinta",
+    "webrtc": {
+        "notAllowedToJoinCall": "Nu aveți permisiunea de a vă alătura acestui flux.",
+        "streamTitle": "{{1}} a început o teleconferință",
+        "allow": {
+            "dialogTitle": "Conectare",
+            "microphoneBtn": "Activați microfonul",
+            "cameraBtn": "Activați Camera",
+            "cameraAndMicrophoneBtn": "Activați camera și microfonul"
+        },
+        "preparing": {
+            "dialogTitle": "Porniți\/opriți camera sau microfonul înainte de a vă alătura",
+            "micIsOff": "Microfonul este oprit",
+            "micIsOn": "Microfonul este pornit",
+            "cameraIsOff": "Camera este oprită",
+            "cameraIsOn": "Camera este pornită",
+            "screenSharingIsOn": "Partajarea ecranului este activată",
+            "screenSharingIsOff": "Distribuie ecran",
+            "joinNow": "Alăturați-vă apelului"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instrucțiuni",
+            "permissionDenied": "Permisiunea pentru {{kind}} a fost refuzată. Pentru a-l folosi vă rugăm să urmați acești pași:",
+            "point1": "Accesați „Setări” -&gt; „Avansat” -&gt; „Confidențialitate și securitate” -&gt; „Setări site” -&gt; „Cameră” sau „Setări site” -&gt; „Microfon”",
+            "point2": "Eliminați {{hostname}} din lista „Blocați”."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instrucțiuni",
+            "permissionDenied": "Permisiunea pentru {{kind}} a fost refuzată. Vă rugăm să reîncărcați această pagină și să confirmați accesul la {{kind}} pentru a vă alătura conferinței."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instrucțiuni",
+            "permissionDenied": "Permisiunea pentru {{kind}} a fost refuzată. Pentru a-l folosi vă rugăm să urmați acești pași:",
+            "point1": "Accesați Setările Android",
+            "point2": "Deschideți „Aplicații și notificări”",
+            "point3": "Găsiți „ {{communityName}} ” și deschideți-l",
+            "point4": "Atingeți Permisiuni",
+            "point5": "Activați {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instrucțiuni",
+            "permissionDenied": "Permisiunea pentru {{kind}} a fost refuzată. Pentru a-l folosi vă rugăm să urmați acești pași:",
+            "point1": "Accesați Setările iOS",
+            "point2": "Deschideți „Confidențialitate”",
+            "point3": "Găsiți {{kind}} și deschideți-l",
+            "point4": "Găsiți „ {{communityName}} ” și activați"
+        },
+        "fbLive": {
+            "dialogTitle": "A început fluxul live pe Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Te-ai alăturat camerei",
+            "joining": "Alăturare: {{userName}}",
+            "sbLeftRoom": "{{userName}} a părăsit camera",
+            "switchingRoom": "Schimbarea camerei...",
+            "forceDisconnecting": "Veți fi deconectat în 5 secunde",
+            "forceDisconnectingImmediately": "Ai fost deconectat de o gazdă",
+            "youLeftRoom": "Ai părăsit camera",
+            "codeCopied": "Ai părăsit camera",
+            "sbBeganFbLive": "{{userName}} a început să transmită acest apel pe Facebook",
+            "sbStoppedFbLive": "{{userName}} a încetat să mai difuzeze acest apel pe Facebook",
+            "youBeganFbLive": "Ați început să difuzați acest apel pe Facebook",
+            "youStoppedFbLive": "Ai încetat să mai difuzezi acest apel pe Facebook",
+            "youStartedLive": "Ați început să difuzați acest apel către RTMP personalizat",
+            "youStoppedLive": "Ați oprit difuzarea acestui apel la RTMP personalizat",
+            "sbStartedLiveStreaming": "{{userName}} a început live",
+            "sbStoppedLiveStreaming": "{{userName}} sa încheiat în direct",
+            "liveStopped": "A apărut o eroare la trimiterea videoclipului la punctul final",
+            "youBeganVideoRecording": "Ați început să înregistrați această conferință",
+            "youStoppedVideoRecording": "Ai oprit înregistrarea acestei conferințe",
+            "linkCopiedToCb": "Link copiat în clipboard",
+            "codeCopiedToCb": "Cod copiat în clipboard",
+            "userHasNoVideo": "Participantul nu are videoclip",
+            "openInBrowserAlert": "Deschideți linkul în browserul Safari pentru a participa la conferință.",
+            "allowedVideoLimit": "Numai {{limit}} de videoclipuri permise în această cameră",
+            "allowedAudioLimit": "Numai {{limit}} de microfoane sunt permise în această cameră"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Setari video",
+            "webCamera": "Camera web",
+            "screenSharing": "Partajarea ecranului",
+            "shareAnotherScreen": "Partajați un alt ecran",
+            "turnOffCameras": "Opriți camera",
+            "turnOffVideo": "Dezactivați partajarea camerei\/ecranului",
+            "turnOffAudioInput": "Dezactivați microfonul",
+            "turnOffScreenSharing": "Dezactivați partajarea ecranului",
+            "cameraIsTurnedOff": "Camera este oprită",
+            "micIsTurnedOff": "Microfonul este oprit",
+            "startFBLive": "Porniți Facebook Livestream",
+            "stopFBLive": "Opriți fluxul live Facebook",
+            "startRecording": "Începe să înregistrezi",
+            "stopRecording": "Opriți înregistrarea",
+            "start": "start",
+            "stop": "Stop",
+            "recordingInProgress": "Înregistrarea este în curs...",
+            "fbLiveTitle": "Titlul streamului live",
+            "fbLiveDescription": "Descrieți fluxul dvs. live. Despre ce e vorba?",
+            "fbOnlyMeLiveAccess": "Doar eu",
+            "fbFriendsAccess": "Prieteni",
+            "fbPublicAccess": "Public",
+            "publishOnTimeline": "Publicați pe cronologie",
+            "publishToGroup": "Publicați în grup",
+            "fbStartLive": "Du-te si traieste",
+            "fbStopLive": "Încheiați fluxul live",
+            "streamingSettings": "Setări",
+            "manageStream": "Gestionați fluxul live",
+            "fbEmbedCode": "Încorporare",
+            "copy": "Copie",
+            "streamToRTMP": "Transmiteți în flux la RTMP personalizat",
+            "startBroadcasting": "Începeți să difuzați",
+            "broadcastingInProgress": "Difuzarea este în curs",
+            "share": "Acțiune",
+            "startClodRecording": "Începeți înregistrarea în cloud",
+            "startLocRecording": "Începeți înregistrarea locală",
+            "stopClodRecording": "Opriți înregistrarea în cloud",
+            "stopLocRecording": "Opriți înregistrarea locală"
+        },
+        "audioSettings": {
+            "dialogTitle": "Setari audio",
+            "speakers": "Difuzoare",
+            "microphone": "Microfon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Gestionați difuzarea"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Setări pentru participanți",
+            "disconnect": "Deconectat",
+            "floatingScreens": "Ecrane plutitoare",
+            "tiledScreens": "Ecrane cu gresie",
+            "loudestExceptMe": "Cel mai tare în afară de mine",
+            "maximizeLoudest": "Maximizați cel mai tare",
+            "staticMaximized": "Maximizat static",
+            "fullScreen": "Ecran complet",
+            "manual": "Manual",
+            "turnOffCamera": "Ascunde videoclipul",
+            "turnOffAudio": "Dezactivați sunetul",
+            "turnOffScreenSharing": "Ascunde partajarea ecranului",
+            "turnOnCamera": "Afișează videoclipul",
+            "turnOnAudio": "Activați sunetul",
+            "turnOnScreenSharing": "Afișează partajarea ecranului"
+        },
+        "streamingSettings": {
+            "title": "Transmitere live"
+        },
+        "preview": {
+            "Meeting": "Teleconferinta",
+            "MeetingEnded": "Teleconferința s-a încheiat"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Cerere de a vorbi",
+            "msg": "În prezent, la întâlnire vorbesc {{count}} de persoane. Doriți să înlocuiți unul dintre ele după ce le-ați lăsat {{seconds}} de secunde pentru a termina de vorbit?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Vei prezenta? Puteți folosi acest spațiu pentru a încărca împreună materiale pentru prezentarea dvs. Folosiți butonul Plus.",
+        "Alert": "Pe măsură ce evenimentele încep, prezentările lor corespunzătoare vor începe să apară pe această pagină",
+        "ClickHereForFullscreen": "Prezentările vor apărea aici. Faceți clic aici pentru a trece pe ecran complet.",
+        "question": {
+            "ScanThisQRCode": "Scanează acest cod QR pentru a răspunde"
+        }
+    }
+}

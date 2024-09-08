@@ -1,0 +1,256 @@
+{
+    "Shows": "trình diễn",
+    "Clips": "Clip",
+    "Video": "Video",
+    "Audio": "Âm thanh",
+    "categories": {
+        "Clips": "Clip phương tiện",
+        "Episodes": "Các tập"
+    },
+    "NewEpisode": "Tập mới",
+    "NewClip": "Clip mới",
+    "LiveShow": "Live show",
+    "Save": "Tiết kiệm",
+    "ViewFullEpisode": "Xem toàn tập",
+    "CreditsEarned": "Tín dụng kiếm được",
+    "VideoTitle": "Tiêu đề video hoặc URL",
+    "NewClipTitlePlaceholder": "Nhập tiêu đề clip",
+    "NewClipDescriptionPlaceholder": "Nhập mô tả clip",
+    "switchVisualization": "Chuyển đổi hình ảnh",
+    "joinLiveShow": "Tham gia chương trình trực tiếp",
+    "showTwitchLiveStream": "Hiển thị luồng trực tiếp trên Twitch",
+    "showVoiceChat": "Hiển thị trò chuyện thoại",
+    "AreYouSureKick": "Bạn có chắc chắn muốn loại bỏ người dùng này không?",
+    "AreYouSureDeleteEpisode": "Bạn có chắc chắn muốn xóa tập này không?",
+    "Yes": "Đúng",
+    "No": "Không",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Kẹp",
+            "description": "clip truyền thông"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Hội nghị từ xa",
+            "description": "hội nghị truyền hình\/âm thanh trực tuyến"
+        },
+        "Media\/calls": {
+            "displayType": "cuộc gọi",
+            "description": "danh mục cho Phương tiện\/WebRTC",
+            "MaxRelationsExceeded": "Đã vượt quá số cuộc gọi tối đa"
+        }
+    },
+    "feeds": {
+        "Title": "Máy ảnh",
+        "filterByTitle": "Tìm nguồn cấp dữ liệu theo tiêu đề",
+        "RequestFeedAccess": "Yêu cầu quyền truy cập nguồn cấp dữ liệu",
+        "New": "+ Nguồn cấp dữ liệu mới",
+        "filterFeeds": "Lọc nguồn cấp dữ liệu",
+        "NewFeed": "Nguồn cấp dữ liệu mới",
+        "NoneYet": "Chưa có nguồn cấp dữ liệu nào được hình thành.",
+        "AreYouSure": "Bạn có chắc không?",
+        "FilterByDate": "Lọc theo ngày",
+        "newFeeds": "Bạn có {{1}} nguồn cấp dữ liệu mới",
+        "Description": "{{1}} nguồn cấp dữ liệu",
+        "Keywords": "{{1}} nguồn cấp dữ liệu"
+    },
+    "feed": {
+        "HostedBy": "Được tổ chức bởi {{name}}",
+        "Name": "Tên",
+        "Conversation": "Cuộc hội thoại",
+        "CloseFeed": {
+            "button": "Đóng nguồn cấp dữ liệu",
+            "Cancel": "Bạn có chắc chắn muốn đóng nguồn cấp dữ liệu này không?",
+            "Participant": "Có 1 người tham gia trong nguồn cấp dữ liệu này",
+            "Participants": "Có {{count}} người tham gia trong nguồn cấp dữ liệu này"
+        },
+        "Calendar": "Lịch",
+        "TitleOfFeed": "Tiêu đề của nguồn cấp dữ liệu:",
+        "EmptyList": "Danh sách trống",
+        "EmptyVideos": "Chưa có clip",
+        "AccessReason": "vui lòng nêu lý do",
+        "Proceed": "Tiếp tục",
+        "FeedAlreadyClosed": "Nguồn cấp dữ liệu này đã bị đóng",
+        "RtmpLinkNote": "Nhấp để sao chép liên kết này vào khay nhớ tạm",
+        "SelectClip": "Chọn ngày bạn muốn xem",
+        "Request": "Lời yêu cầu"
+    },
+    "newFeed": {
+        "Title": "Nguồn cấp dữ liệu mới",
+        "locationTitle": "Thiết lập vị trí của bạn",
+        "SetLocation": "Đặt vị trí của tôi",
+        "Starting": "Bắt đầu",
+        "Day": "Ngày",
+        "Create": "Tạo ra",
+        "Continue": "Tiếp tục",
+        "FeedTitle": "Tiêu đề nguồn cấp dữ liệu",
+        "SetTitle": "Vui lòng đặt tiêu đề nguồn cấp dữ liệu"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} đã yêu cầu quyền truy cập vào {{& stream.fields.title}} với lý do &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "đã tham gia cuộc gọi của bạn",
+        "SubjectJoinedYourCall": "{{subject}} đã tham gia cuộc gọi của bạn"
+    },
+    "RealTimeCall": "Cuộc gọi thời gian thực",
+    "JoinWebRTC": "Hội nghị từ xa",
+    "webrtc": {
+        "notAllowedToJoinCall": "Bạn không có quyền tham gia luồng này.",
+        "streamTitle": "{{1}} bắt đầu Hội nghị truyền hình",
+        "allow": {
+            "dialogTitle": "Đang kết nối",
+            "microphoneBtn": "Bật micrô",
+            "cameraBtn": "Bật máy ảnh",
+            "cameraAndMicrophoneBtn": "Bật máy ảnh và micrô"
+        },
+        "preparing": {
+            "dialogTitle": "Bật\/tắt camera hoặc micrô trước khi bạn tham gia",
+            "micIsOff": "Micrô đã tắt",
+            "micIsOn": "Micrô đang bật",
+            "cameraIsOff": "Máy ảnh đã tắt",
+            "cameraIsOn": "Máy ảnh đang bật",
+            "screenSharingIsOn": "Chia sẻ màn hình đang bật",
+            "screenSharingIsOff": "Chia sẻ màn hình",
+            "joinNow": "tham gia cuộc gọi"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Hướng dẫn",
+            "permissionDenied": "Quyền cho {{kind}} bị từ chối. Để sử dụng nó, vui lòng làm theo các bước sau:",
+            "point1": "Chuyển đến &quot;Cài đặt&quot; -&gt; &quot;Nâng cao&quot; -&gt; &quot;Quyền riêng tư và bảo mật&quot; -&gt; &quot;Cài đặt trang&quot; -&gt; &quot;Máy ảnh&quot; hoặc &quot;Cài đặt trang&quot; -&gt; &quot;Micrô&quot;",
+            "point2": "Xóa {{hostname}} khỏi danh sách &quot;Chặn&quot;"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Hướng dẫn",
+            "permissionDenied": "Quyền cho {{kind}} bị từ chối. Vui lòng tải lại trang này và xác nhận truy cập {{kind}} để tham gia hội thảo."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Hướng dẫn",
+            "permissionDenied": "Quyền cho {{kind}} bị từ chối. Để sử dụng nó, vui lòng làm theo các bước sau:",
+            "point1": "Chuyển đến Cài đặt Android của bạn",
+            "point2": "Mở &quot;Ứng dụng và thông báo&quot;",
+            "point3": "Tìm &quot; {{communityName}} &quot; và mở nó",
+            "point4": "Nhấn vào Quyền",
+            "point5": "Kích hoạt {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Hướng dẫn",
+            "permissionDenied": "Quyền cho {{kind}} bị từ chối. Để sử dụng nó, vui lòng làm theo các bước sau:",
+            "point1": "Chuyển đến Cài đặt iOS của bạn",
+            "point2": "Mở &quot;Quyền riêng tư&quot;",
+            "point3": "Tìm {{kind}} và mở nó",
+            "point4": "Tìm &quot; {{communityName}} &quot; và kích hoạt"
+        },
+        "fbLive": {
+            "dialogTitle": "Phát trực tiếp trên Facebook đã bắt đầu"
+        },
+        "notices": {
+            "youJoinedRoom": "Bạn đã tham gia phòng",
+            "joining": "Tham gia: {{userName}}",
+            "sbLeftRoom": "{{userName}} rời khỏi phòng",
+            "switchingRoom": "Chuyển phòng...",
+            "forceDisconnecting": "Bạn sẽ bị ngắt kết nối trong vòng 5 giây",
+            "forceDisconnectingImmediately": "Bạn đã bị ngắt kết nối bởi một máy chủ",
+            "youLeftRoom": "Bạn rời khỏi phòng",
+            "codeCopied": "Bạn rời khỏi phòng",
+            "sbBeganFbLive": "{{userName}} bắt đầu phát sóng cuộc gọi này trên Facebook",
+            "sbStoppedFbLive": "{{userName}} ngừng phát cuộc gọi này trên Facebook",
+            "youBeganFbLive": "Bạn đã bắt đầu phát cuộc gọi này trên Facebook",
+            "youStoppedFbLive": "Bạn đã ngừng phát cuộc gọi này trên Facebook",
+            "youStartedLive": "Bạn đã bắt đầu phát cuộc gọi này tới RTMP tùy chỉnh",
+            "youStoppedLive": "Bạn đã ngừng phát cuộc gọi này tới RTMP tùy chỉnh",
+            "sbStartedLiveStreaming": "{{userName}} bắt đầu trực tiếp",
+            "sbStoppedLiveStreaming": "{{userName}} kết thúc trực tiếp",
+            "liveStopped": "Đã xảy ra lỗi khi gửi video đến điểm cuối",
+            "youBeganVideoRecording": "Bạn đã bắt đầu ghi lại hội nghị này",
+            "youStoppedVideoRecording": "Bạn đã dừng ghi lại hội nghị này",
+            "linkCopiedToCb": "Liên kết được sao chép vào khay nhớ tạm",
+            "codeCopiedToCb": "Đã sao chép mã vào khay nhớ tạm",
+            "userHasNoVideo": "Người tham gia không có video",
+            "openInBrowserAlert": "Mở liên kết trong trình duyệt Safari để tham gia hội nghị.",
+            "allowedVideoLimit": "Chỉ cho phép {{limit}} video trong phòng này",
+            "allowedAudioLimit": "Phòng này chỉ cho phép {{limit}} micrô"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Cài đặt video",
+            "webCamera": "máy ảnh web",
+            "screenSharing": "Chia sẻ màn hình",
+            "shareAnotherScreen": "Chia sẻ màn hình khác",
+            "turnOffCameras": "Tắt máy ảnh",
+            "turnOffVideo": "Tắt máy ảnh\/chia sẻ màn hình",
+            "turnOffAudioInput": "Tắt tiếng micrô",
+            "turnOffScreenSharing": "Tắt chia sẻ màn hình",
+            "cameraIsTurnedOff": "Máy ảnh đã tắt",
+            "micIsTurnedOff": "Micrô đã tắt",
+            "startFBLive": "Bắt đầu phát trực tiếp trên Facebook",
+            "stopFBLive": "Dừng phát trực tiếp trên Facebook",
+            "startRecording": "Bắt đầu ghi âm",
+            "stopRecording": "Dừng ghi âm",
+            "start": "Bắt đầu",
+            "stop": "Dừng lại",
+            "recordingInProgress": "Quá trình ghi đang diễn ra...",
+            "fbLiveTitle": "Tiêu đề của buổi phát trực tiếp",
+            "fbLiveDescription": "Mô tả Livestream của bạn. Nó nói về cái gì?",
+            "fbOnlyMeLiveAccess": "Chỉ có tôi",
+            "fbFriendsAccess": "Bạn",
+            "fbPublicAccess": "Công cộng",
+            "publishOnTimeline": "Xuất bản trên dòng thời gian",
+            "publishToGroup": "Xuất bản lên nhóm",
+            "fbStartLive": "Chưa lên",
+            "fbStopLive": "Kết thúc phát trực tiếp",
+            "streamingSettings": "Cài đặt",
+            "manageStream": "Quản lý phát trực tiếp",
+            "fbEmbedCode": "Nhúng",
+            "copy": "Sao chép",
+            "streamToRTMP": "Truyền phát tới RTMP tùy chỉnh",
+            "startBroadcasting": "Bắt đầu phát sóng",
+            "broadcastingInProgress": "Đang phát sóng",
+            "share": "Chia sẻ",
+            "startClodRecording": "Bắt đầu ghi âm trên đám mây",
+            "startLocRecording": "Bắt đầu ghi cục bộ",
+            "stopClodRecording": "Dừng ghi âm trên đám mây",
+            "stopLocRecording": "Dừng ghi cục bộ"
+        },
+        "audioSettings": {
+            "dialogTitle": "Cài đặt âm thanh",
+            "speakers": "Diễn giả",
+            "microphone": "Cái mic cờ rô"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Quản lý phát sóng"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Cài đặt người tham gia",
+            "disconnect": "Ngắt kết nối",
+            "floatingScreens": "Màn hình nổi",
+            "tiledScreens": "Màn hình lát gạch",
+            "loudestExceptMe": "To nhất trừ tôi",
+            "maximizeLoudest": "Phóng to nhất",
+            "staticMaximized": "Tối đa hóa tĩnh",
+            "fullScreen": "Toàn màn hình",
+            "manual": "Thủ công",
+            "turnOffCamera": "Ẩn video",
+            "turnOffAudio": "Tắt tiếng",
+            "turnOffScreenSharing": "Ẩn chia sẻ màn hình",
+            "turnOnCamera": "Hiển thị video",
+            "turnOnAudio": "Bật âm thanh",
+            "turnOnScreenSharing": "Hiển thị chia sẻ màn hình"
+        },
+        "streamingSettings": {
+            "title": "trực tiếp"
+        },
+        "preview": {
+            "Meeting": "Hội nghị từ xa",
+            "MeetingEnded": "Hội nghị truyền hình đã kết thúc"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Yêu cầu Nói",
+            "msg": "Hiện tại có {{count}} người đang phát biểu trong cuộc họp. Bạn có muốn thay thế một trong số họ sau khi cho phép họ nói xong {{seconds}} giây không?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Bạn sẽ trình bày chứ? Bạn có thể sử dụng không gian này để tải lên các tài liệu cùng nhau cho bài thuyết trình của mình. Sử dụng nút Plus.",
+        "Alert": "Khi các sự kiện bắt đầu, các bài thuyết trình tương ứng của chúng sẽ bắt đầu xuất hiện trên trang này",
+        "ClickHereForFullscreen": "Bài thuyết trình sẽ xuất hiện ở đây. Bấm vào đây để xem toàn màn hình.",
+        "question": {
+            "ScanThisQRCode": "Quét mã QR này để trả lời"
+        }
+    }
+}

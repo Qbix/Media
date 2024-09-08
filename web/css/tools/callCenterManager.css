@@ -1,0 +1,328 @@
+:root {
+    --my-start-width: 0;
+    --media-callcenter-m-btn-scroll: -50%;
+}
+.Media_webrtc_callCenter_manager_tool {
+    height: 100%;
+}
+.media-callcenter-m-button-hidden {
+    display: none !important;
+}
+
+.media-callcenter-m {
+    height: 100%;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, .1);
+    margin-bottom: 10px;
+}
+.media-callcenter-m-container-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-flow: column nowrap;
+}
+.media-callcenter-m-controls {
+    padding: 10px 0 10px 0;
+    flex: none;
+    display: flex;
+}
+.media-callcenter-m-controls-con .media-callcenter-m-controls-open-webrtc {
+    margin-right: 5px;
+    height: 40px;
+    flex-basis: 100%;
+    cursor: pointer;
+}
+.media-callcenter-m-controls-con .media-callcenter-m-controls-settings {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+}
+.media-callcenter-m-controls-con .media-callcenter-m-controls-settings svg{
+    height: 100%;
+    width: 100%;
+}
+.media-callcenter-m-controls-con .media-callcenter-m-controls-settings:hover,
+.media-callcenter-m-controls-con .media-callcenter-m-controls-open-webrtc:hover{
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.media-callcenter-m-settings-dialog {
+    padding:15px;
+}
+
+.media-callcenter-m-settings-dialog .media-callcenter-m-settings-roles-chooser input.media-callCenter-m-query {
+    padding: 10px 5px;
+}
+.media-callcenter-m-settings-dialog .media-callcenter-m-settings-roles {
+    margin-top: 10px;
+}
+.media-callcenter-m-settings-dialog .media-callcenter-m-settings-roles-item {
+    padding-top: 3px;
+}
+.media-callcenter-m-settings-dialog .media-callcenter-m-settings-roles-avatar {
+    margin-right: 10px;
+}
+
+.media-callcenter-m-settings-dialog .media-callcenter-m-settings-roles-item-remove {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+.media-callcenter-m-settings-dialog .media-callcenter-m-settings-roles-item-remove:before {
+    content: ' ';
+    display: block;
+    background-image: url('data:image/svg+xml;utf8,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" x="0px" y="0px" width="22px" height="23px" viewBox="-0.017 -0.916 22 23" enable-background="new -0.017 -0.916 22 23" xml:space="preserve"> <defs> </defs> <path style="fill:grey" d="M21.238,21.737c-0.128,0-0.256-0.049-0.354-0.146L0.146,0.854c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0 l20.738,20.737c0.195,0.195,0.195,0.512,0,0.707C21.494,21.688,21.366,21.737,21.238,21.737z"/> <path style="fill:grey" d="M0.5,21.737c-0.128,0-0.256-0.049-0.354-0.146c-0.195-0.195-0.195-0.512,0-0.707L20.884,0.146 c0.195-0.195,0.512-0.195,0.707,0s0.195,0.512,0,0.707L0.854,21.591C0.756,21.688,0.628,21.737,0.5,21.737z"/> </svg>');
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0px 4px 8px rgb(0 0 0 / 0.4));
+}
+.media-callcenter-m-settings-dialog .media-callcenter-m-settings-roles-item-remove:hover:before {
+    filter: drop-shadow(1px 2px 4px rgb(0 0 0 / 1));
+}
+
+.media-callcenter-m-enpoints-calls-con {
+    flex: auto;
+    overflow-y: auto;
+}
+
+.media-callcenter-m-enpoints-calls-con .media-callcenter-m-enpoints-calls:has(.media-callcenter-m-calls-no-calls)  {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*start: default template of call item*/
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item {
+    position: relative;
+    padding: 5px;
+    margin-top: 5px;
+    background-color: rgba(255, 255, 255, .2);
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-title {
+    padding: 5px 5px 10px 5px
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-date {
+    display: block;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-topic-chat {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-topic {
+    padding: 7px 15px;
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    border-radius: 3px 20px 20px 3px;
+    border-top-left-radius: 20px;
+    background: #f1f1f1;
+    color: #555;
+    flex: 1;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-chat-btn {
+    position: relative;
+    height: 30px;
+    margin-left: 7px;
+    cursor: pointer;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-chat-btn svg{
+    height: 100%;
+    width: auto;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-chat-btn svg path{
+    fill:#a2a2a2;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-chat-btn:hover svg path{
+    fill:#b4b4b4;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-inner {
+    display: flex;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-info {
+    position: relative;
+    width: 100%;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons {
+    display: flex;
+    padding: 5px 5px 5px 0;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons .media-callcenter-m-calls-item-buttons-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    color:white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons .media-callcenter-m-calls-item-buttons-btn span{
+    display: inline-block;
+    padding: 7px 10px 7px 10px;
+}
+
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons .media-callcenter-m-calls-item-buttons-btn.media-callcenter-m-calls-item-buttons-btn-scroll span {
+    -webkit-animation: urmove 2s linear infinite;
+    white-space: nowrap;
+    animation: urmove 2s linear infinite alternate;
+}
+
+@-webkit-keyframes urmove {
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(var(--media-callcenter-m-btn-scroll));
+    }
+  }
+  
+  @keyframes urmove {
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(var(--media-callcenter-m-btn-scroll));
+    }
+  }
+
+
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons .media-callcenter-m-calls-item-buttons-btn:last-child {
+    margin-right: 0;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons .media-callcenter-m-calls-item-buttons-btn:hover {
+    filter: brightness(0.85);
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons-btn.media-callcenter-m-calls-item-buttons-approve {
+    display: block;
+    background: #ffc107;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons-btn.media-callcenter-m-calls-item-buttons-accept {
+    background: #37c837;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons-btn.media-callcenter-m-calls-item-buttons-interview {
+    background: #007bff;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons-btn.media-callcenter-m-calls-item-buttons-decline {
+    background: #f93b2f;
+}
+.media-callcenter-m .calls-default-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-buttons-btn.media-callcenter-m-calls-item-buttons-hold {
+    background: #555555;
+}
+/*start: default template of call item*/
+
+.media-callcenter-m .calls-default-template button.media-callcenter-m-calls-item-buttons-btn:disabled,
+.media-callcenter-m-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
+
+/*start: minimal template of call item*/
+.media-callcenter-m .calls-minimal-template .media-callcenter-m-calls-no-calls {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+}
+.media-callcenter-m .calls-minimal-template .media-callcenter-m-calls-item {
+    position: relative;
+    padding: 5px;
+    margin-top: 5px;
+    background-color: rgba(255, 255, 255, .2);
+    cursor: pointer;
+}
+.media-callcenter-m .calls-minimal-template .media-callcenter-m-calls-item.media-callcenter-m-calls-item-active {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+.media-callcenter-m .calls-minimal-template .media-callcenter-m-calls-item-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.media-callcenter-m .calls-minimal-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-info {
+    position: relative;
+    font-size: 14px;
+}
+.media-callcenter-m .calls-minimal-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-avatar {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.media-callcenter-m .calls-minimal-template .media-callcenter-m-calls-item .media-callcenter-m-calls-item-avatar .Users_avatar_name {
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1;
+    text-overflow: ellipsis;
+    margin-left: 5px;
+}
+
+.media-callcenter-m .media-callcenter-m-main-chat {
+    cursor: pointer;
+    padding: 5px;
+}
+.media-callcenter-m .media-callcenter-m-main-chat.media-callcenter-m-calls-item-active {
+    background-color: rgba(255, 255, 255, .2);
+}
+.media-callcenter-m .media-callcenter-m-main-chat-inner {
+    display: flex;
+    align-items: center;
+}
+.media-callcenter-m .media-callcenter-m-main-chat-inner .media-callcenter-m-main-chat-icon {
+    display: flex;
+    align-items: center;
+}
+.media-callcenter-m .media-callcenter-m-main-chat-inner .media-callcenter-m-main-chat-icon svg {
+    width: 24px;
+    height: auto;
+}
+.media-callcenter-m .media-callcenter-m-main-chat-inner .media-callcenter-m-main-chat-icon svg path {
+    fill: #ffffff;
+}
+.media-callcenter-m .media-callcenter-m-main-chat-inner .media-callcenter-m-main-chat-title {
+    margin-left: 5px;
+}
+.media-callcenter-m .media-callcenter-m-chat-msgc {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: #c70404;
+    aspect-ratio: 1;
+    line-height: 1;
+    min-height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    margin: 0 0 0 auto;
+    padding: 2px;
+}
+.media-callcenter-m .media-callcenter-m-chat-msgc.media-callcenter-m-chat-unseen {
+    display: flex;
+}
+/*start: minimal template of call item*/
+
+.media-callcenter-m-chat-dialog .Q_dialog_content{
+    padding: 10px;
+}
+
+.live-editor-chat-box .Streams_chat_call.Streams_chat_submit_replacement {
+    display: none !important;
+}

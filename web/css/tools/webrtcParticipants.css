@@ -1,0 +1,410 @@
+.webrtc-popup-dialog.participants-popup-more-options {
+    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+    border-radius: 8px;
+}
+.webrtc-popup-dialog.participants-popup-more-options .Media_webrtc_participants-options{
+    margin: 8px;
+}
+.webrtc-popup-dialog.participants-popup-more-options .Media_webrtc_participants-options li{
+    list-style-type: none;
+    cursor: pointer;
+    padding: 5px 15px;
+}
+.webrtc-popup-dialog.participants-popup-more-options .Media_webrtc_participants-options li:hover{
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.participants-list-btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 5px;
+}
+.participants-list-btns svg {
+    height:45px;
+    width:45px;
+}
+.participants-list-btns button{
+    box-shadow: 0 5px 20px -5px #0048b5;
+}
+.participants-list-btns .Media_webrtc_facebook-live-btn.Q_working {
+    cursor: pointer;
+}
+.participants-list-btns .Media_webrtc_facebook-live-btn.Q_working svg path[fill="#4373B9"]{
+    fill: #C12236;
+}
+.participants-list-btns .Media_webrtc_facebook-live-btn.Q_working svg circle[fill="#4373B9"]{
+    fill: #C12236;
+}
+
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list {
+    margin:0;
+    padding: 0;
+    overflow: hidden;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list li {
+    display: flex;
+    padding: 8px 8px;
+    border-bottom: 1px solid #ddd;
+    width:100%;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list li:last-child {
+    border-bottom: 0;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control {
+    display: flex;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control div {
+    margin-right:10px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control svg{
+    height:50px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn .camera-icon path {
+    fill: #4AAA4E;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_isLocal .camera-icon path,
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-audio-btn.Media_webrtc_isLocal .microphone-icon path {
+    fill: #C12337;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity{
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity span{
+    font-weight: bold;
+    color: #000;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_participants-live-status {
+    display: none;
+    z-index: 10;
+    animation: Q_working 1s ease-in-out infinite alternate;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_participants-live-status.isRecording {
+    display: block;
+}
+
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_live_icon svg{
+    width:30px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list li {
+    display: flex;
+    padding: 8px 8px;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control {
+    display: flex;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control div {
+    margin-right: 10px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control svg {
+    height: 50px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_isLocal .camera-icon path,
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-audio-btn.Media_webrtc_isLocal .microphone-icon path {
+    fill: #C12337;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active {
+    height: 50px;
+    width: 50px;
+    position: relative;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-screensharing-btn{
+    display: none;
+    position: absolute;
+    margin: 0;
+    top: 18px;
+    left: 18px;
+    border-radius: 50%;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_no-camera-video .Media_webrtc_mute-screensharing-btn {
+    top: 0;
+    left: 0;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active .Media_webrtc_mute-screensharing-btn{
+    display: block;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn .Media_webrtc_mute-camera-btn{
+    margin: 0;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active .Media_webrtc_mute-camera-btn{
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+}
+
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_no-camera-video.Media_webrtc_screensharing-active .Media_webrtc_mute-camera-btn{
+    display: none;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active svg {
+    height: 32px;
+    width: 32px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active.Media_webrtc_no-camera-video svg {
+    height: 50px;
+    width: 50px;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    /*padding-left: 10px;*/
+    overflow: hidden;
+    position: relative;
+}
+
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_popup-visualization {
+    position:absolute;
+    width: 100%;
+    height:100%;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Users_avatar_tool {
+    display: flex;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    z-index: 10;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Users_avatar_name {
+    font-weight: bold;
+    margin-left: 5px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Users_avatar_name span{
+    display: inline-block;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.Media_webrtc_mobile-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Users_avatar_name span.Streams_lastName{
+    margin-left:5px;
+}
+
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list {
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    min-width: 400px;
+    background: white;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list li {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    padding: 8px 16px;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list li:last-child {
+    border-bottom: 0;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control {
+    display: flex;
+    /*min-width: 120px;*/
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn,
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-audio-btn {
+    margin-right: 10px;
+    cursor: pointer;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control svg {
+    height: 50px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn .camera-icon path,
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-audio-btn.Media_webrtc_isLocal .microphone-icon path {
+    fill: #4AAA4E;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active {
+    height: 50px;
+    width: 50px;
+    position: relative;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-screensharing-btn{
+    display: none;
+    position: absolute;
+    margin: 0;
+    top: 18px;
+    left: 18px;
+    border-radius: 50%;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_no-camera-video .Media_webrtc_mute-screensharing-btn {
+    top: 0;
+    left: 0;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active .Media_webrtc_mute-screensharing-btn{
+    display: block;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active .Media_webrtc_mute-camera-btn{
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_no-camera-video.Media_webrtc_screensharing-active .Media_webrtc_mute-camera-btn{
+    display: none;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active svg {
+    height: 32px;
+    width: 32px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active.Media_webrtc_no-camera-video svg {
+    height: 50px;
+    width: 50px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity {
+    flex: 1;
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding-left: 10px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_popup-visualization {
+    position:absolute;
+    width: 100%;
+    height:100%;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Users_avatar_tool {
+    display: flex;
+    z-index: 10;
+    overflow: visible;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Users_avatar_tool .Users_avatar_name {
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+    position: relative;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants_host .Media_webrtc_participants-identity .Users_avatar_tool .Users_avatar_name::after {
+    content: '';
+    background-image: url("data:image/svg+xml,%3Csvg id='Capa_1' enable-background='new 0 0 513.867 513.867' height='512' viewBox='0 0 513.867 513.867' width='512' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Cpath d='m429.107 303.926c-29.242-29.242-76.823-29.243-106.065 0l-166.762 166.762c-8.5 8.499-19.8 13.18-31.82 13.18s-23.319-4.681-31.819-13.18l-6.397-6.397c-8.499-8.5-13.181-19.8-13.181-31.82s4.682-23.319 13.181-31.819l13.555-13.555 23.552 23.552 43.664-39.994 7.81 7.81 173.736-159.135c4.026.443 8.099.672 12.208.672 29.382 0 57.005-11.442 77.781-32.219 20.776-20.775 32.219-48.399 32.219-77.781s-11.442-57.006-32.219-77.781c-20.777-20.779-48.4-32.221-77.781-32.221s-57.006 11.442-77.781 32.219c-24.53 24.53-35.013 57.857-31.482 89.92l-159.2 173.806 7.81 7.81-39.994 43.664 18.464 18.464-13.556 13.555c-29.242 29.242-29.242 76.823 0 106.065l6.397 6.397c14.166 14.166 33 21.967 53.032 21.967 20.033 0 38.867-7.801 53.033-21.967l166.762-166.762c17.544-17.544 46.094-17.546 63.64 0l2.813 2.813c8.499 8.5 13.181 19.8 13.181 31.82s-4.682 23.319-13.181 31.819l-37.512 37.512 21.213 21.213 37.512-37.512c29.242-29.242 29.242-76.823 0-106.065zm-11.77-250.494c15.11 15.11 23.432 35.2 23.432 56.568 0 16.278-4.842 31.807-13.822 44.965l-111.143-111.143c13.158-8.98 28.687-13.822 44.965-13.822 21.368 0 41.458 8.321 56.568 23.432zm-122.739 11.611 111.135 111.135c-13.158 8.98-28.686 13.822-44.964 13.822-3.36 0-6.684-.229-9.966-.635l-69.358-69.358c-2.374-18.946 2.013-38.578 13.153-54.964zm-26.81 83.734 54.204 54.203-146.258 133.967-41.913-41.913zm-122.007 200.643-21.521 19.712-22.624-22.624 19.712-21.521z'/%3E%3Cpath d='m241.931 198.853h29.969v30h-29.969z' transform='matrix(.707 -.707 .707 .707 -75.968 244.303)'/%3E%3C/g%3E%3C/svg%3E");    background-size: 30px;
+    background-size: cover;
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    right: 0;
+    transform: translateX(105%);
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity span {
+    font-weight: bold;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_participants-live-status {
+    display: none;
+    z-index: 10;
+    animation: Q_working 1s ease-in-out infinite alternate;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_participants-live-status.isRecording {
+    display: block;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_live_icon svg{
+    width:30px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_participants-requests-status {
+    display: none;
+    z-index: 10;
+    animation: Q_webrtc_blinking 1s ease-in-out infinite alternate;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_participants-requests-status.Media_webrtc_participants-requests-media {
+    display: flex;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_mic_request_con,
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_camera_request_con{
+    padding: 5px;
+    display: flex;
+    position: relative;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_mic_request_timer,
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_camera_request_timer{
+    display: block;
+    position: absolute;
+    right: -5px;
+    top: -10px;
+    font-size: 12px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Streams_mic_camera_request_icon,
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_camera_request_icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_mic_request_icon svg,
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-identity .Media_webrtc_camera_request_icon svg{
+    width:30px;
+    height:20px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-menu {
+    display: none;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-menu svg{
+    padding:5px;
+    width:30px;
+    transform: rotate(90deg);
+    border-radius: 5px;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-menu svg:hover{
+    transform: rotate(90deg);
+    background:#f7f7f7;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_participants-menu svg circle{
+    fill:#65676B;
+}
+
+.Media_webrtc_waiting-participants-list {
+    width: 100%;
+}
+
+.Media_webrtc_participants-btns-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0 10px 0;
+}
+
+.Media_webrtc_participants-btns-con .Media_webrtc_participants-btn {
+    height: auto;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1e7f4b;
+    color: #ffffff;
+}
+.Media_webrtc_participants-btns-con .Media_webrtc_participants-btn.Media_webrtc_participants-manage-btn {
+   margin-left: 10px;
+}
+.Media_webrtc_participants-btns-con .Media_webrtc_participants-btn-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    width: 19px;
+}
+.Media_webrtc_participants-btns-con .Media_webrtc_participants-btn-icon svg {
+    max-width: 24px;
+    max-height: 24px;
+}
+.Media_webrtc_participants-btns-con .Media_webrtc_participants-btn-icon svg path {
+    fill: #ffffff;
+}
+
+
+.Media_webrtc_participants-manage-dialog {
+    width: 470px;
+    max-width: 100%;
+}

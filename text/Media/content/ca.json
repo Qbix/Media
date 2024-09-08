@@ -1,0 +1,256 @@
+{
+    "Shows": "Espectacles",
+    "Clips": "Clips",
+    "Video": "Vídeo",
+    "Audio": "Àudio",
+    "categories": {
+        "Clips": "Clips multimèdia",
+        "Episodes": "Episodis"
+    },
+    "NewEpisode": "Nou episodi",
+    "NewClip": "Nou clip",
+    "LiveShow": "Actuació en directe",
+    "Save": "Desa",
+    "ViewFullEpisode": "Veure l&#39;episodi complet",
+    "CreditsEarned": "Crèdits obtinguts",
+    "VideoTitle": "Títol o URL del vídeo",
+    "NewClipTitlePlaceholder": "Introduïu el títol del clip",
+    "NewClipDescriptionPlaceholder": "Introduïu la descripció del clip",
+    "switchVisualization": "Canvia de visualització",
+    "joinLiveShow": "Uneix-te a l&#39;espectacle en directe",
+    "showTwitchLiveStream": "Mostra Twitch en directe",
+    "showVoiceChat": "Mostra el xat de veu",
+    "AreYouSureKick": "Esteu segur que voleu expulsar aquest usuari?",
+    "AreYouSureDeleteEpisode": "Esteu segur que voleu suprimir aquest episodi?",
+    "Yes": "Sí",
+    "No": "No",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "clip multimèdia"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Teleconferència",
+            "description": "una videoconferència\/àudio en línia"
+        },
+        "Media\/calls": {
+            "displayType": "Trucades",
+            "description": "categoria per a mitjans\/WebRTC",
+            "MaxRelationsExceeded": "S&#39;ha superat el màxim de trucades"
+        }
+    },
+    "feeds": {
+        "Title": "Càmeres",
+        "filterByTitle": "Cerca fonts per títol",
+        "RequestFeedAccess": "Sol·liciteu accés al feed",
+        "New": "+ Feed nou",
+        "filterFeeds": "Filtre les fonts",
+        "NewFeed": "Nova alimentació",
+        "NoneYet": "Encara no s&#39;han format feeds.",
+        "AreYouSure": "Estàs segur?",
+        "FilterByDate": "Filtra per data",
+        "newFeeds": "Tens {{1}} fonts noves",
+        "Description": "{{1}} fonts",
+        "Keywords": "{{1}} fonts"
+    },
+    "feed": {
+        "HostedBy": "Allotjat per {{name}}",
+        "Name": "Nom",
+        "Conversation": "Conversa",
+        "CloseFeed": {
+            "button": "Tanca el feed",
+            "Cancel": "Esteu segur que voleu tancar aquest feed?",
+            "Participant": "Hi ha 1 participant en aquest canal",
+            "Participants": "Hi ha {{count}} participants en aquest feed"
+        },
+        "Calendar": "Calendari",
+        "TitleOfFeed": "Títol del feed:",
+        "EmptyList": "Llista buida",
+        "EmptyVideos": "Encara no hi ha cap clip",
+        "AccessReason": "si us plau, indica el motiu",
+        "Proceed": "Continuar",
+        "FeedAlreadyClosed": "Aquest feed ja està tancat",
+        "RtmpLinkNote": "Feu clic per copiar aquest enllaç al porta-retalls",
+        "SelectClip": "Seleccioneu la data que voleu veure",
+        "Request": "Sol·licitud"
+    },
+    "newFeed": {
+        "Title": "Nova alimentació",
+        "locationTitle": "Estableix la teva ubicació",
+        "SetLocation": "Estableix la meva ubicació",
+        "Starting": "Començant",
+        "Day": "Dia",
+        "Create": "Crear",
+        "Continue": "Continua",
+        "FeedTitle": "Títol del feed",
+        "SetTitle": "Definiu el títol del feed"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} ha sol·licitat accés a {{& stream.fields.title}} amb el motiu &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "s&#39;ha unit a la teva trucada",
+        "SubjectJoinedYourCall": "{{subject}} s&#39;ha unit a la teva trucada"
+    },
+    "RealTimeCall": "Trucada en temps real",
+    "JoinWebRTC": "Teleconferència",
+    "webrtc": {
+        "notAllowedToJoinCall": "No tens permís per unir-te a aquest flux.",
+        "streamTitle": "{{1}} va iniciar una teleconferència",
+        "allow": {
+            "dialogTitle": "Connectant",
+            "microphoneBtn": "Activa el micròfon",
+            "cameraBtn": "Activa la càmera",
+            "cameraAndMicrophoneBtn": "Activa la càmera i el micròfon"
+        },
+        "preparing": {
+            "dialogTitle": "Enceneu o apagueu la càmera o el micròfon abans d&#39;unir-vos-hi",
+            "micIsOff": "El micròfon està apagat",
+            "micIsOn": "El micròfon està activat",
+            "cameraIsOff": "La càmera està apagada",
+            "cameraIsOn": "La càmera està activada",
+            "screenSharingIsOn": "La compartició de pantalla està activada",
+            "screenSharingIsOff": "Comparteix pantalla",
+            "joinNow": "Uneix-te a la Crida"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instruccions",
+            "permissionDenied": "S&#39;ha denegat el permís per a {{kind}} . Per utilitzar-lo, seguiu aquests passos:",
+            "point1": "Aneu a &quot;Configuració&quot; -&gt; &quot;Avançat&quot; -&gt; &quot;Privadesa i seguretat&quot; -&gt; &quot;Configuració del lloc&quot; -&gt; &quot;Càmera&quot; o &quot;Configuració del lloc&quot; -&gt; &quot;Micròfon&quot;",
+            "point2": "Elimina {{hostname}} de la llista &quot;Bloqueja&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instruccions",
+            "permissionDenied": "S&#39;ha denegat el permís per a {{kind}} . Torneu a carregar aquesta pàgina i confirmeu l&#39;accés al {{kind}} per unir-vos a la conferència."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instruccions",
+            "permissionDenied": "S&#39;ha denegat el permís per a {{kind}} . Per utilitzar-lo, seguiu aquests passos:",
+            "point1": "Aneu a la configuració d&#39;Android",
+            "point2": "Obriu &quot;Aplicacions i notificacions&quot;",
+            "point3": "Cerqueu &quot; {{communityName}} &quot; i obriu-lo",
+            "point4": "Toqueu Permisos",
+            "point5": "Activa {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instruccions",
+            "permissionDenied": "S&#39;ha denegat el permís per a {{kind}} . Per utilitzar-lo, seguiu aquests passos:",
+            "point1": "Aneu a la configuració d&#39;iOS",
+            "point2": "Obriu &quot;Privadesa&quot;",
+            "point3": "Cerca {{kind}} i obre-lo",
+            "point4": "Cerqueu &quot; {{communityName}} &quot; i activeu-lo"
+        },
+        "fbLive": {
+            "dialogTitle": "Va començar la transmissió en directe de Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "T&#39;has incorporat a la sala",
+            "joining": "Inscripció: {{userName}}",
+            "sbLeftRoom": "{{userName}} va sortir de l&#39;habitació",
+            "switchingRoom": "Canvi de sala...",
+            "forceDisconnecting": "Se us desconnectarà en 5 segons",
+            "forceDisconnectingImmediately": "Un amfitrió t&#39;ha desconnectat",
+            "youLeftRoom": "Vas sortir de l&#39;habitació",
+            "codeCopied": "Vas sortir de l&#39;habitació",
+            "sbBeganFbLive": "{{userName}} va començar a emetre aquesta trucada a Facebook",
+            "sbStoppedFbLive": "{{userName}} va deixar d&#39;emetre aquesta trucada a Facebook",
+            "youBeganFbLive": "Vau començar a emetre aquesta trucada a Facebook",
+            "youStoppedFbLive": "Has deixat d&#39;emetre aquesta trucada a Facebook",
+            "youStartedLive": "Heu començat a emetre aquesta trucada a RTMP personalitzat",
+            "youStoppedLive": "Has deixat d&#39;emetre aquesta trucada a RTMP personalitzat",
+            "sbStartedLiveStreaming": "{{userName}} va començar en directe",
+            "sbStoppedLiveStreaming": "{{userName}} va acabar en directe",
+            "liveStopped": "S&#39;ha produït un error en enviar el vídeo al punt final",
+            "youBeganVideoRecording": "Vau començar a gravar aquesta conferència",
+            "youStoppedVideoRecording": "Has deixat de gravar aquesta conferència",
+            "linkCopiedToCb": "S&#39;ha copiat l&#39;enllaç al porta-retalls",
+            "codeCopiedToCb": "Codi copiat al porta-retalls",
+            "userHasNoVideo": "El participant no té cap vídeo",
+            "openInBrowserAlert": "Obriu l&#39;enllaç al navegador Safari per unir-vos a la conferència.",
+            "allowedVideoLimit": "Només es permeten {{limit}} vídeos en aquesta sala",
+            "allowedAudioLimit": "Només es permeten {{limit}} micròfons en aquesta sala"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Configuració de vídeo",
+            "webCamera": "Càmera web",
+            "screenSharing": "Compartició de pantalla",
+            "shareAnotherScreen": "Comparteix una altra pantalla",
+            "turnOffCameras": "Apagueu la càmera",
+            "turnOffVideo": "Desactiva la compartició de càmera\/pantalla",
+            "turnOffAudioInput": "Silencia el micròfon",
+            "turnOffScreenSharing": "Desactiva la compartició de pantalla",
+            "cameraIsTurnedOff": "La càmera està apagada",
+            "micIsTurnedOff": "El micròfon està apagat",
+            "startFBLive": "Inicieu Facebook Livestream",
+            "stopFBLive": "Atura la transmissió en directe de Facebook",
+            "startRecording": "Comença a gravar",
+            "stopRecording": "Atura la gravació",
+            "start": "Començar",
+            "stop": "Atura",
+            "recordingInProgress": "La gravació està en curs...",
+            "fbLiveTitle": "Títol de Livestream",
+            "fbLiveDescription": "Descriu la teva emissió en directe. De què va?",
+            "fbOnlyMeLiveAccess": "Només jo",
+            "fbFriendsAccess": "Amics",
+            "fbPublicAccess": "Públic",
+            "publishOnTimeline": "Publicar a la línia de temps",
+            "publishToGroup": "Publicar al grup",
+            "fbStartLive": "Anar a viure",
+            "fbStopLive": "Finalitza l&#39;emissió en directe",
+            "streamingSettings": "Configuració",
+            "manageStream": "Gestiona la transmissió en directe",
+            "fbEmbedCode": "Insereix",
+            "copy": "Còpia",
+            "streamToRTMP": "Transmet a RTMP personalitzat",
+            "startBroadcasting": "Comença a emetre",
+            "broadcastingInProgress": "L&#39;emissió està en curs",
+            "share": "Compartir",
+            "startClodRecording": "Inicieu la gravació al núvol",
+            "startLocRecording": "Inicieu la gravació local",
+            "stopClodRecording": "Atura la gravació al núvol",
+            "stopLocRecording": "Atura la gravació local"
+        },
+        "audioSettings": {
+            "dialogTitle": "Configuració d&#39;àudio",
+            "speakers": "Altaveus",
+            "microphone": "Micròfon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Gestiona la difusió"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Configuració dels participants",
+            "disconnect": "Desconnecta",
+            "floatingScreens": "Pantalles flotants",
+            "tiledScreens": "Pantalles enrajolades",
+            "loudestExceptMe": "El més fort excepte jo",
+            "maximizeLoudest": "Maximitza el més fort",
+            "staticMaximized": "Maximitzat estàtic",
+            "fullScreen": "Pantalla completa",
+            "manual": "Manual",
+            "turnOffCamera": "Amaga el vídeo",
+            "turnOffAudio": "Silencia l&#39;àudio",
+            "turnOffScreenSharing": "Amaga la compartició de pantalla",
+            "turnOnCamera": "Mostra el vídeo",
+            "turnOnAudio": "Activa l&#39;àudio",
+            "turnOnScreenSharing": "Mostra la compartició de pantalla"
+        },
+        "streamingSettings": {
+            "title": "Transmissió en directe"
+        },
+        "preview": {
+            "Meeting": "Teleconferència",
+            "MeetingEnded": "S&#39;ha acabat la teleconferència"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Sol·licitud de Parla",
+            "msg": "Actualment hi ha {{count}} persones parlant a la reunió. Vols substituir-ne un després de deixar-los {{seconds}} segons per acabar de parlar?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Presentaràs? Podeu utilitzar aquest espai per carregar conjuntament materials per a la vostra presentació. Utilitzeu el botó més.",
+        "Alert": "A mesura que comencin els esdeveniments, les seves presentacions corresponents començaran a aparèixer en aquesta pàgina",
+        "ClickHereForFullscreen": "Les presentacions apareixeran aquí. Feu clic aquí per anar a pantalla completa.",
+        "question": {
+            "ScanThisQRCode": "Escaneja aquest codi QR per respondre"
+        }
+    }
+}

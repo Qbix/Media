@@ -1,0 +1,256 @@
+{
+    "Shows": "Şovlar",
+    "Clips": "Klipler",
+    "Video": "Video",
+    "Audio": "Ses",
+    "categories": {
+        "Clips": "Medya Klipleri",
+        "Episodes": "Bölümler"
+    },
+    "NewEpisode": "Yeni bölüm",
+    "NewClip": "Yeni Klip",
+    "LiveShow": "Canlı gösteri",
+    "Save": "Kayıt etmek",
+    "ViewFullEpisode": "Tam Bölümü Görüntüle",
+    "CreditsEarned": "Kredi kazanıldı",
+    "VideoTitle": "Video Başlığı veya URL",
+    "NewClipTitlePlaceholder": "Klip Başlığını Girin",
+    "NewClipDescriptionPlaceholder": "Klip Açıklamasını Girin",
+    "switchVisualization": "Görselleştirmeyi değiştir",
+    "joinLiveShow": "Canlı Gösteriye Katılın",
+    "showTwitchLiveStream": "Twitch Canlı Yayınını Göster",
+    "showVoiceChat": "Sesli Sohbeti Göster",
+    "AreYouSureKick": "Bu kullanıcıyı başlatmak istediğinizden emin misiniz?",
+    "AreYouSureDeleteEpisode": "Bu bölümü silmek istediğinizden emin misiniz?",
+    "Yes": "Evet",
+    "No": "Numara",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Klips",
+            "description": "medya klibi"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Tele konferans",
+            "description": "çevrimiçi bir video\/ses konferansı"
+        },
+        "Media\/calls": {
+            "displayType": "Aramalar",
+            "description": "Medya\/WebRTC kategorisi",
+            "MaxRelationsExceeded": "Maksimum çağrı aşıldı"
+        }
+    },
+    "feeds": {
+        "Title": "kameralar",
+        "filterByTitle": "Yayınları başlığa göre bulun",
+        "RequestFeedAccess": "Feed erişimi iste",
+        "New": "+ Yeni Besleme",
+        "filterFeeds": "Feed&#39;leri filtrele",
+        "NewFeed": "Yeni besleme",
+        "NoneYet": "Henüz hiçbir yayın oluşturulmadı.",
+        "AreYouSure": "Emin misin?",
+        "FilterByDate": "Tarihe Göre Filtrele",
+        "newFeeds": "{{1}} yeni feed&#39;iniz var",
+        "Description": "{{1}} besleme",
+        "Keywords": "{{1}} besleme"
+    },
+    "feed": {
+        "HostedBy": "{{name}} tarafından barındırılıyor",
+        "Name": "İsim",
+        "Conversation": "Konuşma",
+        "CloseFeed": {
+            "button": "Feed&#39;i Kapat",
+            "Cancel": "Bu beslemeyi kapatmak istediğinizden emin misiniz?",
+            "Participant": "Bu beslemede 1 katılımcı var",
+            "Participants": "Bu özet akışında {{count}} katılımcı var"
+        },
+        "Calendar": "Takvim",
+        "TitleOfFeed": "Feed&#39;in başlığı:",
+        "EmptyList": "Boş liste",
+        "EmptyVideos": "Henüz klip yok",
+        "AccessReason": "lütfen nedenini belirtin",
+        "Proceed": "İlerlemek",
+        "FeedAlreadyClosed": "Bu besleme zaten kapalı",
+        "RtmpLinkNote": "Bu bağlantıyı panoya kopyalamak için tıklayın",
+        "SelectClip": "Görmek istediğiniz tarihi seçin",
+        "Request": "Rica etmek"
+    },
+    "newFeed": {
+        "Title": "Yeni besleme",
+        "locationTitle": "Konumunuzu Ayarlayın",
+        "SetLocation": "Konumumu Ayarla",
+        "Starting": "Başlangıç",
+        "Day": "Gün",
+        "Create": "Oluşturmak",
+        "Continue": "Devam et",
+        "FeedTitle": "Feed başlığı",
+        "SetTitle": "Lütfen feed başlığını ayarlayın"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}}, &quot;{{& instructions.reason}}&quot; nedeni ile {{& stream.fields.title}}} için erişim istedi",
+        "JoinedWebRTC": "çağrınıza katıldı",
+        "SubjectJoinedYourCall": "{{subject}} çağrınıza katıldı"
+    },
+    "RealTimeCall": "Gerçek Zamanlı Arama",
+    "JoinWebRTC": "Tele konferans",
+    "webrtc": {
+        "notAllowedToJoinCall": "Bu akışa katılma izniniz yok.",
+        "streamTitle": "{{1}} bir Telekonferans başlattı",
+        "allow": {
+            "dialogTitle": "Bağlanıyor",
+            "microphoneBtn": "Mikrofonu Etkinleştir",
+            "cameraBtn": "Kamerayı Etkinleştir",
+            "cameraAndMicrophoneBtn": "Kamera ve Mikrofonu Etkinleştir"
+        },
+        "preparing": {
+            "dialogTitle": "Katılmadan önce kamerayı veya mikrofonu açın\/kapatın",
+            "micIsOff": "mikrofon kapalı",
+            "micIsOn": "mikrofon açık",
+            "cameraIsOff": "kamera kapalı",
+            "cameraIsOn": "kamera açık",
+            "screenSharingIsOn": "Ekran paylaşımı açık",
+            "screenSharingIsOff": "Ekran paylaşımı",
+            "joinNow": "Aramaya Katılın"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Talimatlar",
+            "permissionDenied": "{{kind}} için izin reddedildi. Kullanmak için lütfen şu adımları izleyin:",
+            "point1": "&quot;Ayarlar&quot; -&gt; &quot;Gelişmiş&quot; -&gt; &quot;Gizlilik ve güvenlik&quot; -&gt; &quot;Site Ayarları&quot; -&gt; &quot;Kamera&quot; veya &quot;Site Ayarları&quot; -&gt; &quot;Mikrofon&quot;a gidin",
+            "point2": "{{hostname}} &quot;Engelle&quot; listesinden kaldır"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Talimatlar",
+            "permissionDenied": "{{kind}} için izin reddedildi. Lütfen bu sayfayı yeniden yükleyin ve konferansa katılmak için {{kind}} erişimi onaylayın."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Talimatlar",
+            "permissionDenied": "{{kind}} için izin reddedildi. Kullanmak için lütfen şu adımları izleyin:",
+            "point1": "Android Ayarlarınıza gidin",
+            "point2": "&quot;Uygulamalar ve bildirimler&quot;i açın",
+            "point3": "&quot; {{communityName}} &quot; u bulun ve açın",
+            "point4": "İzinler&#39;e dokunun",
+            "point5": "{{kind}} etkinleştir"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Talimatlar",
+            "permissionDenied": "{{kind}} için izin reddedildi. Kullanmak için lütfen şu adımları izleyin:",
+            "point1": "iOS Ayarlarınıza gidin",
+            "point2": "&quot;Gizlilik&quot;i aç",
+            "point3": "{{kind}} bulun ve açın",
+            "point4": "&quot; {{communityName}} &quot;u bulun ve etkinleştirin"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook canlı yayın başladı"
+        },
+        "notices": {
+            "youJoinedRoom": "odaya katıldın",
+            "joining": "Katılım: {{userName}}",
+            "sbLeftRoom": "{{userName}} odayı terk etti",
+            "switchingRoom": "Anahtarlama odası...",
+            "forceDisconnecting": "5 saniye içinde bağlantınız kesilecek",
+            "forceDisconnectingImmediately": "Bir ana bilgisayar tarafından bağlantınız kesildi",
+            "youLeftRoom": "odadan çıktın",
+            "codeCopied": "odadan çıktın",
+            "sbBeganFbLive": "{{userName}} bu çağrıyı Facebook&#39;ta yayınlamaya başladı",
+            "sbStoppedFbLive": "{{userName}} bu aramayı Facebook&#39;ta yayınlamayı durdurdu",
+            "youBeganFbLive": "Bu görüşmeyi Facebook&#39;ta yayınlamaya başladınız",
+            "youStoppedFbLive": "Facebook&#39;ta bu görüşmeyi yayınlamayı durdurdunuz",
+            "youStartedLive": "Bu aramayı özel RTMP&#39;ye yayınlamaya başladınız",
+            "youStoppedLive": "Bu aramayı özel RTMP&#39;ye yayınlamayı durdurdunuz",
+            "sbStartedLiveStreaming": "{{userName}} canlı başladı",
+            "sbStoppedLiveStreaming": "{{userName}} canlı yayında sona erdi",
+            "liveStopped": "Uç noktaya video gönderilirken hata oluştu",
+            "youBeganVideoRecording": "Bu konferansı kaydetmeye başladınız",
+            "youStoppedVideoRecording": "Bu konferansın kaydını durdurdunuz",
+            "linkCopiedToCb": "link kopyalandı",
+            "codeCopiedToCb": "Panoya kopyalanan kod",
+            "userHasNoVideo": "Katılımcının videosu yok",
+            "openInBrowserAlert": "Konferansa katılmak için bağlantıyı Safari tarayıcısında açın.",
+            "allowedVideoLimit": "Bu odada yalnızca {{limit}} videoya izin verilir",
+            "allowedAudioLimit": "Bu odada yalnızca {{limit}} mikrofona izin verilir"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video ayarları",
+            "webCamera": "İnternet kamerası",
+            "screenSharing": "Ekran paylaşımı",
+            "shareAnotherScreen": "Başka bir ekran paylaşın",
+            "turnOffCameras": "kamerayı kapat",
+            "turnOffVideo": "Kamera\/ekran paylaşımını kapat",
+            "turnOffAudioInput": "Mikrofonun sesini kapat",
+            "turnOffScreenSharing": "Ekran paylaşımını kapat",
+            "cameraIsTurnedOff": "kamera kapalı",
+            "micIsTurnedOff": "mikrofon kapalı",
+            "startFBLive": "Facebook Canlı Yayınını Başlat",
+            "stopFBLive": "Facebook Canlı Yayınını Durdur",
+            "startRecording": "Kayda başla",
+            "stopRecording": "Kaydetmeyi bırak",
+            "start": "Başlangıç",
+            "stop": "Durmak",
+            "recordingInProgress": "Kayıt devam ediyor...",
+            "fbLiveTitle": "Canlı Akışın Başlığı",
+            "fbLiveDescription": "Canlı Yayınınızı açıklayın. Neyle ilgili?",
+            "fbOnlyMeLiveAccess": "Sadece ben",
+            "fbFriendsAccess": "Arkadaşlar",
+            "fbPublicAccess": "Halk",
+            "publishOnTimeline": "Zaman tünelinde yayınla",
+            "publishToGroup": "gruba yayınla",
+            "fbStartLive": "Canlı Yayına Geç",
+            "fbStopLive": "Canlı Yayını Sonlandır",
+            "streamingSettings": "Ayarlar",
+            "manageStream": "Canlı Yayını Yönet",
+            "fbEmbedCode": "Göm",
+            "copy": "Kopyala",
+            "streamToRTMP": "Özel RTMP&#39;ye akış",
+            "startBroadcasting": "yayına başla",
+            "broadcastingInProgress": "Yayın devam ediyor",
+            "share": "Paylaşmak",
+            "startClodRecording": "Bulut Kaydını Başlat",
+            "startLocRecording": "Yerel Kaydı Başlat",
+            "stopClodRecording": "Bulut Kaydını Durdur",
+            "stopLocRecording": "Yerel Kaydı Durdur"
+        },
+        "audioSettings": {
+            "dialogTitle": "Ses ayarları",
+            "speakers": "Konuşmacılar",
+            "microphone": "Mikrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Yayını Yönet"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Katılımcı Ayarları",
+            "disconnect": "bağlantıyı kes",
+            "floatingScreens": "Yüzer Ekranlar",
+            "tiledScreens": "Çinili Ekranlar",
+            "loudestExceptMe": "Ben Hariç En Gürültülü",
+            "maximizeLoudest": "En Yüksek Sesi Büyüt",
+            "staticMaximized": "Statik Maksimize Edilmiş",
+            "fullScreen": "Tam ekran",
+            "manual": "Manuel",
+            "turnOffCamera": "Videoyu gizle",
+            "turnOffAudio": "Sesi kapat",
+            "turnOffScreenSharing": "Ekran paylaşımını gizle",
+            "turnOnCamera": "videoyu göster",
+            "turnOnAudio": "Sesi aç",
+            "turnOnScreenSharing": "Ekran paylaşımını göster"
+        },
+        "streamingSettings": {
+            "title": "Canlı yayın"
+        },
+        "preview": {
+            "Meeting": "Tele konferans",
+            "MeetingEnded": "telekonferans sona erdi"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Konuşma İsteği",
+            "msg": "Şu anda toplantıda konuşan {{count}} kişi var. Konuşmalarını bitirmeleri için {{seconds}} saniye bekledikten sonra birini değiştirmek ister misiniz?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Sunum yapacak mısınız? Sunumunuz için malzemeleri bir araya yüklemek için bu alanı kullanabilirsiniz. Artı düğmesini kullanın.",
+        "Alert": "Etkinlikler başladıkça ilgili sunumlar bu sayfada görünmeye başlayacaktır.",
+        "ClickHereForFullscreen": "Sunumlar burada yer alacaktır. Tam ekrana geçmek için buraya tıklayın.",
+        "question": {
+            "ScanThisQRCode": "Cevaplamak için bu QR kodunu tarayın"
+        }
+    }
+}

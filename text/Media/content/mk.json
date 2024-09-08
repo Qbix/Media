@@ -1,0 +1,256 @@
+{
+    "Shows": "Покажува",
+    "Clips": "Клипови",
+    "Video": "Видео",
+    "Audio": "Аудио",
+    "categories": {
+        "Clips": "Медиумски клипови",
+        "Episodes": "Епизоди"
+    },
+    "NewEpisode": "Нова епизода",
+    "NewClip": "Нов клип",
+    "LiveShow": "Шоу во живо",
+    "Save": "Зачувај",
+    "ViewFullEpisode": "Погледнете ја целата епизода",
+    "CreditsEarned": "Заработени кредити",
+    "VideoTitle": "Наслов или URL на видео",
+    "NewClipTitlePlaceholder": "Внесете наслов на клипот",
+    "NewClipDescriptionPlaceholder": "Внесете опис на клипот",
+    "switchVisualization": "Префрли визуелизација",
+    "joinLiveShow": "Придружете се на шоуто во живо",
+    "showTwitchLiveStream": "Прикажи пренос во живо на Twitch",
+    "showVoiceChat": "Прикажи Гласовен разговор",
+    "AreYouSureKick": "Дали сте сигурни дека сакате да го исклучите овој корисник?",
+    "AreYouSureDeleteEpisode": "Дали сте сигурни дека сакате да ја избришете оваа епизода?",
+    "Yes": "Да",
+    "No": "бр",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Клип",
+            "description": "медиумски клип"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Телеконференција",
+            "description": "онлајн видео\/аудио конференција"
+        },
+        "Media\/calls": {
+            "displayType": "Повици",
+            "description": "категорија за медиуми\/WebRTC",
+            "MaxRelationsExceeded": "Надминат максимум повици"
+        }
+    },
+    "feeds": {
+        "Title": "Камери",
+        "filterByTitle": "Најдете доводи по наслов",
+        "RequestFeedAccess": "Побарајте пристап до доводот",
+        "New": "+ Нов довод",
+        "filterFeeds": "Филтрирај доводи",
+        "NewFeed": "Нов извор",
+        "NoneYet": "Сè уште не се формирани доводи.",
+        "AreYouSure": "Дали си сигурен?",
+        "FilterByDate": "Филтрирај по датум",
+        "newFeeds": "Имате {{1}} нови доводи",
+        "Description": "{{1}} доводи",
+        "Keywords": "{{1}} доводи"
+    },
+    "feed": {
+        "HostedBy": "Хостирано од {{name}}",
+        "Name": "Име",
+        "Conversation": "Разговор",
+        "CloseFeed": {
+            "button": "Затворете го доводот",
+            "Cancel": "Дали сте сигурни дека сакате да ја затворите оваа активност?",
+            "Participant": "Има 1 учесник во оваа активност",
+            "Participants": "Има {{count}} учесници во оваа активност"
+        },
+        "Calendar": "Календар",
+        "TitleOfFeed": "Наслов на храна:",
+        "EmptyList": "Празен список",
+        "EmptyVideos": "Сè уште нема клипови",
+        "AccessReason": "ве молиме наведете ја причината",
+        "Proceed": "Продолжи",
+        "FeedAlreadyClosed": "Оваа активност е веќе затворена",
+        "RtmpLinkNote": "Кликнете за да ја копирате оваа врска во таблата со исечоци",
+        "SelectClip": "Изберете го датумот што сакате да го видите",
+        "Request": "Барање"
+    },
+    "newFeed": {
+        "Title": "Нов извор",
+        "locationTitle": "Поставете ја вашата локација",
+        "SetLocation": "Поставете ја мојата локација",
+        "Starting": "Почнувајќи",
+        "Day": "Ден",
+        "Create": "Креирај",
+        "Continue": "Продолжи",
+        "FeedTitle": "Наслов на активноста",
+        "SetTitle": "Поставете наслов на активноста"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} побара пристап до {{& stream.fields.title}} со причина „{{& instructions.reason}}}“",
+        "JoinedWebRTC": "се придружи на вашиот повик",
+        "SubjectJoinedYourCall": "{{subject}} се придружи на вашиот повик"
+    },
+    "RealTimeCall": "Повик во реално време",
+    "JoinWebRTC": "Телеконференција",
+    "webrtc": {
+        "notAllowedToJoinCall": "Немате дозвола да се придружите на овој пренос.",
+        "streamTitle": "{{1}} започна Телеконференција",
+        "allow": {
+            "dialogTitle": "Поврзување",
+            "microphoneBtn": "Овозможи микрофон",
+            "cameraBtn": "Овозможи камера",
+            "cameraAndMicrophoneBtn": "Овозможете камера и микрофон"
+        },
+        "preparing": {
+            "dialogTitle": "Вклучете\/исклучете ја камерата или микрофонот пред да се придружите",
+            "micIsOff": "Микрофонот е исклучен",
+            "micIsOn": "Микрофонот е вклучен",
+            "cameraIsOff": "Камерата е исклучена",
+            "cameraIsOn": "Камерата е вклучена",
+            "screenSharingIsOn": "Споделувањето екран е вклучено",
+            "screenSharingIsOff": "Споделете го екранот",
+            "joinNow": "Приклучи се на повикот"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Инструкции",
+            "permissionDenied": "Дозволата за {{kind}} е одбиена. За да го користите, следете ги овие чекори:",
+            "point1": "Одете во „Поставки“ -&gt; „Напредно“ -&gt; „Приватност и безбедност“ -&gt; „Поставки на страницата“ -&gt; „Камера“ или „Поставки за локацијата“ -&gt; „Микрофон“",
+            "point2": "Отстранете го {{hostname}} од списокот „Блокирај“."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Инструкции",
+            "permissionDenied": "Дозволата за {{kind}} е одбиена. Ве молиме повторно вчитајте ја оваа страница и потврдете го пристапот до {{kind}} за да се придружите на конференцијата."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Инструкции",
+            "permissionDenied": "Дозволата за {{kind}} е одбиена. За да го користите, следете ги овие чекори:",
+            "point1": "Одете во поставките за Android",
+            "point2": "Отворете „Апликации и известувања“",
+            "point3": "Најдете „ {{communityName}} “ и отворете го",
+            "point4": "Допрете на Дозволи",
+            "point5": "Овозможи {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Инструкции",
+            "permissionDenied": "Дозволата за {{kind}} е одбиена. За да го користите, следете ги овие чекори:",
+            "point1": "Одете во поставките за iOS",
+            "point2": "Отворете ја „Приватност“",
+            "point3": "Најдете {{kind}} и отворете го",
+            "point4": "Најдете „ {{communityName}} “ и овозможете"
+        },
+        "fbLive": {
+            "dialogTitle": "Започна преносот во живо на Фејсбук"
+        },
+        "notices": {
+            "youJoinedRoom": "Се придруживте на собата",
+            "joining": "Приклучување: {{userName}}",
+            "sbLeftRoom": "{{userName}} ја напуштија собата",
+            "switchingRoom": "Преклопна соба...",
+            "forceDisconnecting": "Ќе бидете исклучени во рок од 5 секунди",
+            "forceDisconnectingImmediately": "Домаќин ве исклучи",
+            "youLeftRoom": "Ја напуштивте собата",
+            "codeCopied": "Ја напуштивте собата",
+            "sbBeganFbLive": "{{userName}} почна да го емитува овој повик на Фејсбук",
+            "sbStoppedFbLive": "{{userName}} престана да го емитува овој повик на Фејсбук",
+            "youBeganFbLive": "Почнавте да го емитувате овој повик на Фејсбук",
+            "youStoppedFbLive": "Престанавте да го емитувате овој повик на Фејсбук",
+            "youStartedLive": "Почнавте да го емитувате овој повик до приспособен RTMP",
+            "youStoppedLive": "Престанавте да го емитувате овој повик до приспособениот RTMP",
+            "sbStartedLiveStreaming": "{{userName}} започна во живо",
+            "sbStoppedLiveStreaming": "{{userName}} завршија во живо",
+            "liveStopped": "Се појави грешка при испраќањето на видеото до крајната точка",
+            "youBeganVideoRecording": "Почнавте да ја снимате оваа конференција",
+            "youStoppedVideoRecording": "Престанавте да ја снимате оваа конференција",
+            "linkCopiedToCb": "Врската е копирана во таблата со исечоци",
+            "codeCopiedToCb": "Кодот е копиран во таблата со исечоци",
+            "userHasNoVideo": "Учесникот нема видео",
+            "openInBrowserAlert": "Отворете ја врската во прелистувачот Safari за да се приклучите на конференцијата.",
+            "allowedVideoLimit": "Дозволени се само {{limit}} видеа во оваа соба",
+            "allowedAudioLimit": "Дозволени се само {{limit}} микрофони во оваа соба"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Видео поставки",
+            "webCamera": "Веб камера",
+            "screenSharing": "Споделување на екранот",
+            "shareAnotherScreen": "Споделете друг екран",
+            "turnOffCameras": "Исклучете ја камерата",
+            "turnOffVideo": "Исклучете го споделувањето камера\/екран",
+            "turnOffAudioInput": "Исклучи звук на микрофонот",
+            "turnOffScreenSharing": "Исклучете го споделувањето на екранот",
+            "cameraIsTurnedOff": "Камерата е исклучена",
+            "micIsTurnedOff": "Микрофонот е исклучен",
+            "startFBLive": "Започнете Фејсбук во живо",
+            "stopFBLive": "Запрете го преносот во живо на Фејсбук",
+            "startRecording": "Започнете со снимање",
+            "stopRecording": "Стоп за снимање",
+            "start": "Започнете",
+            "stop": "Стоп",
+            "recordingInProgress": "Снимањето е во тек...",
+            "fbLiveTitle": "Наслов на Livestream",
+            "fbLiveDescription": "Опишете го вашиот пренос во живо. За што се работи?",
+            "fbOnlyMeLiveAccess": "Само јас",
+            "fbFriendsAccess": "Пријатели",
+            "fbPublicAccess": "Јавно",
+            "publishOnTimeline": "Објави на времеплов",
+            "publishToGroup": "Објави во група",
+            "fbStartLive": "Одат во живо",
+            "fbStopLive": "Крај на преносот во живо",
+            "streamingSettings": "Поставки",
+            "manageStream": "Управувајте со пренос во живо",
+            "fbEmbedCode": "Вгради",
+            "copy": "Копирај",
+            "streamToRTMP": "Пренесувајте до приспособено RTMP",
+            "startBroadcasting": "Започнете со емитување",
+            "broadcastingInProgress": "Емитувањето е во тек",
+            "share": "Споделете",
+            "startClodRecording": "Започнете со снимање во облак",
+            "startLocRecording": "Започнете со локално снимање",
+            "stopClodRecording": "Стоп за снимање во облак",
+            "stopLocRecording": "Запрете го локалното снимање"
+        },
+        "audioSettings": {
+            "dialogTitle": "Аудио поставки",
+            "speakers": "Звучници",
+            "microphone": "Микрофон"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Управувајте со емитувањето"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Поставки за учесници",
+            "disconnect": "Исклучете се",
+            "floatingScreens": "Лебдечки екрани",
+            "tiledScreens": "Екрани со плочки",
+            "loudestExceptMe": "Најгласно освен мене",
+            "maximizeLoudest": "Максимизирај најгласно",
+            "staticMaximized": "Статичко максимизирано",
+            "fullScreen": "Цел екран",
+            "manual": "Прирачник",
+            "turnOffCamera": "Сокриј видео",
+            "turnOffAudio": "Исклучи звук",
+            "turnOffScreenSharing": "Сокриј го споделувањето на екранот",
+            "turnOnCamera": "Прикажи видео",
+            "turnOnAudio": "Вклучи звук на звукот",
+            "turnOnScreenSharing": "Прикажи споделување екран"
+        },
+        "streamingSettings": {
+            "title": "Пренос во живо"
+        },
+        "preview": {
+            "Meeting": "Телеконференција",
+            "MeetingEnded": "Телеконференцијата заврши"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Барање да се зборува",
+            "msg": "Во моментов на состанокот зборуваат {{count}} луѓе. Дали сакате да замените еден од нив откако ќе им дозволите {{seconds}} секунди да завршат со зборувањето?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "Дали ќе се претставите? Можете да го користите овој простор за да прикачувате заедно материјали за вашата презентација. Користете го копчето Плус.",
+        "Alert": "Како што започнуваат настаните, нивните соодветни презентации ќе почнат да се појавуваат на оваа страница",
+        "ClickHereForFullscreen": "Презентациите ќе се појават овде. Кликнете овде за да одите на цел екран.",
+        "question": {
+            "ScanThisQRCode": "Скенирајте го овој QR-код за да одговорите"
+        }
+    }
+}

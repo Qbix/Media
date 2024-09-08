@@ -1,0 +1,839 @@
+diff -r 84a20e0d1d04 classes/Media.php
+--- a/classes/Media.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/classes/Media.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -333,7 +333,7 @@
+ 		->fetchDbRow();
+ 
+ 		if ($stream) {
+-			$stream = Streams::fetchOne($stream->publisherId, $stream->publisherId, $stream->name);
++			$stream = Streams_Stream::fetch($stream->publisherId, $stream->publisherId, $stream->name);
+ 
+ 			// if last stream created today, return one
+ 			if (date('Ymd') == date('Ymd', strtotime($stream->insertedTime))) {
+@@ -359,7 +359,42 @@
+ 			"type" => $relationTypes["main"]
+ 		))->limit(1)->fetchDbRow();
+ 
+-		return Streams::fetchOne($relation->fromPublisherId, $relation->fromPublisherId, $relation->fromStreamName);
++		return Streams_Stream::fetch($relation->fromPublisherId, $relation->fromPublisherId, $relation->fromStreamName);
++	}
++
++
++	/**
++	 * Format time in milliseconds to time like hh:mm:ss
++	 * @method formatTime
++	 * @param {string|integer} $time - time in milliseconds
++	 * @param {boolean} [$options.emptyHours=false] - show empty hours like 00
++	 * @param {boolean} [$options.emptyMinutes=true] - show empty minutes like 00
++	 * @return  string
++	 */
++	static function formatTime ($time, $options = array()) {
++		$options = array_merge(array(
++			"emptyHours" => false,
++			"emptyMinutes" => true
++		), $options);
++
++		$time = $time/1000;
++		$seconds = bcmod($time, 60);
++		$minutes = bcmod(intdiv($time, 60), 60);
++		$hours = intdiv($time, 3600);
++		$items = array();
++		if ($hours != "0" || $options["emptyHours"]) {
++			$items[] = $hours;
++		}
++		if ($minutes != "0" || !empty($hours) || $options["emptyMinutes"]) {
++			$items[] = $minutes;
++		}
++		$items[] = $seconds;
++
++		$items = array_map(function($value){
++			return strlen($value) == 1 ? "0".$value : $value;
++		}, $items);
++
++		return implode(":", $items);
+ 	}
+ 
+ 	static $columns = array();
+diff -r 84a20e0d1d04 classes/RTMPMediaServer.js
+--- a/classes/RTMPMediaServer.js	Fri Jun 17 15:18:21 2022 -0400
++++ b/classes/RTMPMediaServer.js	Sun Sep 18 03:30:10 2022 -0400
+@@ -4,23 +4,9 @@
+ const https = require('https');
+ const child_process = require('child_process');
+ const readline = require('readline');
+-const NodeMediaServer = require('node-media-server'),
+-    config = Q.Config.get(['Media', 'rtmp_server',], false),
+-    appName =  Q.Config.get(['Q','app']),
+-    _debug = Q.Config.get([appName, 'debugging',], false);
+-
+-
+-var qDir;
+-
+-var appDir = path.dirname(require.main.filename) + '/../../';
+-var paths_filename = appDir + 'local/paths.js';
+-fs.exists(paths_filename, function (exists) {
+-    if (!exists) {
+-        return;
+-    }
+-    var paths = require(paths_filename);
+-    qDir = paths.Q_DIR;
+-});
++const NodeMediaServer = require('node-media-server');
++const config = Q.Config.get(['Media', 'rtmp_server',], false);
++const _debug = Q.Config.get([Q.app.name, 'debugging',], false);
+ 
+ 
+ /**
+@@ -36,7 +22,7 @@
+ };
+ 
+ RTMPMediaServer.listen = function () {
+-    let mediaroot = appDir + 'files/' +  appName + '/uploads/Streams/';
++    let mediaroot = Q.app.FILES_DIR +  Q.app.name + '/uploads/Streams/';
+     config.http.mediaroot = mediaroot;
+     var nodeMediaSever = new NodeMediaServer(config);
+     nodeMediaSever.on('prePublish', async function(id, StreamPath) {
+@@ -93,7 +79,7 @@
+                 let floatNum = parseFloat(duration);
+                 let milliseconds = floatNum * 1000;
+                 //console.log('duration in ms', milliseconds);
+-                var phpScriptPath = appDir + "scripts/Media/clip.php";
++                var phpScriptPath = Q.app.SCRIPTS_DIR + "Media/clip.php";
+                 var argsString = '-video=' + options.videoFile + " -image=" + options.thumbnail + " -publisherId=" + publisherId + " -feedId=" + streamName + " -duration=" + milliseconds;
+                 child_process.exec("php " + phpScriptPath + " " +argsString, function(e, response, stderr) {
+                     if(e) console.log(e);
+diff -r 84a20e0d1d04 config/plugin.json
+--- a/config/plugin.json	Fri Jun 17 15:18:21 2022 -0400
++++ b/config/plugin.json	Sun Sep 18 03:30:10 2022 -0400
+@@ -117,8 +117,8 @@
+ 					"icon": "{{Media}}/img/icons/Media/clip",
+ 					"title": "Untitled Episode",
+ 					"readLevel": 40,
+-					"writeLevel": 40,
+-					"adminLevel": 40
++					"writeLevel": 10,
++					"adminLevel": 20
+ 				},
+ 				"create": true,
+ 				"close": true,
+diff -r 84a20e0d1d04 handlers/Media/before/Streams_close_Media_feed.php
+--- a/handlers/Media/before/Streams_close_Media_feed.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/before/Streams_close_Media_feed.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -8,7 +8,7 @@
+ 	));
+ 
+ 	foreach ($clipsRelated as $relation) {
+-		$clip = Streams::fetchOne($relation->fromPublisherId, $relation->fromPublisherId, $relation->fromStreamName);
++		$clip = Streams_Stream::fetch($relation->fromPublisherId, $relation->fromPublisherId, $relation->fromStreamName);
+ 		if (!$clip instanceof Streams_Stream) {
+ 			continue;
+ 		}
+diff -r 84a20e0d1d04 handlers/Media/clip/response/column.php
+--- a/handlers/Media/clip/response/column.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/clip/response/column.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -20,26 +20,26 @@
+ 	Q_Response::addStylesheet("{{Media}}/css/columns/clip.css");
+ 
+ 	Q_Response::setMeta(array(
+-		array('attrName' => 'name', 'attrValue' => 'title', 'content' => $title),
+-		array('attrName' => 'property', 'attrValue' => 'og:title', 'content' => $title),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:title', 'content' => $title),
+-		array('attrName' => 'name', 'attrValue' => 'description', 'content' => $description),
+-		array('attrName' => 'property', 'attrValue' => 'og:description', 'content' => $description),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:description', 'content' => $description),
+-		array('attrName' => 'name', 'attrValue' => 'keywords', 'content' => $keywords),
+-		array('attrName' => 'property', 'attrValue' => 'og:keywords', 'content' => $keywords),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:keywords', 'content' => $keywords),
+-		array('attrName' => 'property', 'attrValue' => 'og:image', 'content' => $icon),
+-		array('attrName' => 'property', 'attrValue' => 'og:url', 'content' => $url),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:url', 'content' => $url),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:card', 'content' => 'summary'),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:image', 'content' => $icon),
+-		array('attrName' => 'property', 'attrValue' => 'og:type', 'content' => "video.episode")
++		array('name' => 'name', 'value' => 'title', 'content' => $title),
++		array('name' => 'property', 'value' => 'og:title', 'content' => $title),
++		array('name' => 'property', 'value' => 'twitter:title', 'content' => $title),
++		array('name' => 'name', 'value' => 'description', 'content' => $description),
++		array('name' => 'property', 'value' => 'og:description', 'content' => $description),
++		array('name' => 'property', 'value' => 'twitter:description', 'content' => $description),
++		array('name' => 'name', 'value' => 'keywords', 'content' => $keywords),
++		array('name' => 'property', 'value' => 'og:keywords', 'content' => $keywords),
++		array('name' => 'property', 'value' => 'twitter:keywords', 'content' => $keywords),
++		array('name' => 'property', 'value' => 'og:image', 'content' => $icon),
++		array('name' => 'property', 'value' => 'og:url', 'content' => $url),
++		array('name' => 'property', 'value' => 'twitter:url', 'content' => $url),
++		array('name' => 'property', 'value' => 'twitter:card', 'content' => 'summary'),
++		array('name' => 'property', 'value' => 'twitter:image', 'content' => $icon),
++		array('name' => 'property', 'value' => 'og:type', 'content' => "video.episode")
+ 	));
+ 
+ 	if ($video) {
+ 		Q_Response::setMeta(array(
+-			array('attrName' => 'property', 'attrValue' => 'og:video', 'content' => $video)
++			array('name' => 'property', 'value' => 'og:video', 'content' => $video)
+ 		));
+ 	}
+ 
+diff -r 84a20e0d1d04 handlers/Media/clips/response/column.php
+--- a/handlers/Media/clips/response/column.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/clips/response/column.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -1,7 +1,7 @@
+ <?php
+ function Media_clips_response_column() {
+ 	$communityId = Users::communityId();
+-	$episodesStream = Streams::fetchOne(null, $communityId, 'Media/episodes', true);
++	$episodesStream = Streams_Stream::fetch(null, $communityId, 'Media/episodes', true);
+ 	$limit = Q_Config::get("Media", "pageSizes", "clips", 10);
+ 	$offset = 0;
+ 	$showLiveButton = false;
+diff -r 84a20e0d1d04 handlers/Media/clips/response/loadMore.php
+--- a/handlers/Media/clips/response/loadMore.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/clips/response/loadMore.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -1,7 +1,7 @@
+ <?php
+ function Media_clips_response_loadMore () {
+ 	$communityId = Q::ifset($_REQUEST, 'communityId', Users::currentCommunityId());
+-	$episodesStream = Streams::fetchOne(null, $communityId, 'Media/episodes', true);
++	$episodesStream = Streams_Stream::fetch(null, $communityId, 'Media/episodes', true);
+ 
+ 	$offset = Q::ifset($_REQUEST, 'offset', 0);
+ 	$limit = Q::ifset($_REQUEST, 'limit', Q_Config::get(
+diff -r 84a20e0d1d04 handlers/Media/feed/column.php
+--- a/handlers/Media/feed/column.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/feed/column.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -11,7 +11,7 @@
+ 	$feedId = Q::ifset($params, 'feedId', Communities::requestedId($params, 'feedId'));
+ 	$publisherId = Users::currentCommunityId();
+ 	$streamName = "Media/feed/".$feedId;
+-	$stream = $params['stream'] ?: Streams::fetchOne(null, $publisherId, $streamName);
++	$stream = $params['stream'] ?: Streams_Stream::fetch(null, $publisherId, $streamName);
+ 	if (!$stream) {
+ 		return;
+ 	}
+diff -r 84a20e0d1d04 handlers/Media/feed/content.php
+--- a/handlers/Media/feed/content.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/feed/content.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -3,7 +3,7 @@
+ 	$publisherId = Users::currentCommunityId();
+ 	$feedId = Q::ifset($params, 'feedId', Communities::requestedId($params, 'feedId'));
+ 	$streamName = "Media/feed/$feedId";
+-	$stream = Streams::fetchOne(null, $publisherId, $streamName, true);
++	$stream = Streams_Stream::fetch(null, $publisherId, $streamName, true);
+ 
+ 	Q::event('Media/feeds/response/column', $params);
+ 
+diff -r 84a20e0d1d04 handlers/Media/feed/delete.php
+--- a/handlers/Media/feed/delete.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/feed/delete.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -22,7 +22,7 @@
+ 
+ 	$userId = Q::ifset($r, 'userId', Users::loggedInUser(true)->id);
+ 
+-	$stream = Streams::fetchOne($userId, $publisherId, $streamName);
++	$stream = Streams_Stream::fetch($userId, $publisherId, $streamName);
+ 
+ 	// close stream
+ 	$stream->close($publisherId);
+diff -r 84a20e0d1d04 handlers/Media/feed/post.php
+--- a/handlers/Media/feed/post.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/feed/post.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -57,7 +57,7 @@
+ 			if (gettype($areaSelected) == 'string') {
+ 				$areaSelected = json_decode($areaSelected);
+ 			}
+-			$areaStream = Streams::fetchOne(null, $areaSelected->publisherId, $areaSelected->streamName);
++			$areaStream = Streams_Stream::fetch(null, $areaSelected->publisherId, $areaSelected->streamName);
+ 			$stream->relateTo($areaStream, $relationType);
+ 		}
+ 
+diff -r 84a20e0d1d04 handlers/Media/feed/response/access.php
+--- a/handlers/Media/feed/response/access.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/feed/response/access.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -25,7 +25,7 @@
+ 		throw new Q_Exception_WrongValue(array('field' => 'streamName', 'range' => "not empty"));
+ 	}
+ 
+-	$stream = $params['stream'] ?: Streams::fetchOne($userId, $publisherId, $streamName);
++	$stream = $params['stream'] ?: Streams_Stream::fetch($userId, $publisherId, $streamName);
+ 	if (!$stream) {
+ 		throw new Streams_Exception_NoSuchStream();
+ 	}
+diff -r 84a20e0d1d04 handlers/Media/feeds/response/access.php
+--- a/handlers/Media/feeds/response/access.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/feeds/response/access.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -14,7 +14,7 @@
+ 	$dateFormat = "Y-m-d H:i:s";
+ 	foreach ($messages as $i => $message) {
+ 		$messages[$i]->date = date($dateFormat, strtotime($message->insertedTime));
+-		$messages[$i]->feed = Streams::fetchOne(null, $message->publisherId, $message->streamName);
++		$messages[$i]->feed = Streams_Stream::fetch(null, $message->publisherId, $message->streamName);
+ 		$messages[$i]->startDate = date($dateFormat, $message->getInstruction("startDate", null));
+ 		$messages[$i]->endDate = date($dateFormat, $message->getInstruction("endDate", null));
+ 		$messages[$i]->reason = $message->getInstruction("reason", null);
+diff -r 84a20e0d1d04 handlers/Media/feeds/response/column.php
+--- a/handlers/Media/feeds/response/column.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/handlers/Media/feeds/response/column.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -41,18 +41,18 @@
+ 	$description = Q::text($text['feeds']['Description'], array($communityName));
+ 	$keywords = Q::text($text['feeds']['Keywords'], array($communityName));
+ 	Q_Response::setMeta(array(
+-		array('attrName' => 'name', 'attrValue' => 'title', 'content' => $title),
+-		array('attrName' => 'property', 'attrValue' => 'og:title', 'content' => $title),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:title', 'content' => $title),
+-		array('attrName' => 'name', 'attrValue' => 'description', 'content' => $description),
+-		array('attrName' => 'property', 'attrValue' => 'og:description', 'content' => $description),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:description', 'content' => $description),
+-		array('attrName' => 'name', 'attrValue' => 'keywords', 'content' => $keywords),
+-		array('attrName' => 'property', 'attrValue' => 'og:keywords', 'content' => $keywords),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:keywords', 'content' => $keywords),
+-		array('attrName' => 'property', 'attrValue' => 'og:url', 'content' => $url),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:url', 'content' => $url),
+-		array('attrName' => 'property', 'attrValue' => 'twitter:card', 'content' => 'summary')
++		array('name' => 'name', 'value' => 'title', 'content' => $title),
++		array('name' => 'property', 'value' => 'og:title', 'content' => $title),
++		array('name' => 'property', 'value' => 'twitter:title', 'content' => $title),
++		array('name' => 'name', 'value' => 'description', 'content' => $description),
++		array('name' => 'property', 'value' => 'og:description', 'content' => $description),
++		array('name' => 'property', 'value' => 'twitter:description', 'content' => $description),
++		array('name' => 'name', 'value' => 'keywords', 'content' => $keywords),
++		array('name' => 'property', 'value' => 'og:keywords', 'content' => $keywords),
++		array('name' => 'property', 'value' => 'twitter:keywords', 'content' => $keywords),
++		array('name' => 'property', 'value' => 'og:url', 'content' => $url),
++		array('name' => 'property', 'value' => 'twitter:url', 'content' => $url),
++		array('name' => 'property', 'value' => 'twitter:card', 'content' => 'summary')
+ 	));
+ 
+ 	return $column;
+diff -r 84a20e0d1d04 scripts/Media/0.1-Streams.mysql.php
+--- a/scripts/Media/0.1-Streams.mysql.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/scripts/Media/0.1-Streams.mysql.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -14,7 +14,7 @@
+ 	$admins = Q_Config::get("Media", "access", "feeds", "admins", array("Users/owners", "Users/admins", "Media/owners", "Media/admins"));
+ 
+ 	$text = Q_Text::get('Media/content');
+-	$stream = Streams::fetchOne($app, $communityId, 'Media/clips');
++	$stream = Streams_Stream::fetch($app, $communityId, 'Media/clips');
+ 	if (!$stream) {
+ 		Streams::create($app, $communityId, 'Streams/category', array(
+ 			'name' => 'Media/clips',
+@@ -25,7 +25,7 @@
+ 		));
+ 	}
+ 
+-	$stream = Streams::fetchOne($app, $communityId, 'Media/episodes');
++	$stream = Streams_Stream::fetch($app, $communityId, 'Media/episodes');
+ 	if (!$stream) {
+ 		Streams::create($app, $communityId, 'Streams/category', array(
+ 			'name' => 'Media/episodes',
+diff -r 84a20e0d1d04 views/Media/column/clip.php
+--- a/views/Media/column/clip.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/views/Media/column/clip.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -1,4 +1,1 @@
+-<?php echo Q::tool('Media/episode', array(
+-	'publisherId' => $stream->publisherId,
+-	'streamName' => $stream->name
+-)) ?>
+\ No newline at end of file
++<?php echo Q::tool('Media/episode', $clipParams) ?>
+\ No newline at end of file
+diff -r 84a20e0d1d04 views/Media/column/clips.php
+--- a/views/Media/column/clips.php	Fri Jun 17 15:18:21 2022 -0400
++++ b/views/Media/column/clips.php	Sun Sep 18 03:30:10 2022 -0400
+@@ -44,7 +44,7 @@
+         "expandable" => array("expanded" => false) // this for Media/episodes/preview
+     ),
+ 	"specificOptions" => array(
+-        "layout" => ($layout == 'list' ? 'list' : 'cards'),
++        "layout" => ($layout == 'list' ? 'list' : 'cards')
+     ),
+ 
+ 	"relatedOptions" => array(
+diff -r 84a20e0d1d04 web/css/tools/clip.css
+--- a/web/css/tools/clip.css	Fri Jun 17 15:18:21 2022 -0400
++++ b/web/css/tools/clip.css	Sun Sep 18 03:30:10 2022 -0400
+@@ -147,4 +147,7 @@
+ .Media_clips_list_segments .Media_clips_list_segments_viewFull {
+     cursor: pointer;
+     padding-bottom:10px;
++}
++.Media_clip_tool .Streams_chat_messages .Media_episode_description  {
++    padding: 20px 0 10px 0;
+ }
+\ No newline at end of file
+diff -r 84a20e0d1d04 web/css/tools/episode.css
+--- a/web/css/tools/episode.css	Fri Jun 17 15:18:21 2022 -0400
++++ b/web/css/tools/episode.css	Sun Sep 18 03:30:10 2022 -0400
+@@ -1,6 +1,5 @@
+ .Media_episode_tool .Streams_participants_tool,
+ .Media_episode_tool .Streams_chat_tool {
+-    background: rgba(100, 100, 100, 0.5);
+     margin: 0 auto;
+ }
+ .Media_episode_tool .Streams_chat_tool {
+diff -r 84a20e0d1d04 web/css/tools/episodePreview.css
+--- a/web/css/tools/episodePreview.css	Fri Jun 17 15:18:21 2022 -0400
++++ b/web/css/tools/episodePreview.css	Sun Sep 18 03:30:10 2022 -0400
+@@ -157,7 +157,6 @@
+     border-radius:5px;
+     position: relative;
+     overflow: hidden;
+-    z-index: 100;
+ }
+ .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_users_con {
+     margin-top: -20px;
+@@ -201,10 +200,6 @@
+     text-shadow: 0 0 10px #000, 0 2px 3px #000;
+     font-weight: bold;
+     font-size:18px;
+-    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 100%); /* FF3.6-15 */
+-    background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.85) 100%); /* Chrome10-25,Safari5.1-6 */
+-    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.85) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#d9000000',GradientType=0 ); /* IE6-9 */
+ }
+ .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_card_title {
+     position: absolute;
+@@ -225,7 +220,7 @@
+ 
+ .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_card_info {
+     position: absolute;
+-    bottom:5%;
++    bottom:13px;
+     left:0;
+     width:100%;
+     height:20%;
+@@ -242,4 +237,11 @@
+     float: left;
+     margin-right: 3px;
+ }
+-/*cards layout: end*/
+\ No newline at end of file
++/*cards layout: end*/
++
++.Media_dialog_newEpisode .Q_dialog_content input,
++.Media_dialog_newEpisode .Q_dialog_content button[name=add] {
++    display: block;
++    width: 90%;
++    margin: 10px auto;
++}
+\ No newline at end of file
+diff -r 84a20e0d1d04 web/js/tools/clip.js
+--- a/web/js/tools/clip.js	Fri Jun 17 15:18:21 2022 -0400
++++ b/web/js/tools/clip.js	Sun Sep 18 03:30:10 2022 -0400
+@@ -133,6 +133,9 @@
+         streamName: null,
+         facesDebounce: 30,
+         facesUse: false,
++        showDescription: true,
++        qVideoOptions: null,
++        qAudioOptions: null,
+         earnPeriod: parseInt(Q.getObject("Media.clip.watching.earnPeriod", Q)) || 60,
+         credits: parseInt(Q.getObject("Assets.credits.amounts.watching", Q)) || 1,
+         withQuestions: false,
+@@ -160,7 +163,8 @@
+                 showSwitch: !tool.isLive(), //tool.stream.fields.type == 'Media/episode'
+                 showHosts: tool.isLive(),
+                 showAddClip: showAddClip,
+-                text: tool.text
++                text: tool.text,
++                description: state.showDescription ? tool.stream.fields.content : null
+             };
+ 
+             Q.Template.render('Media/clip', fields, function (err, html) {
+@@ -188,11 +192,12 @@
+                             },
+                             function () {
+                             tool.getMainWebRTCStreams().then(function (stream) {
++                                console.log('clip: mainRoomStream', stream.fields.publisherId, stream.fields.name);
+                                 var $streamsCalls = $("<div>").tool("Streams/calls");
+                                 $(".Streams_chat_tool .Streams_chat_call", $toolElement).replaceWith($streamsCalls);
+                                 $streamsCalls.activate({
+                                     eventsStream: tool.stream,
+-                                    meventsStreamRelationType: Q.Media.clip.webrtc.relations.main,
++                                    eventsStreamRelationType: Q.Media.clip.webrtc.relations.main,
+                                     mainRoomConfig: {
+                                         mainRoomContainer: $hostsParticipants[0],
+                                         mainRoomStream: stream,
+@@ -339,7 +344,7 @@
+                 });
+ 
+                 // set valid height for chat tool and make it scrollable
+-                var pipeToolActivated = new Q.pipe(["tools", "Q/video"], function () {
++                var pipeToolActivated = new Q.pipe(["tools", "media"], function () {
+                     var scrollParent = tool.element.scrollingParent();
+ 
+                     // decrease chat height to make tool not scrollable
+@@ -351,6 +356,16 @@
+                                 return console.warn("Media/clip: element chatMessages not found");
+                             }
+ 
++                            var description = tool.stream.fields.content;
++                            if (description) {
++                                var urls = description.matchTypes('url', {requireScheme: true});
++                                urls = Array.from(new Set(urls)); // remove dublicates
++                                Q.each(urls, function (i, url) {
++                                    description = description.split(url).join('<a href="'+url+'" target="_blank">'+url+'</a>');
++                                });
++                                $chatMessages.prepend($("<div class='Media_episode_description'>").html(description));
++                            }
++
+                             Q.onLayout($chatMessages[0]).set(function () {
+                                 var chatHeight = $chatMessages.height();
+                                 while (scrollParent.isOverflowed()) {
+@@ -361,7 +376,7 @@
+                                     $chatMessages.height(chatHeight);
+                                 }
+ 
+-                                while (scrollParent.offsetHeight - tool.element.offsetHeight > 30) {
++                                while (scrollParent.offsetHeight - tool.element.offsetHeight > 20) {
+                                     chatHeight += 10;
+                                     $chatMessages.height(chatHeight);
+                                 }
+@@ -372,7 +387,7 @@
+ 
+                 var video = tool.stream.getAttribute("video") || {};
+                 if (video.url) {
+-                    $(".Media_video", tool.element).tool("Q/video", {
++                    $(".Media_video", tool.element).tool("Q/video", Q.extend({
+                         url: video.url,
+                         clipStart: video.clipStart,
+                         clipEnd: video.clipEnd,
+@@ -382,19 +397,18 @@
+                             streamName: state.streamName
+                         },
+                         onPlaying: tool.watchClip.bind(tool),
+-                        onPlay: tool.joinClip.bind(tool),
+-                        onLoad: function () {
+-                            pipeToolActivated.fill("Q/video")();
++                        onPlay: tool.joinClip.bind(tool)
++                    }, state.qVideoOptions)).activate(function () {
++                        pipeToolActivated.fill("media")();
+ 
+-                            // set Q/video tool height
+-                            var $toolElement = $(this.element);
+-                            $toolElement.css("height", $toolElement.width()/1.78);
+-                        }
++                        // set Q/video tool height
++                        var $toolElement = $(this.element);
++                        $toolElement.css("height", $toolElement.width()/1.78);
+                     });
+                 }
+                 var audio = tool.stream.getAttribute("audio") || {};
+                 if (audio.url) {
+-                    $(".Media_audio", tool.element).tool("Q/audio", {
++                    $(".Media_audio", tool.element).tool("Q/audio", Q.extend({
+                         url: audio.url,
+                         clipStart: audio.clipStart,
+                         clipEnd: audio.clipEnd,
+@@ -404,7 +418,10 @@
+                         },
+                         onPlaying: tool.watchClip.bind(tool),
+                         onPlay: tool.joinClip.bind(tool),
+-                    });
++                        onLoad: function () {
++                            pipeToolActivated.fill("media")();
++                        }
++                    }, state.qAudioOptions));
+                 }
+ 
+                 var $questions = $(".Media_clip_questions", tool.element);
+@@ -466,7 +483,7 @@
+ 
+                     var pubId, strName;
+ 
+-                    if(tool.stream.fields.type == 'Media/episode') {
++                    if(tool.stream.fields.type === 'Media/episode') {
+                         pubId = state.publisherId;
+                         strName = state.streamName;
+                     } else {
+diff -r 84a20e0d1d04 web/js/tools/episode/preview.js
+--- a/web/js/tools/episode/preview.js	Fri Jun 17 15:18:21 2022 -0400
++++ b/web/js/tools/episode/preview.js	Sun Sep 18 03:30:10 2022 -0400
+@@ -7,6 +7,8 @@
+ 	 * @constructor
+ 	 * @param {Object} [options] options to pass besides the ones to Streams/preview tool
+ 	 * @param {boolean|object} [options.expandable=false] If true - make preview expandable. Also can be {expanded: [false|true]} to expand/collapse loaded tools
++	 * @param {function} [options.layout="default"] Can be "default" or "cards".
++	 * @param {function} [options.onResults] Set here function to update results before render.
+ 	 */
+ 	Q.Tool.define("Media/episode/preview", ["Streams/preview"], function _Media_episode_preview (options, preview) {
+ 		var tool = this;
+@@ -23,7 +25,9 @@
+ 		// this need because streams/preview add Q/actions to element, but Q/expandable ignore filled elements
+ 		state.closeable = preview.state.closeable;
+ 		state.editable = preview.state.editable;
+-		preview.state.closeable = preview.state.editable = false;
++		if (state.layout === "default") {
++			preview.state.closeable = preview.state.editable = false;
++		}
+ 
+ 		preview.state.onCreate.set(function () {
+ 			Q.Dialogs.pop();
+@@ -60,7 +64,12 @@
+ 
+ 	{
+ 		relationType: "Media/clip",
+-		expandable: false
++		expandable: false,
++		onResults: null,
++		layout: "default",
++		onInvoke: function () {
++			this.openFullEpisode();
++		}
+ 	},
+ 	{
+ 		refresh: function (stream, callback) {
+@@ -80,6 +89,7 @@
+ 			Q.Streams.retainWith(tool).get(publisherId, streamName);
+ 
+             var publishTime = stream.getAttribute("publishTime") || Q.getObject("publishTime", stream.getAttribute("video"));
++			var dateFormatted, dateFormattedForCard;
+ 
+             if(publishTime) {
+                 var publishDate = new Date(parseInt(publishTime) * 1000);
+@@ -93,8 +103,8 @@
+                 hour = hour % 12;
+                 hour = hour ? hour : 12;
+                 min = min < 10 ? '0' + min : min;
+-                var dateFormatted = month + " " + date + ", " + year;
+-                var dateFormattedForCard = month + " " + date + ", " + year + ", " + hour + ":" + min + ' ' + ampm;
++                dateFormatted = month + " " + date + ", " + year;
++                dateFormattedForCard = month + " " + date + ", " + year + ", " + hour + ":" + min + ' ' + ampm;
+             }
+ 
+ 			var _onPreviewActivated = function () {
+@@ -107,83 +117,40 @@
+ 					});
+ 				};
+ 
+-
+-				if(dateFormatted) $(".Streams_preview_title", this.element).append(" <span class='Media_episode_publishTime'># " + dateFormatted + "</span>");
++				if(dateFormatted) {
++					$(".Streams_preview_title", this.element).append(" <span class='Media_episode_publishTime'># " + dateFormatted + "</span>");
++				}
+ 			};
+ 
+-			if(state.layout == 'cards') {
+-                let cardContainer = document.createElement('DIV');
+-                cardContainer.className = 'Streams_preview_episode_card_con'
+-                let cardContainerInner = document.createElement('DIV');
+-                cardContainerInner.className = 'Streams_preview_episode_card_inner';
+-                let cardEl = document.createElement('DIV');
+-                cardEl.className = 'Streams_preview_episode_card';
+-                let cardBackground = document.createElement('DIV');
+-                cardBackground.className = 'Streams_preview_episode_card_bg';
+-                cardBackground.style.backgroundImage = 'url(' + stream.fields.icon + '/500.png' + ')';
+-                let cardForeground = document.createElement('DIV');
+-                cardForeground.className = 'Streams_preview_episode_card_fg';
+-                let cardTitle = document.createElement('DIV');
+-                cardTitle.className = 'Streams_preview_episode_card_title';
+-                let cardTitleText = document.createElement('DIV');
+-                cardTitleText.className = 'Streams_preview_episode_card_title_text';
+-                cardTitleText.innerHTML = stream.fields.title;
+-                let cardInfo = document.createElement('DIV');
+-                cardInfo.className = 'Streams_preview_episode_card_info';
+-                let cardInfoDate = document.createElement('DIV');
+-                cardInfoDate.className = 'Streams_preview_episode_card_info_date';
+-                let cardInfoDateText = document.createElement('DIV');
+-                cardInfoDateText.className = 'Streams_preview_episode_info_date_text';
+-                cardInfoDateText.innerHTML = dateFormattedForCard ? dateFormattedForCard : '-';
+-
+-                let episodeParticipantsCon = document.createElement('DIV');
+-                episodeParticipantsCon.className = 'Streams_preview_episode_users_con';
+-                let episodeParticipantsInner = document.createElement('DIV');
+-                episodeParticipantsInner.className = 'Streams_preview_episode_users_inner';
+-
+-                cardContainerInner.appendChild(cardBackground);
+-                cardTitle.appendChild(cardTitleText);
+-                cardForeground.appendChild(cardTitle);
+-                cardInfoDate.appendChild(cardInfoDateText);
+-                cardInfo.appendChild(cardInfoDate);
+-                cardForeground.appendChild(cardInfo);
+-                cardContainerInner.appendChild(cardForeground);
+-
+-                episodeParticipantsCon.appendChild(episodeParticipantsInner);
+-                cardContainer.appendChild(cardContainerInner);
+-
+-                cardContainer.appendChild(episodeParticipantsCon);
+-
+-                tool.element.innerHTML = '';
+-                tool.element.appendChild(cardContainer);
+-
+-                Q.Tool.setUpElement(episodeParticipantsInner, 'Streams/participants', {
+-                    publisherId: stream.fields.publisherId,
+-                    streamName: stream.fields.name,
+-                    templates: {
+-                        invite: {
+-                            fields: {
+-                                alt: 'Share',
+-                                title: 'Share'
++			if(state.layout === 'cards') {
++				Q.Template.render('Media/episode/card', {
++					iconURL:stream.iconUrl(500),
++					title:stream.fields.title,
++					date: dateFormattedForCard
++				}, function (err, html) {
++					if(err){
++						return;
++					}
++					
++					tool.element.innerHTML = html;
++					$('.Streams_preview_episode_users_inner', tool.element).tool('Streams/participants', {
++                        publisherId: stream.fields.publisherId,
++                        streamName: stream.fields.name,
++                        templates: {
++                            invite: {
++                                fields: {
++                                    alt: 'Share',
++                                    title: 'Share'
++                                }
+                             }
+                         }
+-                    }
+-                })
+-                var textFillTool;
+-                setTimeout(function () {
+-                    $(cardTitle).tool('Q/textfill').activate(function () {
+-                        textFillTool = this;
+-                    });
+-                }, 1000)
+-                Q.onLayout(tool).add(function () {
+-                    if(textFillTool) textFillTool.remove();
+-                    $(cardTitle).tool('Q/textfill').activate(function () {
+-                        textFillTool = this;
+-                    });
+-                }, tool);
++					}).activate();
+ 
+-                $(tool.element).on(Q.Pointer.fastclick, function () {
+-                    tool.openFullEpisode();
++					$('.Streams_preview_episode_card_title', tool.element).plugin('Q/textfill', null, stream.fields.name.split("/").pop());
++                });
++
++				$toolElement.on(Q.Pointer.fastclick, function () {
++                    Q.handle(state.onInvoke, tool);
+                 });
+             } else {
+                 if (!state.expandable) {
+@@ -197,12 +164,9 @@
+                     }).activate();
+ 
+                     // "view full episode" button
+-                    $toolElement.on(Q.Pointer.fastclick, function () {
+-                        Q.Media.loadClip(streamName.split('/').pop(), {
+-                            publisherId: publisherId,
+-                            trigger: this
+-                        });
+-                    });
++					$toolElement.on(Q.Pointer.fastclick, function () {
++						Q.handle(state.onInvoke, tool);
++					});
+ 
+                     return;
+                 }
+@@ -241,6 +205,10 @@
+                         console.warn("Media/episode/preview: h2 is not a HTMLElement");
+                     }
+ 
++
++                    // remove duplicated Q/actions
++					$toolElement.plugin("Q/actions", "remove");
++
+                     $("<div>").appendTo($h2).tool("Streams/preview", {
+                         publisherId: publisherId,
+                         streamName: streamName,
+@@ -289,27 +257,31 @@
+ 		 */
+ 		composer: function (callback) {
+ 			var tool = this;
++			var state = this.state;
+ 
+ 			Q.Dialogs.push({
+ 				title: tool.text.NewEpisode,
+ 				className: "Media_dialog_newEpisode",
+-				content: "<input name='title' placeholder='Title' /><button class='Q_button' type='button' name='add'>Add New Episode</button>",
++				content: "<div data-name='title'></div><button class='Q_button' type='button' name='add'>Add New Episode</button>",
+ 				onActivate: function (dialog) {
+ 					var $title = $("input[name=title]", dialog);
+ 					var videoUrl = null;
++					var publishTime = null;
+ 					var audioUrl = null;
+ 					var $submit = $("button[name=add]", dialog);
+ 
+-					$("input[name=title]", dialog).replaceWith($("<div>").tool("Websites/lookup", {
++					$("div[data-name=title]", dialog).tool("Websites/lookup", {
+ 						platforms: {
+ 							youtube: true
++						},
++						onResults: function (results) {
++							return Q.typeOf(state.onResults) === "function" && state.onResults(results);
+ 						}
+ 					}).activate(function () {
+-						var lookupTool = this;
+-
+ 						this.state.onChoose.set(function (element, detailes) {
+ 							$title = $("input[name=filter]", this.element);
+ 							videoUrl = $(element).attr("data-url");
++							publishTime = $(element).attr("data-time") || null;
+ 
+ 							var videoTool = Q.Tool.from($(".Q_video_tool", dialog), "Q/video");
+ 							if (videoTool) {
+@@ -325,7 +297,7 @@
+ 							var videoTool = Q.Tool.from($(".Q_video_tool", dialog), "Q/video");
+ 							videoTool && Q.Tool.remove(videoTool.element, true, true);
+ 						}, tool);
+-					}));
++					});
+ 
+ 					$submit.on(Q.Pointer.fastclick, function () {
+ 						var title = $title.val();
+@@ -355,6 +327,10 @@
+ 							}
+ 
+ 							var result = response.slots.result;
++							if (Q.typeOf(state.onResults) === "function") {
++								result = state.onResults([result])[0];
++							}
++
+ 							// remove from title all cyrilic symbols, because some time may be exception from mysql (https://issues.qbix.com/issues/2406)
+ 							title = (title || result.title).replace(/[\u0250-\ue007]/g, '');
+ 							var content = String(result.description).replace(/[\u0250-\ue007]/g, '');
+@@ -371,7 +347,8 @@
+ 								icon: result.iconBig || result.iconSmall,
+ 								attributes: {
+ 									video: {url: videoUrl},
+-									audio: {url: audioUrl}
++									audio: {url: audioUrl},
++									publishTime: publishTime
+ 								}
+ 							}, weight]);
+ 						}, {
+@@ -385,4 +362,28 @@
+ 			});
+ 		}
+ 	});
++	
++	Q.Template.set("Media/episode/card", `
++<div class="Streams_preview_episode_card_con">
++    <div class="Streams_preview_episode_card_inner">
++        <div class="Streams_preview_episode_card_bg"
++             style="background-image: url({{iconURL}});"></div>
++        <div class="Streams_preview_episode_card_fg">
++            <div class="Streams_preview_episode_card_title">
++                <div class="Streams_preview_episode_card_title_text">
++                    {{title}}
++                </div>
++            </div>
++            <div class="Streams_preview_episode_card_info">
++                <div class="Streams_preview_episode_card_info_date">
++                    <div class="Streams_preview_episode_info_date_text">{{date}}</div>
++                </div>
++            </div>
++        </div>
++    </div>
++    <div class="Streams_preview_episode_users_con">
++        <div class="Streams_preview_episode_users_inner"></div>
++    </div>
++</div>`);
++	
+ })(Q, Q.jQuery, window);
+\ No newline at end of file

@@ -1,0 +1,256 @@
+{
+    "Shows": "Espectáculos",
+    "Clips": "Clips",
+    "Video": "Vídeo",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Clips de medios",
+        "Episodes": "Episodios"
+    },
+    "NewEpisode": "Nuevo episodio",
+    "NewClip": "Nuevo clip",
+    "LiveShow": "Espectáculo en vivo",
+    "Save": "Salvar",
+    "ViewFullEpisode": "Ver episodio completo",
+    "CreditsEarned": "Creditos ganados",
+    "VideoTitle": "Título o URL del video",
+    "NewClipTitlePlaceholder": "Introduzca el título del clip",
+    "NewClipDescriptionPlaceholder": "Introduzca la descripción del clip",
+    "switchVisualization": "Cambiar visualización",
+    "joinLiveShow": "Únase al espectáculo en vivo",
+    "showTwitchLiveStream": "Mostrar transmisión en vivo de Twitch",
+    "showVoiceChat": "Mostrar chat de voz",
+    "AreYouSureKick": "¿Estás seguro de que quieres expulsar a este usuario?",
+    "AreYouSureDeleteEpisode": "¿Seguro que quieres eliminar este episodio?",
+    "Yes": "Sí",
+    "No": "No",
+    "types": {
+        "Media\/clip": {
+            "displayType": "Acortar",
+            "description": "clip multimedia"
+        },
+        "Media\/WebRTC": {
+            "displayType": "Teleconferencia",
+            "description": "una conferencia de video\/audio en línea"
+        },
+        "Media\/calls": {
+            "displayType": "Llamadas",
+            "description": "categoría para Medios\/WebRTC",
+            "MaxRelationsExceeded": "Número máximo de llamadas excedido"
+        }
+    },
+    "feeds": {
+        "Title": "Cámaras",
+        "filterByTitle": "Buscar feeds por título",
+        "RequestFeedAccess": "Solicitar acceso al feed",
+        "New": "+ Nueva alimentación",
+        "filterFeeds": "Filtrar fuentes",
+        "NewFeed": "Nuevo feed",
+        "NoneYet": "Aún no se han formado feeds.",
+        "AreYouSure": "¿Está seguro?",
+        "FilterByDate": "Filtrar por fecha",
+        "newFeeds": "Tienes {{1}} feeds nuevos",
+        "Description": "{{1}} fuentes",
+        "Keywords": "{{1}} fuentes"
+    },
+    "feed": {
+        "HostedBy": "Organizado por {{name}}",
+        "Name": "Nombre",
+        "Conversation": "Conversación",
+        "CloseFeed": {
+            "button": "Cerrar alimentación",
+            "Cancel": "¿Seguro que quieres cerrar este feed?",
+            "Participant": "Hay 1 participante en este feed.",
+            "Participants": "Hay {{count}} participantes en este feed"
+        },
+        "Calendar": "Calendario",
+        "TitleOfFeed": "Título del feed:",
+        "EmptyList": "Lista vacía",
+        "EmptyVideos": "Aún no hay clips",
+        "AccessReason": "por favor indique el motivo",
+        "Proceed": "Proceder",
+        "FeedAlreadyClosed": "Este feed ya está cerrado",
+        "RtmpLinkNote": "Haga clic para copiar este enlace al portapapeles",
+        "SelectClip": "Seleccione la fecha que desea ver",
+        "Request": "Solicitud"
+    },
+    "newFeed": {
+        "Title": "Nuevo feed",
+        "locationTitle": "Establece tu ubicación",
+        "SetLocation": "Establecer mi ubicación",
+        "Starting": "Comenzando",
+        "Day": "Día",
+        "Create": "Crear",
+        "Continue": "Continuar",
+        "FeedTitle": "Título del feed",
+        "SetTitle": "Establezca el título del feed"
+    },
+    "notifications": {
+        "Media\/feed\/access": "{{{call 'avatar.displayName'}} solicitó acceso a {{& stream.fields.title}} con el motivo &quot;{{& instructions.reason}}}&quot;",
+        "JoinedWebRTC": "se unió a tu llamada",
+        "SubjectJoinedYourCall": "{{subject}} se unió a tu llamada"
+    },
+    "RealTimeCall": "Llamada en tiempo real",
+    "JoinWebRTC": "Teleconferencia",
+    "webrtc": {
+        "notAllowedToJoinCall": "No tienes permiso para unirte a esta transmisión.",
+        "streamTitle": "{{1}} inició una teleconferencia",
+        "allow": {
+            "dialogTitle": "Conectando",
+            "microphoneBtn": "Habilitar micrófono",
+            "cameraBtn": "Habilitar cámara",
+            "cameraAndMicrophoneBtn": "Habilitar cámara y micrófono"
+        },
+        "preparing": {
+            "dialogTitle": "Encender\/apagar la cámara o el micrófono antes de unirse",
+            "micIsOff": "el micrófono está apagado",
+            "micIsOn": "el micrófono está encendido",
+            "cameraIsOff": "la cámara está apagada",
+            "cameraIsOn": "la cámara está encendida",
+            "screenSharingIsOn": "Compartir pantalla está activado",
+            "screenSharingIsOff": "Compartir pantalla",
+            "joinNow": "Únase a la llamada"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instrucciones",
+            "permissionDenied": "Permiso para {{kind}} denegado. Para usarlo por favor sigue estos pasos:",
+            "point1": "Vaya a &quot;Configuración&quot; -&gt; &quot;Avanzado&quot; -&gt; &quot;Privacidad y seguridad&quot; -&gt; &quot;Configuración del sitio&quot; -&gt; &quot;Cámara&quot; o &quot;Configuración del sitio&quot; -&gt; &quot;Micrófono&quot;",
+            "point2": "Eliminar {{hostname}} de la lista de &quot;Bloquear&quot;"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instrucciones",
+            "permissionDenied": "Permiso para {{kind}} denegado. Vuelva a cargar esta página y confirme el acceso al {{kind}} para unirse a la conferencia."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instrucciones",
+            "permissionDenied": "Permiso para {{kind}} denegado. Para usarlo por favor sigue estos pasos:",
+            "point1": "Ve a la configuración de tu Android",
+            "point2": "Abra &quot;Aplicaciones y notificaciones&quot;",
+            "point3": "Encuentra &quot; {{communityName}} &quot; y ábrelo",
+            "point4": "Toca Permisos",
+            "point5": "Habilitar {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instrucciones",
+            "permissionDenied": "Permiso para {{kind}} denegado. Para usarlo por favor sigue estos pasos:",
+            "point1": "Ve a la configuración de tu iOS",
+            "point2": "Abre &quot;Privacidad&quot;",
+            "point3": "Encuentra {{kind}} y ábrelo",
+            "point4": "Busque &quot; {{communityName}} &quot; y habilite"
+        },
+        "fbLive": {
+            "dialogTitle": "Comenzó la transmisión en vivo de Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "te uniste a la sala",
+            "joining": "Unirse: {{userName}}",
+            "sbLeftRoom": "{{userName}} salió de la habitación",
+            "switchingRoom": "Sala de cambio...",
+            "forceDisconnecting": "Serás desconectado en 5 segundos",
+            "forceDisconnectingImmediately": "Fuiste desconectado por un host",
+            "youLeftRoom": "saliste de la habitación",
+            "codeCopied": "saliste de la habitación",
+            "sbBeganFbLive": "{{userName}} comenzó a transmitir esta llamada en Facebook",
+            "sbStoppedFbLive": "{{userName}} dejó de transmitir esta llamada en Facebook",
+            "youBeganFbLive": "Comenzaste a transmitir esta llamada en Facebook",
+            "youStoppedFbLive": "Dejaste de transmitir esta llamada en Facebook",
+            "youStartedLive": "Comenzaste a transmitir esta llamada a RTMP personalizado",
+            "youStoppedLive": "Dejó de transmitir esta llamada a RTMP personalizado",
+            "sbStartedLiveStreaming": "{{userName}} comenzó en vivo",
+            "sbStoppedLiveStreaming": "{{userName}} termino en vivo",
+            "liveStopped": "Se produjo un error al enviar el video al punto final",
+            "youBeganVideoRecording": "Comenzaste a grabar esta conferencia.",
+            "youStoppedVideoRecording": "Dejaste de grabar esta conferencia",
+            "linkCopiedToCb": "Enlace copiado al portapapeles",
+            "codeCopiedToCb": "Código copiado al portapapeles",
+            "userHasNoVideo": "El participante no tiene video.",
+            "openInBrowserAlert": "Abra el enlace en el navegador Safari para unirse a la conferencia.",
+            "allowedVideoLimit": "Solo se permiten {{limit}} videos en esta sala",
+            "allowedAudioLimit": "Solo se permiten {{limit}} micrófonos en esta sala"
+        },
+        "settingsPopup": {
+            "dialogTitle": "Ajustes de video",
+            "webCamera": "Cámara web",
+            "screenSharing": "Compartir pantalla",
+            "shareAnotherScreen": "Compartir otra pantalla",
+            "turnOffCameras": "apaga la cámara",
+            "turnOffVideo": "Desactivar compartir cámara\/pantalla",
+            "turnOffAudioInput": "Silenciar micrófono",
+            "turnOffScreenSharing": "Desactivar compartir pantalla",
+            "cameraIsTurnedOff": "La cámara está apagada",
+            "micIsTurnedOff": "El micrófono está apagado",
+            "startFBLive": "Iniciar transmisión en vivo de Facebook",
+            "stopFBLive": "Detener la transmisión en vivo de Facebook",
+            "startRecording": "Empezar a grabar",
+            "stopRecording": "Para de grabar",
+            "start": "Comenzar",
+            "stop": "Detener",
+            "recordingInProgress": "La grabación está en curso...",
+            "fbLiveTitle": "Título de la transmisión en vivo",
+            "fbLiveDescription": "Describa su transmisión en vivo. ¿De qué se trata?",
+            "fbOnlyMeLiveAccess": "Solo yo",
+            "fbFriendsAccess": "Amigos",
+            "fbPublicAccess": "Público",
+            "publishOnTimeline": "Publicar en la línea de tiempo",
+            "publishToGroup": "Publicar en grupo",
+            "fbStartLive": "Ir a vivir",
+            "fbStopLive": "Finalizar transmisión en vivo",
+            "streamingSettings": "Ajustes",
+            "manageStream": "Administrar transmisión en vivo",
+            "fbEmbedCode": "Empotrar",
+            "copy": "Copiar",
+            "streamToRTMP": "Transmitir a RTMP personalizado",
+            "startBroadcasting": "Comenzar a emitir",
+            "broadcastingInProgress": "La transmisión está en progreso",
+            "share": "Compartir",
+            "startClodRecording": "Iniciar grabación en la nube",
+            "startLocRecording": "Iniciar grabación local",
+            "stopClodRecording": "Detener grabación en la nube",
+            "stopLocRecording": "Detener grabación local"
+        },
+        "audioSettings": {
+            "dialogTitle": "Configuraciones de audio",
+            "speakers": "Altavoces",
+            "microphone": "Micrófono"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Administrar transmisión"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Configuración de los participantes",
+            "disconnect": "Desconectar",
+            "floatingScreens": "Pantallas flotantes",
+            "tiledScreens": "Pantallas en mosaico",
+            "loudestExceptMe": "Más fuerte excepto yo",
+            "maximizeLoudest": "Maximizar más alto",
+            "staticMaximized": "estático maximizado",
+            "fullScreen": "Pantalla completa",
+            "manual": "Manual",
+            "turnOffCamera": "Ocultar vídeo",
+            "turnOffAudio": "Silenciar el audio",
+            "turnOffScreenSharing": "Ocultar pantalla compartida",
+            "turnOnCamera": "mostrar vídeo",
+            "turnOnAudio": "Activar audio",
+            "turnOnScreenSharing": "Mostrar pantalla compartida"
+        },
+        "streamingSettings": {
+            "title": "transmisión en vivo"
+        },
+        "preview": {
+            "Meeting": "Teleconferencia",
+            "MeetingEnded": "Teleconferencia finalizada"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Solicitud para hablar",
+            "msg": "Actualmente hay {{count}} personas hablando en la reunión. ¿Quieres reemplazar a uno de ellos después de permitirles {{seconds}} segundos para terminar de hablar?"
+        }
+    },
+    "presentation": {
+        "PutTogether": "¿Estarás presentando? Puedes utilizar este espacio para subir juntos materiales para tu presentación. Utilice el botón Más.",
+        "Alert": "A medida que comiencen los eventos, sus presentaciones correspondientes comenzarán a aparecer en esta página.",
+        "ClickHereForFullscreen": "Las presentaciones aparecerán aquí. Haga clic aquí para ir a pantalla completa.",
+        "question": {
+            "ScanThisQRCode": "Escanea este código QR para responder"
+        }
+    }
+}
