@@ -11,6 +11,7 @@
     color: black;
 }
 
+.Media_presentation_tool>*,
 .Media_presentation_tool .Media_presentation_screen {
     position: absolute;
     left: 0;
