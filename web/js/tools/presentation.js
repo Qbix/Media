@@ -120,8 +120,8 @@ Q.Tool.define("Media/presentation", function(options) {
     show: function (publisherId, streamName, transition = 'dissolve') {
         var tool = this;
         var state = this.state;
-        if (tool.current.publisherId == publisherId
-        &&  tool.current.streamName == streamName) {
+        if (tool.current.publisherId === publisherId
+        &&  tool.current.streamName === streamName) {
             return tool.current.tool.nextState && tool.current.tool.nextState();
         }
         Streams.get(publisherId, streamName)
@@ -151,7 +151,8 @@ Q.Tool.define("Media/presentation", function(options) {
                 next = Q.Tool.prepare('div', toolName, {
                     publisherId: publisherId,
                     streamName: streamName,
-                    mode: state.mode
+                    mode: state.mode,
+                    trackScroll: true
                 }, null, tool.prefix);
                 tool.element.appendChild(next);
             }
