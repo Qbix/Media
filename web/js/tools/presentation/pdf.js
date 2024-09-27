@@ -1,7 +1,6 @@
 (function (Q, $, window, undefined) {
 
     var Streams = Q.Streams;
-    var Users = Q.Users;
     var Media = Q.Media;
     
     /**
