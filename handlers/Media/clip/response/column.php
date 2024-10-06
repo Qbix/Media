@@ -36,23 +36,8 @@ function Media_clip_response_column(&$params, &$result)
 	}
 	$image = $stream->iconUrl("400");
 	$video = Q::ifset($stream->getAttribute("video"), "url", null);
-	Q_Response::setMeta(array(
-		array('name' => 'name', 'value' => 'title', 'content' => $title),
-		array('name' => 'property', 'value' => 'og:title', 'content' => $title),
-		array('name' => 'property', 'value' => 'twitter:title', 'content' => $title),
-		array('name' => 'name', 'value' => 'description', 'content' => $description),
-		array('name' => 'property', 'value' => 'og:description', 'content' => $description),
-		array('name' => 'property', 'value' => 'twitter:description', 'content' => $description),
-		array('name' => 'name', 'value' => 'keywords', 'content' => $keywords),
-		array('name' => 'property', 'value' => 'og:keywords', 'content' => $keywords),
-		array('name' => 'property', 'value' => 'twitter:keywords', 'content' => $keywords),
-		array('name' => 'name', 'value' => 'image', 'content' => $image),
-		array('name' => 'property', 'value' => 'og:image', 'content' => $image),
-		array('name' => 'property', 'value' => 'og:url', 'content' => $url),
-		array('name' => 'property', 'value' => 'twitter:url', 'content' => $url),
-		array('name' => 'property', 'value' => 'twitter:card', 'content' => 'summary'),
-		array('name' => 'property', 'value' => 'twitter:image', 'content' => $image),
-		array('name' => 'property', 'value' => 'og:type', 'content' => "video.episode")
+	Q_Response::setCommonMetas(compact(
+		'title', 'description', 'keywords', 'image', 'url'
 	));
 
 	if ($video) {

@@ -40,19 +40,9 @@ function Media_feeds_response_column ($params) {
 	$communityName = Users::communityName();
 	$description = Q::text($text['feeds']['Description'], array($communityName));
 	$keywords = Q::text($text['feeds']['Keywords'], array($communityName));
-	Q_Response::setMeta(array(
-		array('attrName' => 'name', 'attrValue' => 'title', 'content' => $title),
-		array('attrName' => 'property', 'attrValue' => 'og:title', 'content' => $title),
-		array('attrName' => 'property', 'attrValue' => 'twitter:title', 'content' => $title),
-		array('attrName' => 'name', 'attrValue' => 'description', 'content' => $description),
-		array('attrName' => 'property', 'attrValue' => 'og:description', 'content' => $description),
-		array('attrName' => 'property', 'attrValue' => 'twitter:description', 'content' => $description),
-		array('attrName' => 'name', 'attrValue' => 'keywords', 'content' => $keywords),
-		array('attrName' => 'property', 'attrValue' => 'og:keywords', 'content' => $keywords),
-		array('attrName' => 'property', 'attrValue' => 'twitter:keywords', 'content' => $keywords),
-		array('attrName' => 'property', 'attrValue' => 'og:url', 'content' => $url),
-		array('attrName' => 'property', 'attrValue' => 'twitter:url', 'content' => $url),
-		array('attrName' => 'property', 'attrValue' => 'twitter:card', 'content' => 'summary')
+	$image = Q_Html::themedUrl('img/icon/400.png');
+	Q_Response::setCommonMetas(compact(
+		'title', 'description', 'keywords', 'image', 'url'
 	));
 
 	return $column;
