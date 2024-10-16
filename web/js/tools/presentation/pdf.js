@@ -43,9 +43,6 @@
                         var lastSlideEphemeral = null;
                         var _scroll = function (ephemeral) {
                             lastScrollEphemeral = ephemeral;
-                            if (!state.trackScroll) {
-                                return;
-                            }
                             var scrollTop = Q.getObject("scrollTop", ephemeral);
                             if (scrollTop) {
                                 scrollTop = pdfTool.element.scrollHeight/100*scrollTop;
