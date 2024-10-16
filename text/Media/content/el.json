@@ -166,7 +166,8 @@
             "userHasNoVideo": "Ο συμμετέχων δεν έχει βίντεο",
             "openInBrowserAlert": "Ανοίξτε τον σύνδεσμο στο πρόγραμμα περιήγησης Safari για να συμμετάσχετε στη διάσκεψη.",
             "allowedVideoLimit": "Επιτρέπονται μόνο {{limit}} βίντεο σε αυτό το δωμάτιο",
-            "allowedAudioLimit": "Επιτρέπονται μόνο {{limit}} μικρόφωνα σε αυτό το δωμάτιο"
+            "allowedAudioLimit": "Επιτρέπονται μόνο {{limit}} μικρόφωνα σε αυτό το δωμάτιο",
+            "processingRecording": "Επεξεργασία της εγγραφής..."
         },
         "settingsPopup": {
             "dialogTitle": "Ρυθμίσεις βίντεο",

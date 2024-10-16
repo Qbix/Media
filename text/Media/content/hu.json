@@ -166,7 +166,8 @@
             "userHasNoVideo": "A résztvevőnek nincs videója",
             "openInBrowserAlert": "A konferenciához való csatlakozáshoz nyissa meg a hivatkozást a Safari böngészőben.",
             "allowedVideoLimit": "Ebben a szobában csak {{limit}} videó engedélyezett",
-            "allowedAudioLimit": "Ebben a szobában csak {{limit}} mikrofon megengedett"
+            "allowedAudioLimit": "Ebben a szobában csak {{limit}} mikrofon megengedett",
+            "processingRecording": "Felvétel feldolgozása..."
         },
         "settingsPopup": {
             "dialogTitle": "Videó beállítások",

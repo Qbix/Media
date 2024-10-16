@@ -166,7 +166,8 @@
             "userHasNoVideo": "Dalībniekam nav video",
             "openInBrowserAlert": "Atveriet saiti pārlūkprogrammā Safari, lai pievienotos konferencei.",
             "allowedVideoLimit": "Šajā telpā ir atļauti tikai {{limit}} videoklipi",
-            "allowedAudioLimit": "Šajā telpā atļauti tikai {{limit}} mikrofoni"
+            "allowedAudioLimit": "Šajā telpā atļauti tikai {{limit}} mikrofoni",
+            "processingRecording": "Notiek ieraksta apstrāde..."
         },
         "settingsPopup": {
             "dialogTitle": "Video iestatījumi",

@@ -166,7 +166,8 @@
             "userHasNoVideo": "Deltageren har ingen video",
             "openInBrowserAlert": "Åbn linket i Safari-browseren for at deltage i konferencen.",
             "allowedVideoLimit": "Kun {{limit}} videoer tilladt i dette rum",
-            "allowedAudioLimit": "Kun {{limit}} mikrofoner tilladt i dette rum"
+            "allowedAudioLimit": "Kun {{limit}} mikrofoner tilladt i dette rum",
+            "processingRecording": "Behandler optagelsen..."
         },
         "settingsPopup": {
             "dialogTitle": "Videoindstillinger",

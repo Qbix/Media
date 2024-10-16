@@ -166,7 +166,8 @@
             "userHasNoVideo": "Peserta tidak memiliki video",
             "openInBrowserAlert": "Buka tautan di browser Safari untuk bergabung dalam konferensi.",
             "allowedVideoLimit": "Hanya {{limit}} video yang diperbolehkan di ruangan ini",
-            "allowedAudioLimit": "Hanya {{limit}} mikrofon yang diperbolehkan di ruangan ini"
+            "allowedAudioLimit": "Hanya {{limit}} mikrofon yang diperbolehkan di ruangan ini",
+            "processingRecording": "Memproses rekaman..."
         },
         "settingsPopup": {
             "dialogTitle": "Pengaturan video",

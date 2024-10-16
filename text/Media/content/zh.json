@@ -166,7 +166,8 @@
             "userHasNoVideo": "参与者没有视频",
             "openInBrowserAlert": "在 Safari 浏览器中打开链接以加入会议。",
             "allowedVideoLimit": "此房间仅允许播放{{limit}}视频",
-            "allowedAudioLimit": "这个房间只允许{{limit}}麦克风"
+            "allowedAudioLimit": "这个房间只允许{{limit}}麦克风",
+            "processingRecording": "正在处理录音..."
         },
         "settingsPopup": {
             "dialogTitle": "视频设置",

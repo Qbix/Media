@@ -166,7 +166,8 @@
             "userHasNoVideo": "شرکت کننده ویدیو ندارد",
             "openInBrowserAlert": "برای پیوستن به کنفرانس لینک را در مرورگر سافاری باز کنید.",
             "allowedVideoLimit": "فقط {{limit}} ویدیو در این اتاق مجاز است",
-            "allowedAudioLimit": "فقط {{limit}} میکروفون در این اتاق مجاز است"
+            "allowedAudioLimit": "فقط {{limit}} میکروفون در این اتاق مجاز است",
+            "processingRecording": "در حال پردازش ضبط..."
         },
         "settingsPopup": {
             "dialogTitle": "تنظیمات ویدیو",

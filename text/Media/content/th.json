@@ -166,7 +166,8 @@
             "userHasNoVideo": "ผู้เข้าร่วมไม่มีวิดีโอ",
             "openInBrowserAlert": "เปิดลิงก์ในเบราว์เซอร์ Safari เพื่อเข้าร่วมการประชุม",
             "allowedVideoLimit": "อนุญาตวิดีโอเพียง {{limit}} ในห้องนี้",
-            "allowedAudioLimit": "อนุญาตให้ใช้ไมโครโฟนเพียง {{limit}} ในห้องนี้"
+            "allowedAudioLimit": "อนุญาตให้ใช้ไมโครโฟนเพียง {{limit}} ในห้องนี้",
+            "processingRecording": "กำลังประมวลผลการบันทึก..."
         },
         "settingsPopup": {
             "dialogTitle": "การตั้งค่าวิดีโอ",

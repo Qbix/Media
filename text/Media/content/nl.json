@@ -166,7 +166,8 @@
             "userHasNoVideo": "Deelnemer heeft geen video",
             "openInBrowserAlert": "Open de link in de Safari-browser om deel te nemen aan de conferentie.",
             "allowedVideoLimit": "Slechts {{limit}} video toegestaan in deze kamer",
-            "allowedAudioLimit": "In deze ruimte zijn slechts {{limit}} microfoons toegestaan"
+            "allowedAudioLimit": "In deze ruimte zijn slechts {{limit}} microfoons toegestaan",
+            "processingRecording": "De opname wordt verwerkt..."
         },
         "settingsPopup": {
             "dialogTitle": "Beeldinstellingen",

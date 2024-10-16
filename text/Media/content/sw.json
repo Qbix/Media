@@ -166,7 +166,8 @@
             "userHasNoVideo": "Mshiriki hana video",
             "openInBrowserAlert": "Fungua kiungo katika kivinjari cha Safari ili ujiunge na mkutano.",
             "allowedVideoLimit": "Video {{limit}} pekee inaruhusiwa kwenye chumba hiki",
-            "allowedAudioLimit": "Ni maikrofoni {{limit}} pekee zinazoruhusiwa kwenye chumba hiki"
+            "allowedAudioLimit": "Ni maikrofoni {{limit}} pekee zinazoruhusiwa kwenye chumba hiki",
+            "processingRecording": "Inachakata rekodi..."
         },
         "settingsPopup": {
             "dialogTitle": "Mipangilio ya Video",

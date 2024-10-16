@@ -166,7 +166,8 @@
             "userHasNoVideo": "పాల్గొనేవారి వద్ద వీడియో లేదు",
             "openInBrowserAlert": "సమావేశంలో చేరడానికి సఫారి బ్రౌజర్‌లో లింక్‌ని తెరవండి.",
             "allowedVideoLimit": "ఈ గదిలో {{limit}} వీడియోలు మాత్రమే అనుమతించబడతాయి",
-            "allowedAudioLimit": "ఈ గదిలో {{limit}} మైక్రోఫోన్‌లు మాత్రమే అనుమతించబడతాయి"
+            "allowedAudioLimit": "ఈ గదిలో {{limit}} మైక్రోఫోన్‌లు మాత్రమే అనుమతించబడతాయి",
+            "processingRecording": "రికార్డింగ్‌ని ప్రాసెస్ చేస్తోంది..."
         },
         "settingsPopup": {
             "dialogTitle": "వీడియో సెట్టింగ్‌లు",

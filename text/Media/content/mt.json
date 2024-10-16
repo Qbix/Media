@@ -166,7 +166,8 @@
             "userHasNoVideo": "Parteċipant m&#39;għandux vidjo",
             "openInBrowserAlert": "Iftaħ il-link fil-browser Safari biex tingħaqad mal-konferenza.",
             "allowedVideoLimit": "{{limit}} video biss permess f&#39;din il-kamra",
-            "allowedAudioLimit": "{{limit}} mikrofonu biss permessi f&#39;din il-kamra"
+            "allowedAudioLimit": "{{limit}} mikrofonu biss permessi f&#39;din il-kamra",
+            "processingRecording": "Ipproċessa r-reġistrazzjoni..."
         },
         "settingsPopup": {
             "dialogTitle": "Settings tal-Vidjo",

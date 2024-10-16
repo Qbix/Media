@@ -166,7 +166,8 @@
             "userHasNoVideo": "Deltagaren har ingen video",
             "openInBrowserAlert": "Öppna länken i webbläsaren Safari för att gå med i konferensen.",
             "allowedVideoLimit": "Endast {{limit}} videor tillåtna i det här rummet",
-            "allowedAudioLimit": "Endast {{limit}} mikrofoner tillåtna i detta rum"
+            "allowedAudioLimit": "Endast {{limit}} mikrofoner tillåtna i detta rum",
+            "processingRecording": "Bearbetar inspelningen..."
         },
         "settingsPopup": {
             "dialogTitle": "Videoinställningar",

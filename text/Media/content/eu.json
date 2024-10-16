@@ -166,7 +166,8 @@
             "userHasNoVideo": "Parte hartzaileak ez du bideorik",
             "openInBrowserAlert": "Ireki esteka Safari arakatzailean konferentzian sartzeko.",
             "allowedVideoLimit": "Gela honetan {{limit}} bideo bakarrik onartzen dira",
-            "allowedAudioLimit": "Gela honetan {{limit}} mikrofono bakarrik onartzen dira"
+            "allowedAudioLimit": "Gela honetan {{limit}} mikrofono bakarrik onartzen dira",
+            "processingRecording": "Grabaketa prozesatzen..."
         },
         "settingsPopup": {
             "dialogTitle": "Bideo ezarpenak",

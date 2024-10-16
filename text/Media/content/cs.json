@@ -166,7 +166,8 @@
             "userHasNoVideo": "Účastník nemá žádné video",
             "openInBrowserAlert": "Otevřete odkaz v prohlížeči Safari a připojte se ke konferenci.",
             "allowedVideoLimit": "V této místnosti je povoleno pouze {{limit}} videí",
-            "allowedAudioLimit": "V této místnosti je povoleno pouze {{limit}} mikrofonů"
+            "allowedAudioLimit": "V této místnosti je povoleno pouze {{limit}} mikrofonů",
+            "processingRecording": "Zpracování záznamu..."
         },
         "settingsPopup": {
             "dialogTitle": "Nastavení videa",

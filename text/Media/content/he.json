@@ -166,7 +166,8 @@
             "userHasNoVideo": "למשתתף אין סרטון",
             "openInBrowserAlert": "פתח קישור בדפדפן Safari כדי להצטרף לוועידה.",
             "allowedVideoLimit": "רק {{limit}} וידאו מותר בחדר זה",
-            "allowedAudioLimit": "רק {{limit}} מיקרופונים מותרים בחדר זה"
+            "allowedAudioLimit": "רק {{limit}} מיקרופונים מותרים בחדר זה",
+            "processingRecording": "מעבד את ההקלטה..."
         },
         "settingsPopup": {
             "dialogTitle": "הגדרות וידאו",

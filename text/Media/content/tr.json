@@ -166,7 +166,8 @@
             "userHasNoVideo": "Katılımcının videosu yok",
             "openInBrowserAlert": "Konferansa katılmak için bağlantıyı Safari tarayıcısında açın.",
             "allowedVideoLimit": "Bu odada yalnızca {{limit}} videoya izin verilir",
-            "allowedAudioLimit": "Bu odada yalnızca {{limit}} mikrofona izin verilir"
+            "allowedAudioLimit": "Bu odada yalnızca {{limit}} mikrofona izin verilir",
+            "processingRecording": "Kayıt işleniyor..."
         },
         "settingsPopup": {
             "dialogTitle": "Video ayarları",

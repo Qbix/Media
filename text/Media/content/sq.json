@@ -166,7 +166,8 @@
             "userHasNoVideo": "Pjesëmarrësi nuk ka video",
             "openInBrowserAlert": "Hapni lidhjen në shfletuesin Safari për t&#39;u bashkuar me konferencën.",
             "allowedVideoLimit": "Vetëm {{limit}} video lejohen në këtë dhomë",
-            "allowedAudioLimit": "Vetëm {{limit}} mikrofona lejohen në këtë dhomë"
+            "allowedAudioLimit": "Vetëm {{limit}} mikrofona lejohen në këtë dhomë",
+            "processingRecording": "Po përpunohet regjistrimi..."
         },
         "settingsPopup": {
             "dialogTitle": "Cilësimet e videos",

@@ -166,7 +166,8 @@
             "userHasNoVideo": "Ва ўдзельніка няма відэа",
             "openInBrowserAlert": "Адкрыйце спасылку ў браўзеры Safari, каб далучыцца да канферэнцыі.",
             "allowedVideoLimit": "У гэтай пакоі дазволена толькі {{limit}} відэа",
-            "allowedAudioLimit": "У гэтым пакоі дазволена толькі {{limit}} мікрафонаў"
+            "allowedAudioLimit": "У гэтым пакоі дазволена толькі {{limit}} мікрафонаў",
+            "processingRecording": "Апрацоўка запісу..."
         },
         "settingsPopup": {
             "dialogTitle": "Налады відэа",

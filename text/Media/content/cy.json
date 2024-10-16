@@ -166,7 +166,8 @@
             "userHasNoVideo": "Nid oes gan y cyfranogwr unrhyw fideo",
             "openInBrowserAlert": "Agorwch y ddolen ym mhorwr Safari i ymuno â&#39;r gynhadledd.",
             "allowedVideoLimit": "Dim ond {{limit}} fideo a ganiateir yn yr ystafell hon",
-            "allowedAudioLimit": "Dim ond {{limit}} meicroffonau a ganiateir yn yr ystafell hon"
+            "allowedAudioLimit": "Dim ond {{limit}} meicroffonau a ganiateir yn yr ystafell hon",
+            "processingRecording": "Wrthi&#39;n prosesu&#39;r recordiad..."
         },
         "settingsPopup": {
             "dialogTitle": "Gosodiadau Fideo",

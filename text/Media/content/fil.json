@@ -166,7 +166,8 @@
             "userHasNoVideo": "Walang video ang kalahok",
             "openInBrowserAlert": "Buksan ang link sa Safari browser para sumali sa conference.",
             "allowedVideoLimit": "{{limit}} video lang ang pinapayagan sa kwartong ito",
-            "allowedAudioLimit": "{{limit}} na mikropono lamang ang pinapayagan sa kuwartong ito"
+            "allowedAudioLimit": "{{limit}} na mikropono lamang ang pinapayagan sa kuwartong ito",
+            "processingRecording": "Pinoproseso ang pag-record..."
         },
         "settingsPopup": {
             "dialogTitle": "Mga setting ng video",

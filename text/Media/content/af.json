@@ -166,7 +166,8 @@
             "userHasNoVideo": "Deelnemer het geen video nie",
             "openInBrowserAlert": "Maak skakel in Safari-blaaier oop om by die konferensie aan te sluit.",
             "allowedVideoLimit": "Slegs {{limit}} video&#39;s word in hierdie kamer toegelaat",
-            "allowedAudioLimit": "Slegs {{limit}} mikrofone word in hierdie kamer toegelaat"
+            "allowedAudioLimit": "Slegs {{limit}} mikrofone word in hierdie kamer toegelaat",
+            "processingRecording": "Verwerk tans die opname..."
         },
         "settingsPopup": {
             "dialogTitle": "Video-instellings",

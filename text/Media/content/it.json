@@ -166,7 +166,8 @@
             "userHasNoVideo": "Il partecipante non ha video",
             "openInBrowserAlert": "Aprire il collegamento nel browser Safari per partecipare alla conferenza.",
             "allowedVideoLimit": "Solo {{limit}} video consentiti in questa stanza",
-            "allowedAudioLimit": "In questa stanza sono ammessi solo {{limit}} microfoni"
+            "allowedAudioLimit": "In questa stanza sono ammessi solo {{limit}} microfoni",
+            "processingRecording": "Elaborazione della registrazione..."
         },
         "settingsPopup": {
             "dialogTitle": "Impostazioni video",

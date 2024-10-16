@@ -166,7 +166,8 @@
             "userHasNoVideo": "참가자에게 비디오가 없습니다.",
             "openInBrowserAlert": "회의에 참여하려면 Safari 브라우저에서 링크를 여세요.",
             "allowedVideoLimit": "이 방에는 {{limit}} 비디오만 허용됩니다.",
-            "allowedAudioLimit": "이 방에는 {{limit}} 마이크만 허용됩니다."
+            "allowedAudioLimit": "이 방에는 {{limit}} 마이크만 허용됩니다.",
+            "processingRecording": "녹음을 처리 중입니다..."
         },
         "settingsPopup": {
             "dialogTitle": "비디오 설정",

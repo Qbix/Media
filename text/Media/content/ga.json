@@ -166,7 +166,8 @@
             "userHasNoVideo": "Níl físeán ar bith ag an rannpháirtí",
             "openInBrowserAlert": "Oscail nasc i mbrabhsálaí Safari chun páirt a ghlacadh sa chomhdháil.",
             "allowedVideoLimit": "Ní cheadaítear ach {{limit}} físeán sa seomra seo",
-            "allowedAudioLimit": "Ní cheadaítear ach {{limit}} micreafón sa seomra seo"
+            "allowedAudioLimit": "Ní cheadaítear ach {{limit}} micreafón sa seomra seo",
+            "processingRecording": "An taifeadadh á phróiseáil..."
         },
         "settingsPopup": {
             "dialogTitle": "Socruithe Físeáin",

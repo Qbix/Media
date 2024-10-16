@@ -166,7 +166,8 @@
             "userHasNoVideo": "Учесникот нема видео",
             "openInBrowserAlert": "Отворете ја врската во прелистувачот Safari за да се приклучите на конференцијата.",
             "allowedVideoLimit": "Дозволени се само {{limit}} видеа во оваа соба",
-            "allowedAudioLimit": "Дозволени се само {{limit}} микрофони во оваа соба"
+            "allowedAudioLimit": "Дозволени се само {{limit}} микрофони во оваа соба",
+            "processingRecording": "Се обработува снимката..."
         },
         "settingsPopup": {
             "dialogTitle": "Видео поставки",
