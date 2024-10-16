@@ -166,7 +166,8 @@
             "userHasNoVideo": "Учесник нема видео снимак",
             "openInBrowserAlert": "Отворите везу у Сафари претраживачу да бисте се придружили конференцији.",
             "allowedVideoLimit": "У овој просторији је дозвољено само {{limit}} видео записа",
-            "allowedAudioLimit": "У овој просторији је дозвољено само {{limit}} микрофона"
+            "allowedAudioLimit": "У овој просторији је дозвољено само {{limit}} микрофона",
+            "processingRecording": "Обрада снимка..."
         },
         "settingsPopup": {
             "dialogTitle": "Видео Сеттингс",

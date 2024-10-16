@@ -166,7 +166,8 @@
             "userHasNoVideo": "অংশগ্রহণকারীর কোন ভিডিও নেই",
             "openInBrowserAlert": "সম্মেলনে যোগ দিতে সাফারি ব্রাউজারে লিঙ্ক খুলুন।",
             "allowedVideoLimit": "এই রুমে শুধুমাত্র {{limit}} ভিডিও অনুমোদিত",
-            "allowedAudioLimit": "এই রুমে শুধুমাত্র {{limit}} মাইক্রোফোন অনুমোদিত"
+            "allowedAudioLimit": "এই রুমে শুধুমাত্র {{limit}} মাইক্রোফোন অনুমোদিত",
+            "processingRecording": "রেকর্ডিং প্রক্রিয়া করা হচ্ছে..."
         },
         "settingsPopup": {
             "dialogTitle": "ভিডিও সেটিংস",

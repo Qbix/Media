@@ -166,7 +166,8 @@
             "userHasNoVideo": "El participant no té cap vídeo",
             "openInBrowserAlert": "Obriu l&#39;enllaç al navegador Safari per unir-vos a la conferència.",
             "allowedVideoLimit": "Només es permeten {{limit}} vídeos en aquesta sala",
-            "allowedAudioLimit": "Només es permeten {{limit}} micròfons en aquesta sala"
+            "allowedAudioLimit": "Només es permeten {{limit}} micròfons en aquesta sala",
+            "processingRecording": "S&#39;està processant la gravació..."
         },
         "settingsPopup": {
             "dialogTitle": "Configuració de vídeo",

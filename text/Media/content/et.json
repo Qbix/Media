@@ -166,7 +166,8 @@
             "userHasNoVideo": "Osalejal pole videot",
             "openInBrowserAlert": "Konverentsiga liitumiseks avage link Safari brauseris.",
             "allowedVideoLimit": "Selles ruumis on lubatud ainult {{limit}} videot",
-            "allowedAudioLimit": "Selles ruumis on lubatud ainult {{limit}} mikrofoni"
+            "allowedAudioLimit": "Selles ruumis on lubatud ainult {{limit}} mikrofoni",
+            "processingRecording": "Salvestise töötlemine..."
         },
         "settingsPopup": {
             "dialogTitle": "Video seaded",

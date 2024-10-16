@@ -166,7 +166,8 @@
             "userHasNoVideo": "المشارك ليس لديه فيديو",
             "openInBrowserAlert": "افتح الرابط في متصفح Safari للانضمام إلى المؤتمر.",
             "allowedVideoLimit": "يُسمح فقط {{limit}} مقطع فيديو في هذه الغرفة",
-            "allowedAudioLimit": "يُسمح فقط {{limit}} ميكروفونًا في هذه الغرفة"
+            "allowedAudioLimit": "يُسمح فقط {{limit}} ميكروفونًا في هذه الغرفة",
+            "processingRecording": "معالجة التسجيل..."
         },
         "settingsPopup": {
             "dialogTitle": "اعدادات الفيديو",

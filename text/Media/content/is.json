@@ -166,7 +166,8 @@
             "userHasNoVideo": "Þátttakandi hefur ekkert myndband",
             "openInBrowserAlert": "Opnaðu tengil í Safari vafra til að taka þátt í ráðstefnunni.",
             "allowedVideoLimit": "Aðeins {{limit}} myndbönd leyfð í þessu herbergi",
-            "allowedAudioLimit": "Aðeins {{limit}} hljóðnemar leyfðir í þessu herbergi"
+            "allowedAudioLimit": "Aðeins {{limit}} hljóðnemar leyfðir í þessu herbergi",
+            "processingRecording": "Vinnur úr upptöku..."
         },
         "settingsPopup": {
             "dialogTitle": "Myndskeiðsstillingar",

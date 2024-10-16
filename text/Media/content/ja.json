@@ -166,7 +166,8 @@
             "userHasNoVideo": "参加者にはビデオがありません",
             "openInBrowserAlert": "リンクを Safari ブラウザーで開き、会議に参加します。",
             "allowedVideoLimit": "このルームでは{{limit}}ビデオのみが許可されています",
-            "allowedAudioLimit": "この部屋では{{limit}}マイクのみが許可されています"
+            "allowedAudioLimit": "この部屋では{{limit}}マイクのみが許可されています",
+            "processingRecording": "録音を処理しています..."
         },
         "settingsPopup": {
             "dialogTitle": "ビデオ設定",

@@ -166,7 +166,8 @@
             "userHasNoVideo": "شریک کے پاس کوئی ویڈیو نہیں ہے۔",
             "openInBrowserAlert": "کانفرنس میں شامل ہونے کے لیے سفاری براؤزر میں لنک کھولیں۔",
             "allowedVideoLimit": "اس کمرے میں صرف {{limit}} ویڈیو کی اجازت ہے۔",
-            "allowedAudioLimit": "اس کمرے میں صرف {{limit}} مائکروفون کی اجازت ہے۔"
+            "allowedAudioLimit": "اس کمرے میں صرف {{limit}} مائکروفون کی اجازت ہے۔",
+            "processingRecording": "ریکارڈنگ پر کارروائی ہو رہی ہے..."
         },
         "settingsPopup": {
             "dialogTitle": "ویڈیو کی ترتیبات",

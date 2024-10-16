@@ -166,7 +166,8 @@
             "userHasNoVideo": "У участника нет видео",
             "openInBrowserAlert": "Откройте ссылку в браузере Safari, чтобы присоединиться к конференции.",
             "allowedVideoLimit": "В этой комнате разрешено только {{limit}} видео.",
-            "allowedAudioLimit": "В этой комнате разрешено использовать только {{limit}} микрофонов."
+            "allowedAudioLimit": "В этой комнате разрешено использовать только {{limit}} микрофонов.",
+            "processingRecording": "Обработка записи..."
         },
         "settingsPopup": {
             "dialogTitle": "Настройки видео",

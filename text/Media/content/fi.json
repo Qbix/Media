@@ -166,7 +166,8 @@
             "userHasNoVideo": "Osallistujalla ei ole videota",
             "openInBrowserAlert": "Avaa linkki Safari-selaimessa liittyäksesi konferenssiin.",
             "allowedVideoLimit": "Vain {{limit}} videota sallitaan tässä huoneessa",
-            "allowedAudioLimit": "Vain {{limit}} mikrofonia sallitaan tässä huoneessa"
+            "allowedAudioLimit": "Vain {{limit}} mikrofonia sallitaan tässä huoneessa",
+            "processingRecording": "Käsitellään tallennetta..."
         },
         "settingsPopup": {
             "dialogTitle": "Videoasetukset",

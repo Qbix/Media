@@ -166,7 +166,8 @@
             "userHasNoVideo": "સહભાગી પાસે કોઈ વિડિઓ નથી",
             "openInBrowserAlert": "કોન્ફરન્સમાં જોડાવા માટે સફારી બ્રાઉઝરમાં લિંક ખોલો.",
             "allowedVideoLimit": "આ રૂમમાં માત્ર {{limit}} વીડિયોની મંજૂરી છે",
-            "allowedAudioLimit": "આ રૂમમાં માત્ર {{limit}} માઇક્રોફોનની મંજૂરી છે"
+            "allowedAudioLimit": "આ રૂમમાં માત્ર {{limit}} માઇક્રોફોનની મંજૂરી છે",
+            "processingRecording": "રેકોર્ડિંગ પર પ્રક્રિયા કરી રહ્યું છે..."
         },
         "settingsPopup": {
             "dialogTitle": "વિડિઓ સેટિંગ્સ",

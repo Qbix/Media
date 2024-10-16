@@ -166,7 +166,8 @@
             "userHasNoVideo": "Peserta tidak mempunyai video",
             "openInBrowserAlert": "Buka pautan dalam penyemak imbas Safari untuk menyertai persidangan.",
             "allowedVideoLimit": "Hanya {{limit}} video dibenarkan di dalam bilik ini",
-            "allowedAudioLimit": "Hanya {{limit}} mikrofon dibenarkan di dalam bilik ini"
+            "allowedAudioLimit": "Hanya {{limit}} mikrofon dibenarkan di dalam bilik ini",
+            "processingRecording": "Memproses rakaman..."
         },
         "settingsPopup": {
             "dialogTitle": "Tetapan Video",

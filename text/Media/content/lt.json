@@ -166,7 +166,8 @@
             "userHasNoVideo": "Dalyvis neturi vaizdo įrašo",
             "openInBrowserAlert": "Norėdami prisijungti prie konferencijos, atidarykite nuorodą „Safari“ naršyklėje.",
             "allowedVideoLimit": "Šiame kambaryje leidžiama rodyti tik {{limit}} vaizdo įrašus",
-            "allowedAudioLimit": "Šiame kambaryje leidžiami tik {{limit}} mikrofonai"
+            "allowedAudioLimit": "Šiame kambaryje leidžiami tik {{limit}} mikrofonai",
+            "processingRecording": "Apdorojamas įrašas..."
         },
         "settingsPopup": {
             "dialogTitle": "Vaizdo įrašo nustatymai",

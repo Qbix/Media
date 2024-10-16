@@ -166,7 +166,8 @@
             "userHasNoVideo": "ተሳታፊ ምንም ቪዲዮ የለውም",
             "openInBrowserAlert": "ኮንፈረንሱን ለመቀላቀል በ Safari አሳሽ ውስጥ ያለውን አገናኝ ይክፈቱ።",
             "allowedVideoLimit": "በዚህ ክፍል ውስጥ የተፈቀደው {{limit}} ቪዲዮ ብቻ ነው።",
-            "allowedAudioLimit": "በዚህ ክፍል ውስጥ {{limit}} ማይክሮፎኖች ብቻ ተፈቅደዋል"
+            "allowedAudioLimit": "በዚህ ክፍል ውስጥ {{limit}} ማይክሮፎኖች ብቻ ተፈቅደዋል",
+            "processingRecording": "ቀረጻውን በሂደት ላይ..."
         },
         "settingsPopup": {
             "dialogTitle": "የቪዲዮ ቅንጅቶች",

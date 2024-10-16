@@ -166,7 +166,8 @@
             "userHasNoVideo": "Participantul nu are videoclip",
             "openInBrowserAlert": "Deschideți linkul în browserul Safari pentru a participa la conferință.",
             "allowedVideoLimit": "Numai {{limit}} de videoclipuri permise în această cameră",
-            "allowedAudioLimit": "Numai {{limit}} de microfoane sunt permise în această cameră"
+            "allowedAudioLimit": "Numai {{limit}} de microfoane sunt permise în această cameră",
+            "processingRecording": "Se procesează înregistrarea..."
         },
         "settingsPopup": {
             "dialogTitle": "Setari video",

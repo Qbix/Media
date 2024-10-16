@@ -166,7 +166,8 @@
             "userHasNoVideo": "მონაწილეს არ აქვს ვიდეო",
             "openInBrowserAlert": "გახსენით ბმული Safari ბრაუზერში, რათა შეუერთდეთ კონფერენციას.",
             "allowedVideoLimit": "ამ ოთახში დაშვებულია მხოლოდ {{limit}} ვიდეო",
-            "allowedAudioLimit": "ამ ოთახში დაშვებულია მხოლოდ {{limit}} მიკროფონი"
+            "allowedAudioLimit": "ამ ოთახში დაშვებულია მხოლოდ {{limit}} მიკროფონი",
+            "processingRecording": "მიმდინარეობს ჩანაწერის დამუშავება..."
         },
         "settingsPopup": {
             "dialogTitle": "ვიდეოს პარამეტრები",

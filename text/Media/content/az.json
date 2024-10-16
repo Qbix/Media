@@ -166,7 +166,8 @@
             "userHasNoVideo": "İştirakçının videosu yoxdur",
             "openInBrowserAlert": "Konfransa qoşulmaq üçün Safari brauzerində linki açın.",
             "allowedVideoLimit": "Bu otaqda yalnız {{limit}} videoya icazə verilir",
-            "allowedAudioLimit": "Bu otaqda yalnız {{limit}} mikrofona icazə verilir"
+            "allowedAudioLimit": "Bu otaqda yalnız {{limit}} mikrofona icazə verilir",
+            "processingRecording": "Qeydiyyat emal edilir..."
         },
         "settingsPopup": {
             "dialogTitle": "Video Parametrləri",

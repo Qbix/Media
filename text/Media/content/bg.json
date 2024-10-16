@@ -166,7 +166,8 @@
             "userHasNoVideo": "Участникът няма видео",
             "openInBrowserAlert": "Отворете връзката в браузъра Safari, за да се присъедините към конференцията.",
             "allowedVideoLimit": "Само {{limit}} видео са разрешени в тази стая",
-            "allowedAudioLimit": "В тази стая са разрешени само {{limit}} микрофона"
+            "allowedAudioLimit": "В тази стая са разрешени само {{limit}} микрофона",
+            "processingRecording": "Записът се обработва..."
         },
         "settingsPopup": {
             "dialogTitle": "Настройки за видео",

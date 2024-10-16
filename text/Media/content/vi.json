@@ -166,7 +166,8 @@
             "userHasNoVideo": "Người tham gia không có video",
             "openInBrowserAlert": "Mở liên kết trong trình duyệt Safari để tham gia hội nghị.",
             "allowedVideoLimit": "Chỉ cho phép {{limit}} video trong phòng này",
-            "allowedAudioLimit": "Phòng này chỉ cho phép {{limit}} micrô"
+            "allowedAudioLimit": "Phòng này chỉ cho phép {{limit}} micrô",
+            "processingRecording": "Đang xử lý bản ghi..."
         },
         "settingsPopup": {
             "dialogTitle": "Cài đặt video",

@@ -166,7 +166,8 @@
             "userHasNoVideo": "Uczestnik nie ma wideo",
             "openInBrowserAlert": "Otwórz łącze w przeglądarce Safari, aby dołączyć do konferencji.",
             "allowedVideoLimit": "W tym pokoju dozwolone jest tylko {{limit}} wideo",
-            "allowedAudioLimit": "W tym pokoju można używać tylko {{limit}} mikrofonów"
+            "allowedAudioLimit": "W tym pokoju można używać tylko {{limit}} mikrofonów",
+            "processingRecording": "Przetwarzanie nagrania..."
         },
         "settingsPopup": {
             "dialogTitle": "Ustawienia wideo",

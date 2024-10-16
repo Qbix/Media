@@ -166,7 +166,8 @@
             "userHasNoVideo": "O participante non ten ningún vídeo",
             "openInBrowserAlert": "Abre a ligazón no navegador Safari para unirte á conferencia.",
             "allowedVideoLimit": "Só se permiten {{limit}} vídeos nesta sala",
-            "allowedAudioLimit": "Só se permiten {{limit}} micrófonos nesta sala"
+            "allowedAudioLimit": "Só se permiten {{limit}} micrófonos nesta sala",
+            "processingRecording": "Procesando a gravación..."
         },
         "settingsPopup": {
             "dialogTitle": "Configuración de vídeo",

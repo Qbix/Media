@@ -166,7 +166,8 @@
             "userHasNoVideo": "Le participant n&#39;a pas de vidéo",
             "openInBrowserAlert": "Ouvrez le lien dans le navigateur Safari pour rejoindre la conférence.",
             "allowedVideoLimit": "Seulement {{limit}} vidéos autorisées dans cette salle",
-            "allowedAudioLimit": "Seuls {{limit}} microphones sont autorisés dans cette salle"
+            "allowedAudioLimit": "Seuls {{limit}} microphones sont autorisés dans cette salle",
+            "processingRecording": "Traitement de l&#39;enregistrement..."
         },
         "settingsPopup": {
             "dialogTitle": "Paramètres vidéo",

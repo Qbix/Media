@@ -166,7 +166,8 @@
             "userHasNoVideo": "Sudionik nema video",
             "openInBrowserAlert": "Otvorite poveznicu u pregledniku Safari da biste se pridružili konferenciji.",
             "allowedVideoLimit": "Samo {{limit}} videozapisa dopušteno je u ovoj sobi",
-            "allowedAudioLimit": "U ovoj prostoriji dopušteno je samo {{limit}} mikrofona"
+            "allowedAudioLimit": "U ovoj prostoriji dopušteno je samo {{limit}} mikrofona",
+            "processingRecording": "Obrada snimke..."
         },
         "settingsPopup": {
             "dialogTitle": "Video postavke",
