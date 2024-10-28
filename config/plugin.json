@@ -88,21 +88,21 @@
 			},
 			"Users/hosts": {
 				"title": "Show Hosts",
-				"icon": "{{baseUrl}}/Q/plugins/Media/img/icons/labels/Media/hosts",
+				"icon": "{{Users}}/img/icons/labels/Media/hosts",
 				"canGrant": ["Users/members", "Users/guests", "Users/screeners"],
 				"canRevoke": ["Users/members", "Users/guests", "Users/screeners"],
 				"canSee": ["Users/owners", "Users/admins", "Users/members", "Users/guests", "Media/admins", "Users/hosts", "Users/screeners"]
 			},
 			"Media/admins": {
 				"title": "Media Admins",
-				"icon": "{{baseUrl}}/Q/plugins/Media/img/icons/labels/Media/admins",
+				"icon": "{{Users}}/img/icons/labels/Media/admins",
 				"canGrant": ["Media/admins", "Users/hosts", "Users/screeners"],
 				"canRevoke": ["Media/admins", "Users/hosts", "Users/screeners"],
 				"canSee": ["Users/owners", "Users/admins", "Users/members", "Users/guests", "Media/admins", "Users/hosts", "Users/screeners"]
 			},
 			"Users/screeners": {
 				"title": "Call Screeners",
-				"icon": "{{baseUrl}}/Q/plugins/Media/img/icons/labels/Media/screeners",
+				"icon": "{{Users}}/img/icons/labels/Media/screeners",
 				"canGrant": [],
 				"canRevoke": [],
 				"canSee": ["Users/owners", "Users/admins", "Users/members", "Users/guests", "Media/admins", "Users/hosts", "Users/screeners"]
