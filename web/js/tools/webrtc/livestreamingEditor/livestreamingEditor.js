@@ -24,7 +24,7 @@
     // Check if AudioEncoder is supported
     const isAudioEncoderSupported = 'AudioEncoder' in window;
 
-    const mp4RecordingSupported = isMediaStreamTrackProcessorSupported && isVideoEncoderSupported && isAudioEncoderSupported;
+    const mp4MuxerRecordingSupported = isMediaStreamTrackProcessorSupported && isVideoEncoderSupported && isAudioEncoderSupported;
     
     function log(){}
     if(Q.Media.WebRTCdebugger) {
@@ -183,7 +183,7 @@
 
                 webrtcSignalingLib.event.on('localRecordingEnded', function (e) {
                     let statsContainer = document.querySelector('.live-editor-dialog-header-stats');
-                    statsContainer.innerHTML = '';
+                    if(statsContainer) statsContainer.innerHTML = '';
                 });
 
                 function renderMp4RecordingStats(e) {
@@ -385,30 +385,38 @@
                             let recordingFormats = document.createElement('DIV');
                             recordingFormats.className = 'live-editor-rec-server-dropdown-inner';
 
+                            let mp4IsSupported = mp4MuxerRecordingSupported || MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264');
                             let mp4Label = document.createElement('LABEL');
                             recordingFormats.appendChild(mp4Label);
                             let mp4Checkbox = document.createElement('INPUT');
                             mp4Checkbox.type = 'radio';
                             mp4Checkbox.name = 'recFormat';
-                            mp4Checkbox.checked = mp4RecordingSupported ? true : false;
+                            mp4Checkbox.checked = mp4IsSupported ? true : false;
                             mp4Label.appendChild(mp4Checkbox);
                             let mp4LabelText= document.createElement('SPAN');
                             mp4LabelText.innerHTML = 'mp4';
                             mp4Label.appendChild(mp4LabelText);
 
+                            let webmIsSupported = (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264'));
                             let webmLabel = document.createElement('LABEL');
                             recordingFormats.appendChild(webmLabel);
                             let webmCheckbox = document.createElement('INPUT');
                             webmCheckbox.type = 'radio';
                             webmCheckbox.name = 'recFormat';
-                            webmCheckbox.checked = mp4RecordingSupported ? false : true;
+                            webmCheckbox.checked = !mp4IsSupported && webmIsSupported ? true : false;
                             webmLabel.appendChild(webmCheckbox);
                             let webmLabelText= document.createElement('SPAN');
                             webmLabelText.innerHTML = 'webm';
                             webmLabel.appendChild(webmLabelText);
 
-                            if(!mp4RecordingSupported) {
-                                recordingFormats.classList.add('Q_disabled');
+                            if(!mp4IsSupported) {
+                                mp4Label.classList.add('Q_disabled');
+                            }
+                            if(!webmIsSupported) {
+                                webmLabel.classList.add('Q_disabled');
+                            }
+                            if(!mp4IsSupported && !webmIsSupported) {
+                                startLocalRecBtn.classList.add('Q_disabled');
                             }
                             
                             Q.activate(
@@ -464,15 +472,25 @@
                                 }
                                
                             })
-
+                            /* if (localInfo.browserName && localInfo.browserName.toLowerCase() == 'safari') {
+                                if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
+                                    codecs = 'video/mp4;codecs=h264';
+                                }
+                            } else {
+                                
+                            } */
                             function startRecording(recordingStream) {
                                 return new Promise(function (resolve, reject) {
                                     _localRecordingTimer = new Timer(startButtonTimer);
                                     _localRecordingTimer.start();
-                                    if(mp4Checkbox.checked && mp4RecordingSupported) {
+                                    if(mp4Checkbox.checked && mp4MuxerRecordingSupported) {
                                         tool.RTMPSender.startMp4LocalRecording(recordingStream);
-                                    } else {
-                                        tool.RTMPSender.startLocalRecording(recordingStream);
+                                    } else if(mp4Checkbox.checked && (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264'))) {
+                                        let codecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
+                                        tool.RTMPSender.startLocalRecording(recordingStream, codecs);
+                                    } else if(webmCheckbox.checked && (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264'))) {
+                                        let codecs = MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
+                                        tool.RTMPSender.startLocalRecording(recordingStream, codecs);
                                     }
     
                                     startButtonText.innerHTML = 'Stop Recording';
@@ -490,7 +508,7 @@
                                         _localRecordingTimer.stop();
                                         _localRecordingTimer = null;
                                     }
-                                    if(mp4Checkbox.checked && mp4RecordingSupported) {
+                                    if(mp4Checkbox.checked && mp4MuxerRecordingSupported) {
                                         tool.RTMPSender.stopMp4LocalRecording();
                                     } else {
                                         tool.RTMPSender.stopLocalRecording();
