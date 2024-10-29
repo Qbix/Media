@@ -56,7 +56,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         }
         _streamingSocket[platform] = streamingInfo;
 
-        let mediaRecorderCodec = tool.canvasComposer.getRecorderMimeType();
+        let mediaRecorderCodec = tool.canvasComposer.getSupportedStreamingCodec();
         var _localInfo = tool.webrtcSignalingLib.getLocalInfo();
         streamingInfo.socket = io.connect(_options.nodeServer + '/webrtc', {
             query: {
@@ -245,14 +245,19 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                     }
                     _streamingSocket[service].active = true;
 
+                    let supportedCodec = tool.canvasComposer.getSupportedStreamingCodec();
+                    try {
+                        _streamingSocket[service].mediaRecorder = tool.canvasComposer.createRecorder(function (blob) {
+                            if (_streamingSocket[service] == null) return;
 
-                    _streamingSocket[service].mediaRecorder = tool.canvasComposer.createRecorder(function (blob) {
-                        if (_streamingSocket[service] == null) return;
-
-                        if (_streamingSocket[service].connected) {
-                            _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
-                        }
-                    });
+                            if (_streamingSocket[service].connected) {
+                                _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
+                            }
+                        }, supportedCodec);
+                    } catch (error) {
+                        reject(error);
+                        return;
+                    }
 
                     tool.webrtcSignalingLib.event.dispatch('liveStreamingStarted', { participant: tool.webrtcSignalingLib.localParticipant(), platform: service });
                     tool.webrtcSignalingLib.signalingDispatcher.sendDataTrackMessage("liveStreamingStarted", service);
@@ -369,7 +374,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
 
     }
 
-    function startLocalRecording(recordingStream) {
+    function startLocalRecording(recordingStream, codecs) {
         log('startLocalRecording');
         if (_localRecorder.mediaRecorder && _localRecorder.mediaRecorder.state != 'inactive') {
             log('startLocalRecording: recording is starting');
@@ -389,17 +394,18 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
             } : 'undefined',
             startTime: _localRecorder.startTime,
             chunksCounter: 0,
-            chunksUploadedCounter: 0
+            chunksUploadedCounter: 0,
+            codec: codecs
         }
         _localRecordingsDB.save(metadata, 'recordings').then(function (result) {
             metadata.objectId = result;
-            if (recordingStream) {
+            /* if (recordingStream) { //this code was needed for parallel sending and saveing recorded chunks on server. Currently we use only local recording so we don't need this code for now 
                 connectToServer().then(function () {
                     startRecorder(result);
                 });
-            } else {
+            } else { */
                 startRecorder(result);
-            }
+            //}
         });
 
         function connectToServer() {
@@ -428,14 +434,14 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                         metadata.chunksCounter = metadata.chunksCounter + 1;
                         _localRecordingsDB.save(metadata, 'recordings').then(function (result) {
 
-                            if (_streamingSocket['rec'] && _streamingSocket['rec'].connected) {
+                            /* if (_streamingSocket['rec'] && _streamingSocket['rec'].connected) {
                                 _streamingSocket['rec'].socket.emit('Media/webrtc/videoData', { blob: blob, timestamp: Date.now(), type: blob.type });
-                            }
+                            } */
 
                         });
                     });
                 });
-            });
+            }, codecs);
 
             tool.webrtcSignalingLib.event.dispatch('localRecordingStarted', { participant: tool.webrtcSignalingLib.localParticipant() });
             tool.webrtcSignalingLib.signalingDispatcher.sendDataTrackMessage("localRecordingStarted");

@@ -394,7 +394,7 @@ Q.Media.WebRTCRoomClient = function app(options){
             isCohost: false
         };
         this.hasPermission = function (permissionName) {
-            console.log('hasPermission', this.access)
+            //console.log('hasPermission', permissionName)
             if(this.access.isAdmin) {
                 return true;
             }

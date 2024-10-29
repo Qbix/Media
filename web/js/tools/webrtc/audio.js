@@ -9,7 +9,6 @@
         this.deviceId = data.deviceId;
         this.handler = data.handler.bind(this);
         this.makeActive = function () {
-            console.log('makeActive', this.buttonEl)
             this.buttonEl.classList.add('webrtc-audio-settings_popup_active');
             this.buttonEl.classList.add('webrtc-audio-disabled-radio');
             this.isActive = true;
@@ -64,7 +63,6 @@
         tool.audioOutputListButtons = [];
         tool.audioInputListButtons = [];
         tool.turnOffAudioInputBtn = null;
-        console.log('Media/webrtc/audio')
 
         tool.webrtcUserInterface = options.webrtcUserInterface();
         tool.webrtcSignalingLib = tool.webrtcUserInterface.getWebrtcSignalingLib();
@@ -127,12 +125,10 @@
                 });
                 
                 webrtcSignalingLib.event.on('deviceListUpdated', function () {
-                    console.log('deviceListUpdated')
                     tool.loadAudioOutputList();
                     tool.loadAudioInputList();
                 });
                 webrtcSignalingLib.event.on('currentAudioinputDeviceChanged', function (device) {
-                    console.log('currentAudioinputDeviceChanged', device);
                     tool.updateAudioInputList();
                     localStorage.setItem("Q.Media.webrtc.audioInputDeviceId", device.deviceId);
                     localStorage.setItem("Q.Media.webrtc.audioInputGroupId", device.groupId);
@@ -171,7 +167,6 @@
                 var tool = this;
                 var localParticipant = tool.webrtcSignalingLib.localParticipant();
 
-                console.log('updateUIAccordingAccess', localParticipant.hasPermission('mic'))
                 if(localParticipant.hasPermission('mic')) {
                     tool.audioinputListEl.classList.remove('webrtc-audio-disabled');
                 } else {
@@ -316,7 +311,6 @@
                                         toggle();
                                     });
                                 } else {
-                                    console.log('tool.state.controlsTool', tool.state.controlsTool)
                                     tool.state.controlsTool.limits.selectMediaDialog(function (result) {
                                         if (result.audio && result.video) {
                                             tool.webrtcSignalingLib.localMediaControls.canITurnCameraAndMicOn().then(function (result) {
@@ -405,7 +399,6 @@
                 return audioOutputListCon;
             },
             toggleAudioOutputRadioButton: function (buttonObj) {
-                console.log('toggleAudioOutputRadioButton', buttonObj)
                 var tool = this;
                 var deselectAudioOutButtons = function () {
                     for (var i in tool.audioOutputListButtons) {

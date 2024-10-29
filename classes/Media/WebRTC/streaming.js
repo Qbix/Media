@@ -172,7 +172,7 @@ module.exports = function (io) {
                 encoder = 'copy';
                 format = 'mov,mp4,m4a,3gp,3g2,mj2';
             } else {
-                if(mediaRecorderCodec == 'video/mp4;codecs=h264') {
+                if(mediaRecorderCodec == 'video/mp4;codecs=h264' || mediaRecorderCodec == 'video/mp4;codecs:h264') {
                     encoder = 'copy'
                     format = 'mov,mp4,m4a,3gp,3g2,mj2';
                 } else {
