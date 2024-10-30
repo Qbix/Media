@@ -5076,8 +5076,8 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         var codecs = false;
 
         if (localInfo.browserName && localInfo.browserName.toLowerCase() == 'safari') {
-            if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
-                codecs = 'video/mp4;codecs=h264';
+            if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264')) {
+                codecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
             }
         } else {
             if (MediaRecorder.isTypeSupported('video/webm;codecs=h264')) {
