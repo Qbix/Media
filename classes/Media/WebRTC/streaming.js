@@ -178,11 +178,14 @@ module.exports = function (io) {
                 } else {
                     encoder = 'libx264'
                     format = 'webm';
+                    if(mediaRecorderCodec && mediaRecorderCodec.includes('mp4')) {
+                        format = 'mp4';
+                    }
                 }
             }
             if (_debug) console.log('m264BrowserSupport ' + m264BrowserSupport);
             if (_debug) console.log('mp4IsSupported ' + mp4IsSupported, format, encoder);
-            if (_debug) console.log('usersInfo.supportedVideoMimeTypes ', usersInfo.supportedVideoMimeTypes);
+            if (_debug) console.log('usersInfo.supportedVideoMimeTypes ', recorderType, usersInfo.supportedVideoMimeTypes);
 
             function createFfmpegProcess() {
                 if (!streamingUser.passThrough) {
@@ -209,7 +212,8 @@ module.exports = function (io) {
                         params = params.concat([
                             '-codec:a', 'aac',
                             '-strict', '-2', '-ar', '44100',
-                            '-af', 'aresample=async=1'
+                            '-af', 'aresample=async=1',
+                            '-max_muxing_queue_size', '1024'
                         ]);
         
                         params = params.concat([
@@ -237,7 +241,8 @@ module.exports = function (io) {
                     params = params.concat([
                         '-codec:a', 'aac',
                         '-strict', '-2', '-ar', '44100',
-                        '-af', 'aresample=async=1'
+                        '-af', 'aresample=async=1',
+                        '-max_muxing_queue_size', '1024'
                     ]);
                     
                     if (rtmpUrls.length > 1) {
