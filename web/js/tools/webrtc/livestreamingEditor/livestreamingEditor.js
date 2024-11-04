@@ -9771,6 +9771,10 @@
                     
                     document.documentElement.classList.remove('Media_webrtc_live');
                     tool.webrtcUserInterface.screenRendering.renderMinimizedScreensGrid();
+
+                    if (tool.livestreamStream) {
+                        tool.livestreamStream.release(tool);
+                    }
                 }
 
                 function showHorizontalRequired() {
@@ -9827,7 +9831,6 @@
                                 isOpening = false;
                                 //_webrtcUserInterface.roomsMediaContainer().appendChild(dialog);
                                 document.body.appendChild(dialog);
-                                if(tool.livestreamStream) tool.livestreamingEditor.textChatsInterface.createSection();
                                 function horizontalToVerticaOrientationChange() {
                                     setTimeout(function () {
                                         log('show', activeDialog, activeDialog.dialogEl, document.body.contains(activeDialog.dialogEl))
@@ -9870,12 +9873,15 @@
                             activeDialog = desktopDialogEl;
                             if(desktopDialogEl == null) return;
                             //_webrtcUserInterface.roomsMediaContainer().appendChild(dialog);
-                            document.body.appendChild(dialog);
-                            if(tool.livestreamStream) tool.livestreamingEditor.textChatsInterface.createSection();
-    
+                            document.body.appendChild(dialog);    
                             dialog.style.width = dialogWidth + 'px';
                             dialog.style.height = (dialogWidth / 1.4) + 'px';
                             log('dialogWidth', dialogWidth);
+                        }
+
+                        if(tool.livestreamStream) {
+                            tool.livestreamStream.retain(tool);
+                            tool.livestreamingEditor.textChatsInterface.createSection();
                         }
     
                         var dialogRect = Q.info.isMobile ? mobileHorizontaldialogEl.dialogEl.getBoundingClientRect() : desktopDialogEl.dialogEl.getBoundingClientRect();
@@ -9969,7 +9975,7 @@
 
                             let livestreamStreamData = response.slots.createLivestreamStream.livestreamStream;
 
-                            Q.Streams.retainWith(tool).get(livestreamStreamData.fields.publisherId, livestreamStreamData.fields.name, function () {
+                            Q.Streams.get(livestreamStreamData.fields.publisherId, livestreamStreamData.fields.name, function () {
                                 if (!this || !this.fields) {
                                     console.error('Error while getting stream');
                                     return;
