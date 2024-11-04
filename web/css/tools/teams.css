@@ -1,0 +1,100 @@
+.games-teams {
+
+}
+.games-teams .teams-list {
+    
+}
+.games-teams fieldset {
+    margin-top: 20px;
+    border: 1px solid rgb(204 204 204 / 33%);
+    border-radius: 10px;
+    padding: 0 10px 10px 10px;
+    position: relative;
+    text-align: center;
+}
+.games-teams fieldset legend {
+    display: block;
+    padding: 0 5px;
+    font-size: 18px;
+    line-height: 1;
+}
+.games-teams .teams-list .teams-item .teams-item-info {
+    display: flex;
+    align-items: center;
+}
+.games-teams .teams-item-users,
+.games-teams .teams-none-team-users-list {
+    display: flex;
+}
+.teams-item-users {
+    margin-right: 10px;
+}
+.teams-item-users:empty {
+    margin-right: 0;
+}
+.games-teams .teams-item-user-item {
+    margin-left: 10px;
+    width: 66px;
+}
+.games-teams .teams-item-user-item:first-child {
+    margin-left: 0;
+}
+.games-teams .teams-item-user-item-dummy {
+    margin-left: 75%;
+}
+.games-teams .teams-item-user-item .Users_avatar_tool {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.games-teams .teams-item-user-item .Users_avatar_tool .Users_avatar_icon {
+    width: 100%;
+    height: auto;
+}
+.games-teams .teams-item-user-item .Users_avatar_tool .Users_avatar_name {
+    display: flex;
+    align-items: flex-end;
+    font-size: 14px;
+}
+.games-teams .teams-item-user-item .Users_avatar_tool .Users_avatar_name .Streams_firstName{
+    line-height: 1;
+    margin-top: 5px;
+}
+.games-teams .teams-list .teams-item-buttons {
+    
+}
+.games-teams .teams-list .teams-item .teams-item-buttons .teams-item-switch,
+.games-teams .teams-create {
+    display: flex;
+    justify-content: center;
+    background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%);
+    border-radius: 8px;
+    border-style: none;
+    padding: 5px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    transition: all .5s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    text-align: center;
+}
+.games-teams .teams-list .teams-item .teams-item-buttons .teams-item-switch:hover,
+.games-teams .teams-create:hover {
+    box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
+    transition-duration: .1s;
+}
+.games-teams .teams-create-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:15px 0 5px 0;
+}
+.games-teams .teams-none-team-users {
+    margin-top: 10px;
+}

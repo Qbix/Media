@@ -65,6 +65,7 @@
                 }); */
             },
             loadIndexedDbAPI: function () {
+                var tool = this;
                 return new Promise(function (resolve, reject) {
                     Q.addScript([
                         '{{Media}}/js/tools/webrtc/IndexedDbAPI.js',
@@ -1242,12 +1243,12 @@
                             
                             roomInfoContainer.addEventListener('click', function () {
                                 let dateFormat = new Date(parseInt(recordingItem.startTime));
-                                        let downloadName = dateFormat.getDate() +
-                                            "-" + (dateFormat.getMonth() + 1) +
-                                            "-" + dateFormat.getFullYear() +
-                                            "_" + dateFormat.getHours() +
-                                            "-" + dateFormat.getMinutes() +
-                                            "-" + dateFormat.getSeconds();
+                                let downloadName = dateFormat.getDate() +
+                                    "-" + (dateFormat.getMonth() + 1) +
+                                    "-" + dateFormat.getFullYear() +
+                                    "_" + dateFormat.getHours() +
+                                    "-" + dateFormat.getMinutes() +
+                                    "-" + dateFormat.getSeconds();
 
                                 if(recordingItem.storage == 'opfs') {
                                    tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
@@ -1277,15 +1278,21 @@
                                             return o.buffer;
                                         });
                                         
-                                        let blob = new Blob(allChunks, {
+                                        let blob = new Blob(allChunks/* , {
                                             type: 'video/webm'
-                                        });
+                                        } */);
     
+                                        let extension = 'mp4';
+                                        if(recordingItem.codec && recordingItem.codec.includes('mp4')) {
+                                            extension = 'mp4';
+                                        } else if(recordingItem.codec && recordingItem.codec.includes('webm')) {
+                                            extension = 'webm';
+                                        }
                                         let downloadLink = document.createElement('A');
                                         downloadLink.style.position = 'absolute';
                                         downloadLink.style.top = '-999999px';
                                         downloadLink.href = URL.createObjectURL(blob);
-                                        downloadLink.download = downloadName + '.webm';
+                                        downloadLink.download = downloadName + '.' + extension;
                                         document.body.appendChild(downloadLink);
                                         downloadLink.click();
                                     })
@@ -1308,7 +1315,7 @@
                                     let tool = this;
                                     setTimeout(function () {
                                         roomInfoDate.innerHTML = tool.element.textContent;
-                                        download.download = tool.element.textContent.replace(/[\s, :]/g,"_") + '.webm';
+                                        //download.download = tool.element.textContent.replace(/[\s, :]/g,"_") + '.webm';
                                     }, 200)
                                 }
                             );

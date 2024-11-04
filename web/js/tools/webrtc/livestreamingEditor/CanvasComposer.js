@@ -5071,24 +5071,28 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         return _canvasMediStream;
     }
 
-    function getRecorderMimeType() {
+    function getSupportedStreamingCodec() {
         var localInfo = tool.webrtcSignalingLib.getLocalInfo();
-        var isChrome = localInfo.browserName && localInfo.browserName.toLowerCase() == 'chrome';
+        var codecs = false;
 
-        var codecs = 'video/webm;codecs=h264';
-
-        if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
-            codecs = 'video/mp4;codecs=h264';
-        } else if(isChrome && !Q.info.isMobile) {
-            codecs = 'video/webm;codecs=h264';
-        } else if (Q.info.isMobile && Q.info.isAndroid()) {
-            codecs = 'video/webm;codecs=vp8';
+        if (localInfo.browserName && localInfo.browserName.toLowerCase() == 'safari') {
+            if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264')) {
+                codecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
+            }
+        } else {
+            if (MediaRecorder.isTypeSupported('video/webm;codecs=h264')) {
+                codecs = 'video/webm;codecs=h264';
+            } else if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
+                codecs = 'video/mp4;codecs=h264';
+            } /*  else if (Q.info.isMobile && Q.info.isAndroid()) {
+                codecs = 'video/webm;codecs=vp8';
+            } */
         }
 
         return codecs;
     }
 
-    function createRecorder(ondataavailable) {
+    function createRecorder(ondataavailable, codecs) {
         log('createRecorder START');
 
         if(_canvasMediStream == null) {
@@ -5097,10 +5101,15 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         }
 
         log('createRecorder if1 else', _canvasMediStream);
-        let codecs = getRecorderMimeType();
+        
+        //codecs = getSupportedStreamingCodec();
+
+        if(!codecs) {
+            console.log('codecs', codecs)
+            throw new Error('No supported codecs found.');
+        } 
 
         let mediaRecorder = new MediaRecorder(_canvasMediStream.clone(), {
-            //mimeType: 'video/webm',
             mimeType: codecs,
             audioBitsPerSecond : 128000,
             videoBitsPerSecond: 3 * 1024 * 1024
@@ -5303,7 +5312,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         canvas: function () {
             return _canvas;
         },
-        getRecorderMimeType: getRecorderMimeType,
+        getSupportedStreamingCodec: getSupportedStreamingCodec,
         createRecorder: createRecorder,
         stopCaptureCanvas: stopCaptureCanvas,
         isActive: function () {
