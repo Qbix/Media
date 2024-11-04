@@ -9951,7 +9951,7 @@
 
                             let livestreamStreamData = response.slots.createLivestreamStream.livestreamStream;
 
-                            Q.Streams.get(livestreamStreamData.fields.publisherId, livestreamStreamData.fields.name, function () {
+                            Q.Streams.retainWith(tool).get(livestreamStreamData.fields.publisherId, livestreamStreamData.fields.name, function () {
                                 if (!this || !this.fields) {
                                     console.error('Error while getting stream');
                                     return;
