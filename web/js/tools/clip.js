@@ -366,7 +366,7 @@
                                     $chatMessages.height(chatHeight);
                                 }
                                 if (stopScroll) {
-                                    scrollingParent.style.overflow = 'hidden';
+                                    scrollParent.style.overflow = 'hidden';
                                 }
                             }, chatTool);
                         }, tool);
