@@ -348,7 +348,9 @@
                                     return $chatMessages.remove();
                                 }
                                 var chatHeight = $chatMessages.height();
+                                var stopScroll = false;
                                 while (scrollParent.isOverflowed()) {
+                                    stopScroll = true;
                                     if (chatHeight <= state.minChatHeight) {
                                         break;
                                     }
@@ -359,6 +361,9 @@
                                 while (scrollParent.offsetHeight - tool.element.offsetHeight > 20) {
                                     chatHeight += 10;
                                     $chatMessages.height(chatHeight);
+                                }
+                                if (stopScroll) {
+                                    scrollingParent.style.overflow = 'hidden';
                                 }
                             }, chatTool);
                         }, tool);
