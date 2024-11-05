@@ -135,7 +135,7 @@
         earnPeriod: parseInt(Q.getObject("Media.clip.watching.earnPeriod", Q)) || 60,
         credits: parseInt(Q.getObject("Assets.credits.amounts.watching", Q)) || 1,
         withQuestions: false,
-        minChatHeight: 250
+        minChatHeight: 200
     }, {
         refresh: function () {
             var tool = this;
