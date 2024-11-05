@@ -347,6 +347,9 @@
                                 if (!$.contains(document, $chatMessages[0])) {
                                     return $chatMessages.remove();
                                 }
+                                if (!scrollParent) {
+                                    return;
+                                }
                                 var chatHeight = $chatMessages.height();
                                 var stopScroll = false;
                                 while (scrollParent.isOverflowed()) {
