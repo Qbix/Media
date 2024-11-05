@@ -124,6 +124,10 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 .Q_column_shows {
 	min-width: 320px !important;
 }
+
+#content_slot .Media_column_clip .Q_column_slot {
+	display: hidden !important;
+}
   
 @keyframes Media_backgroundColors {
 	0% { background-color: red; }
