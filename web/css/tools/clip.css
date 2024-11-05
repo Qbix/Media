@@ -166,11 +166,11 @@ html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_j
     padding: 5px;
 }
 .Q_mobile .Media_episode_description  {
-    min-height: 25px;
-    max-height: 50px;
+    min-height: 50px;
+    max-height: 75px;
 }
 .Q_notMobile .Media_episode_description  {
-    min-height: 50px;
+    min-height: 75px;
 }
 
 .Media_clips_settings_btn,
