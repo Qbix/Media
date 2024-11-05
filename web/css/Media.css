@@ -126,7 +126,7 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 }
 
 #content_slot .Media_column_clip .Q_column_slot {
-	display: hidden !important;
+	overflow: hidden !important;
 }
   
 @keyframes Media_backgroundColors {
