@@ -42,12 +42,12 @@ Q.Media.WebRTC.livestreaming.streamingIcons = {
     reactions: {
         laugh: '{{Media}}/img/reactions/laugh_100.png',
         cry: '{{Media}}/img/reactions/cry_100.png',
-        applause: '{{Media}}/img/reactions/clap_100.png',
         angry: '{{Media}}/img/reactions/angry_100.png',
-        thumbUp: '{{Media}}/img/reactions/thumbUp_100.png',
-        thumbDown: '{{Media}}/img/reactions/thumbDown_100.png',
         exploding: '{{Media}}/img/reactions/exploding_100.png',
         liar: '{{Media}}/img/reactions/liar_100.png',
-        liar: '{{Media}}/img/reactions/sick_100.png'
+        sick: '{{Media}}/img/reactions/sick_100.png',
+        applause: '{{Media}}/img/reactions/clap_100.png',
+        thumbUp: '{{Media}}/img/reactions/thumbUp_100.png',
+        thumbDown: '{{Media}}/img/reactions/thumbDown_100.png'
     }
 }
