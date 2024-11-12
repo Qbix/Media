@@ -682,7 +682,7 @@ void main(void) {
                 gl.uniform1f(texHeightLoc, frameHeight);
 
                 const m = filter.smoothless ? filter.keyColor.match(/^#([0-9a-f]{6})$/i)[1] : '#00ff00';
-                gl.uniform3f(keyColorLoc, parseInt(m.substr(0, 2), 16) / 255, parseInt(m.substr(2, 2), 16) / 255, parseInt(m.substr(4, 2), 16) / 255);
+                gl.uniform3f(keyColorLoc, parseInt(m.substring(0, 2), 16) / 255, parseInt(m.substring(2, 4), 16) / 255, parseInt(m.substring(4, 6), 16) / 255);
                 const similarity = filter.similarity;
                 gl.uniform1f(similarityLoc, parseFloat(similarity));
                 const smoothless = filter.smoothless;
