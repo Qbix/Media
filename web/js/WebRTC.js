@@ -353,7 +353,7 @@
                     var seconds = "0" + date.getSeconds();
 
 // Will display time in 10:30:23 format
-                    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                    var formattedTime = hours + ':' + minutes.substring(minutes.length-2) + ':' + seconds.substring(seconds.length-2);
 
                     return formattedTime;
                 }

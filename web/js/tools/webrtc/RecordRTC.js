@@ -4182,7 +4182,7 @@ var Whammy = (function() {
             var pad = (bits.length % 8) ? (new Array(1 + 8 - (bits.length % 8))).join('0') : '';
             bits = pad + bits;
             for (var i = 0; i < bits.length; i += 8) {
-                data.push(parseInt(bits.substr(i, 8), 2));
+                data.push(parseInt(bits.substring(i, i+8), 2));
             }
             return new Uint8Array(data);
         }
@@ -4225,7 +4225,7 @@ var Whammy = (function() {
             var pad = (bits.length % 8) ? (new Array(1 + 8 - (bits.length % 8))).join('0') : '';
             bits = pad + bits;
             for (var i = 0; i < bits.length; i += 8) {
-                data += String.fromCharCode(parseInt(bits.substr(i, 8), 2));
+                data += String.fromCharCode(parseInt(bits.substring(i, i+8), 2));
             }
             return data;
         }
@@ -4284,7 +4284,7 @@ var Whammy = (function() {
         }
 
         function getStrLength(string, offset) {
-            return parseInt(string.substr(offset + 4, 4).split('').map(function(i) {
+            return parseInt(string.substring(offset + 4, offset + 8).split('').map(function(i) {
                 var unpadded = i.charCodeAt(0).toString(2);
                 return (new Array(8 - unpadded.length + 1)).join('0') + unpadded;
             }).join(''), 2);
@@ -4295,9 +4295,9 @@ var Whammy = (function() {
             var chunks = {};
 
             while (offset < string.length) {
-                var id = string.substr(offset, 4);
+                var id = string.substring(offset, offset+4);
                 var len = getStrLength(string, offset);
-                var data = string.substr(offset + 4 + 4, len);
+                var data = string.substring(offset + 4 + 4, offset + 4 + 4 + len);
                 offset += 4 + 4 + len;
                 chunks[id] = chunks[id] || [];
 
