@@ -394,7 +394,6 @@ Q.Media.WebRTCRoomClient = function app(options){
             isCohost: false
         };
         this.hasPermission = function (permissionName) {
-            //console.log('hasPermission', permissionName)
             if(this.access.isAdmin) {
                 return true;
             }
@@ -6667,7 +6666,10 @@ Q.Media.WebRTCRoomClient = function app(options){
             }
         }
 
-        if(socket != null) socket.disconnect();
+        if(socket != null) {
+            socket.disconnect();
+            delete Q.Socket.getAll()['/webrtc']
+        }
         app.event.dispatch('disconnected');
         app.event.destroy();
         app.state = 'disconnected';

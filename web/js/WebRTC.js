@@ -9021,7 +9021,10 @@
             if(webrtcSignalingLib) webrtcSignalingLib.disconnect(null, byLocalUser);
 
             var socket = Q.Socket.get('/webrtc', Q.nodeUrl({webrtc: true}));
-            socket.disconnect();
+            if(socket) {
+                socket.disconnect();
+                delete Q.Socket.getAll()['/webrtc']
+            }
 
             //_options.streams = [];
             if(!suspend) {
