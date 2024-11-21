@@ -158,7 +158,7 @@
                         let activeScene = tool.livestreamingEditor.scenesInterface.getActive();
                         console.log('tool.livestreamingEditor', activeScene)
 
-                        activeScene.reactionsSource.addReaction(ephemeral.reaction);
+                        if(activeScene) activeScene.reactionsSource.addReaction(ephemeral.reaction);
                     }
                 }, tool);
                
@@ -1299,7 +1299,7 @@
                             var item = new SceneListItem(scenes[s])
                             addSceneItemToList(item);
 
-                            if (_activeScene == null && s == 0) {
+                            if (_activeScene == null && parseInt(s) == 0) {
                                 selectScene(item);
                             }
                             log('_eventDispatcher', _eventDispatcher)
@@ -1599,7 +1599,6 @@
                         });
 
                         selectDropDown.addEventListener('change', function (e) {
-                            log('chaaange',e.target.value)
                             selectScene(e.target.value);
                         })
 
