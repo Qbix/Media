@@ -345,6 +345,7 @@ function WebcastServer(socket) {
                
 
             } else if (localParticipant.role == 'receiver') {
+                log('RECEIVER CONNECTING ...', localParticipant.id);
                 findDonor(localParticipant);
             }   
         });
@@ -363,6 +364,7 @@ function WebcastServer(socket) {
                     broadcastRoom.participants[p].donors.push(donorParticipant);
 
                     broadcastNamespace.to(donorParticipant.id).emit('Media/broadcast/participantConnected', {
+                        broadcastRole: 'receiver',
                         sid: broadcastRoom.participants[p].id,
                         info: broadcastRoom.participants[p].info,
                         fromSid: broadcastRoom.participants[p].id
@@ -393,6 +395,7 @@ function WebcastServer(socket) {
                     //log('askPermissionToConnect answer', answer);
                     //if(answer === true) {
                     broadcastNamespace.to(roomParticipant.id).emit('Media/broadcast/participantConnected', {
+                        broadcastRole: 'receiver',
                         username: receiverParticipant.username,
                         sid: receiverParticipant.id,
                         info: receiverParticipant.info,
