@@ -20,8 +20,8 @@
     }
 
     /**
-     * Media/webrtc/permissionsManager tool.
-     * Manages users permissions to publish mic/camera/screen into WebRTC room
+     * Media/webrtc/limitsManager tool.
+     * Manages limits in the room
      * @module Media
      * @class Media webrtc
      * @constructor
