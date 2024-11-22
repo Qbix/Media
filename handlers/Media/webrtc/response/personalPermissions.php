@@ -9,7 +9,7 @@ function Media_webrtc_response_personalPermissions($params = array()) {
 
     $webrtcRoomStream = Streams_Stream::fetch($loggedInUserId, $publisherId, $streamName);
     if(!$webrtcRoomStream) {
-        throw new Exception('WebRTC stream not found');
+        throw new Q_Exception_MissingRow(array('table' => 'stream', 'criteria' => "name = $streamName"));
     }
     if(!$webrtcRoomStream->testAdminLevel('manage')) {
         throw new Users_Exception_NotAuthorized();
