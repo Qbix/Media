@@ -693,7 +693,7 @@ window.WebRTCWebcastClient = function (options){
             if(localTrackExist == null) {
                 log('attachTrack addTracksToPeerConnections');
                 localParticipant.tracks.push(track);
-                app.signalingDispatcher.addTracksToPeerConnections();
+                app.signalingDispatcher.addTracksToPeerConnections(track);
             }
 
             track.participant = participant;
@@ -1062,11 +1062,11 @@ window.WebRTCWebcastClient = function (options){
                 app.event.dispatch('liveStreamingEnded', participant);
             }
 
-            for (let i = localParticipant.tracks.length - 1; i >= 0; i--) {
+            /* for (let i = localParticipant.tracks.length - 1; i >= 0; i--) {
                 if (localParticipant.tracks[i].participant == participant) {
                     localParticipant.tracks.splice(i, 1);
                 }
-            }
+            } */
 
             app.event.dispatch('participantDisconnected', participant);
 
@@ -1214,49 +1214,73 @@ window.WebRTCWebcastClient = function (options){
         }
 
 
-        function replaceOrAddTrack(track, skipParticipant) {
-            log('replaceOrAddTrack');
-            for (var p in roomParticipants) {
-                if(roomParticipants[p] == skipParticipant || roomParticipants[p].broadcastRole == 'donor') continue;
-                if (!roomParticipants[p].isLocal && roomParticipants[p].RTCPeerConnection != null && roomParticipants[p].RTCPeerConnection.connectionState != 'closed') {
-                    log('replaceOrAddTrack: roomParticipants[p]', roomParticipants[p]);
+        function replaceOrAddTrack(track, participantOrPCTracksSendTo) {
+            log('replaceOrAddTrack START', track);
+            if(participantOrPCTracksSendTo instanceof RTCPeerConnection) {
+                addOrReplaceTrackInPeerConnection(participantOrPCTracksSendTo);
 
-                    if('ontrack' in roomParticipants[p].RTCPeerConnection){
-                        let sender = roomParticipants[p].RTCPeerConnection.getSenders().filter(function (s) {
-                            return s.track && s.track.kind == track.mediaStreamTrack.kind;
-                        })[0];
+                return;
+            }
 
-                        log('replaceOrAddTrack: sender exist - ', sender != null);
-                        if(sender != null) {
-                            var oldTrackid = sender.track.id;
-                            //sender.track.stop();
+            let participants = roomParticipants;
+            if(participantOrPCTracksSendTo) {
+                participants = [participantOrPCTracksSendTo];
+            }
+            for (var p in participants) {
+                if(participants[p] == localParticipant || participants[p].broadcastRole == 'donor') continue;
+                if (!participants[p].isLocal && participants[p].RTCPeerConnection != null && participants[p].RTCPeerConnection.connectionState != 'closed') {
+                    log('replaceOrAddTrack: participants[p]', participants[p]);
+                    log('replaceOrAddTrack: senders', participants[p].RTCPeerConnection.getSenders());
 
-                            sender.replaceTrack(track.mediaStreamTrack)
-                                .then(function () {
-                                    log('replaceOrAddTrack: track replaced');
-                                    for (let i = localParticipant.tracks.length - 1; i >= 0; i--) {
-                                        if (localParticipant.tracks[i].mediaStreamTrack.id == oldTrackid) {
-                                            log('replaceOrAddTrack: deleted track removed');
+                    addOrReplaceTrackInPeerConnection(participants[p].RTCPeerConnection);
+                }
+            }
 
-                                            localParticipant.tracks.splice(i, 1);
-                                        }
-                                    }
-                                    //if(callback != null) callback();
-                                })
-                                .catch(function (e) {
-                                    console.error(e.name + ': ' + e.message);
-                                });
+            function addOrReplaceTrackInPeerConnection(RTCPeerConnection) {
+                if('ontrack' in RTCPeerConnection){
+                    let sender = RTCPeerConnection.getSenders().filter(function (s) {
+                        return s.track && s.track.kind == track.mediaStreamTrack.kind;
+                    })[0];
 
-                        } else {
-                            log('replaceOrAddTrack: addTrack: id = ', (track.mediaStreamTrack.id));
-                            let videoSenderExist = roomParticipants[p].RTCPeerConnection.getSenders().filter(function (sender) {
-                                return sender.track != null && sender.track.id == track.mediaStreamTrack.id;
-                            })[0];
-                            log('replaceOrAddTrack videoSenderExist ', videoSenderExist != null);
-                            if(!videoSenderExist) roomParticipants[p].RTCPeerConnection.addTrack(track.mediaStreamTrack, track.stream);
+                    log('replaceOrAddTrack: sender exist - ', sender != null);
+                   
+                    if(sender != null) {
+                        console.log('replaceOrAddTrack ids', sender.track.id, track.mediaStreamTrack.id)
+                        if(sender.track.id == track.mediaStreamTrack.id) {
+                            log('replaceOrAddTrack: sender has the SAME TRACK, skip');
+                            return;
                         }
 
+                        var oldTrackid = sender.track.id;
+                        console.log('replaceOrAddTrack oldTrackid', oldTrackid)
+
+                        //sender.track.stop();
+
+                        sender.replaceTrack(track.mediaStreamTrack)
+                            .then(function () {
+                                log('replaceOrAddTrack: track replaced');
+                                for (let i = localParticipant.tracks.length - 1; i >= 0; i--) {
+                                    if (localParticipant.tracks[i].mediaStreamTrack.id == oldTrackid) {
+                                        log('replaceOrAddTrack: deleted track removed');
+
+                                        localParticipant.tracks.splice(i, 1);
+                                    }
+                                }
+                                //if(callback != null) callback();
+                            })
+                            .catch(function (e) {
+                                console.error(e.name + ': ' + e.message);
+                            });
+
+                    } else {
+                        log('replaceOrAddTrack: addTrack: id = ', (track.mediaStreamTrack.id));
+                        let videoSenderExist = RTCPeerConnection.getSenders().filter(function (sender) {
+                            return sender.track != null && sender.track.id == track.mediaStreamTrack.id;
+                        })[0];
+                        log('replaceOrAddTrack videoSenderExist ', videoSenderExist != null);
+                        if(!videoSenderExist) RTCPeerConnection.addTrack(track.mediaStreamTrack, track.stream);
                     }
+
                 }
             }
 
@@ -1287,12 +1311,17 @@ window.WebRTCWebcastClient = function (options){
             }
         }
 
-        function addTracksToPeerConnections() {
-            log('addTracksToPeerConnections');
+        function addTracksToPeerConnections(track, participantOrPCAddTrackTo) {
+            if(participantOrPCAddTrackTo && participantOrPCAddTrackTo.broadcastRole == 'donor') return;
+            log('addTracksToPeerConnections', track, participantOrPCAddTrackTo);
             var tracks = localParticipant.tracks;
+            if(track) {
+                tracks = [track];
+            }
+            log('addTracksToPeerConnections tracks', tracks);
 
             for (var t in tracks) {
-                replaceOrAddTrack(tracks[t], tracks[t].participant);
+                replaceOrAddTrack(tracks[t], participantOrPCAddTrackTo);
             }
         }
 
@@ -1581,7 +1610,7 @@ window.WebRTCWebcastClient = function (options){
                 log('createPeerConnection: usesUnifiedPlan = '+ participant.localInfo.usesUnifiedPlan);
 
                 var newPeerConnection = new RTCPeerConnection(config);
-
+                participant.RTCPeerConnection = newPeerConnection;
                 function createOffer(hasPriority, resetConnection){
                     log('createOffer', resetConnection, participant.identity, participant.sid)
 
@@ -1592,7 +1621,7 @@ window.WebRTCWebcastClient = function (options){
                         participant.signalingState.setStage('offerCreating');
                     } else {
                         participant.signalingState.setStage('initialOfferCreating');
-                        publishMedia();
+                        addTracksToPeerConnections(null, participant);
                     }
 
                     newPeerConnection.createOffer({ 'OfferToReceiveAudio': false, 'OfferToReceiveVideo': false })
@@ -1725,43 +1754,6 @@ window.WebRTCWebcastClient = function (options){
 
                 }
                 participant.negotiate = negotiate;
-
-                function publishMedia() {
-                    log('createPeerConnection: publishMedia')
-
-                    var localTracks = localParticipant.tracks;
-
-                    //we can eliminate checking whether .cameraIsEnabled() as all video tracks are stopped when user switches camera or screensharing off.
-                    if('ontrack' in newPeerConnection){
-                        for (var t in localTracks) {
-                            log('createPeerConnection: add track ' + localTracks[t].kind)
-                            if (localTracks[t].kind == 'video' && localTracks[t].participant != participant && localTracks[t].mediaStreamTrack.readyState != 'ended') {
-                                newPeerConnection.addTrack(localTracks[t].mediaStreamTrack, localTracks[t].stream);
-                            }
-                        }
-
-                    } else {
-                        log('createPeerConnection: add videoStream - ' + (localParticipant.videoStream != null))
-                        if(localParticipant.videoStream != null) newPeerConnection.addStream(localParticipant.videoStream);
-                    }
-
-                    //we must check whether .micIsEnabled() we don't .do mediaStreamTrack.stop() for iOS as stop() cancels access to mic, and both stop() and enabled = false affect audio visualization.
-                    //So we need to check if micIsEnabled() to avoid cases when we add audio tracks while user's mic is turned off.
-
-                    if('ontrack' in newPeerConnection){
-                        for (var t in localTracks) {
-                            log('createPeerConnection: add track ' + localTracks[t].kind)
-
-                            if(localTracks[t].kind == 'audio' && localTracks[t].participant != participant && localTracks[t].mediaStreamTrack.readyState != 'ended') newPeerConnection.addTrack(localTracks[t].mediaStreamTrack, localTracks[t].stream);
-                        }
-
-                    } else {
-                        log('createPeerConnection: add videoStream - ' + (localParticipant.videoStream != null))
-
-                        if(localParticipant.audioStream != null) newPeerConnection.addStream(localParticipant.audioStream);
-                    }
-
-                }
 
                 newPeerConnection.addEventListener("icecandidateerror", (event) => {
                     log('socketParticipantConnected: icecandidateerror');
@@ -1932,7 +1924,7 @@ window.WebRTCWebcastClient = function (options){
 
                         }
                     }
-                    senderParticipant.RTCPeerConnection = createPeerConnection(senderParticipant, true);
+                    createPeerConnection(senderParticipant, true);
                 }
             }
 
@@ -2170,87 +2162,6 @@ window.WebRTCWebcastClient = function (options){
 
             }
 
-            function publishLocalAudio(senderParticipant){
-                if(senderParticipant.broadcastRole == 'donor') return;
-                var RTCPeerConnection = senderParticipant.RTCPeerConnection;
-                var localTracks = localParticipant.tracks;
-
-                var audioSenders = RTCPeerConnection.getSenders().filter(function (sender) {
-                    return sender.track && sender.track.kind == 'audio';
-                });
-
-                var cancel = false;
-                for(var s = audioSenders.length - 1; s >= 0 ; s--){
-
-                    for(let i = localParticipant.tracks.length - 1; i >= 0 ; i--){
-                        if(localParticipant.tracks[i].mediaStreamTrack.id == audioSenders[s].track.id) {
-                            cancel = true;
-                        }
-                    }
-                }
-                if(cancel) return;
-
-                if ('ontrack' in RTCPeerConnection) {
-                    for (let t in localTracks) {
-                        log('offerReceived: publishLocalAudio: add audioTrack');
-                        if(localTracks[t].kind == 'audio' && localTracks[t].mediaStreamTrack.readyState != 'ended') RTCPeerConnection.addTrack(localTracks[t].mediaStreamTrack, localTracks[t].stream);
-                    }
-                } else {
-                    if (localParticipant.audioStream != null) {
-                        log('offerReceived: publishLocalAudio: add audioStream');
-                        RTCPeerConnection.addStream(localParticipant.audioStream);
-                    }
-                }
-
-
-            }
-
-            function publishLocalVideo(senderParticipant) {
-                if(senderParticipant.broadcastRole == 'donor') return;
-
-                var RTCPeerConnection = senderParticipant.RTCPeerConnection;
-                var localTracks = localParticipant.tracks;
-
-                if ('ontrack' in RTCPeerConnection) {
-                    for (let t in localTracks) {
-                        log('offerReceived: publishLocalVideo: add videoTrack: localTracks', localTracks[t]);
-
-                        if (localTracks[t].kind == 'video' && localTracks[t].mediaStreamTrack.readyState != 'ended') {
-                            log('offerReceived: publishLocalVideo: add videoTrack', localTracks[t].participant.sid, senderParticipant.sid);
-                            RTCPeerConnection.addTrack(localTracks[t].mediaStreamTrack, localTracks[t].stream);
-                        }
-                    }
-
-                } else {
-                    if (localParticipant.videoStream != null) {
-                        log('offerReceived: publishLocalVideo: add videoStream');
-                        RTCPeerConnection.addStream(localParticipant.videoStream);
-                    }
-                }
-            }
-
-            function creteEmptyVideoTrack(width, height) {
-                if(typeof width == 'undefined') width = 640;
-                if(typeof height == 'undefined') height = 480;
-
-                let canvas = Object.assign(document.createElement("canvas"), {width, height});
-                canvas.getContext('2d').fillRect(0, 0, width, height);
-                let stream = canvas.captureStream();
-                return Object.assign(stream.getVideoTracks()[0], {enabled: false});
-
-
-            }
-            function creteEmptyAudioTrack(width, height) {
-                if(typeof width == 'undefined') width = 640;
-                if(typeof height == 'undefined') height = 480;
-
-                let canvas = Object.assign(document.createElement("canvas"), {width, height});
-                canvas.getContext('2d').fillRect(0, 0, width, height);
-                let stream = canvas.captureStream();
-                return Object.assign(stream.getVideoTracks()[0], {enabled: false});
-
-            }
-
             function process(message) {
                 log('offerReceived fromSid', message.fromSid);
                 log('offerReceived resetConnection', message.resetConnection);
@@ -2353,8 +2264,7 @@ window.WebRTCWebcastClient = function (options){
                 senderParticipant.RTCPeerConnection.setRemoteDescription(description).then(function () {
                     senderParticipant.signalingState.setStage('offerApplied');
                     if(pcNotEstablished || senderParticipant.RTCPeerConnection.connectionState =='closed' ||  message.resetConnection == true) {
-                        publishLocalVideo(senderParticipant);
-                        publishLocalAudio(senderParticipant);
+                        addTracksToPeerConnections(null, senderParticipant);
                     }
                     senderParticipant.RTCPeerConnection.createAnswer({ 'OfferToReceiveAudio': false, 'OfferToReceiveVideo': false })
                         .then(function(answer) {

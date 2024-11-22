@@ -119,8 +119,9 @@
             declareStreamEventHandlers: function() {
                 var tool = this;
                 console.log('declareStreamEventHandlers');
+                window.livestreamStream = tool.livestreamStream;
                 tool.livestreamStream.onMessage("Streams/changed").set(function (message) {
-                    console.log('Streams/changed', message);
+                    console.log('declareStreamEventHandlers: Streams/changed', message);
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
                         tool.syncLivestreamsList();
@@ -132,7 +133,7 @@
                     
                 }, tool);
                 tool.livestreamStream.onMessage("Media/livestream/start").set(function (message) {
-                    console.log('Media/livestream/start');
+                    console.log('declareStreamEventHandlers: Media/livestream/start');
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
                         tool.syncLivestreamsList();
@@ -143,7 +144,7 @@
                     });
                 }, tool);
                 tool.livestreamStream.onMessage("Media/livestream/stop").set(function (message) {
-                    console.log('Media/livestream/stop');
+                    console.log('declareStreamEventHandlers: Media/livestream/stop');
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
 
