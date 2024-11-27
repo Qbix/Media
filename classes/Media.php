@@ -167,7 +167,7 @@ abstract class Media
 			$userId = $user->id;
 		}
 
-		$communityId = $communityId ?: Users::currentCommunityId();
+		$communityId = $communityId ? $communityId : Users::currentCommunityId();
 
 		$labelsAuthorized = Q_Config::get("Media", "access", "feeds", "admins", null);
 		if ($labelsAuthorized && !empty(Users::roles($communityId, $labelsAuthorized, array(), $userId))) {

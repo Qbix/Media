@@ -9,16 +9,14 @@ function Media_after_Communities_profile_tabs ($params, &$results) {
 	$contentParams = @compact("userId", "text");
 
 	$isAdmin = false;
+	$labelsAuthorized = Q_Config::get("Media", "access", "feeds", "admins", null);
 	$communities = Users_Contact::select()->where(array(
-		"contactUserId" => $userId
-	))->fetchDbRows();
-	foreach ($communities as $community) {
-		if (Media::isFeedsAdmin($loggedUserId, $community->userId)) {
-			$isAdmin = true;
-		}
-	}
-
-
+		"contactUserId" => $userId,
+		"userId " => new Db_Range('A', true, false, ord('Z')+1),
+		"label" => $labelsAuthorized
+	))->limit(1)->fetchDbRows();
+	$isAdmin = !empty($communities);
+	
 	// collect tabs content and controls
 	foreach ($tabs as $tab => $content) {
 		if (!$content) {
