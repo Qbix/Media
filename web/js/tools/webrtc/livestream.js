@@ -1,6 +1,7 @@
 (function ($, window, undefined) {
     var _icons = {
-        askQuestion: '<svg id="fi_2207581" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><g><path d="m18 1h-12c-2.757 0-5 2.243-5 5v8c0 2.414 1.721 4.434 4 4.899v3.101c0 .369.203.708.528.882.148.079.31.118.472.118.194 0 .388-.057.555-.168l5.748-3.832h5.697c2.757 0 5-2.243 5-5v-8c0-2.757-2.243-5-5-5zm-6.555 16.168-4.445 2.963v-2.131c0-.552-.447-1-1-1-1.654 0-3-1.346-3-3v-8c0-1.654 1.346-3 3-3h12c1.654 0 3 1.346 3 3v8c0 1.654-1.346 3-3 3h-6c-.072 0-.174.007-.291.043-.116.035-.204.085-.264.125z"></path><path d="m12 4c-1.654 0-3 1.346-3 3 0 .552.447 1 1 1s1-.448 1-1c0-.551.448-1 1-1s1 .449 1 1c0 .322-.149.617-.409.808-1.011.74-1.591 1.808-1.591 2.929v.263c0 .552.447 1 1 1s1-.448 1-1v-.263c0-.653.484-1.105.773-1.317.768-.564 1.227-1.468 1.227-2.42 0-1.654-1.346-3-3-3z"></path><circle cx="12" cy="14" r="1"></circle></g></svg>'
+        askQuestion: '<svg id="fi_2207581" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><g><path d="m18 1h-12c-2.757 0-5 2.243-5 5v8c0 2.414 1.721 4.434 4 4.899v3.101c0 .369.203.708.528.882.148.079.31.118.472.118.194 0 .388-.057.555-.168l5.748-3.832h5.697c2.757 0 5-2.243 5-5v-8c0-2.757-2.243-5-5-5zm-6.555 16.168-4.445 2.963v-2.131c0-.552-.447-1-1-1-1.654 0-3-1.346-3-3v-8c0-1.654 1.346-3 3-3h12c1.654 0 3 1.346 3 3v8c0 1.654-1.346 3-3 3h-6c-.072 0-.174.007-.291.043-.116.035-.204.085-.264.125z"></path><path d="m12 4c-1.654 0-3 1.346-3 3 0 .552.447 1 1 1s1-.448 1-1c0-.551.448-1 1-1s1 .449 1 1c0 .322-.149.617-.409.808-1.011.74-1.591 1.808-1.591 2.929v.263c0 .552.447 1 1 1s1-.448 1-1v-.263c0-.653.484-1.105.773-1.317.768-.564 1.227-1.468 1.227-2.42 0-1.654-1.346-3-3-3z"></path><circle cx="12" cy="14" r="1"></circle></g></svg>',
+        join: '<svg width="800px" height="800px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"> <title>mic</title> <g id="Layer_2" data-name="Layer 2"> <g id="invisible_box" data-name="invisible box"> <rect width="48" height="48" fill="none"/> </g> <g id="Q3_icons" data-name="Q3 icons"> <g> <path d="M24,30a8,8,0,0,0,8-8V10a8,8,0,0,0-16,0V22A8,8,0,0,0,24,30ZM20,10a4,4,0,0,1,8,0V22a4,4,0,0,1-8,0Z"/> <path d="M40,22V20a2,2,0,0,0-4,0v2a12,12,0,0,1-24,0V20a2,2,0,0,0-4,0v2A16.1,16.1,0,0,0,22,37.9V42H14a2,2,0,0,0,0,4H33a2,2,0,0,0,0-4H26V37.9A16.1,16.1,0,0,0,40,22Z"/> </g> </g> </g> </svg>'
     }
 
     var ua = navigator.userAgent;
@@ -24,6 +25,7 @@
         var tool = this;
         
         tool.livestreamStream = null;
+        tool.webrtcStream = null; //internal use only: use getWebRTCStream method to get webrtcStream
         tool.activeLivestreamings = [];
         tool.inactiveLivestreamings = [];
         tool.videoContainerEl = null;
@@ -41,26 +43,13 @@
                     return;
                 }
                 tool.livestreamStream = this;
-                if (Q.Users.loggedInUserId()) {
-                    tool.livestreamStream.observe();
-                }
+                tool.livestreamStream.observe();
+                
                 tool.declareStreamEventHandlers();
                 
-                var params = {
-                    max: -1,
-                    limit: 0,
-                    type: ["Media/livestream/start", "Media/livestream/stop"]
-                };
-                Q.Streams.Message.get(tool.state.publisherId, tool.state.streamName, params,
-                    function(err, messages){
-                        if (err) {
-                            return Q.handle(state.onError, this, [err]);
-                        }
-                        console.log('Q.Streams.Message.get', Object.keys(messages).length);
-                        tool.syncLivestreamsList(messages);
-                        tool.create();
-                    }
-                );
+                tool.syncLivestreamsList();
+                tool.create();
+               
                 
             });
             
@@ -75,12 +64,48 @@
             layout: null, //wide||vertical
             wide_minChatWidth: 320,
             onRefresh: new Q.Event(),
-            onUpdate: new Q.Event()
+            onUpdate: new Q.Event(),
+            onWebrtcStreamLoaded: new Q.Event()
         },
 
         {
             refresh: function () {
                 var tool = this;
+            },
+            getWebRTCStream: function () {
+                //promise returns webrtc stream (if it was loaded, permissions are ok etc) or null otherwise
+                var tool = this;
+                if(tool.webrtcStream != null && tool.webrtcStream != 'inProgress' && tool.webrtcStream != 'failed') {
+                    return new Promise(function (resolve, reject) {
+                        resolve(tool.webrtcStream);
+                    });
+                } else  if(tool.webrtcStream != null && tool.webrtcStream == 'inProgress') {
+                    return new Promise(function (resolve, reject) {
+                        tool.state.onWebrtcStreamLoaded.addOnce(function (e) {
+                            resolve(tool.webrtcStream != 'failed' ? tool.webrtcStream : null);
+                        }, tool);
+                    });
+                    
+                } else if(tool.webrtcStream == 'failed') {
+                    return new Promise.resolve(null);
+                }
+
+                tool.webrtcStream != 'inProgress';
+                return new Promise(function (resolve, reject) {
+                    Q.Streams.get(tool.state.webrtcPublisherId, tool.state.webrtcStreamName, function (err) {
+                        if(!this || !this.fields) {
+                            console.error('Error while getting stream', err);
+                            tool.webrtcStream = 'failed';
+                            Q.handle(tool.state.onWebrtcStreamLoaded, tool);
+                            resolve(null);
+                            return;
+                        }
+                        tool.webrtcStream = this;
+                        Q.handle(tool.state.onWebrtcStreamLoaded, tool);
+                        resolve(tool.webrtcStream);
+
+                    });
+                });
             },
             refreshLivestreamStream: function () {
                 var tool = this;
@@ -93,11 +118,12 @@
             },
             declareStreamEventHandlers: function() {
                 var tool = this;
+                console.log('declareStreamEventHandlers');
                 tool.livestreamStream.onMessage("Streams/changed").set(function (message) {
                     console.log('Streams/changed', message);
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
-                        tool.syncLivestreamsList([message]);
+                        tool.syncLivestreamsList();
                         tool.videoTabsTool.syncVideoTabsList.apply(tool);
                         Q.handle(tool.state.onUpdate, tool, [{
                             prevNumOfLives: prevNumOfLives
@@ -109,7 +135,7 @@
                     console.log('Media/livestream/start');
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
-                        tool.syncLivestreamsList([message]);
+                        tool.syncLivestreamsList();
                         tool.videoTabsTool.syncVideoTabsList.apply(tool);
                         Q.handle(tool.state.onUpdate, tool, [{
                             prevNumOfLives: prevNumOfLives
@@ -121,7 +147,7 @@
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
 
-                        tool.syncLivestreamsList([message]);
+                        tool.syncLivestreamsList();
                         tool.videoTabsTool.syncVideoTabsList.apply(tool);
                         
                         Q.handle(tool.state.onUpdate, tool, [{
@@ -251,32 +277,62 @@
                 livestreamChatBtnsCon.appendChild(livestreamChatBtnsInner);
 
                 if (tool.state.webrtcPublisherId && tool.state.webrtcStreamName) {
-                    var livestreamChatButton = document.createElement('BUTTON');
-                    livestreamChatButton.className = 'media-livestream-chat-button';
-                    livestreamChatBtnsInner.appendChild(livestreamChatButton);
-                    var livestreamChatButtonIcon = document.createElement('SPAN');
-                    livestreamChatButtonIcon.className = 'media-livestream-chat-button-icon';
-                    livestreamChatButtonIcon.innerHTML = _icons.askQuestion;
-                    livestreamChatButton.appendChild(livestreamChatButtonIcon);
-                    var livestreamChatButtonText = document.createElement('SPAN');
-                    livestreamChatButtonText.innerHTML = 'Ask a Question / Request to Join';
-                    livestreamChatButton.appendChild(livestreamChatButtonText);
+                        var livestreamChatButton = document.createElement('BUTTON');
+                        livestreamChatButton.className = 'media-livestream-chat-button';
+                        livestreamChatBtnsInner.appendChild(livestreamChatButton);
+                        var livestreamChatButtonIcon = document.createElement('SPAN');
+                        livestreamChatButtonIcon.className = 'media-livestream-chat-button-icon';
+                        livestreamChatButtonIcon.innerHTML = _icons.askQuestion;
+                        livestreamChatButton.appendChild(livestreamChatButtonIcon);
+                        var livestreamChatButtonText = document.createElement('SPAN');
+                        livestreamChatButtonText.innerHTML = 'Ask a Question / Request to Join';
+                        livestreamChatButton.appendChild(livestreamChatButtonText);
+    
+                        Q.activate(
+                            Q.Tool.setUpElement('div', 'Media/webrtc/callCenter/client', {
+                                publisherId: tool.state.webrtcPublisherId,
+                                streamName: tool.state.webrtcStreamName,
+                            }),
+                            {},
+                            function () {
+                                tool.callCenterClientTool = this;
+    
+                            }
+                        );
+    
+                        livestreamChatButton.addEventListener('click', function () {
+                            tool.callCenterClientTool.requestCall();
+                        });
+                        
+                        tool.getWebRTCStream().then(function (webrtcStream) {
+                            if(webrtcStream && webrtcStream.testWriteLevel('contribute')) {
+                                livestreamChatBtnsInner.innerHTML = '';
+                                let livestreamChatButton = document.createElement('BUTTON');
+                                livestreamChatButton.className = 'media-livestream-chat-button';
+                                livestreamChatBtnsInner.appendChild(livestreamChatButton);
+                                let livestreamChatButtonIcon = document.createElement('SPAN');
+                                livestreamChatButtonIcon.className = 'media-livestream-chat-button-icon';
+                                livestreamChatButtonIcon.innerHTML = _icons.join;
+                                livestreamChatButton.appendChild(livestreamChatButtonIcon);
+                                let livestreamChatButtonText = document.createElement('SPAN');
+                                livestreamChatButtonText.innerHTML = 'Go on Stage';
+                                livestreamChatButton.appendChild(livestreamChatButtonText);
 
-                    Q.activate(
-                        Q.Tool.setUpElement('div', 'Media/webrtc/callCenter/client', {
-                            publisherId: tool.state.webrtcPublisherId,
-                            streamName: tool.state.webrtcStreamName,
-                        }),
-                        {},
-                        function () {
-                            tool.callCenterClientTool = this;
-
-                        }
-                    );
-
-                    livestreamChatButton.addEventListener('click', function () {
-                        tool.callCenterClientTool.requestCall();
-                    });
+                                livestreamChatButton.addEventListener('click', function () {
+                                    tool.currentActiveWebRTCRoom = Q.Media.WebRTC({
+                                        roomId: tool.state.webrtcStreamName,
+                                        roomPublisherId: tool.state.webrtcPublisherId,
+                                        element: document.body,
+                                        startWith: { video: false, audio: true },
+                                        onWebRTCRoomCreated: function () {
+                                           
+                                        }
+                                    });
+            
+                                    tool.currentActiveWebRTCRoom.start();
+                                });
+                            }
+                        });
                 }
 
 
@@ -363,10 +419,16 @@
             },
             sendReaction: function (reaction) {
                 var tool = this;
-                Q.Streams.Stream.ephemeral(tool.state.publisherId, tool.state.streamName, {
-                    type: "Media/livestream/reaction",
-                    reaction
-                });
+                if(!tool.sendReactionFunc) {
+                    tool.sendReactionFunc = Q.throttle(function () {
+                        Q.Streams.Stream.ephemeral(tool.state.publisherId, tool.state.streamName, {
+                            type: "Media/livestream/reaction",
+                            reaction
+                        });         
+                    }, 10000)
+                }
+
+                tool.sendReactionFunc();
             },
             updateUIOnResize: function (width, height) {
                 var tool = this;
@@ -498,6 +560,11 @@
                     if(activeLivestreamItem.platform == 'Peer2Peer') {
                         if(!p2pRoom || p2pRoom == '') {
                             activeLivestreamItem.offline = true;
+                            if(activeLivestreamItem.broadcastClient) {
+                                activeLivestreamItem.broadcastClient.disconnect();
+                                activeLivestreamItem.broadcastClient = null;
+                            }
+                            tool.activeLivestreamings.splice(i, 1);
                         } else {
                             activeLivestreamItem.offline = false;
                         }

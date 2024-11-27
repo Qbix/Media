@@ -147,7 +147,7 @@
                 let container = tool.permissionsManagerUI = document.createElement('DIV');
                 container.className = 'webrtc-permissions-container';
 
-                container.appendChild(tool.createAccessSettings());
+                //container.appendChild(tool.createAccessSettings());
 
                 let table = tool.permissionsTableEl = document.createElement('TABLE');
                 table.style.width = '100%';
@@ -169,6 +169,7 @@
                 let conferencePrivacyText = document.createElement('SPAN');
                 conferencePrivacyText.innerHTML = "General access";
                 conferencePrivacy.appendChild(conferencePrivacyText);
+                
                 let privacySelect = document.createElement('SELECT');
                 privacySelect.className = 'webrtc-permissions-access-select';
                 conferencePrivacy.appendChild(privacySelect);
@@ -759,7 +760,7 @@
             },
             getUserPermission: function (ofUserId) {
                 var tool = this;
-                console.log('getUserPermission', tool.roomStream.fields.name)
+                console.log('getUserPermission', tool.roomStream)
                 return new Promise(function (resolve, reject) {
                     Q.req("Media/webrtc", ['personalPermissions'], function (err, response) {
                         var msg = Q.firstErrorMessage(err, response && response.errors);

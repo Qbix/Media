@@ -257,19 +257,15 @@
 
                 tool.manageButton = manageBtn;
 
-                activateSettingsTool().then(function () {
-                    manageBtn.addEventListener('click', function () {
-                        Q.Dialogs.push({
-                            title: 'Teleconference settings',
-                            className: 'manage_webrtc_permissions',
-                            content: tool.settingsTool.settingsUI,
-                            apply: true,
-                            onActivate: function (dialog) {
-    
-                            }
+                manageBtn.addEventListener('click', function () {
+                    if(tool.settingsTool) {
+                        showSetingsTool();
+                    } else {
+                        activateSettingsTool().then(function () {
+                            showSetingsTool();
                         });
-                    });
-                });
+                    }
+                })
 
                 inviteBtn.addEventListener('click', function () {
                     Q.Streams.invite(tool.roomStream.fields.publisherId, tool.roomStream.fields.name, {
@@ -281,6 +277,18 @@
                 });
 
                 tool.updateUIAccordingAccess();
+
+                function showSetingsTool() {
+                    Q.Dialogs.push({
+                        title: 'Teleconference settings',
+                        className: 'manage_webrtc_permissions',
+                        content: tool.settingsTool.settingsUI,
+                        apply: true,
+                        onActivate: function (dialog) {
+
+                        }
+                    });
+                }
 
                 function activateSettingsTool() {
                     return new Promise(function (resolve, reject) {

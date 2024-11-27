@@ -157,7 +157,7 @@
             showSettings: function (key) {
                 var tool = this;
                 if(key == 'permissions') {
-                    if(!tool.limitsManagerTool) {
+                    if(!tool.permissionsManagerTool) {
                         tool.activatePermissionsManager().then(function () {
                             showSettings();
                         });
