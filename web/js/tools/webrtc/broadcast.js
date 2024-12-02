@@ -2777,10 +2777,9 @@ window.WebRTCWebcastClient = function (options){
             log('app.init: connect');
 
             //let io = io('/webrtc');
-            var secure = options.nodeServer.indexOf('https://') == 0;
             Q.Socket.connect('/broadcast', options.nodeServer, null, {
                 forceNew: true,
-                secure:secure,
+                secure:true,
                 reconnection: true,
                 reconnectionDelay: 1000,
                 reconnectionDelayMax: 5000,

@@ -6473,7 +6473,6 @@ Q.Media.WebRTCRoomClient = function app(options){
             log('initWithNodeJs: connect', options.nodeServer);
 
             //let io = io('/webrtc');
-            var secure = options.nodeServer.indexOf('https://') == 0;
             Q.Socket.connect('/webrtc', options.nodeServer, null, {
                 //transports: ['websocket'],
                 // path: options.roomName,
@@ -6482,7 +6481,6 @@ Q.Media.WebRTCRoomClient = function app(options){
                 /* channel:'webrtc',
                  publish_key:'webrtc_test',
                  subscribe:'webrtc_test',*/
-                secure:secure,
                 reconnection: true,
                 reconnectionDelay: 1000,
                 reconnectionDelayMax: 5000,
