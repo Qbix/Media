@@ -581,6 +581,8 @@ function WebcastServer(socket) {
                 }
 
                 if(socket.livestreamStreamData != null) {
+                    log('Media/livestream/stop');
+
                     //post Media/livestream/stop message to livestream stream
                     Q.plugins.Streams.fetchOne(socket.livestreamStreamData.publisherId, socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName, function (err, stream) {
                         if (err || !stream) {
