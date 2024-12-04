@@ -12,7 +12,7 @@ function Media_after_Communities_profile_tabs ($params, &$results) {
 	$labelsAuthorized = Q_Config::get("Media", "access", "feeds", "admins", null);
 	$communities = Users_Contact::select('label')->where(array(
 		"contactUserId" => $userId,
-		"userId " => new Db_Range('A', true, false, ord('Z')+1),
+		"userId " => Db_Range::capitalized(),
 		"label" => $labelsAuthorized
 	))->limit(1)->fetchDbRows();
 	$isAdmin = !empty($communities);
