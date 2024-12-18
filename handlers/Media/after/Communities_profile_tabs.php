@@ -14,7 +14,7 @@ function Media_after_Communities_profile_tabs ($params, &$results) {
 		"contactUserId" => $userId,
 		"userId " => Db_Range::capitalized(),
 		"label" => $labelsAuthorized
-	))->limit(1)->fetchDbRows();
+	))->limit(1)->fetchAll();
 	$isAdmin = !empty($communities);
 	
 	// collect tabs content and controls
