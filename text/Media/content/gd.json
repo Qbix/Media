@@ -1,0 +1,256 @@
+{
+    "Shows": "Taisbean",
+    "Clips": "Criomagan",
+    "Video": "Bhideo",
+    "Audio": "Fuaim",
+    "categories": {
+        "Clips": "Criomagan meadhanan",
+        "Episodes": "Episodes"
+    },
+    "presentation": {
+        "PutTogether": "Am bi thu a’ taisbeanadh? Faodaidh tu an t-àite seo a chleachdadh gus stuthan a luchdachadh suas airson do thaisbeanadh. Cleachd am putan Plus.",
+        "Alert": "Mar a thòisicheas tachartasan, tòisichidh an duilleag seo a’ sealltainn na taisbeanaidhean iomchaidh aca",
+        "ClickHereForFullscreen": "Nochdaidh taisbeanaidhean an seo. Cliog an seo gus a dhol làn-sgrìn.",
+        "question": {
+            "ScanThisQRCode": "Sgan an còd QR seo airson freagairt"
+        }
+    },
+    "NewEpisode": "Episode Ùr",
+    "NewClip": "Dèan clip ùr",
+    "NewClipTitlePlaceholder": "Cuir a-steach tiotal clip",
+    "NewClipDescriptionPlaceholder": "Cuir a-steach Tuairisgeul Clip",
+    "switchVisualization": "Atharraich fradharc",
+    "joinLiveShow": "Thig còmhla ri Live Show",
+    "showTwitchLiveStream": "Seall Twitch Live Stream",
+    "showVoiceChat": "Seall Guth Chat",
+    "LiveShow": "Taisbeanadh beò",
+    "AreYouSureKick": "A bheil thu cinnteach gu bheil thu airson an cleachdaiche seo a thòiseachadh?",
+    "Save": "Sàbhail",
+    "ViewFullEpisode": "Seall an t-sreath slàn",
+    "CreditsEarned": "Creideasan air an cosnadh",
+    "VideoTitle": "Tiotal bhidio no URL",
+    "AreYouSureDeleteEpisode": "A bheil thu cinnteach gu bheil thu airson am prògram seo a sguabadh às?",
+    "Yes": "Tha",
+    "No": "Chan eil",
+    "RealTimeCall": "Call fìor-ùine",
+    "JoinWebRTC": "Tele-cho-labhairt",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Tele-cho-labhairt",
+            "description": "co-labhairt bhidio \/ claisneachd air-loidhne"
+        },
+        "Media\/calls": {
+            "displayType": "Glaodh",
+            "description": "roinn airson Media\/WebRTC",
+            "MaxRelationsExceeded": "Chaidh na gairmean as àirde thairis air"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "criomag mheadhanan"
+        }
+    },
+    "feeds": {
+        "Title": "Camaraichean",
+        "filterByTitle": "Lorg biadhan a rèir tiotal",
+        "RequestFeedAccess": "Iarr ruigsinneachd beathachaidh",
+        "New": "+ Biadhadh Ùr",
+        "filterFeeds": "Filter feeds",
+        "NewFeed": "Biadhadh Ùr",
+        "NoneYet": "Chan eil biadhadh air a chruthachadh fhathast.",
+        "AreYouSure": "A bheil thu cinnteach?",
+        "FilterByDate": "Criathraich a rèir ceann-latha",
+        "newFeeds": "Tha {{1}} inbhir ùr agad",
+        "Description": "{{1}} biadhadh",
+        "Keywords": "{{1}} biadhadh"
+    },
+    "feed": {
+        "HostedBy": "Air a chumail le {{name}}",
+        "Name": "Ainm",
+        "Conversation": "Còmhradh",
+        "CloseFeed": {
+            "button": "Dùin Feed",
+            "Cancel": "A bheil thu cinnteach gu bheil thu airson an inbhir seo a dhùnadh?",
+            "Participant": "Tha 1 chom-pàirtiche anns a’ bhiadhadh seo",
+            "Participants": "Tha {{count}} com-pàirtiche sa bhiadh seo"
+        },
+        "Calendar": "Mìosachan",
+        "TitleOfFeed": "Tiotal an innidh:",
+        "EmptyList": "Liosta falamh",
+        "EmptyVideos": "Chan eil criomagan ann fhathast",
+        "AccessReason": "feuch an innis thu an t-adhbhar",
+        "Proceed": "Lean air adhart",
+        "FeedAlreadyClosed": "Tha am biadhadh seo dùinte mu thràth",
+        "RtmpLinkNote": "Cliog gus an ceangal seo a chopaigeadh gu clipboard",
+        "SelectClip": "Tagh an ceann-latha a tha thu airson fhaicinn",
+        "Request": "Iarr"
+    },
+    "newFeed": {
+        "Title": "Biadhadh Ùr",
+        "locationTitle": "Suidhich an t-àite agad",
+        "SetLocation": "Suidhich mo shuidheachadh",
+        "Starting": "A&#39; tòiseachadh",
+        "Day": "Latha",
+        "Create": "Cruthaich",
+        "Continue": "Lean air adhart",
+        "FeedTitle": "Tiotal beathachaidh",
+        "SetTitle": "Feuch an cuir thu tiotal an inbhir"
+    },
+    "notifications": {
+        "JoinedWebRTC": "thàinig a-steach don ghairm agad",
+        "SubjectJoinedYourCall": "Thàinig {{subject}} a-steach don ghairm agad"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Chan eil cead agad gabhail san t-sruth seo.",
+        "streamTitle": "Thòisich {{1}} tele-cho-labhairt",
+        "allow": {
+            "dialogTitle": "A&#39; ceangal",
+            "microphoneBtn": "Dèan comas air microfòn",
+            "cameraBtn": "Dèan comas air Camara",
+            "cameraAndMicrophoneBtn": "Dèan comas air camara agus microfòn"
+        },
+        "preparing": {
+            "dialogTitle": "Tionndaidh camara no mic air \/ dheth mus tig thu còmhla",
+            "micIsOff": "Tha mic dheth",
+            "micIsOn": "Tha mic air adhart",
+            "cameraIsOff": "Tha an camara dheth",
+            "cameraIsOn": "Tha an camara air adhart",
+            "screenSharingIsOn": "Tha roinneadh sgrion air adhart",
+            "screenSharingIsOff": "Roinn sgrion",
+            "joinNow": "Thig còmhla ris a’ Call"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Stiùiridhean",
+            "permissionDenied": "Chaidh cead airson {{kind}} a dhiùltadh. Gus a chleachdadh lean na ceumannan seo:",
+            "point1": "Rach gu &quot;Roghainnean&quot; -&gt; &quot;Adhartach&quot; -&gt; &quot;Prìobhaideachd is tèarainteachd&quot; -&gt; &quot;Roghainnean na làraich&quot; -&gt; &quot;Camara&quot; no &quot;Roghainnean na làraich&quot; -&gt; &quot;Microfòn&quot;",
+            "point2": "Thoir air falbh {{hostname}} o &quot;Bloc&quot; liosta"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Stiùiridhean",
+            "permissionDenied": "Chaidh cead airson {{kind}} a dhiùltadh. Feuch an ath-luchdaich thu an duilleag seo agus dearbhaich ruigsinneachd gu {{kind}} gus pàirt a ghabhail sa cho-labhairt."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Stiùiridhean",
+            "permissionDenied": "Chaidh cead airson {{kind}} a dhiùltadh. Gus a chleachdadh lean na ceumannan seo:",
+            "point1": "Rach gu na roghainnean Android agad",
+            "point2": "Fosgail &quot;Apps &amp; notifications&quot;",
+            "point3": "Lorg &quot; {{communityName}} &quot; agus fosgail e",
+            "point4": "Tap air Ceadan",
+            "point5": "Cuir an comas {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Stiùiridhean",
+            "permissionDenied": "Chaidh cead airson {{kind}} a dhiùltadh. Gus a chleachdadh lean na ceumannan seo:",
+            "point1": "Rach gu na roghainnean iOS agad",
+            "point2": "Fosgail &quot;Prìobhaideachd&quot;",
+            "point3": "Lorg {{kind}} agus fosgail e",
+            "point4": "Lorg &quot; {{communityName}} &quot; agus cuir an comas"
+        },
+        "fbLive": {
+            "dialogTitle": "Thòisich sruthadh beò Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Chaidh thu dhan rùm",
+            "joining": "A &#39;tighinn còmhla: {{userName}}",
+            "sbLeftRoom": "Dh’ fhàg {{userName}} an seòmar",
+            "switchingRoom": "Seòmar tionndadh...",
+            "forceDisconnecting": "Thèid do dhì-cheangal taobh a-staigh 5 diogan",
+            "forceDisconnectingImmediately": "Chaidh do dhì-cheangal le òstair",
+            "youLeftRoom": "Dh&#39;fhàg thu an rùm",
+            "codeCopied": "Dh&#39;fhàg thu an rùm",
+            "sbBeganFbLive": "Thòisich {{userName}} a’ craoladh a’ ghairm seo air Facebook",
+            "sbStoppedFbLive": "Sguir {{userName}} den ghairm seo a chraoladh air Facebook",
+            "youBeganFbLive": "Thòisich thu air a’ ghairm seo a chraoladh air Facebook",
+            "youStoppedFbLive": "Sguir thu den ghairm seo a chraoladh air Facebook",
+            "youStartedLive": "Thòisich thu air a’ ghairm seo a chraoladh gu RTMP àbhaisteach",
+            "youStoppedLive": "Sguir thu den ghairm seo a chraoladh gu RTMP àbhaisteach",
+            "sbStartedLiveStreaming": "Thòisich {{userName}} beò",
+            "sbStoppedLiveStreaming": "Chrìochnaich {{userName}} beò",
+            "liveStopped": "Thachair mearachd fhad ’s a bha sinn a’ cur bhidio gu endpoint",
+            "youBeganVideoRecording": "Thòisich thu air a’ cho-labhairt seo a chlàradh",
+            "youStoppedVideoRecording": "Sguir thu de chlàradh na co-labhairt seo",
+            "linkCopiedToCb": "Ceangal air a chopaigeadh gu clipboard",
+            "codeCopiedToCb": "Còd air a chopaigeadh gu clipboard",
+            "userHasNoVideo": "Chan eil bhidio aig a’ chom-pàirtiche",
+            "openInBrowserAlert": "Fosgail ceangal ann am brabhsair Safari gus a dhol a-steach don cho-labhairt.",
+            "allowedVideoLimit": "Chan eil ach bhidio {{limit}} ceadaichte san t-seòmar seo",
+            "allowedAudioLimit": "Chan eil ach {{limit}} microfòn ceadaichte san t-seòmar seo",
+            "processingRecording": "A&#39; làimhseachadh a&#39; chlàraidh..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Roghainnean bhidio",
+            "webCamera": "Camara-lìn",
+            "screenSharing": "Co-roinneadh sgrion",
+            "shareAnotherScreen": "Roinn sgrion eile",
+            "turnOffCameras": "Cuir dheth an camara",
+            "turnOffVideo": "Cuir dheth camara \/ roinneadh sgrion",
+            "turnOffAudioInput": "Cuir dheth am micreofon",
+            "turnOffScreenSharing": "Cuir dheth roinneadh sgrion",
+            "cameraIsTurnedOff": "Tha an camara dheth",
+            "micIsTurnedOff": "Tha am micreofon air a chuir dheth",
+            "startFBLive": "Tòisich Facebook Livestream",
+            "stopFBLive": "Cuir stad air Facebook Livestream",
+            "startRecording": "Tòisich a &#39;clàradh",
+            "stopRecording": "Cuir stad air clàradh",
+            "start": "Tòisich",
+            "startClodRecording": "Tòisich Clàradh Cloud",
+            "startLocRecording": "Tòisich Clàradh Ionadail",
+            "stopClodRecording": "Cuir stad air Clàradh Cloud",
+            "stopLocRecording": "Cuir stad air clàradh ionadail",
+            "stop": "Stad",
+            "share": "Roinn",
+            "recordingInProgress": "Tha clàradh a&#39; dol air adhart...",
+            "fbLiveTitle": "Tiotal Livestream",
+            "fbLiveDescription": "Thoir cunntas air do Livestream. Dè mu dheidhinn a tha e?",
+            "fbOnlyMeLiveAccess": "A-mhàin Mise",
+            "fbFriendsAccess": "Caraidean",
+            "fbPublicAccess": "Poblach",
+            "publishOnTimeline": "Foillsich air loidhne-tìm",
+            "publishToGroup": "Foillsich don bhuidheann",
+            "fbStartLive": "Rach beò",
+            "fbStopLive": "Cuir crìoch air Livestream",
+            "streamingSettings": "Suidhichidhean",
+            "manageStream": "Stiùirich Livestream",
+            "fbEmbedCode": "Gabhail a-steach",
+            "copy": "Dèan lethbhreac",
+            "streamToRTMP": "Sruth gu RTMP àbhaisteach",
+            "startBroadcasting": "Tòisich a &#39;craoladh",
+            "broadcastingInProgress": "Tha craoladh a’ dol air adhart"
+        },
+        "audioSettings": {
+            "dialogTitle": "Roghainnean claisneachd",
+            "speakers": "Luchd-labhairt",
+            "microphone": "Micreofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Stiùirich Craoladh"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Suidheachaidhean Com-pàirtiche",
+            "disconnect": "Disconnect",
+            "floatingScreens": "Sgrionaichean fleòdraidh",
+            "tiledScreens": "Sgrionaichean leacach",
+            "loudestExceptMe": "Nas làidire ach mise",
+            "maximizeLoudest": "Meudaich an ìre as àirde",
+            "staticMaximized": "Statach air a mheudachadh",
+            "fullScreen": "Làn-sgrìn",
+            "manual": "Leabhar-làimhe",
+            "turnOffCamera": "Falaich bhidio",
+            "turnOffAudio": "Cuir dheth fuaim",
+            "turnOffScreenSharing": "Falaich roinneadh sgrion",
+            "turnOnCamera": "Seall bhidio",
+            "turnOnAudio": "Thoir air falbh fuaim",
+            "turnOnScreenSharing": "Seall roinneadh sgrion"
+        },
+        "streamingSettings": {
+            "title": "Sruth beò"
+        },
+        "preview": {
+            "Meeting": "Tele-cho-labhairt",
+            "MeetingEnded": "Thàinig tele-cho-labhairt gu crìch"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Iarrtas airson Bruidhinn",
+            "msg": "Tha {{count}} duine a&#39; bruidhinn aig a&#39; choinneimh an-dràsta. A bheil thu airson fear dhiubh a chuir na àite às deidh dhaibh leigeil leotha {{seconds}} diog crìoch a chuir air bruidhinn?"
+        }
+    }
+}

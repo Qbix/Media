@@ -1,0 +1,256 @@
+{
+    "Shows": "ڏيکاري ٿو",
+    "Clips": "ڪلپس",
+    "Video": "وڊيو",
+    "Audio": "آڊيو",
+    "categories": {
+        "Clips": "ميڊيا ڪلپس",
+        "Episodes": "قسطون"
+    },
+    "presentation": {
+        "PutTogether": "ڇا توهان پيش ڪندا؟ توھان ھن جڳھ کي استعمال ڪري سگھوٿا پنھنجي پيشڪش لاءِ مواد گڏ ڪرڻ لاءِ. پلس بٽڻ استعمال ڪريو.",
+        "Alert": "جيئن ئي واقعا شروع ٿيندا، هي صفحو انهن جي لاڳاپيل پيشڪش ڏيکارڻ شروع ڪندو",
+        "ClickHereForFullscreen": "پيشيون هتي ظاهر ٿينديون. مڪمل اسڪرين تي وڃڻ لاءِ ھتي ڪلڪ ڪريو.",
+        "question": {
+            "ScanThisQRCode": "جواب ڏيڻ لاءِ هي QR ڪوڊ اسڪين ڪريو"
+        }
+    },
+    "NewEpisode": "نئون قسط",
+    "NewClip": "هڪ نئون ڪلپ ٺاهيو",
+    "NewClipTitlePlaceholder": "ڪلپ عنوان داخل ڪريو",
+    "NewClipDescriptionPlaceholder": "ڪلپ وضاحت داخل ڪريو",
+    "switchVisualization": "بصري کي تبديل ڪريو",
+    "joinLiveShow": "لائيو شو ۾ شامل ٿيو",
+    "showTwitchLiveStream": "ڏيکاريو Twitch لائيو وهڪرو",
+    "showVoiceChat": "وائس چيٽ ڏيکاريو",
+    "LiveShow": "لائيو شو",
+    "AreYouSureKick": "ڇا توھان پڪ آھي توھان چاھيو ٿا ھن صارف کي ختم ڪرڻ؟",
+    "Save": "بچايو",
+    "ViewFullEpisode": "مڪمل قسط ڏسو",
+    "CreditsEarned": "ڪريڊٽ ڪمايو",
+    "VideoTitle": "وڊيو عنوان يا URL",
+    "AreYouSureDeleteEpisode": "ڇا توھان واقعي ھن قسط کي ختم ڪرڻ چاھيو ٿا؟",
+    "Yes": "ها",
+    "No": "نه",
+    "RealTimeCall": "حقيقي وقت ڪال",
+    "JoinWebRTC": "ٽيلي ڪانفرنس",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "ٽيلي ڪانفرنس",
+            "description": "هڪ آن لائن وڊيو\/آڊيو ڪانفرنس"
+        },
+        "Media\/calls": {
+            "displayType": "ڪالون",
+            "description": "زمرو ميڊيا\/WebRTC لاءِ",
+            "MaxRelationsExceeded": "وڌ ۾ وڌ ڪالون وڌي ويون"
+        },
+        "Media\/clip": {
+            "displayType": "ڪلپ",
+            "description": "ميڊيا ڪلپ"
+        }
+    },
+    "feeds": {
+        "Title": "ڪيمرا",
+        "filterByTitle": "عنوان سان فيڊ ڳوليو",
+        "RequestFeedAccess": "فيڊ جي رسائي جي درخواست ڪريو",
+        "New": "+ نئون فيڊ",
+        "filterFeeds": "فلٽر فيڊ",
+        "NewFeed": "نئون فيڊ",
+        "NoneYet": "اڃان تائين ڪابه فيڊ ٺاهي وئي آهي.",
+        "AreYouSure": "ڇا توهان کي پڪ آهي؟",
+        "FilterByDate": "تاريخ طرفان فلٽر ڪريو",
+        "newFeeds": "توهان وٽ {{1}} نوان فيڊ آهن",
+        "Description": "{{1}} فيڊ",
+        "Keywords": "{{1}} فيڊ"
+    },
+    "feed": {
+        "HostedBy": "{{name}} پاران ترتيب ڏنل",
+        "Name": "نالو",
+        "Conversation": "ڳالهه ٻولهه",
+        "CloseFeed": {
+            "button": "بند ڪريو فيڊ",
+            "Cancel": "ڇا توھان واقعي ھن فيڊ کي بند ڪرڻ چاھيو ٿا؟",
+            "Participant": "ھن فيڊ ۾ 1 حصو وٺندڙ آھي",
+            "Participants": "ھن فيڊ ۾ {{count}} شرڪت ڪندڙ آھن"
+        },
+        "Calendar": "ڪئلينڊر",
+        "TitleOfFeed": "فيڊ جو عنوان:",
+        "EmptyList": "خالي لسٽ",
+        "EmptyVideos": "اڃان تائين ڪا ڪلپ ناهي",
+        "AccessReason": "مهرباني ڪري سبب بيان ڪريو",
+        "Proceed": "اڳتي وڌو",
+        "FeedAlreadyClosed": "هي فيڊ اڳ ۾ ئي بند آهي",
+        "RtmpLinkNote": "ھن لنڪ کي ڪلپ بورڊ ڏانھن نقل ڪرڻ لاءِ ڪلڪ ڪريو",
+        "SelectClip": "تاريخ چونڊيو جيڪو توهان ڏسڻ چاهيو ٿا",
+        "Request": "درخواست"
+    },
+    "newFeed": {
+        "Title": "نئون فيڊ",
+        "locationTitle": "پنھنجي جڳھ کي سيٽ ڪريو",
+        "SetLocation": "سيٽ ڪريو منهنجو مقام",
+        "Starting": "شروع ٿيندڙ",
+        "Day": "ڏينهن",
+        "Create": "ٺاهيو",
+        "Continue": "جاري رکو",
+        "FeedTitle": "کاڌو عنوان",
+        "SetTitle": "مھرباني ڪري فيڊ عنوان مقرر ڪريو"
+    },
+    "notifications": {
+        "JoinedWebRTC": "توهان جي سڏ ۾ شامل ٿيو",
+        "SubjectJoinedYourCall": "{{subject}} توهان جي ڪال ۾ شامل ٿيو"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "توھان کي ھن سلسلي ۾ شامل ٿيڻ جي اجازت ناھي.",
+        "streamTitle": "{{1}} هڪ ٽيلي ڪانفرنس شروع ڪيو",
+        "allow": {
+            "dialogTitle": "ڳنڍڻ",
+            "microphoneBtn": "مائڪروفون کي فعال ڪريو",
+            "cameraBtn": "ڪئميرا فعال ڪريو",
+            "cameraAndMicrophoneBtn": "ڪئميرا ۽ مائڪروفون کي فعال ڪريو"
+        },
+        "preparing": {
+            "dialogTitle": "شامل ٿيڻ کان اڳ ڪئميرا يا مائڪ آن\/آف ڪريو",
+            "micIsOff": "مائڪ بند آهي",
+            "micIsOn": "مائڪ آن آهي",
+            "cameraIsOff": "ڪئميرا بند آهي",
+            "cameraIsOn": "ڪئميرا آن آهي",
+            "screenSharingIsOn": "اسڪرين شيئرنگ جاري آهي",
+            "screenSharingIsOff": "اسڪرين شيئر ڪريو",
+            "joinNow": "ڪال ۾ شامل ٿيو"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "هدايتون",
+            "permissionDenied": "{{kind}} لاءِ اجازت رد ڪئي وئي. ان کي استعمال ڪرڻ لاء، مهرباني ڪري انهن قدمن تي عمل ڪريو:",
+            "point1": "وڃو &quot;سيٽنگون&quot; -&gt; &quot;ترقي يافته&quot; -&gt; &quot;رازداري ۽ سيڪيورٽي&quot; -&gt; &quot;سائيٽ سيٽنگون&quot; -&gt; &quot;ڪئميرا&quot; يا &quot;سائيٽ سيٽنگون&quot; -&gt; &quot;مائڪروفون&quot;",
+            "point2": "&quot;بلاڪ&quot; لسٽ مان {{hostname}} هٽايو"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "هدايتون",
+            "permissionDenied": "{{kind}} لاءِ اجازت رد ڪئي وئي. مھرباني ڪري ھن صفحي کي ٻيهر لوڊ ڪريو ۽ ڪانفرنس ۾ شامل ٿيڻ لاء {{kind}} تائين رسائي جي تصديق ڪريو."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "هدايتون",
+            "permissionDenied": "{{kind}} لاءِ اجازت رد ڪئي وئي. ان کي استعمال ڪرڻ لاء، مهرباني ڪري انهن قدمن تي عمل ڪريو:",
+            "point1": "پنھنجي Android سيٽنگون ڏانھن وڃو",
+            "point2": "&quot;ايپس ۽ نوٽيفڪيشن&quot; کوليو",
+            "point3": "ڳوليو &quot; {{communityName}} &quot; ۽ ان کي کوليو",
+            "point4": "تي ٽيپ ڪريو اجازتون",
+            "point5": "{{kind}} فعال ڪريو"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "هدايتون",
+            "permissionDenied": "{{kind}} لاءِ اجازت رد ڪئي وئي. ان کي استعمال ڪرڻ لاء، مهرباني ڪري انهن قدمن تي عمل ڪريو:",
+            "point1": "پنھنجي iOS سيٽنگون ڏانھن وڃو",
+            "point2": "&quot;رازداري&quot; کوليو",
+            "point3": "{{kind}} ڳوليو ۽ ان کي کوليو",
+            "point4": "ڳوليو &quot; {{communityName}} &quot; ۽ فعال ڪريو"
+        },
+        "fbLive": {
+            "dialogTitle": "فيسبوڪ لائيو اسٽريمنگ شروع ٿي وئي"
+        },
+        "notices": {
+            "youJoinedRoom": "توهان ڪمري ۾ شامل ٿيو",
+            "joining": "شامل ٿيڻ: {{userName}}",
+            "sbLeftRoom": "{{userName}} ڪمرو ڇڏي ويو",
+            "switchingRoom": "سوئچنگ روم...",
+            "forceDisconnecting": "توھان کي 5 سيڪنڊن اندر ڌار ڪيو ويندو",
+            "forceDisconnectingImmediately": "توهان هڪ ميزبان کان ڌار ٿي ويا آهيو",
+            "youLeftRoom": "توهان ڪمرو ڇڏي ڏنو",
+            "codeCopied": "توهان ڪمرو ڇڏي ڏنو",
+            "sbBeganFbLive": "{{userName}} هن ڪال کي Facebook ۾ نشر ڪرڻ شروع ڪيو",
+            "sbStoppedFbLive": "{{userName}} Facebook ۾ هن ڪال کي نشر ڪرڻ بند ڪيو",
+            "youBeganFbLive": "توهان هن ڪال کي Facebook تي نشر ڪرڻ شروع ڪيو",
+            "youStoppedFbLive": "توهان Facebook تي هن ڪال کي نشر ڪرڻ بند ڪيو",
+            "youStartedLive": "توهان هن ڪال کي ڪسٽم RTMP تي نشر ڪرڻ شروع ڪيو",
+            "youStoppedLive": "توھان ھن ڪال کي ڪسٽم RTMP تي نشر ڪرڻ بند ڪيو",
+            "sbStartedLiveStreaming": "{{userName}} لائيو شروع ڪيو",
+            "sbStoppedLiveStreaming": "{{userName}} لائيو ختم ٿيو",
+            "liveStopped": "آخري پوائنٽ تي وڊيو موڪلڻ دوران غلطي ٿي",
+            "youBeganVideoRecording": "توهان هن ڪانفرنس کي رڪارڊ ڪرڻ شروع ڪيو",
+            "youStoppedVideoRecording": "توهان هن ڪانفرنس کي رڪارڊ ڪرڻ بند ڪيو",
+            "linkCopiedToCb": "ڪلپ بورڊ تي لنڪ ڪاپي ڪئي وئي",
+            "codeCopiedToCb": "ڪوڊ ڪلپ بورڊ تي نقل ڪيو ويو",
+            "userHasNoVideo": "حصو وٺندڙ وٽ ڪا به وڊيو ناهي",
+            "openInBrowserAlert": "ڪانفرنس ۾ شامل ٿيڻ لاءِ سفاري برائوزر ۾ لنڪ کوليو.",
+            "allowedVideoLimit": "هن ڪمري ۾ صرف {{limit}} وڊيو جي اجازت آهي",
+            "allowedAudioLimit": "هن ڪمري ۾ صرف {{limit}} مائڪروفون جي اجازت آهي",
+            "processingRecording": "رڪارڊنگ کي پروسيس ڪري رهيو آهي ..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "وڊيو سيٽنگون",
+            "webCamera": "ويب ڪئميرا",
+            "screenSharing": "اسڪرين شيئرنگ",
+            "shareAnotherScreen": "ٻي اسڪرين شيئر ڪريو",
+            "turnOffCameras": "ڪئميرا بند ڪريو",
+            "turnOffVideo": "ڪئميرا \/ اسڪرين شيئرنگ کي بند ڪريو",
+            "turnOffAudioInput": "مائڪروفون خاموش ڪريو",
+            "turnOffScreenSharing": "اسڪرين شيئرنگ کي بند ڪريو",
+            "cameraIsTurnedOff": "ڪئميرا بند آهي",
+            "micIsTurnedOff": "مائڪروفون بند آهي",
+            "startFBLive": "Facebook Livestream شروع ڪريو",
+            "stopFBLive": "Facebook Livestream بند ڪريو",
+            "startRecording": "رڪارڊنگ شروع ڪريو",
+            "stopRecording": "رڪارڊنگ بند ڪريو",
+            "start": "شروع",
+            "startClodRecording": "Cloud Recording شروع ڪريو",
+            "startLocRecording": "مقامي رڪارڊنگ شروع ڪريو",
+            "stopClodRecording": "ڪلائوڊ رڪارڊنگ کي روڪيو",
+            "stopLocRecording": "مقامي رڪارڊنگ کي روڪيو",
+            "stop": "روڪ",
+            "share": "حصيداري ڪريو",
+            "recordingInProgress": "رڪارڊنگ جاري آهي...",
+            "fbLiveTitle": "Livestream جو عنوان",
+            "fbLiveDescription": "پنھنجي Livestream بيان ڪريو. ان جي باري ۾ ڇا آهي؟",
+            "fbOnlyMeLiveAccess": "صرف مان",
+            "fbFriendsAccess": "دوستو",
+            "fbPublicAccess": "عوامي",
+            "publishOnTimeline": "ٽائيم لائن تي شايع ڪريو",
+            "publishToGroup": "گروپ ۾ شايع ڪريو",
+            "fbStartLive": "لائيو وڃو",
+            "fbStopLive": "لائيو اسٽريم ختم ڪريو",
+            "streamingSettings": "سيٽنگون",
+            "manageStream": "Livestream منظم ڪريو",
+            "fbEmbedCode": "ايمبڊ",
+            "copy": "ڪاپي",
+            "streamToRTMP": "ڪسٽم RTMP ڏانهن وهڪرو",
+            "startBroadcasting": "نشر ڪرڻ شروع ڪريو",
+            "broadcastingInProgress": "نشريات جاري آهي"
+        },
+        "audioSettings": {
+            "dialogTitle": "آڊيو سيٽنگون",
+            "speakers": "ڳالهائيندڙ",
+            "microphone": "مائڪروفون"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "نشريات کي منظم ڪريو"
+        },
+        "participantsPopup": {
+            "dialogTitle": "حصو وٺندڙ سيٽنگون",
+            "disconnect": "ڌار ٿيڻ",
+            "floatingScreens": "سچل اسڪرين",
+            "tiledScreens": "ٽائل ٿيل اسڪرين",
+            "loudestExceptMe": "مون کان سواءِ سڀ کان وڏو",
+            "maximizeLoudest": "وڌ ۾ وڌ بلند آواز",
+            "staticMaximized": "جامد وڌ ۾ وڌ",
+            "fullScreen": "مڪمل اسڪرين",
+            "manual": "دستوري",
+            "turnOffCamera": "وڊيو لڪايو",
+            "turnOffAudio": "آواز بند ڪريو",
+            "turnOffScreenSharing": "اسڪرين شيئرنگ کي لڪايو",
+            "turnOnCamera": "وڊيو ڏيکاريو",
+            "turnOnAudio": "آواز بند ڪريو",
+            "turnOnScreenSharing": "اسڪرين شيئرنگ ڏيکاريو"
+        },
+        "streamingSettings": {
+            "title": "لائيو اسٽريم"
+        },
+        "preview": {
+            "Meeting": "ٽيلي ڪانفرنس",
+            "MeetingEnded": "ٽيلي ڪانفرنس ختم ٿي وئي"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "ڳالهائڻ جي درخواست",
+            "msg": "هن وقت اجلاس ۾ {{count}} ماڻهو ڳالهائي رهيا آهن. ڇا توھان انھن مان ھڪڙي کي تبديل ڪرڻ چاھيو ٿا انھن کي اجازت ڏيڻ کان پوءِ {{seconds}} سيڪنڊن کي ڳالهائڻ ختم ڪرڻ لاءِ؟"
+        }
+    }
+}

@@ -1,0 +1,256 @@
+{
+    "Shows": "Nunawa",
+    "Clips": "Shirye-shiryen bidiyo",
+    "Video": "Bidiyo",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Shirye-shiryen Media",
+        "Episodes": "Fitowa"
+    },
+    "presentation": {
+        "PutTogether": "Za ku gabatar? Kuna iya amfani da wannan sarari don loda kayan tare don gabatarwarku. Yi amfani da maɓallin Plus.",
+        "Alert": "Kamar yadda abubuwan suka fara, wannan shafin zai fara nuna abubuwan da suka dace",
+        "ClickHereForFullscreen": "Za a bayyana gabatarwa a nan. Danna nan don zuwa cikakken allo.",
+        "question": {
+            "ScanThisQRCode": "Duba wannan lambar QR don amsawa"
+        }
+    },
+    "NewEpisode": "Sabon Episode",
+    "NewClip": "Yi Sabon Clip",
+    "NewClipTitlePlaceholder": "Shigar da taken shirin",
+    "NewClipDescriptionPlaceholder": "Shigar da Bayanin Clip",
+    "switchVisualization": "Canja hangen nesa",
+    "joinLiveShow": "Shiga Nunin Live",
+    "showTwitchLiveStream": "Nuna Twitch Live Stream",
+    "showVoiceChat": "Nuna Hirar Murya",
+    "LiveShow": "Nunin Kai Tsaye",
+    "AreYouSureKick": "Shin kun tabbata kuna son korar wannan mai amfani?",
+    "Save": "Ajiye",
+    "ViewFullEpisode": "Kalli Cikakken Labarin",
+    "CreditsEarned": "Kiredited da aka samu",
+    "VideoTitle": "Taken Bidiyo ko URL",
+    "AreYouSureDeleteEpisode": "Shin kun tabbata kuna son share wannan labarin?",
+    "Yes": "Ee",
+    "No": "A&#39;a",
+    "RealTimeCall": "Real Time Call",
+    "JoinWebRTC": "Taron tarho",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Taron tarho",
+            "description": "taron bidiyo\/audiyo kan layi"
+        },
+        "Media\/calls": {
+            "displayType": "Kira",
+            "description": "category na Media\/WebRTC",
+            "MaxRelationsExceeded": "Matsakaicin kira ya wuce"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "shirye-shiryen watsa labarai"
+        }
+    },
+    "feeds": {
+        "Title": "Kamara",
+        "filterByTitle": "Nemo ciyarwa da take",
+        "RequestFeedAccess": "Nemi samun damar ciyarwa",
+        "New": "+ Sabon Ciyarwa",
+        "filterFeeds": "Tace ciyarwa",
+        "NewFeed": "Sabuwar Ciyarwa",
+        "NoneYet": "Har yanzu ba a samar da abinci ba.",
+        "AreYouSure": "Ka tabbata?",
+        "FilterByDate": "Tace Da Kwanan Wata",
+        "newFeeds": "Kuna da sabbin ciyarwa {{1}}",
+        "Description": "{{1}} abinci",
+        "Keywords": "{{1}} abinci"
+    },
+    "feed": {
+        "HostedBy": "An shirya ta {{name}}",
+        "Name": "Suna",
+        "Conversation": "Tattaunawa",
+        "CloseFeed": {
+            "button": "Rufe Ciyarwa",
+            "Cancel": "Shin kun tabbata kuna son rufe wannan abincin?",
+            "Participant": "Akwai ɗan takara 1 a cikin wannan abincin",
+            "Participants": "Akwai mahalarta {{count}} a cikin wannan ciyarwar"
+        },
+        "Calendar": "Kalanda",
+        "TitleOfFeed": "Taken ciyarwa:",
+        "EmptyList": "Jerin mara komai",
+        "EmptyVideos": "Babu shirye-shiryen bidiyo tukuna",
+        "AccessReason": "don Allah ka fadi dalili",
+        "Proceed": "Ci gaba",
+        "FeedAlreadyClosed": "An riga an rufe wannan abincin",
+        "RtmpLinkNote": "Danna don kwafi wannan hanyar haɗin zuwa allo",
+        "SelectClip": "Zaɓi ranar da kake son gani",
+        "Request": "nema"
+    },
+    "newFeed": {
+        "Title": "Sabuwar Ciyarwa",
+        "locationTitle": "Saita Wurin ku",
+        "SetLocation": "Saita Wurina",
+        "Starting": "farawa",
+        "Day": "Rana",
+        "Create": "Ƙirƙiri",
+        "Continue": "Ci gaba",
+        "FeedTitle": "Taken ciyarwa",
+        "SetTitle": "Da fatan za a saita taken ciyarwa"
+    },
+    "notifications": {
+        "JoinedWebRTC": "shiga kiran ku",
+        "SubjectJoinedYourCall": "{{subject}} ya shiga kiran ku"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Baku da izinin shiga wannan rafi.",
+        "streamTitle": "{{1}} ya fara taron tarho",
+        "allow": {
+            "dialogTitle": "Haɗawa",
+            "microphoneBtn": "Kunna makirufo",
+            "cameraBtn": "Kunna Kyamara",
+            "cameraAndMicrophoneBtn": "Kunna Kamara da Makirufo"
+        },
+        "preparing": {
+            "dialogTitle": "Kunna\/kashe kamara ko mic kafin shiga",
+            "micIsOff": "An kashe mic",
+            "micIsOn": "Mic yana kunne",
+            "cameraIsOff": "Kamara a kashe",
+            "cameraIsOn": "Kamara tana kunne",
+            "screenSharingIsOn": "Ana kunna raba allo",
+            "screenSharingIsOff": "Raba allo",
+            "joinNow": "Shiga Kiran"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Umarni",
+            "permissionDenied": "An ƙi izini don {{kind}} . Don amfani da shi da fatan za a bi waɗannan matakan:",
+            "point1": "Je zuwa &quot;Settings&quot; -&gt; &quot;Babba&quot; -&gt; &quot;Sirri da Tsaro&quot; -&gt; &quot;Saitunan Yanar Gizo&quot; -&gt; &quot;Kyamara&quot; ko &quot;Saitunan Yanar Gizo&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Cire {{hostname}} daga jerin &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Umarni",
+            "permissionDenied": "An ƙi izini don {{kind}} . Da fatan za a sake shigar da wannan shafin kuma tabbatar da samun dama ga {{kind}} don shiga taron."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Umarni",
+            "permissionDenied": "An ƙi izini don {{kind}} . Don amfani da shi da fatan za a bi waɗannan matakan:",
+            "point1": "Jeka Saitunan Android dinku",
+            "point2": "Bude &quot;Apps &amp; sanarwa&quot;",
+            "point3": "Nemo &quot; {{communityName}} &quot; kuma buɗe shi",
+            "point4": "Matsa kan Izini",
+            "point5": "Kunna {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Umarni",
+            "permissionDenied": "An ƙi izini don {{kind}} . Don amfani da shi da fatan za a bi waɗannan matakan:",
+            "point1": "Jeka Saitunan IOS ɗin ku",
+            "point2": "Bude &quot;Privacy&quot;",
+            "point3": "Nemo {{kind}} kuma buɗe shi",
+            "point4": "Nemo &quot; {{communityName}} &quot; kuma kunna"
+        },
+        "fbLive": {
+            "dialogTitle": "An fara yawo kai tsaye ta Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Kun shiga daki",
+            "joining": "Saukewa: {{userName}}",
+            "sbLeftRoom": "{{userName}} ya bar dakin",
+            "switchingRoom": "Dakin sauyawa...",
+            "forceDisconnecting": "Za a cire haɗin ku a cikin daƙiƙa 5",
+            "forceDisconnectingImmediately": "Mai masaukin baki ne ya katse ku",
+            "youLeftRoom": "Kun bar dakin",
+            "codeCopied": "Kun bar dakin",
+            "sbBeganFbLive": "{{userName}} ya fara yada wannan kira a Facebook",
+            "sbStoppedFbLive": "{{userName}} sun daina yada wannan kira a Facebook",
+            "youBeganFbLive": "Kun fara yada wannan kira a Facebook",
+            "youStoppedFbLive": "Kun daina yada wannan kira a Facebook",
+            "youStartedLive": "Kun fara yada wannan kiran zuwa RTMP na al&#39;ada",
+            "youStoppedLive": "Kun daina yada wannan kiran zuwa RTMP na al&#39;ada",
+            "sbStartedLiveStreaming": "{{userName}} ya fara rayuwa",
+            "sbStoppedLiveStreaming": "{{userName}} ya ƙare rayuwa",
+            "liveStopped": "Kuskure yayin aika bidiyo zuwa ƙarshen ƙarshen ya faru",
+            "youBeganVideoRecording": "Kun fara rikodin wannan taron",
+            "youStoppedVideoRecording": "Kun daina yin rikodin wannan taron",
+            "linkCopiedToCb": "An kwafi hanyar haɗi zuwa allo",
+            "codeCopiedToCb": "An kwafi lambar zuwa allo",
+            "userHasNoVideo": "Mahalarta ba shi da bidiyo",
+            "openInBrowserAlert": "Bude hanyar haɗi a cikin Safari browser don shiga taron.",
+            "allowedVideoLimit": "Bidiyo {{limit}} kawai aka yarda a cikin wannan ɗakin",
+            "allowedAudioLimit": "Makarufo {{limit}} kawai aka yarda a cikin wannan ɗakin",
+            "processingRecording": "Ana aiwatar da rikodin..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Saitunan Bidiyo",
+            "webCamera": "Kamarar Yanar Gizo",
+            "screenSharing": "Raba allo",
+            "shareAnotherScreen": "Raba wani allo",
+            "turnOffCameras": "Kashe kamara",
+            "turnOffVideo": "Kashe kamara\/ raba allo",
+            "turnOffAudioInput": "A kashe makirufo",
+            "turnOffScreenSharing": "Kashe raba allo",
+            "cameraIsTurnedOff": "An kashe kamara",
+            "micIsTurnedOff": "An kashe makirufo",
+            "startFBLive": "Fara Facebook Livestream",
+            "stopFBLive": "Dakatar da Facebook Livestream",
+            "startRecording": "Fara Rikodi",
+            "stopRecording": "Dakatar da Rikodi",
+            "start": "Fara",
+            "startClodRecording": "Fara Rikodin Cloud",
+            "startLocRecording": "Fara Rikodin Gida",
+            "stopClodRecording": "Dakatar da Cloud Recording",
+            "stopLocRecording": "Dakatar da Rikodin Gida",
+            "stop": "Tsaya",
+            "share": "Raba",
+            "recordingInProgress": "Ana ci gaba da yin rikodi...",
+            "fbLiveTitle": "Taken Livestream",
+            "fbLiveDescription": "Yi bayanin Livestream ɗin ku. Menene game da shi?",
+            "fbOnlyMeLiveAccess": "Ni kadai",
+            "fbFriendsAccess": "Abokai",
+            "fbPublicAccess": "Jama&#39;a",
+            "publishOnTimeline": "Buga akan tsarin lokaci",
+            "publishToGroup": "Buga zuwa rukuni",
+            "fbStartLive": "Tafi Live",
+            "fbStopLive": "Ƙarshen Livestream",
+            "streamingSettings": "Saituna",
+            "manageStream": "Sarrafa Livestream",
+            "fbEmbedCode": "Saka",
+            "copy": "Kwafi",
+            "streamToRTMP": "Yawo zuwa RTMP na al&#39;ada",
+            "startBroadcasting": "Fara watsa shirye-shirye",
+            "broadcastingInProgress": "Ana ci gaba da watsa shirye-shirye"
+        },
+        "audioSettings": {
+            "dialogTitle": "Saitunan Sauti",
+            "speakers": "Masu magana",
+            "microphone": "Makirifo"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Sarrafa Watsa shirye-shirye"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Saitunan Mahalarta",
+            "disconnect": "Cire haɗin",
+            "floatingScreens": "Hotunan iyo",
+            "tiledScreens": "Tiled Screens",
+            "loudestExceptMe": "Mafi Surutu Sai Ni",
+            "maximizeLoudest": "Girma Mafi Girma",
+            "staticMaximized": "Matsakaicin Matsayi",
+            "fullScreen": "Cikakken kariya",
+            "manual": "Manual",
+            "turnOffCamera": "Ɓoye bidiyo",
+            "turnOffAudio": "Yi shiru da sauti",
+            "turnOffScreenSharing": "Ɓoye raba allo",
+            "turnOnCamera": "Nuna bidiyo",
+            "turnOnAudio": "Cire sautin murya",
+            "turnOnScreenSharing": "Nuna raba allo"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Taron tarho",
+            "MeetingEnded": "Teleconference ya ƙare"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Neman Magana",
+            "msg": "A halin yanzu akwai mutane {{count}} da ke magana a taron. Kuna so ku maye gurbin ɗayansu bayan barin su daƙiƙa {{seconds}} don gama magana?"
+        }
+    }
+}

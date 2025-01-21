@@ -1,0 +1,256 @@
+{
+    "Shows": "ווייזט",
+    "Clips": "קליפּס",
+    "Video": "ווידעא",
+    "Audio": "אַודיאָ",
+    "categories": {
+        "Clips": "מעדיע קליפּס",
+        "Episodes": "עפּיסאָדעס"
+    },
+    "presentation": {
+        "PutTogether": "וועט איר זיין פּרעזענטירונג? איר קענען נוצן דעם פּלאַץ צו צופֿעליקער צוזאַמען מאַטעריאַלס פֿאַר דיין פּרעזענטירונג. ניצן די פּלוס קנעפּל.",
+        "Alert": "ווען די געשעענישן אָנהייבן, דער בלאַט וועט אָנהייבן צו ווייַזן זייער קאָראַספּאַנדינג פּרעזאַנטיישאַנז",
+        "ClickHereForFullscreen": "פּרעזאַנטיישאַנז וועט דערשייַנען דאָ. דריקט דאָ צו גיין צו פול פאַרשטעלן.",
+        "question": {
+            "ScanThisQRCode": "יבערקוקן דעם QR קאָד צו ענטפֿערן"
+        }
+    },
+    "NewEpisode": "ניו עפּיזאָד",
+    "NewClip": "מאַכן אַ נייַע קליפּ",
+    "NewClipTitlePlaceholder": "אַרייַן קליפּ טיטל",
+    "NewClipDescriptionPlaceholder": "אַרייַן קליפּ באַשרייַבונג",
+    "switchVisualization": "באַשטימען וויזשוואַלאַזיישאַן",
+    "joinLiveShow": "תאריך לייוו ווייַזן",
+    "showTwitchLiveStream": "ווייַזן טוויטש לייוו סטרים",
+    "showVoiceChat": "ווייַזן קול שמועסן",
+    "LiveShow": "לעבן ווייַזן",
+    "AreYouSureKick": "זענט איר זיכער אַז איר ווילן צו אָנהייבן דעם באַניצער?",
+    "Save": "היט",
+    "ViewFullEpisode": "View גאַנץ עפּיזאָד",
+    "CreditsEarned": "קרעדיץ ערנד",
+    "VideoTitle": "ווידעא טיטל אָדער URL",
+    "AreYouSureDeleteEpisode": "זענט איר זיכער אַז איר ווילן צו ויסמעקן דעם עפּיזאָד?",
+    "Yes": "יא",
+    "No": "ניין",
+    "RealTimeCall": "פאַקטיש צייט רופן",
+    "JoinWebRTC": "טעלעקאָנפערענסע",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "טעלעקאָנפערענסע",
+            "description": "אַן אָנליין ווידעא \/ אַודיאָ זיצונג"
+        },
+        "Media\/calls": {
+            "displayType": "רופט",
+            "description": "קאַטעגאָריע פֿאַר מעדיע \/ וועברטק",
+            "MaxRelationsExceeded": "מאַקסימום קאַללס יקסידיד"
+        },
+        "Media\/clip": {
+            "displayType": "קליפ",
+            "description": "מעדיע קליפּ"
+        }
+    },
+    "feeds": {
+        "Title": "קאַמעראַס",
+        "filterByTitle": "געפֿינען פידז לויט טיטל",
+        "RequestFeedAccess": "בעטן פיטער אַקסעס",
+        "New": "+ ניו פיטער",
+        "filterFeeds": "פילטער פידז",
+        "NewFeed": "ניו פיטער",
+        "NoneYet": "קיין פידז געשאפן נאָך.",
+        "AreYouSure": "ביסטו זיכער?",
+        "FilterByDate": "פילטער לויט טאָג",
+        "newFeeds": "איר האָבן {{1}} נייַ פידז",
+        "Description": "{{1}} פידז",
+        "Keywords": "{{1}} פידז"
+    },
+    "feed": {
+        "HostedBy": "כאָוסטיד דורך {{name}}",
+        "Name": "נאָמען",
+        "Conversation": "שמועס",
+        "CloseFeed": {
+            "button": "נאָענט פיטער",
+            "Cancel": "זענט איר זיכער אַז איר ווילן צו פאַרמאַכן דעם פיטער?",
+            "Participant": "עס איז 1 באַטייליקטער אין דעם פיטער",
+            "Participants": "עס זענען {{count}} פּאַרטיסאַפּאַנץ אין דעם פיטער"
+        },
+        "Calendar": "קאַלענדאַר",
+        "TitleOfFeed": "טיטל פון פידינג:",
+        "EmptyList": "ליידיק רשימה",
+        "EmptyVideos": "קיין קליפּס נאָך",
+        "AccessReason": "ביטע זאָגן די סיבה",
+        "Proceed": "גיינ ווייַטער",
+        "FeedAlreadyClosed": "דאס פיטער שוין פארמאכט",
+        "RtmpLinkNote": "דריקט צו נאָכמאַכן דעם לינק צו די קליפּבאָרד",
+        "SelectClip": "אויסקלייַבן די דאַטע איר ווילן צו זען",
+        "Request": "בעטן"
+    },
+    "newFeed": {
+        "Title": "ניו פיטער",
+        "locationTitle": "שטעלן דיין אָרט",
+        "SetLocation": "שטעלן מיין אָרט",
+        "Starting": "סטאַרטינג",
+        "Day": "טאָג",
+        "Create": "שאַפֿן",
+        "Continue": "פאָרזעצן",
+        "FeedTitle": "פיטער טיטל",
+        "SetTitle": "ביטע שטעלן פיטער טיטל"
+    },
+    "notifications": {
+        "JoinedWebRTC": "זיך איינגעשריבן דיין רופן",
+        "SubjectJoinedYourCall": "{{subject}} זיך איינגעשריבן דיין רופן"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "איר טאָן ניט האָבן דערלויבעניש צו פאַרבינדן דעם טייַך.",
+        "streamTitle": "{{1}} סטאַרטעד אַ טעלעקאָנפערענסע",
+        "allow": {
+            "dialogTitle": "קאַנעקטינג",
+            "microphoneBtn": "געבן מיקראָפאָן",
+            "cameraBtn": "געבן קאַמעראַ",
+            "cameraAndMicrophoneBtn": "געבן אַפּאַראַט און מיקראָפאָן"
+        },
+        "preparing": {
+            "dialogTitle": "קער אַפּאַראַט אָדער מיק אויף \/ אַוועק איידער איר פאַרבינדן",
+            "micIsOff": "די מיק איז אַוועק",
+            "micIsOn": "די מיק איז אויף",
+            "cameraIsOff": "אַפּאַראַט איז אַוועק",
+            "cameraIsOn": "אַפּאַראַט איז אויף",
+            "screenSharingIsOn": "סקרעענשאַרינג איז אויף",
+            "screenSharingIsOff": "ייַנטיילן פאַרשטעלן",
+            "joinNow": "פאַרבינדן די רופן"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "אינסטרוקציעס",
+            "permissionDenied": "דערלויבעניש פֿאַר {{kind}} געלייקנט. צו נוצן עס, נאָכגיין די סטעפּס:",
+            "point1": "גיין צו &quot;סעטטינגס&quot; -&gt; &quot;אַוואַנסירטע&quot; -&gt; &quot;פּריוואַטקייט און זיכערהייט&quot; -&gt; &quot;פּלאַץ סעטטינגס&quot; -&gt; &quot;קאַמעראַ&quot; אָדער &quot;פּלאַץ סעטטינגס&quot; -&gt; &quot;מיקראָפאָן&quot;",
+            "point2": "אַראָפּנעמען {{hostname}} פון &quot;בלאָק&quot; רשימה"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "אינסטרוקציעס",
+            "permissionDenied": "דערלויבעניש פֿאַר {{kind}} געלייקנט. ביטע רילאָוד דעם בלאַט און באַשטעטיקן אַקסעס צו {{kind}} צו פאַרבינדן די זיצונג."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "אינסטרוקציעס",
+            "permissionDenied": "דערלויבעניש פֿאַר {{kind}} געלייקנט. צו נוצן עס, נאָכגיין די סטעפּס:",
+            "point1": "גיין צו דיין אַנדרויד סעטטינגס",
+            "point2": "עפֿענען &quot;אַפּפּס &amp; נאָוטאַפאַקיישאַנז&quot;",
+            "point3": "געפֿינען &quot; {{communityName}} &quot; און עפענען עס",
+            "point4": "צאַפּן אויף פּערמישאַנז",
+            "point5": "געבן {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "אינסטרוקציעס",
+            "permissionDenied": "דערלויבעניש פֿאַר {{kind}} געלייקנט. צו נוצן עס, נאָכגיין די סטעפּס:",
+            "point1": "גיין צו דיין יאָס סעטטינגס",
+            "point2": "עפֿענען &quot;פּריוואַטקייט&quot;",
+            "point3": "געפֿינען {{kind}} און עפענען עס",
+            "point4": "געפֿינען &quot; {{communityName}} &quot; און געבן"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook לעבן סטרימינג סטאַרטעד"
+        },
+        "notices": {
+            "youJoinedRoom": "דו האסט זיך איינגעשריבן אין צימער",
+            "joining": "דזשוינינג: {{userName}}",
+            "sbLeftRoom": "{{userName}} פארלאזט דעם צימער",
+            "switchingRoom": "טוישן חדר...",
+            "forceDisconnecting": "איר וועט זיין דיסקאַנעקטיד ין 5 סעקונדעס",
+            "forceDisconnectingImmediately": "איר זענט דיסקאַנעקטיד דורך אַ באַלעבאָס",
+            "youLeftRoom": "דו האסט פארלאזט דעם צימער",
+            "codeCopied": "דו האסט פארלאזט דעם צימער",
+            "sbBeganFbLive": "{{userName}} אנגעהויבן בראָדקאַסטינג דעם רופן אין פאַסעבאָאָק",
+            "sbStoppedFbLive": "{{userName}} פארשטאפט בראָדקאַסטינג דעם רופן אין פאַסעבאָאָק",
+            "youBeganFbLive": "איר האָט אנגעהויבן בראָדקאַסטינג דעם רופן אין פאַסעבאָאָק",
+            "youStoppedFbLive": "איר פארשטאפט בראָדקאַסטינג דעם רופן אין פאַסעבאָאָק",
+            "youStartedLive": "איר האָט אָנגעהויבן בראָדקאַסטינג דעם רוף צו מנהג RTMP",
+            "youStoppedLive": "איר פארשטאפט בראָדקאַסטינג דעם רוף צו מנהג RTMP",
+            "sbStartedLiveStreaming": "{{userName}} אנגעהויבן לעבן",
+            "sbStoppedLiveStreaming": "{{userName}} ענדיקט לעבן",
+            "liveStopped": "א טעות איז פארגעקומען בשעת שיקן ווידעא צו ענדפּוינט",
+            "youBeganVideoRecording": "איר האָט אָנגעהויבן רעקאָרדירן דעם קאָנפֿערענץ",
+            "youStoppedVideoRecording": "דו האסט אויפגעהערט רעקארדירן דעם זיצונג",
+            "linkCopiedToCb": "לינק קאַפּיד צו קליפּבאָרד",
+            "codeCopiedToCb": "קאָוד קאַפּיד צו קליפּבאָרד",
+            "userHasNoVideo": "דער באַטייליקטער האט קיין ווידעא",
+            "openInBrowserAlert": "עפֿן לינק אין Safari בלעטערער צו פאַרבינדן די קאָנפֿערענץ.",
+            "allowedVideoLimit": "בלויז {{limit}} ווידעא ערלויבט אין דעם פּלאַץ",
+            "allowedAudioLimit": "בלויז {{limit}} מייקראָופאָונז ערלויבט אין דעם פּלאַץ",
+            "processingRecording": "פּראַסעסינג די רעקאָרדינג ..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "ווידעא סעטטינגס",
+            "webCamera": "וועב קאַמעראַ",
+            "screenSharing": "סקרין ייַנטיילונג",
+            "shareAnotherScreen": "ייַנטיילן אן אנדער פאַרשטעלן",
+            "turnOffCameras": "קער אַוועק אַפּאַראַט",
+            "turnOffVideo": "קער אַוועק אַפּאַראַט \/ פאַרשטעלן ייַנטיילונג",
+            "turnOffAudioInput": "שטום מיקראָפאָן",
+            "turnOffScreenSharing": "קער אַוועק פאַרשטעלן ייַנטיילונג",
+            "cameraIsTurnedOff": "אַפּאַראַט איז אויסגעדרייט אַוועק",
+            "micIsTurnedOff": "מיקראָפאָן איז אויסגעדרייט אַוועק",
+            "startFBLive": "אָנהייב Facebook Livestream",
+            "stopFBLive": "האַלטן Facebook לייווסטרים",
+            "startRecording": "אָנהייב רעקאָרדינג",
+            "stopRecording": "האַלטן רעקאָרדינג",
+            "start": "אָנהייב",
+            "startClodRecording": "אָנהייב קלאָוד רעקאָרדינג",
+            "startLocRecording": "אָנהייב לאקאלע רעקאָרדינג",
+            "stopClodRecording": "האַלטן קלאָוד רעקאָרדינג",
+            "stopLocRecording": "האַלטן לאקאלע רעקאָרדינג",
+            "stop": "האַלטן",
+            "share": "ייַנטיילן",
+            "recordingInProgress": "רעקאָרדינג איז אין פּראָגרעס ...",
+            "fbLiveTitle": "טיטל פון לייווסטרים",
+            "fbLiveDescription": "באַשרייַבן דיין לייווסטרים. וואָס איז עס וועגן?",
+            "fbOnlyMeLiveAccess": "נאָר מיר",
+            "fbFriendsAccess": "פריינט",
+            "fbPublicAccess": "ציבור",
+            "publishOnTimeline": "אַרויסגעבן אויף טיימליין",
+            "publishToGroup": "אַרויסגעבן צו גרופּע",
+            "fbStartLive": "גיין לעבן",
+            "fbStopLive": "סוף לייווסטרים",
+            "streamingSettings": "סעטטינגס",
+            "manageStream": "פירן לייווסטרים",
+            "fbEmbedCode": "עמבעד",
+            "copy": "קאָפּי",
+            "streamToRTMP": "סטרים צו מנהג RTMP",
+            "startBroadcasting": "אָנהייב בראָדקאַסטינג",
+            "broadcastingInProgress": "בראָדקאַסטינג איז אין פּראָגרעס"
+        },
+        "audioSettings": {
+            "dialogTitle": "אַודיאָ סעטטינגס",
+            "speakers": "ספּיקערז",
+            "microphone": "מיקראָפאָן"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "פירן בראָדקאַסט"
+        },
+        "participantsPopup": {
+            "dialogTitle": "באַטייליקטער סעטטינגס",
+            "disconnect": "דיסקאַנעקט",
+            "floatingScreens": "פלאָוטינג סקרינז",
+            "tiledScreens": "טיילד סקרינז",
+            "loudestExceptMe": "לאָואַסט חוץ מיר",
+            "maximizeLoudest": "מאַקסאַמייז לאָודעסט",
+            "staticMaximized": "סטאַטיק מאַקסאַמייזד",
+            "fullScreen": "גאַנץ פאַרשטעלן",
+            "manual": "מאַנואַל",
+            "turnOffCamera": "באַהאַלטן ווידעא",
+            "turnOffAudio": "שטום אַודיאָ",
+            "turnOffScreenSharing": "באַהאַלטן פאַרשטעלן ייַנטיילונג",
+            "turnOnCamera": "ווייַזן ווידעא",
+            "turnOnAudio": "אַנמיוט אַודיאָ",
+            "turnOnScreenSharing": "ווייַזן פאַרשטעלן ייַנטיילונג"
+        },
+        "streamingSettings": {
+            "title": "לייווסטרים"
+        },
+        "preview": {
+            "Meeting": "טעלעקאָנפערענסע",
+            "MeetingEnded": "טעלעקאָנפערענץ האָט זיך געענדיקט"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "בעטן צו רעדן",
+            "msg": "עס זענען דערווייַל {{count}} מענטשן רעדן אין דער זיצונג. צי איר ווילן צו פאַרבייַטן איינער פון זיי נאָך אַלאַוינג זיי {{seconds}} סעקונדעס צו ענדיקן רעדן?"
+        }
+    }
+}

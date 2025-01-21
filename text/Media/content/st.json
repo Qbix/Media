@@ -1,0 +1,256 @@
+{
+    "Shows": "Lipontšo",
+    "Clips": "Dikotwana",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Mecha ea litaba",
+        "Episodes": "Likhaolo"
+    },
+    "presentation": {
+        "PutTogether": "Na u tla be u hlahisa? U ka sebelisa sebaka sena ho kenya hammoho lisebelisoa tsa tlhahiso ea hau. Sebelisa konopo ea Plus.",
+        "Alert": "Ha liketsahalo li qala, leqephe lena le tla qala ho bontša linehelano tsa tsona tse tsamaellanang",
+        "ClickHereForFullscreen": "Litlhahiso li tla hlaha mona. Tobetsa mona ho bula skrini se felletseng.",
+        "question": {
+            "ScanThisQRCode": "Skena khoutu ena ea QR ho araba"
+        }
+    },
+    "NewEpisode": "Ephisouto e Ncha",
+    "NewClip": "Etsa Sekotwana se Secha",
+    "NewClipTitlePlaceholder": "Kenya Clip Sehlooho",
+    "NewClipDescriptionPlaceholder": "Kenya Clip Description",
+    "switchVisualization": "Fetola pono",
+    "joinLiveShow": "Kena le Live Show",
+    "showTwitchLiveStream": "Bontša Twitch Live Stream",
+    "showVoiceChat": "Hlahisa Puisano ea Lentsoe",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Na ehlile u batla ho tlosa mosebelisi enoa?",
+    "Save": "Boloka",
+    "ViewFullEpisode": "Sheba Episode e Feletseng",
+    "CreditsEarned": "Lichelete tse fumanoeng",
+    "VideoTitle": "Sehlooho sa Video kapa URL",
+    "AreYouSureDeleteEpisode": "Na ehlile u batla ho hlakola ephisouto ee?",
+    "Yes": "Ee",
+    "No": "Che",
+    "RealTimeCall": "Pitso ea Nako ea &#39;Nete",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "kopano ea video\/audio ea inthaneteng"
+        },
+        "Media\/calls": {
+            "displayType": "Mehala",
+            "description": "sehlopha sa Media\/WebRTC",
+            "MaxRelationsExceeded": "Mehala e fetelletseng"
+        },
+        "Media\/clip": {
+            "displayType": "Sekotwana",
+            "description": "sekotwana sa media"
+        }
+    },
+    "feeds": {
+        "Title": "Lik&#39;hamera",
+        "filterByTitle": "Fumana liphepelo ka sehlooho",
+        "RequestFeedAccess": "Kopa phihlello ya phepelo",
+        "New": "+ Phepelo e Ncha",
+        "filterFeeds": "Liphepelo tsa sefe",
+        "NewFeed": "Phepo e Ncha",
+        "NoneYet": "Ha ho lijo tse entsoeng hajoale.",
+        "AreYouSure": "U na le bonnete?",
+        "FilterByDate": "Sefa ka Letsatsi",
+        "newFeeds": "U na le liphepelo tse ncha {{1}}",
+        "Description": "{{1}} lijo",
+        "Keywords": "{{1}} lijo"
+    },
+    "feed": {
+        "HostedBy": "E tsamaisoa ke {{name}}",
+        "Name": "Lebitso",
+        "Conversation": "Moqoqo",
+        "CloseFeed": {
+            "button": "Koala Fepa",
+            "Cancel": "Na ehlile u batla ho koala phepelo ee?",
+            "Participant": "Ho na le motho a le mong phepelong ena",
+            "Participants": "Ho na le bankakarolo {{count}} phepelong ena"
+        },
+        "Calendar": "Khalendara",
+        "TitleOfFeed": "Sehlooho sa phepelo:",
+        "EmptyList": "Lenane le se nang letho",
+        "EmptyVideos": "Ha ho na likoto",
+        "AccessReason": "ka kopo bolela lebaka",
+        "Proceed": "Tsoela pele",
+        "FeedAlreadyClosed": "Phepelo ena e se e koetsoe",
+        "RtmpLinkNote": "Tobetsa ho kopitsa sehokelo sena ho clipboard",
+        "SelectClip": "Khetha letsatsi leo u batlang ho le bona",
+        "Request": "Kopa"
+    },
+    "newFeed": {
+        "Title": "Phepo e Ncha",
+        "locationTitle": "Beha Sebaka sa Hao",
+        "SetLocation": "Beha Sebaka sa Ka",
+        "Starting": "Ho qala",
+        "Day": "Letsatsi",
+        "Create": "Theha",
+        "Continue": "Tsoela pele",
+        "FeedTitle": "Sehlooho sa fepa",
+        "SetTitle": "Ka kopo, beha sehlooho sa phepelo"
+    },
+    "notifications": {
+        "JoinedWebRTC": "o kopanetse mohala oa hau",
+        "SubjectJoinedYourCall": "{{subject}} e kentse mohala oa hau"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Ha u na tumello ea ho kenela mokhoa ona.",
+        "streamTitle": "{{1}} e qalile Teleconference",
+        "allow": {
+            "dialogTitle": "Ho hokela",
+            "microphoneBtn": "Numella Microphone",
+            "cameraBtn": "Numella Khamera",
+            "cameraAndMicrophoneBtn": "Numella Khamera le Microphone"
+        },
+        "preparing": {
+            "dialogTitle": "Bulela\/ tima khamera kapa maeke pele o kena",
+            "micIsOff": "Mmaeke o timme",
+            "micIsOn": "Mic e butswe",
+            "cameraIsOff": "Khamera e timme",
+            "cameraIsOn": "Khamera e butse",
+            "screenSharingIsOn": "Ho arolelana skrini ho butswe",
+            "screenSharingIsOff": "Arolelana skrineng",
+            "joinNow": "Kena le Pitso"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Litaelo",
+            "permissionDenied": "Tumello ea {{kind}} e hanngoe. Ho e sebelisa, latela mehato ena:",
+            "point1": "Eya ho &quot;Litlhophiso&quot; -&gt; &quot;E tsoetseng pele&quot; -&gt; &quot;Lekunutu le tšireletseho&quot; -&gt; &quot;Litlhophiso tsa Sebaka&quot; -&gt; &quot;Khamera&quot; kapa &quot;Litlhophiso tsa Sebaka&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Tlosa {{hostname}} lethathamong la &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Litaelo",
+            "permissionDenied": "Tumello ea {{kind}} e hanngoe. Ka kopo kenya leqephe lena bocha &#39;me u netefatse ho kena ho {{kind}} ho kenela seboka."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Litaelo",
+            "permissionDenied": "Tumello ea {{kind}} e hanngoe. Ho e sebelisa, latela mehato ena:",
+            "point1": "Eya ho Litlhophiso tsa hau tsa Android",
+            "point2": "Bula &quot;Lisebelisoa le litsebiso&quot;",
+            "point3": "Fumana &quot; {{communityName}} &quot; &#39;me ue bule",
+            "point4": "Tlanya ho Litumello",
+            "point5": "Thusa {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Litaelo",
+            "permissionDenied": "Tumello ea {{kind}} e hanngoe. Ho e sebelisa, latela mehato ena:",
+            "point1": "Eya ho Litlhophiso tsa hau tsa iOS",
+            "point2": "Bula &quot;Lekunutu&quot;",
+            "point3": "Fumana {{kind}} me ue bule",
+            "point4": "Fumana &quot; {{communityName}} &quot; &#39;me u lumelle"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook Live phallela e qalile"
+        },
+        "notices": {
+            "youJoinedRoom": "U kene ka kamoreng",
+            "joining": "Ho kopanela: {{userName}}",
+            "sbLeftRoom": "{{userName}} ba ile ba tsoa ka phapusing",
+            "switchingRoom": "Kamore ea ho phomola...",
+            "forceDisconnecting": "U tla khaotsoa nakong ea metsotsoana e 5",
+            "forceDisconnectingImmediately": "O khaotsoe ke moamoheli",
+            "youLeftRoom": "U tsoile ka kamoreng",
+            "codeCopied": "U tsoile ka kamoreng",
+            "sbBeganFbLive": "{{userName}} e qalile ho phatlalatsa mohala ona ho Facebook",
+            "sbStoppedFbLive": "{{userName}} e emisitse ho phatlalatsa mohala ona ho Facebook",
+            "youBeganFbLive": "U qalile ho phatlalatsa mohala ona ho Facebook",
+            "youStoppedFbLive": "U emisitse ho phatlalatsa mohala ona ho Facebook",
+            "youStartedLive": "U qalile ho phatlalatsa mohala ona ho RTMP e ikhethileng",
+            "youStoppedLive": "U emisitse ho phatlalatsa mohala ona ho RTMP e ikhethileng",
+            "sbStartedLiveStreaming": "{{userName}} e qalile ho phela",
+            "sbStoppedLiveStreaming": "{{userName}} e felile e phela",
+            "liveStopped": "Ho bile le phoso nakong ea ho romella video ho ea qetellong",
+            "youBeganVideoRecording": "U qalile ho rekota seboka sena",
+            "youStoppedVideoRecording": "U emisitse ho rekota seboka sena",
+            "linkCopiedToCb": "Sehokelo se kopitsoe ho clipboard",
+            "codeCopiedToCb": "Khoutu e kopitsoe ho clipboard",
+            "userHasNoVideo": "Motho ea nkang karolo ha a na video",
+            "openInBrowserAlert": "Bula sehokelo ho sebatli sa Safari ho kenela kopano.",
+            "allowedVideoLimit": "Ke livideo {{limit}} feela tse lumelletsoeng ka phapusing ena",
+            "allowedAudioLimit": "Ke li-microphone {{limit}} feela tse lumelletsoeng ka phaposing ena",
+            "processingRecording": "E sebetsa rekoto..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Litlhophiso tsa Video",
+            "webCamera": "Khamera ea Webo",
+            "screenSharing": "Ho arolelana skrini",
+            "shareAnotherScreen": "Arolelana skrineng se seng",
+            "turnOffCameras": "Tima khamera",
+            "turnOffVideo": "Koala ho arolelana khamera\/skrine",
+            "turnOffAudioInput": "Tlosa microphone",
+            "turnOffScreenSharing": "Koala ho arolelana skrini",
+            "cameraIsTurnedOff": "Khamera e timiloe",
+            "micIsTurnedOff": "Maekerofounu o timiloe",
+            "startFBLive": "Qala Facebook Livestream",
+            "stopFBLive": "Emisa Facebook Livestream",
+            "startRecording": "Qala ho Rekota",
+            "stopRecording": "Emisa ho Rekota",
+            "start": "Qala",
+            "startClodRecording": "Qala Cloud Recording",
+            "startLocRecording": "Qala ho Rekota Sebaka sa Hao",
+            "stopClodRecording": "Emisa ho Rekota Cloud",
+            "stopLocRecording": "Emisa ho Rekota Lehae",
+            "stop": "Ema",
+            "share": "Arolelana",
+            "recordingInProgress": "Ho ntse ho rekota...",
+            "fbLiveTitle": "Sehlooho sa Livestream",
+            "fbLiveDescription": "Hlalosa Livestream ea hau. E bua ka eng?",
+            "fbOnlyMeLiveAccess": "Ke &#39;na feela",
+            "fbFriendsAccess": "Metsoalle",
+            "fbPublicAccess": "Phatlalatsa",
+            "publishOnTimeline": "Phatlalatsa ka kemiso ea nako",
+            "publishToGroup": "Phatlalatsa ho sehlopha",
+            "fbStartLive": "Eya Phela",
+            "fbStopLive": "Qetella Livestream",
+            "streamingSettings": "Litlhophiso",
+            "manageStream": "Laola Livestream",
+            "fbEmbedCode": "Kenya",
+            "copy": "Kopitsa",
+            "streamToRTMP": "Phallela ho RTMP e tloaelehileng",
+            "startBroadcasting": "Qala khaso",
+            "broadcastingInProgress": "Khaso e ntse e tsoela pele"
+        },
+        "audioSettings": {
+            "dialogTitle": "Litlhophiso tsa Audio",
+            "speakers": "Libui",
+            "microphone": "Microphone"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Laola Phatlalatso"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Litlhophiso tsa Morupeluoa",
+            "disconnect": "Hakolla",
+            "floatingScreens": "Likrine tse Phaphamang",
+            "tiledScreens": "Lits&#39;oants&#39;o tsa Lithaele",
+            "loudestExceptMe": "Lerata ka ho Fetisisa Ntle le &#39;Na",
+            "maximizeLoudest": "Eketsa Lerata ka ho Fetisisa",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Skrine se felletseng",
+            "manual": "Bukana",
+            "turnOffCamera": "Pata video",
+            "turnOffAudio": "Tlosa molumo",
+            "turnOffScreenSharing": "Pata ho arolelana skrineng",
+            "turnOnCamera": "Hlahisa video",
+            "turnOnAudio": "Tlosa molumo",
+            "turnOnScreenSharing": "Hlahisa skrini ho arolelana"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Teleconference e felile"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Kopa ho Bua",
+            "msg": "Hona joale ho na le batho {{count}} ba buang kopanong. Na u batla ho nkela e &#39;ngoe ea tsona sebaka ka mor&#39;a ho li lumella metsotsoana {{seconds}} ho qeta ho bua?"
+        }
+    }
+}

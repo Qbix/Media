@@ -1,0 +1,256 @@
+{
+    "Shows": "Menunjukkan",
+    "Clips": "Klip",
+    "Video": "Video",
+    "Audio": "Suara",
+    "categories": {
+        "Clips": "Klip Media",
+        "Episodes": "Semua episode"
+    },
+    "presentation": {
+        "PutTogether": "Apakah Anda akan melakukan presentasi? Anda dapat menggunakan ruang ini untuk mengunggah materi presentasi Anda. Gunakan tombol Plus.",
+        "Alert": "Saat acara dimulai, halaman ini akan mulai menampilkan presentasi terkait",
+        "ClickHereForFullscreen": "Presentasi akan muncul di sini. Klik di sini untuk membuka layar penuh.",
+        "question": {
+            "ScanThisQRCode": "Pindai kode QR ini untuk menjawab"
+        }
+    },
+    "NewEpisode": "Episode Baru",
+    "NewClip": "Buat Klip Baru",
+    "NewClipTitlePlaceholder": "Masukkan Judul Klip",
+    "NewClipDescriptionPlaceholder": "Masukkan Deskripsi Klip",
+    "switchVisualization": "Beralih visualisasi",
+    "joinLiveShow": "Bergabunglah dengan Pertunjukan Langsung",
+    "showTwitchLiveStream": "Tampilkan Streaming Langsung Twitch",
+    "showVoiceChat": "Tampilkan Obrolan Suara",
+    "LiveShow": "Pertunjukan Langsung",
+    "AreYouSureKick": "Apakah Anda yakin ingin mengeluarkan pengguna ini?",
+    "Save": "Menyimpan",
+    "ViewFullEpisode": "Lihat Episode Lengkap",
+    "CreditsEarned": "Kredit yang diperoleh",
+    "VideoTitle": "Judul Video atau URL",
+    "AreYouSureDeleteEpisode": "Apakah Anda yakin ingin menghapus episode ini?",
+    "Yes": "Ya",
+    "No": "TIDAK",
+    "RealTimeCall": "Panggilan Waktu Nyata",
+    "JoinWebRTC": "Telekonferensi",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferensi",
+            "description": "konferensi video\/audio online"
+        },
+        "Media\/calls": {
+            "displayType": "Panggilan",
+            "description": "kategori untuk Media\/WebRTC",
+            "MaxRelationsExceeded": "Panggilan maksimum terlampaui"
+        },
+        "Media\/clip": {
+            "displayType": "Klip",
+            "description": "klip media"
+        }
+    },
+    "feeds": {
+        "Title": "Kamera",
+        "filterByTitle": "Temukan umpan berdasarkan judul",
+        "RequestFeedAccess": "Minta akses umpan",
+        "New": "+ Umpan Baru",
+        "filterFeeds": "Filter umpan",
+        "NewFeed": "Umpan Baru",
+        "NoneYet": "Belum ada umpan yang terbentuk.",
+        "AreYouSure": "Apa kamu yakin?",
+        "FilterByDate": "Filter Berdasarkan Tanggal",
+        "newFeeds": "Anda memiliki {{1}} umpan baru",
+        "Description": "{{1}} umpan",
+        "Keywords": "{{1}} umpan"
+    },
+    "feed": {
+        "HostedBy": "Diselenggarakan oleh {{name}}",
+        "Name": "Nama",
+        "Conversation": "Percakapan",
+        "CloseFeed": {
+            "button": "Tutup Umpan",
+            "Cancel": "Apakah Anda yakin ingin menutup umpan ini?",
+            "Participant": "Ada 1 peserta dalam umpan ini",
+            "Participants": "Ada {{count}} peserta dalam umpan ini"
+        },
+        "Calendar": "Kalender",
+        "TitleOfFeed": "Judul umpan:",
+        "EmptyList": "Daftar kosong",
+        "EmptyVideos": "Belum ada klip",
+        "AccessReason": "tolong sebutkan alasannya",
+        "Proceed": "Melanjutkan",
+        "FeedAlreadyClosed": "Umpan ini sudah ditutup",
+        "RtmpLinkNote": "Klik untuk menyalin tautan ini ke clipboard",
+        "SelectClip": "Pilih tanggal yang ingin Anda lihat",
+        "Request": "Meminta"
+    },
+    "newFeed": {
+        "Title": "Umpan Baru",
+        "locationTitle": "Atur Lokasi Anda",
+        "SetLocation": "Atur Lokasi Saya",
+        "Starting": "Memulai",
+        "Day": "Hari",
+        "Create": "Membuat",
+        "Continue": "Melanjutkan",
+        "FeedTitle": "Judul umpan",
+        "SetTitle": "Harap atur judul umpan"
+    },
+    "notifications": {
+        "JoinedWebRTC": "bergabung dengan panggilan Anda",
+        "SubjectJoinedYourCall": "{{subject}} bergabung dengan panggilan Anda"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Anda tidak memiliki izin untuk bergabung dalam aliran ini.",
+        "streamTitle": "{{1}} memulai Telekonferensi",
+        "allow": {
+            "dialogTitle": "Menghubungkan",
+            "microphoneBtn": "Aktifkan Mikrofon",
+            "cameraBtn": "Aktifkan Kamera",
+            "cameraAndMicrophoneBtn": "Aktifkan Kamera dan Mikrofon"
+        },
+        "preparing": {
+            "dialogTitle": "Nyalakan\/matikan kamera atau mikrofon sebelum Anda bergabung",
+            "micIsOff": "Mikrofonnya mati",
+            "micIsOn": "Mikrofonnya aktif",
+            "cameraIsOff": "Kamera mati",
+            "cameraIsOn": "Kamera aktif",
+            "screenSharingIsOn": "Berbagi layar aktif",
+            "screenSharingIsOff": "Bagikan layar",
+            "joinNow": "Bergabunglah dalam Panggilan"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instruksi",
+            "permissionDenied": "Izin untuk {{kind}} ditolak. Untuk menggunakannya, silakan ikuti langkah-langkah berikut:",
+            "point1": "Buka &quot;Pengaturan&quot; -&gt; &quot;Lanjutan&quot; -&gt; &quot;Privasi dan keamanan&quot; -&gt; &quot;Pengaturan Situs&quot; -&gt; &quot;Kamera&quot; atau &quot;Pengaturan Situs&quot; -&gt; &quot;Mikrofon&quot;",
+            "point2": "Hapus {{hostname}} dari daftar &quot;Blokir&quot;"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instruksi",
+            "permissionDenied": "Izin untuk {{kind}} ditolak. Harap muat ulang halaman ini dan konfirmasikan akses ke {{kind}} untuk bergabung dalam konferensi."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instruksi",
+            "permissionDenied": "Izin untuk {{kind}} ditolak. Untuk menggunakannya, silakan ikuti langkah-langkah berikut:",
+            "point1": "Buka Pengaturan Android Anda",
+            "point2": "Buka &quot;Aplikasi &amp; notifikasi&quot;",
+            "point3": "Temukan &quot; {{communityName}} &quot; dan buka",
+            "point4": "Ketuk Izin",
+            "point5": "Aktifkan {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instruksi",
+            "permissionDenied": "Izin untuk {{kind}} ditolak. Untuk menggunakannya, silakan ikuti langkah-langkah berikut:",
+            "point1": "Buka Pengaturan iOS Anda",
+            "point2": "Buka &quot;Privasi&quot;",
+            "point3": "Temukan {{kind}} dan buka",
+            "point4": "Temukan &quot; {{communityName}} &quot; dan aktifkan"
+        },
+        "fbLive": {
+            "dialogTitle": "Streaming langsung Facebook dimulai"
+        },
+        "notices": {
+            "youJoinedRoom": "Anda bergabung dengan ruangan",
+            "joining": "Bergabung: {{userName}}",
+            "sbLeftRoom": "{{userName}} meninggalkan ruangan",
+            "switchingRoom": "Ruang ganti...",
+            "forceDisconnecting": "Anda akan terputus dalam waktu 5 detik",
+            "forceDisconnectingImmediately": "Anda terputus dari host",
+            "youLeftRoom": "Kamu meninggalkan ruangan itu",
+            "codeCopied": "Kamu meninggalkan ruangan itu",
+            "sbBeganFbLive": "{{userName}} mulai menyiarkan panggilan ini di Facebook",
+            "sbStoppedFbLive": "{{userName}} berhenti menyiarkan panggilan ini di Facebook",
+            "youBeganFbLive": "Anda mulai menyiarkan panggilan ini di Facebook",
+            "youStoppedFbLive": "Anda berhenti menyiarkan panggilan ini di Facebook",
+            "youStartedLive": "Anda mulai menyiarkan panggilan ini ke RTMP khusus",
+            "youStoppedLive": "Anda berhenti menyiarkan panggilan ini ke RTMP khusus",
+            "sbStartedLiveStreaming": "{{userName}} mulai live",
+            "sbStoppedLiveStreaming": "{{userName}} berakhir secara langsung",
+            "liveStopped": "Terjadi kesalahan saat mengirim video ke titik akhir",
+            "youBeganVideoRecording": "Anda mulai merekam konferensi ini",
+            "youStoppedVideoRecording": "Anda berhenti merekam konferensi ini",
+            "linkCopiedToCb": "Tautan disalin ke papan klip",
+            "codeCopiedToCb": "Kode disalin ke papan klip",
+            "userHasNoVideo": "Peserta tidak memiliki video",
+            "openInBrowserAlert": "Buka tautan di peramban Safari untuk bergabung dengan konferensi.",
+            "allowedVideoLimit": "Hanya {{limit}} video yang diizinkan di ruangan ini",
+            "allowedAudioLimit": "Hanya {{limit}} mikrofon yang diizinkan di ruangan ini",
+            "processingRecording": "Memproses rekaman..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Pengaturan Video",
+            "webCamera": "Kamera Web",
+            "screenSharing": "Berbagi Layar",
+            "shareAnotherScreen": "Bagikan layar lain",
+            "turnOffCameras": "Matikan kamera",
+            "turnOffVideo": "Matikan kamera\/berbagi layar",
+            "turnOffAudioInput": "Bisukan mikrofon",
+            "turnOffScreenSharing": "Matikan berbagi layar",
+            "cameraIsTurnedOff": "Kamera dimatikan",
+            "micIsTurnedOff": "Mikrofon dimatikan",
+            "startFBLive": "Mulai Facebook Livestream",
+            "stopFBLive": "Hentikan Siaran Langsung Facebook",
+            "startRecording": "Mulai Merekam",
+            "stopRecording": "Berhenti Merekam",
+            "start": "Awal",
+            "startClodRecording": "Mulai Perekaman Cloud",
+            "startLocRecording": "Mulai Perekaman Lokal",
+            "stopClodRecording": "Hentikan Perekaman Cloud",
+            "stopLocRecording": "Hentikan Perekaman Lokal",
+            "stop": "Berhenti",
+            "share": "Membagikan",
+            "recordingInProgress": "Rekaman sedang berlangsung...",
+            "fbLiveTitle": "Judul Siaran Langsung",
+            "fbLiveDescription": "Jelaskan Livestream Anda. Tentang apa itu?",
+            "fbOnlyMeLiveAccess": "Hanya Aku",
+            "fbFriendsAccess": "Teman-teman",
+            "fbPublicAccess": "Publik",
+            "publishOnTimeline": "Publikasikan pada timeline",
+            "publishToGroup": "Publikasikan ke grup",
+            "fbStartLive": "Tayang Langsung",
+            "fbStopLive": "Akhiri Siaran Langsung",
+            "streamingSettings": "Pengaturan",
+            "manageStream": "Kelola Siaran Langsung",
+            "fbEmbedCode": "Menanamkan",
+            "copy": "Menyalin",
+            "streamToRTMP": "Streaming ke RTMP khusus",
+            "startBroadcasting": "Mulai siaran",
+            "broadcastingInProgress": "Penyiaran sedang berlangsung"
+        },
+        "audioSettings": {
+            "dialogTitle": "Pengaturan Audio",
+            "speakers": "Pembicara",
+            "microphone": "Mikropon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Kelola Siaran"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Pengaturan Peserta",
+            "disconnect": "Memutuskan",
+            "floatingScreens": "Layar Mengambang",
+            "tiledScreens": "Layar Ubin",
+            "loudestExceptMe": "Paling Berisik Kecuali Aku",
+            "maximizeLoudest": "Maksimalkan yang paling keras",
+            "staticMaximized": "Statis Dimaksimalkan",
+            "fullScreen": "Layar Penuh",
+            "manual": "Buku petunjuk",
+            "turnOffCamera": "Sembunyikan video",
+            "turnOffAudio": "Matikan audio",
+            "turnOffScreenSharing": "Sembunyikan berbagi layar",
+            "turnOnCamera": "Tampilkan video",
+            "turnOnAudio": "Nonaktifkan audio",
+            "turnOnScreenSharing": "Tampilkan berbagi layar"
+        },
+        "streamingSettings": {
+            "title": "Siaran langsung"
+        },
+        "preview": {
+            "Meeting": "Telekonferensi",
+            "MeetingEnded": "Telekonferensi berakhir"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Permintaan untuk Berbicara",
+            "msg": "Saat ini ada {{count}} orang yang berbicara dalam rapat. Apakah Anda ingin mengganti salah satu dari mereka setelah memberi mereka waktu {{seconds}} detik untuk menyelesaikan pembicaraan?"
+        }
+    }
+}

@@ -1,0 +1,256 @@
+{
+    "Shows": "Shows",
+    "Clips": "Klipovi",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Medijski isječci",
+        "Episodes": "Epizode"
+    },
+    "presentation": {
+        "PutTogether": "Hoćete li predstavljati? Možete koristiti ovaj prostor da zajedno otpremite materijale za svoju prezentaciju. Koristite dugme Plus.",
+        "Alert": "Kako događaji počnu, ova stranica će početi da prikazuje njihove odgovarajuće prezentacije",
+        "ClickHereForFullscreen": "Ovdje će se pojaviti prezentacije. Kliknite ovdje za prikaz preko cijelog ekrana.",
+        "question": {
+            "ScanThisQRCode": "Skenirajte ovaj QR kod da odgovorite"
+        }
+    },
+    "NewEpisode": "Nova epizoda",
+    "NewClip": "Napravite novi klip",
+    "NewClipTitlePlaceholder": "Unesite naslov klipa",
+    "NewClipDescriptionPlaceholder": "Unesite opis klipa",
+    "switchVisualization": "Prebacite vizualizaciju",
+    "joinLiveShow": "Pridružite se emisiji uživo",
+    "showTwitchLiveStream": "Prikaži Twitch prijenos uživo",
+    "showVoiceChat": "Prikaži glasovno ćaskanje",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Jeste li sigurni da želite izbaciti ovog korisnika?",
+    "Save": "Sačuvaj",
+    "ViewFullEpisode": "Pogledajte cijelu epizodu",
+    "CreditsEarned": "Zarađeni krediti",
+    "VideoTitle": "Naslov ili URL videa",
+    "AreYouSureDeleteEpisode": "Jeste li sigurni da želite izbrisati ovu epizodu?",
+    "Yes": "Da",
+    "No": "br",
+    "RealTimeCall": "Poziv u realnom vremenu",
+    "JoinWebRTC": "Telekonferencija",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferencija",
+            "description": "online video\/audio konferenciju"
+        },
+        "Media\/calls": {
+            "displayType": "Pozivi",
+            "description": "kategorija za Media\/WebRTC",
+            "MaxRelationsExceeded": "Maksimalni broj poziva je premašen"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "medijski snimak"
+        }
+    },
+    "feeds": {
+        "Title": "Kamere",
+        "filterByTitle": "Pronađite feedove po naslovu",
+        "RequestFeedAccess": "Zatražite pristup feedu",
+        "New": "+ Novi feed",
+        "filterFeeds": "Filtriraj feedove",
+        "NewFeed": "New Feed",
+        "NoneYet": "Još uvijek nema formiranih feedova.",
+        "AreYouSure": "Jeste li sigurni?",
+        "FilterByDate": "Filtriraj po datumu",
+        "newFeeds": "Imate {{1}} novih sažetaka",
+        "Description": "{{1}} feedova",
+        "Keywords": "{{1}} feedova"
+    },
+    "feed": {
+        "HostedBy": "Domaćin je {{name}}",
+        "Name": "Ime",
+        "Conversation": "Razgovor",
+        "CloseFeed": {
+            "button": "Zatvori feed",
+            "Cancel": "Jeste li sigurni da želite zatvoriti ovaj sažetak sadržaja?",
+            "Participant": "Postoji 1 učesnik u ovom feedu",
+            "Participants": "U ovom feedu ima {{count}} učesnika"
+        },
+        "Calendar": "Kalendar",
+        "TitleOfFeed": "Naslov feeda:",
+        "EmptyList": "Prazna lista",
+        "EmptyVideos": "Još nema klipova",
+        "AccessReason": "molimo navedite razlog",
+        "Proceed": "Nastavi",
+        "FeedAlreadyClosed": "Ovaj feed je već zatvoren",
+        "RtmpLinkNote": "Kliknite da kopirate ovu vezu u međuspremnik",
+        "SelectClip": "Odaberite datum koji želite vidjeti",
+        "Request": "Zahtjev"
+    },
+    "newFeed": {
+        "Title": "New Feed",
+        "locationTitle": "Postavite svoju lokaciju",
+        "SetLocation": "Postavite moju lokaciju",
+        "Starting": "Počinje",
+        "Day": "Dan",
+        "Create": "Kreiraj",
+        "Continue": "Nastavi",
+        "FeedTitle": "Naslov feeda",
+        "SetTitle": "Molimo postavite naslov feeda"
+    },
+    "notifications": {
+        "JoinedWebRTC": "pridružio se vašem pozivu",
+        "SubjectJoinedYourCall": "{{subject}} se pridružio vašem pozivu"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Nemate dozvolu da se pridružite ovom prijenosu.",
+        "streamTitle": "{{1}} je započeo telekonferenciju",
+        "allow": {
+            "dialogTitle": "Povezivanje",
+            "microphoneBtn": "Omogući mikrofon",
+            "cameraBtn": "Omogući kameru",
+            "cameraAndMicrophoneBtn": "Omogućite kameru i mikrofon"
+        },
+        "preparing": {
+            "dialogTitle": "Uključite\/isključite kameru ili mikrofon prije nego se pridružite",
+            "micIsOff": "Mikrofon je isključen",
+            "micIsOn": "Mikrofon je uključen",
+            "cameraIsOff": "Kamera je isključena",
+            "cameraIsOn": "Kamera je uključena",
+            "screenSharingIsOn": "Dijeljenje ekrana je uključeno",
+            "screenSharingIsOff": "Dijeli ekran",
+            "joinNow": "Pridružite se pozivu"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Uputstva",
+            "permissionDenied": "Dozvola za {{kind}} odbijena. Za korištenje slijedite ove korake:",
+            "point1": "Idite na &quot;Postavke&quot; -&gt; &quot;Napredno&quot; -&gt; &quot;Privatnost i sigurnost&quot; -&gt; &quot;Postavke stranice&quot; -&gt; &quot;Kamera&quot; ili &quot;Postavke stranice&quot; -&gt; &quot;Mikrofon&quot;",
+            "point2": "Uklonite {{hostname}} sa liste &quot;Blokiraj&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Uputstva",
+            "permissionDenied": "Dozvola za {{kind}} odbijena. Ponovo učitajte ovu stranicu i potvrdite pristup na {{kind}} da biste se pridružili konferenciji."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Uputstva",
+            "permissionDenied": "Dozvola za {{kind}} odbijena. Za korištenje slijedite ove korake:",
+            "point1": "Idite na svoje Android postavke",
+            "point2": "Otvorite &quot;Aplikacije i obavještenja&quot;",
+            "point3": "Pronađite &quot; {{communityName}} &quot; i otvorite ga",
+            "point4": "Dodirnite Dozvole",
+            "point5": "Omogući {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Uputstva",
+            "permissionDenied": "Dozvola za {{kind}} odbijena. Za korištenje slijedite ove korake:",
+            "point1": "Idite na svoje iOS postavke",
+            "point2": "Otvorite &quot;Privatnost&quot;",
+            "point3": "Pronađite {{kind}} i otvorite ga",
+            "point4": "Pronađite &quot; {{communityName}} &quot; i omogućite"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming je počeo"
+        },
+        "notices": {
+            "youJoinedRoom": "Pridružio si se sobi",
+            "joining": "Pridruživanje: {{userName}}",
+            "sbLeftRoom": "{{userName}} je napustio sobu",
+            "switchingRoom": "Promena soba...",
+            "forceDisconnecting": "Bićete isključeni u roku od 5 sekundi",
+            "forceDisconnectingImmediately": "Domaćin vas je isključio",
+            "youLeftRoom": "Napustio si sobu",
+            "codeCopied": "Napustio si sobu",
+            "sbBeganFbLive": "{{userName}} je počeo da emituje ovaj poziv na Fejsbuku",
+            "sbStoppedFbLive": "{{userName}} je prestao da emituje ovaj poziv na Fejsbuku",
+            "youBeganFbLive": "Počeli ste da emitujete ovaj poziv na Fejsbuku",
+            "youStoppedFbLive": "Prestali ste da emitujete ovaj poziv na Fejsbuku",
+            "youStartedLive": "Počeli ste da emitujete ovaj poziv na prilagođeni RTMP",
+            "youStoppedLive": "Prestali ste emitirati ovaj poziv na prilagođeni RTMP",
+            "sbStartedLiveStreaming": "{{userName}} je počeo uživo",
+            "sbStoppedLiveStreaming": "{{userName}} je završilo uživo",
+            "liveStopped": "Došlo je do greške prilikom slanja videa na krajnju tačku",
+            "youBeganVideoRecording": "Počeli ste da snimate ovu konferenciju",
+            "youStoppedVideoRecording": "Prestali ste snimati ovu konferenciju",
+            "linkCopiedToCb": "Link je kopiran u međuspremnik",
+            "codeCopiedToCb": "Kôd je kopiran u međuspremnik",
+            "userHasNoVideo": "Učesnik nema video",
+            "openInBrowserAlert": "Otvorite vezu u Safari pretraživaču da se pridružite konferenciji.",
+            "allowedVideoLimit": "U ovoj prostoriji je dozvoljeno samo {{limit}} video zapisa",
+            "allowedAudioLimit": "U ovoj prostoriji je dozvoljeno samo {{limit}} mikrofona",
+            "processingRecording": "Obrada snimka..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Settings",
+            "webCamera": "Web Camera",
+            "screenSharing": "Screen Sharing",
+            "shareAnotherScreen": "Podijelite drugi ekran",
+            "turnOffCameras": "Isključite kameru",
+            "turnOffVideo": "Isključite dijeljenje kamere\/ekrana",
+            "turnOffAudioInput": "Isključi mikrofon",
+            "turnOffScreenSharing": "Isključite dijeljenje ekrana",
+            "cameraIsTurnedOff": "Kamera je isključena",
+            "micIsTurnedOff": "Mikrofon je isključen",
+            "startFBLive": "Pokrenite Facebook Livestream",
+            "stopFBLive": "Zaustavite Facebook Livestream",
+            "startRecording": "Započni snimanje",
+            "stopRecording": "Zaustavi snimanje",
+            "start": "Počni",
+            "startClodRecording": "Pokrenite snimanje u oblaku",
+            "startLocRecording": "Pokrenite lokalno snimanje",
+            "stopClodRecording": "Zaustavi snimanje u oblaku",
+            "stopLocRecording": "Zaustavite lokalno snimanje",
+            "stop": "Stani",
+            "share": "Dijeli",
+            "recordingInProgress": "Snimanje je u toku...",
+            "fbLiveTitle": "Naslov prijenosa uživo",
+            "fbLiveDescription": "Opišite svoj prijenos uživo. o čemu se radi?",
+            "fbOnlyMeLiveAccess": "Samo ja",
+            "fbFriendsAccess": "Prijatelji",
+            "fbPublicAccess": "Javno",
+            "publishOnTimeline": "Objavite na vremenskoj liniji",
+            "publishToGroup": "Objavi u grupi",
+            "fbStartLive": "Idi uživo",
+            "fbStopLive": "Završi prijenos uživo",
+            "streamingSettings": "Postavke",
+            "manageStream": "Upravljajte prijenosom uživo",
+            "fbEmbedCode": "Embed",
+            "copy": "Kopiraj",
+            "streamToRTMP": "Stream na prilagođeni RTMP",
+            "startBroadcasting": "Počni sa emitovanjem",
+            "broadcastingInProgress": "Emitiranje je u toku"
+        },
+        "audioSettings": {
+            "dialogTitle": "Audio postavke",
+            "speakers": "Zvučnici",
+            "microphone": "Mikrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Manage Broadcast"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Postavke učesnika",
+            "disconnect": "Prekini vezu",
+            "floatingScreens": "Plutajući ekrani",
+            "tiledScreens": "Tiled Screens",
+            "loudestExceptMe": "Najglasniji osim mene",
+            "maximizeLoudest": "Maksimiziraj Najglasnije",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Cijeli ekran",
+            "manual": "Manual",
+            "turnOffCamera": "Sakrij video",
+            "turnOffAudio": "Isključi zvuk",
+            "turnOffScreenSharing": "Sakrij dijeljenje ekrana",
+            "turnOnCamera": "Prikaži video",
+            "turnOnAudio": "Uključi zvuk",
+            "turnOnScreenSharing": "Prikaži dijeljenje ekrana"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferencija",
+            "MeetingEnded": "Telekonferencija je završena"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Zahtjev za govor",
+            "msg": "Na sastanku trenutno govori {{count}} ljudi. Želite li zamijeniti jednog od njih nakon što im date {{seconds}} sekundi da završe govor?"
+        }
+    }
+}

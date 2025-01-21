@@ -1,0 +1,256 @@
+{
+    "Shows": "Ziwonetsero",
+    "Clips": "Makapu",
+    "Video": "Kanema",
+    "Audio": "Zomvera",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "Ndime"
+    },
+    "presentation": {
+        "PutTogether": "Kodi mukuwonetsa? Mutha kugwiritsa ntchito dangali kuti mukweze pamodzi zida za ulaliki wanu. Gwiritsani ntchito batani la Plus.",
+        "Alert": "Zochitika zikayamba, tsamba ili liyamba kuwonetsa maulaliki awo ofanana",
+        "ClickHereForFullscreen": "Zowonetsera ziwoneka apa. Dinani apa kuti mutsegule zenera lonse.",
+        "question": {
+            "ScanThisQRCode": "Jambulani nambala ya QR iyi kuti muyankhe"
+        }
+    },
+    "NewEpisode": "Ndime Yatsopano",
+    "NewClip": "Pangani Kanema Watsopano",
+    "NewClipTitlePlaceholder": "Lowetsani Mutu wa Clip",
+    "NewClipDescriptionPlaceholder": "Lowetsani Clip Description",
+    "switchVisualization": "Sinthani mawonekedwe",
+    "joinLiveShow": "Lowani nawo Live Show",
+    "showTwitchLiveStream": "Onetsani Twitch Live Stream",
+    "showVoiceChat": "Onetsani Voice Chat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Kodi mukutsimikiza kuti mukufuna kusiya munthuyu?",
+    "Save": "Sungani",
+    "ViewFullEpisode": "Onani Ndime Yathunthu",
+    "CreditsEarned": "Ngongole zomwe mwapeza",
+    "VideoTitle": "Mutu wa Kanema kapena URL",
+    "AreYouSureDeleteEpisode": "Kodi mukutsimikiza kuti mukufuna kuchotsa gawoli?",
+    "Yes": "Inde",
+    "No": "Ayi",
+    "RealTimeCall": "Kuyimba Kwanthawi Yeniyeni",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "msonkhano wamakanema\/mawu pa intaneti"
+        },
+        "Media\/calls": {
+            "displayType": "Kuitana",
+            "description": "gulu la Media\/WebRTC",
+            "MaxRelationsExceeded": "Ma foni ambiri adapitilira"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "media clip"
+        }
+    },
+    "feeds": {
+        "Title": "Makamera",
+        "filterByTitle": "Pezani ma feed malinga ndi mutu",
+        "RequestFeedAccess": "Pemphani kupeza chakudya",
+        "New": "+ Chakudya Chatsopano",
+        "filterFeeds": "Zosefera zosefera",
+        "NewFeed": "Chakudya Chatsopano",
+        "NoneYet": "Palibe ma feed omwe adapangidwa.",
+        "AreYouSure": "Mukutsimikiza?",
+        "FilterByDate": "Sefa Ndi Tsiku",
+        "newFeeds": "Muli ndi ma feed {{1}} atsopano",
+        "Description": "{{1}} chakudya",
+        "Keywords": "{{1}} chakudya"
+    },
+    "feed": {
+        "HostedBy": "Yolembedwa ndi {{name}}",
+        "Name": "Dzina",
+        "Conversation": "Kukambirana",
+        "CloseFeed": {
+            "button": "Tsekani Chakudya",
+            "Cancel": "Kodi mukutsimikiza kuti mukufuna kutseka chakudyachi?",
+            "Participant": "Pali m&#39;modzi m&#39;modzi muzakudyazi",
+            "Participants": "Pali anthu {{count}} omwe atenga nawo mbali muzakudyazi"
+        },
+        "Calendar": "Kalendala",
+        "TitleOfFeed": "Mutu wa chakudya:",
+        "EmptyList": "Mndandanda wopanda kanthu",
+        "EmptyVideos": "Palibe makanema apabe",
+        "AccessReason": "chonde nenani chifukwa chake",
+        "Proceed": "Pitirizani",
+        "FeedAlreadyClosed": "Kudyetsa uku kudatsekedwa kale",
+        "RtmpLinkNote": "Dinani kuti mukopere ulalowu ku bolodi lojambula",
+        "SelectClip": "Sankhani tsiku lomwe mukufuna kuwona",
+        "Request": "Pemphani"
+    },
+    "newFeed": {
+        "Title": "Chakudya Chatsopano",
+        "locationTitle": "Khazikitsani Malo Anu",
+        "SetLocation": "Khazikitsani Malo Anga",
+        "Starting": "Kuyambira",
+        "Day": "Tsiku",
+        "Create": "Pangani",
+        "Continue": "Pitirizani",
+        "FeedTitle": "Mutu wa chakudya",
+        "SetTitle": "Chonde khazikitsani mutu wa feed"
+    },
+    "notifications": {
+        "JoinedWebRTC": "adalumikizana ndi foni yanu",
+        "SubjectJoinedYourCall": "{{subject}} adalowa nawo kuyimba kwanu"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Mulibe chilolezo cholowa nawo pamtsinjewu.",
+        "streamTitle": "{{1}} idayambitsa Teleconference",
+        "allow": {
+            "dialogTitle": "Kulumikizana",
+            "microphoneBtn": "Yambitsani Maikolofoni",
+            "cameraBtn": "Yambitsani Kamera",
+            "cameraAndMicrophoneBtn": "Yambitsani Kamera ndi Maikolofoni"
+        },
+        "preparing": {
+            "dialogTitle": "Yatsani\/zimitsa kamera kapena maikolofoni musanalowe",
+            "micIsOff": "Mic yazimitsa",
+            "micIsOn": "Mic yayatsidwa",
+            "cameraIsOff": "Kamera ndiyozimitsa",
+            "cameraIsOn": "Kamera yayatsidwa",
+            "screenSharingIsOn": "Kugawana skrini kwayatsidwa",
+            "screenSharingIsOff": "Gawani skrini",
+            "joinNow": "Lowani Kuyitana"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Malangizo",
+            "permissionDenied": "Chilolezo cha {{kind}} chakanidwa. Kuti mugwiritse ntchito chonde tsatirani izi:",
+            "point1": "Pitani ku &quot;Zikhazikiko&quot; -&gt; &quot;Zapamwamba&quot; -&gt; &quot;Zazinsinsi ndi chitetezo&quot; -&gt; &quot;Zikhazikiko za Tsamba&quot; -&gt; &quot;Kamera&quot; kapena &quot;Zikhazikiko za Tsamba&quot; -&gt; &quot;Mayikrofoni&quot;",
+            "point2": "Chotsani {{hostname}} pamndandanda wa &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Malangizo",
+            "permissionDenied": "Chilolezo cha {{kind}} chakanidwa. Chonde tsegulaninso tsambali ndikutsimikizira kulowa kwa {{kind}} kuti mulowe nawo pamsonkhano."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Malangizo",
+            "permissionDenied": "Chilolezo cha {{kind}} chakanidwa. Kuti mugwiritse ntchito chonde tsatirani izi:",
+            "point1": "Pitani ku Zikhazikiko wanu Android",
+            "point2": "Tsegulani &quot;Mapulogalamu &amp; zidziwitso&quot;",
+            "point3": "Pezani &quot; {{communityName}} &quot; ndikutsegula",
+            "point4": "Dinani pa Zilolezo",
+            "point5": "Thandizani {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Malangizo",
+            "permissionDenied": "Chilolezo cha {{kind}} chakanidwa. Kuti mugwiritse ntchito chonde tsatirani izi:",
+            "point1": "Pitani ku Zikhazikiko wanu iOS",
+            "point2": "Tsegulani &quot;Zazinsinsi&quot;",
+            "point3": "Pezani {{kind}} ndikutsegula",
+            "point4": "Pezani &quot; {{communityName}} &quot; ndikuyambitsa"
+        },
+        "fbLive": {
+            "dialogTitle": "Kutsatsa kwapa Facebook kwayamba"
+        },
+        "notices": {
+            "youJoinedRoom": "Munalowa m&#39;chipindamo",
+            "joining": "Kugwirizana: {{userName}}",
+            "sbLeftRoom": "{{userName}} adatuluka mchipindamo",
+            "switchingRoom": "Chipinda chosinthira...",
+            "forceDisconnecting": "Mudzachotsedwa pakadutsa masekondi asanu",
+            "forceDisconnectingImmediately": "Mudalumikizidwe ndi wolandila",
+            "youLeftRoom": "Munatuluka m’chipindamo",
+            "codeCopied": "Munatuluka m’chipindamo",
+            "sbBeganFbLive": "{{userName}} idayamba kuulutsa kuyimba uku pa Facebook",
+            "sbStoppedFbLive": "{{userName}} anasiya kuulutsa kuyimba uku pa Facebook",
+            "youBeganFbLive": "Munayamba kuulutsa foniyi pa Facebook",
+            "youStoppedFbLive": "Mwasiya kuwulutsa foniyi pa Facebook",
+            "youStartedLive": "Munayamba kuulutsa foniyi ku RTMP yokonda",
+            "youStoppedLive": "Mwasiya kuyimba foniyi ku RTMP yokonda",
+            "sbStartedLiveStreaming": "{{userName}} inayamba moyo",
+            "sbStoppedLiveStreaming": "{{userName}} inatha moyo",
+            "liveStopped": "Panali vuto potumiza kanema kumapeto",
+            "youBeganVideoRecording": "Mwayamba kujambula msonkhano uno",
+            "youStoppedVideoRecording": "Mwasiya kujambula msonkhano uno",
+            "linkCopiedToCb": "Ulalo wakoperedwa ku bolodi",
+            "codeCopiedToCb": "Khodi idakopedwa pa bolodi",
+            "userHasNoVideo": "Wophunzira alibe kanema",
+            "openInBrowserAlert": "Tsegulani ulalo mu msakatuli wa Safari kuti mulowe nawo pamsonkhano.",
+            "allowedVideoLimit": "Makanema {{limit}} okha omwe amaloledwa mchipindachi",
+            "allowedAudioLimit": "Maikolofoni {{limit}} okha ndi omwe amaloledwa kulowa mchipindachi",
+            "processingRecording": "Kukonza zojambulira..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Kanema Zokonda",
+            "webCamera": "Kamera ya Webusayiti",
+            "screenSharing": "Kugawana Screen",
+            "shareAnotherScreen": "Gawani chophimba china",
+            "turnOffCameras": "Zimitsani kamera",
+            "turnOffVideo": "Zimitsani kugawana kamera\/zenera",
+            "turnOffAudioInput": "Tsekani maikolofoni",
+            "turnOffScreenSharing": "Zimitsani kugawana zenera",
+            "cameraIsTurnedOff": "Kamera yazimitsidwa",
+            "micIsTurnedOff": "Maikolofoni yazimitsidwa",
+            "startFBLive": "Yambitsani Facebook Livestream",
+            "stopFBLive": "Letsani Facebook Livestream",
+            "startRecording": "Yambani Kujambula",
+            "stopRecording": "Lekani Kujambulitsa",
+            "start": "Yambani",
+            "startClodRecording": "Yambitsani Cloud Record",
+            "startLocRecording": "Yambitsani Kujambulira Kwapafupi",
+            "stopClodRecording": "Lekani Kujambulitsa Mtambo",
+            "stopLocRecording": "Imani Kujambulira Kwapafupi",
+            "stop": "Imani",
+            "share": "Gawani",
+            "recordingInProgress": "Kujambula kuli mkati...",
+            "fbLiveTitle": "Mutu wa Livestream",
+            "fbLiveDescription": "Fotokozani Livestream yanu. Ndi chiyani?",
+            "fbOnlyMeLiveAccess": "Ine ndekha",
+            "fbFriendsAccess": "Anzanga",
+            "fbPublicAccess": "Pagulu",
+            "publishOnTimeline": "Sindikizani pa nthawi",
+            "publishToGroup": "Sindikizani ku gulu",
+            "fbStartLive": "Pitani Live",
+            "fbStopLive": "Malizitsani Livestream",
+            "streamingSettings": "Zokonda",
+            "manageStream": "Sinthani Livestream",
+            "fbEmbedCode": "Ikani",
+            "copy": "Koperani",
+            "streamToRTMP": "Pitani ku RTMP yokhazikika",
+            "startBroadcasting": "Yambani kuwulutsa",
+            "broadcastingInProgress": "Kuwulutsa kuli mkati"
+        },
+        "audioSettings": {
+            "dialogTitle": "Zokonda pa Audio",
+            "speakers": "Olankhula",
+            "microphone": "Maikolofoni"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Sinthani Kuwulutsa"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Zokonda pagulu",
+            "disconnect": "Lumikizani",
+            "floatingScreens": "Zowonetsera Zoyandama",
+            "tiledScreens": "Mawonekedwe a matailosi",
+            "loudestExceptMe": "Phokoso Kwambiri Kupatula Ine",
+            "maximizeLoudest": "Onetsani Loudest",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Kudzaza zenera lonse",
+            "manual": "Pamanja",
+            "turnOffCamera": "Bisani kanema",
+            "turnOffAudio": "Tsitsani mawu",
+            "turnOffScreenSharing": "Bisani kugawana zenera",
+            "turnOnCamera": "Onetsani kanema",
+            "turnOnAudio": "Tsegulani mawu",
+            "turnOnScreenSharing": "Onetsani kugawana zenera"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Teleconference inatha"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Pemphani Kuti Mulankhule",
+            "msg": "Pakali pano pali anthu {{count}} omwe akuyankhula pamsonkhanowu. Kodi mukufuna kusintha imodzi mwaiwo mutawalola masekondi {{seconds}} kuti amalize kulankhula?"
+        }
+    }
+}

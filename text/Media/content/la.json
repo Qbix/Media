@@ -1,0 +1,256 @@
+{
+    "Shows": "Ostendit &quot;",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "Episodes"
+    },
+    "presentation": {
+        "PutTogether": "Visne praesentare? Hoc spatio uti potes ut materias simul colligas pro praesentatione tua. Plus utere deprimendo.",
+        "Alert": "Ut certe incipiunt, haec pagina incipiet suas praesentationes correspondentes ostendere",
+        "ClickHereForFullscreen": "Praesentationes hic apparent. Hic strepita ut plena screen.",
+        "question": {
+            "ScanThisQRCode": "Hoc QR code ad respondendum scan"
+        }
+    },
+    "NewEpisode": "Novae Episode",
+    "NewClip": "Novam Clip",
+    "NewClipTitlePlaceholder": "Intra Tondeo Title",
+    "NewClipDescriptionPlaceholder": "Intra Clip Description",
+    "switchVisualization": "Visualization switch",
+    "joinLiveShow": "Iungere Ago Show",
+    "showTwitchLiveStream": "Show Twitch live stream",
+    "showVoiceChat": "Show Voice Chat",
+    "LiveShow": "Vivamus Show",
+    "AreYouSureKick": "Visne vero hunc usorem calcitrare?",
+    "Save": "Servare",
+    "ViewFullEpisode": "View Full Episode",
+    "CreditsEarned": "Promeritum meruit",
+    "VideoTitle": "Vide Titulus vel URL",
+    "AreYouSureDeleteEpisode": "Visne vero hanc rem delere?",
+    "Yes": "Ita",
+    "No": "No",
+    "RealTimeCall": "Verus tempus Call",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "an online video \/ audio colloquium"
+        },
+        "Media\/calls": {
+            "displayType": "vocat",
+            "description": "genus ad Media\/WebRTC",
+            "MaxRelationsExceeded": "Max vocat exceditur"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "media clip"
+        }
+    },
+    "feeds": {
+        "Title": "Cameras",
+        "filterByTitle": "Invenire feeds by title",
+        "RequestFeedAccess": "Request accessum feed",
+        "New": "+ New Feed",
+        "filterFeeds": "Filtrum feeds",
+        "NewFeed": "New Feed",
+        "NoneYet": "Nulla alit formata sed.",
+        "AreYouSure": "Certus es?",
+        "FilterByDate": "Data eliquare",
+        "newFeeds": "Habes {{1}} nova feeds",
+        "Description": "{{1}} feeds",
+        "Keywords": "{{1}} feeds"
+    },
+    "feed": {
+        "HostedBy": "Hosted by {{name}}",
+        "Name": "Nomen",
+        "Conversation": "Colloquium",
+        "CloseFeed": {
+            "button": "Close Feed",
+            "Cancel": "Certusne es hanc pascere claudere vis?",
+            "Participant": "Est 1 particeps in hac feed",
+            "Participants": "Sunt participes {{count}} in hac feed"
+        },
+        "Calendar": "Calendarium",
+        "TitleOfFeed": "Titulus pascendi:",
+        "EmptyList": "Inanis index",
+        "EmptyVideos": "No clips adhuc",
+        "AccessReason": "Quaeso dic quod",
+        "Proceed": "Perge",
+        "FeedAlreadyClosed": "Hoc feed iam clausi",
+        "RtmpLinkNote": "Click to effingo hanc nexum ut clipboard",
+        "SelectClip": "Eligere diem vis videre",
+        "Request": "Petitio"
+    },
+    "newFeed": {
+        "Title": "New Feed",
+        "locationTitle": "Pone tibi Location",
+        "SetLocation": "Pone mihi Location",
+        "Starting": "Satus",
+        "Day": "dies",
+        "Create": "Create",
+        "Continue": "continue",
+        "FeedTitle": "Pasce titulum",
+        "SetTitle": "Please set feed title"
+    },
+    "notifications": {
+        "JoinedWebRTC": "joined your call",
+        "SubjectJoinedYourCall": "{{subject}} adiuncta vocationis tuae"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Non licebit tibi hunc rivum iungere.",
+        "streamTitle": "{{1}} incepit Teleconference",
+        "allow": {
+            "dialogTitle": "Connectens",
+            "microphoneBtn": "Admitte Microphone",
+            "cameraBtn": "Admitte Camera",
+            "cameraAndMicrophoneBtn": "Admitte Camera et Microphone"
+        },
+        "preparing": {
+            "dialogTitle": "Turn camera aut microform in \/ off coram te iungere",
+            "micIsOff": "Mic non vigilat",
+            "micIsOn": "C. est on",
+            "cameraIsOff": "Camera non vigilat",
+            "cameraIsOn": "Camera on",
+            "screenSharingIsOn": "Screensharing in",
+            "screenSharingIsOff": "Share screen",
+            "joinNow": "Iungere Call"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instructiones",
+            "permissionDenied": "Licentia {{kind}} negavit. Uti placet, hos gradus sequere;",
+            "point1": "Perge ad &quot;Optiones&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Optiones&quot; -&gt; &quot;Camera&quot; vel &quot;Site Optiones&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Aufer {{hostname}} ex &quot;Block&quot; album"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instructiones",
+            "permissionDenied": "{{kind}} Licentiam negavit. Quaeso, hanc paginam reload et confirma aditum ad {{kind}} colloquium coniungendi."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instructiones",
+            "permissionDenied": "{{kind}} Licentiam negavit. Uti placet, hos gradus sequere;",
+            "point1": "Vade ad Android Occasus",
+            "point2": "Apertum &quot;Apps &amp; notificationes&quot;",
+            "point3": "Find &quot; {{communityName}} &quot; et aperi",
+            "point4": "Tap in Permissionibus",
+            "point5": "Admitte {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instructiones",
+            "permissionDenied": "{{kind}} Licentiam negavit. Uti placet, hos gradus sequere;",
+            "point1": "Vade ad iOS Optiones",
+            "point2": "Apertum &quot;Privacy&quot;",
+            "point3": "Find {{kind}} et aperire",
+            "point4": "Find &quot; {{communityName}} &quot; et da"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live stream started"
+        },
+        "notices": {
+            "youJoinedRoom": "Accessistis ad cubiculum",
+            "joining": "Coniungens: {{userName}}",
+            "sbLeftRoom": "{{userName}} reliquit locus",
+            "switchingRoom": "Commutandi locus...",
+            "forceDisconnecting": "V seconds eris in disiungitur",
+            "forceDisconnectingImmediately": "Disiungitur ab hospite",
+            "youLeftRoom": "Locus egressus es",
+            "codeCopied": "Locus egressus es",
+            "sbBeganFbLive": "{{userName}} vocationem in Facebook evulgandi coepit",
+            "sbStoppedFbLive": "{{userName}} cessaverunt hanc vocationem in Facebook",
+            "youBeganFbLive": "Incepisti hanc vocationem in Facebook",
+            "youStoppedFbLive": "In Facebook vocationem lacus cessasti",
+            "youStartedLive": "Hanc vocationem ad consuetudinem RTMP evulgandam coepisti",
+            "youStoppedLive": "Hoc vocationem ad consuetudinem RTMP molestie lacus cessasti",
+            "sbStartedLiveStreaming": "{{userName}} incepit vivere",
+            "sbStoppedLiveStreaming": "{{userName}} finita vivere",
+            "liveStopped": "Error cum mittens video ad endpoint occurrit",
+            "youBeganVideoRecording": "Hoc colloquium coepisti",
+            "youStoppedVideoRecording": "Hoc colloquium cessasti",
+            "linkCopiedToCb": "Link copied ut clipboard",
+            "codeCopiedToCb": "Code copied ut clipboard",
+            "userHasNoVideo": "Participem non habet video",
+            "openInBrowserAlert": "Vinculum apertum in navigatro Safari ad colloquium iungere.",
+            "allowedVideoLimit": "Tantum {{limit}} video licet in hoc cubiculo",
+            "allowedAudioLimit": "Tantum {{limit}} mikrofonu licet in hoc cella",
+            "processingRecording": "Processing the recording..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Occasus",
+            "webCamera": "Web Camera",
+            "screenSharing": "Screen Socius",
+            "shareAnotherScreen": "Participes aliud screen",
+            "turnOffCameras": "Illuminationes camera",
+            "turnOffVideo": "Averte camera \/ screen sharing",
+            "turnOffAudioInput": "tortor ligula, muta",
+            "turnOffScreenSharing": "Illuminationes screen sharing",
+            "cameraIsTurnedOff": "Camera est off",
+            "micIsTurnedOff": "Tortor est off",
+            "startFBLive": "Satus Facebook Livestream",
+            "stopFBLive": "Subsisto Facebook Livestream",
+            "startRecording": "Satus Book",
+            "stopRecording": "Subsisto Book",
+            "start": "Satus",
+            "startClodRecording": "Satus Cloud Book",
+            "startLocRecording": "Satus Locus Record",
+            "stopClodRecording": "Nolite Cloud Book",
+            "stopLocRecording": "Subsisto Local Book",
+            "stop": "Subsisto",
+            "share": "Share",
+            "recordingInProgress": "Recordatio est in progressu...",
+            "fbLiveTitle": "Titulus Livestream",
+            "fbLiveDescription": "Livestream describere tuum. Quid ergo est?",
+            "fbOnlyMeLiveAccess": "solum Me",
+            "fbFriendsAccess": "amici",
+            "fbPublicAccess": "Publica",
+            "publishOnTimeline": "Publica in timeline",
+            "publishToGroup": "Ut coetus nuntiare",
+            "fbStartLive": "Ite vive",
+            "fbStopLive": "Finis Livestream",
+            "streamingSettings": "Occasus",
+            "manageStream": "Curo Livestream",
+            "fbEmbedCode": "Embed",
+            "copy": "Copy",
+            "streamToRTMP": "Amnis ad morem RTMP",
+            "startBroadcasting": "Satus molestie lacus",
+            "broadcastingInProgress": "Progressus est radiophonicus, datus"
+        },
+        "audioSettings": {
+            "dialogTitle": "Audio Optiones",
+            "speakers": "Orator",
+            "microphone": "Microphone"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Curo Iaci"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Participem Occasus",
+            "disconnect": "Disconnect",
+            "floatingScreens": "Natantes Screens",
+            "tiledScreens": "Tiled Screens",
+            "loudestExceptMe": "Maxima praeter Me",
+            "maximizeLoudest": "Maximize maxima",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Plena Screen",
+            "manual": "Manual",
+            "turnOffCamera": "celare video",
+            "turnOffAudio": "Mutum audio",
+            "turnOffScreenSharing": "Celare screen sharing",
+            "turnOnCamera": "Ostende video",
+            "turnOnAudio": "audio unmute",
+            "turnOnScreenSharing": "Ostende screen sharing"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Teleconference finivit"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Request loqui",
+            "msg": "Adsunt {{count}} homines in conventu loquentes. Visne unum ex illis reponere, cum {{seconds}} secundis ad finiendum sermonem permittens?"
+        }
+    }
+}
