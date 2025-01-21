@@ -1,0 +1,256 @@
+{
+    "Shows": "සංදර්ශන",
+    "Clips": "ක්ලිප්",
+    "Video": "වීඩියෝ",
+    "Audio": "ශ්රව්ය උපකරණ",
+    "categories": {
+        "Clips": "මාධ්ය ක්ලිප්",
+        "Episodes": "කථාංග"
+    },
+    "presentation": {
+        "PutTogether": "ඔබ ඉදිරිපත් කරනවාද? ඔබේ ඉදිරිපත් කිරීම සඳහා ද්‍රව්‍ය එකට උඩුගත කිරීමට ඔබට මෙම ඉඩ භාවිතා කළ හැක. ප්ලස් බොත්තම භාවිතා කරන්න.",
+        "Alert": "සිදුවීම් ආරම්භ වන විට, මෙම පිටුව ඔවුන්ගේ අනුරූප ඉදිරිපත් කිරීම් පෙන්වීමට පටන් ගනී",
+        "ClickHereForFullscreen": "ඉදිරිපත් කිරීම් මෙහි දිස්වනු ඇත. සම්පූර්ණ තිරයට යාමට මෙතන ක්ලික් කරන්න.",
+        "question": {
+            "ScanThisQRCode": "පිළිතුරු දීමට මෙම QR කේතය පරිලෝකනය කරන්න"
+        }
+    },
+    "NewEpisode": "නව කථාංගය",
+    "NewClip": "නව ක්ලිප් එකක් සාදන්න",
+    "NewClipTitlePlaceholder": "පසුරු මාතෘකාව ඇතුළත් කරන්න",
+    "NewClipDescriptionPlaceholder": "ක්ලිප් විස්තරය ඇතුලත් කරන්න",
+    "switchVisualization": "දෘශ්‍යකරණය මාරු කරන්න",
+    "joinLiveShow": "සජීවී සංදර්ශනයට සම්බන්ධ වන්න",
+    "showTwitchLiveStream": "Twitch සජීවී ප්‍රවාහය පෙන්වන්න",
+    "showVoiceChat": "Voice Chat පෙන්වන්න",
+    "LiveShow": "සජීවී සංදර්ශනය",
+    "AreYouSureKick": "ඔබට මෙම පරිශීලකයා ඉවත් කිරීමට අවශ්‍ය බව විශ්වාසද?",
+    "Save": "සුරකින්න",
+    "ViewFullEpisode": "සම්පූර්ණ කථාංගය බලන්න",
+    "CreditsEarned": "උපයාගත් ණය",
+    "VideoTitle": "වීඩියෝ මාතෘකාව හෝ URL",
+    "AreYouSureDeleteEpisode": "ඔබට මෙම කථාංගය මැකීමට අවශ්‍ය බව විශ්වාසද?",
+    "Yes": "ඔව්",
+    "No": "නැත",
+    "RealTimeCall": "තත්‍ය කාලීන ඇමතුම",
+    "JoinWebRTC": "දුරස්ථ සම්මන්ත්රණ",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "දුරස්ථ සම්මන්ත්රණ",
+            "description": "මාර්ගගත වීඩියෝ\/ශ්‍රව්‍ය සම්මන්ත්‍රණයක්"
+        },
+        "Media\/calls": {
+            "displayType": "ඇමතුම්",
+            "description": "මාධ්‍ය\/WebRTC සඳහා ප්‍රවර්ගය",
+            "MaxRelationsExceeded": "උපරිම ඇමතුම් ඉක්මවා ඇත"
+        },
+        "Media\/clip": {
+            "displayType": "ක්ලිප්",
+            "description": "මාධ්‍ය ක්ලිප්"
+        }
+    },
+    "feeds": {
+        "Title": "කැමරා",
+        "filterByTitle": "මාතෘකාව අනුව සංග්‍රහ සොයන්න",
+        "RequestFeedAccess": "පෝෂක ප්‍රවේශය ඉල්ලන්න",
+        "New": "+ නව සංග්‍රහය",
+        "filterFeeds": "පෙරහන් සංග්රහ",
+        "NewFeed": "නව සංග්‍රහය",
+        "NoneYet": "තවම සංග්‍රහ පිහිටුවා නැත.",
+        "AreYouSure": "ඔයාට විශ්වාස ද?",
+        "FilterByDate": "දිනය අනුව පෙරහන් කරන්න",
+        "newFeeds": "ඔබට නව සංග්‍රහ {{1}} ඇත",
+        "Description": "{{1}} පෝෂණය",
+        "Keywords": "{{1}} පෝෂණය"
+    },
+    "feed": {
+        "HostedBy": "{{name}} විසින් සත්කාරකත්වය සපයනු ලැබේ",
+        "Name": "නම",
+        "Conversation": "සංවාදය",
+        "CloseFeed": {
+            "button": "සංග්‍රහය වසන්න",
+            "Cancel": "ඔබට මෙම සංග්‍රහය වැසීමට අවශ්‍ය බව විශ්වාසද?",
+            "Participant": "මෙම සංග්‍රහයේ සහභාගිවන්නන් 1ක් සිටී",
+            "Participants": "මෙම සංග්‍රහයට සහභාගිවන්නන් {{count}} ඇත"
+        },
+        "Calendar": "දින දර්ශනය",
+        "TitleOfFeed": "සංග්‍රහයේ මාතෘකාව:",
+        "EmptyList": "හිස් ලැයිස්තුව",
+        "EmptyVideos": "තවම ක්ලිප් නැත",
+        "AccessReason": "කරුණාකර හේතුව සඳහන් කරන්න",
+        "Proceed": "ඉදිරියට යන්න",
+        "FeedAlreadyClosed": "මෙම සංග්‍රහය දැනටමත් වසා ඇත",
+        "RtmpLinkNote": "මෙම සබැඳිය පසුරු පුවරුවට පිටපත් කිරීමට ක්ලික් කරන්න",
+        "SelectClip": "ඔබට බැලීමට අවශ්‍ය දිනය තෝරන්න",
+        "Request": "ඉල්ලීම"
+    },
+    "newFeed": {
+        "Title": "නව සංග්‍රහය",
+        "locationTitle": "ඔබගේ ස්ථානය සකසන්න",
+        "SetLocation": "මගේ ස්ථානය සකසන්න",
+        "Starting": "පටන් ගන්නවා",
+        "Day": "දවස",
+        "Create": "නිර්මාණය කරන්න",
+        "Continue": "දිගටම කරගෙන යන්න",
+        "FeedTitle": "පෝෂක මාතෘකාව",
+        "SetTitle": "කරුණාකර සංග්‍රහ මාතෘකාව සකසන්න"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ඔබගේ ඇමතුමට සම්බන්ධ විය",
+        "SubjectJoinedYourCall": "{{subject}} ඔබේ ඇමතුමට සම්බන්ධ විය"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "ඔබට මෙම ප්‍රවාහයට සම්බන්ධ වීමට අවසර නැත.",
+        "streamTitle": "{{1}} Teleconference එකක් පටන් ගත්තා",
+        "allow": {
+            "dialogTitle": "සම්බන්ධ වෙමින්",
+            "microphoneBtn": "මයික්‍රෆෝනය සබල කරන්න",
+            "cameraBtn": "කැමරාව සබල කරන්න",
+            "cameraAndMicrophoneBtn": "කැමරාව සහ මයික්‍රෆෝනය සබල කරන්න"
+        },
+        "preparing": {
+            "dialogTitle": "ඔබ සම්බන්ධ වීමට පෙර කැමරාව හෝ මයික්‍රෆෝනය සක්‍රිය \/ අක්‍රිය කරන්න",
+            "micIsOff": "මයික් ක්‍රියාවිරහිතයි",
+            "micIsOn": "මයික් ක්‍රියාත්මකයි",
+            "cameraIsOff": "කැමරාව ක්‍රියාවිරහිතයි",
+            "cameraIsOn": "කැමරාව ක්‍රියාත්මකයි",
+            "screenSharingIsOn": "තිර බෙදාගැනීම ක්‍රියාත්මකයි",
+            "screenSharingIsOff": "තිරය බෙදා ගන්න",
+            "joinNow": "ඇමතුමට සම්බන්ධ වන්න"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "උපදෙස්",
+            "permissionDenied": "{{kind}} සඳහා අවසරය ප්‍රතික්ෂේප විය. එය භාවිතා කිරීමට කරුණාකර පහත පියවර අනුගමනය කරන්න:",
+            "point1": "&quot;සැකසීම්&quot; -&gt; &quot;උසස්&quot; -&gt; &quot;පෞද්ගලිකත්වය සහ ආරක්ෂාව&quot; -&gt; &quot;අඩවි සැකසීම්&quot; -&gt; &quot;කැමරාව&quot; හෝ &quot;අඩවි සැකසීම්&quot; -&gt; &quot;මයික්‍රොෆෝනය&quot; වෙත යන්න",
+            "point2": "&quot;බ්ලොක්&quot; ලැයිස්තුවෙන් {{hostname}} ඉවත් කරන්න"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "උපදෙස්",
+            "permissionDenied": "{{kind}} සඳහා අවසරය ප්‍රතික්ෂේප විය. කරුණාකර මෙම පිටුව නැවත පූරණය කර සම්මන්ත්‍රණයට සම්බන්ධ වීමට {{kind}} වෙත ප්‍රවේශය තහවුරු කරන්න."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "උපදෙස්",
+            "permissionDenied": "{{kind}} සඳහා අවසරය ප්‍රතික්ෂේප විය. එය භාවිතා කිරීමට කරුණාකර පහත පියවර අනුගමනය කරන්න:",
+            "point1": "ඔබගේ Android සැකසීම් වෙත යන්න",
+            "point2": "&quot;යෙදුම් සහ දැනුම්දීම්&quot; විවෘත කරන්න",
+            "point3": "&quot; {{communityName}} &quot; සොයාගෙන එය විවෘත කරන්න",
+            "point4": "අවසර මත තට්ටු කරන්න",
+            "point5": "{{kind}} සබල කරන්න"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "උපදෙස්",
+            "permissionDenied": "{{kind}} සඳහා අවසරය ප්‍රතික්ෂේප විය. එය භාවිතා කිරීමට කරුණාකර පහත පියවර අනුගමනය කරන්න:",
+            "point1": "ඔබගේ iOS සැකසීම් වෙත යන්න",
+            "point2": "&quot;පෞද්ගලිකත්වය&quot; විවෘත කරන්න",
+            "point3": "{{kind}} සොයාගෙන එය විවෘත කරන්න",
+            "point4": "&quot; {{communityName}} &quot; සොයාගෙන සබල කරන්න"
+        },
+        "fbLive": {
+            "dialogTitle": "ෆේස්බුක් සජීවී විකාශනය ආරම්භ විය"
+        },
+        "notices": {
+            "youJoinedRoom": "ඔබ කාමරයට එකතු විය",
+            "joining": "සම්බන්ධ වීම: {{userName}}",
+            "sbLeftRoom": "{{userName}} කාමරයෙන් පිටව ගියේය",
+            "switchingRoom": "කාමරය මාරු කරමින්...",
+            "forceDisconnecting": "තත්පර 5ක් ඇතුළත ඔබ විසන්ධි වේ",
+            "forceDisconnectingImmediately": "ඔබ සත්කාරකයකු විසින් විසන්ධි කර ඇත",
+            "youLeftRoom": "ඔබ කාමරයෙන් පිටව ගියා",
+            "codeCopied": "ඔබ කාමරයෙන් පිටව ගියා",
+            "sbBeganFbLive": "{{userName}} මෙම ඇමතුම ෆේස්බුක් හි විකාශනය කිරීමට පටන් ගත්තේය",
+            "sbStoppedFbLive": "{{userName}} මෙම ඇමතුම ෆේස්බුක් හි විකාශනය කිරීම නතර කළේය",
+            "youBeganFbLive": "ඔබ මෙම ඇමතුම Facebook හි විකාශනය කිරීමට පටන් ගත්තේය",
+            "youStoppedFbLive": "ඔබ මෙම ඇමතුම Facebook හි විකාශනය කිරීම නතර කළා",
+            "youStartedLive": "ඔබ මෙම ඇමතුම අභිරුචි RTMP වෙත විකාශනය කිරීමට පටන් ගත්තේය",
+            "youStoppedLive": "ඔබ මෙම ඇමතුම අභිරුචි RTMP වෙත විකාශනය කිරීම නතර කර ඇත",
+            "sbStartedLiveStreaming": "{{userName}} සජීවීව ආරම්භ විය",
+            "sbStoppedLiveStreaming": "{{userName}} සජීවීව අවසන් විය",
+            "liveStopped": "අන්ත ලක්ෂ්‍යයට වීඩියෝව යැවීමේදී දෝෂයක් ඇති විය",
+            "youBeganVideoRecording": "ඔබ මෙම සමුළුව පටිගත කිරීම ආරම්භ කළා",
+            "youStoppedVideoRecording": "ඔබ මෙම සමුළුව පටිගත කිරීම නැවැත්තුවා",
+            "linkCopiedToCb": "සබැඳිය පසුරු පුවරුවට පිටපත් කරන ලදී",
+            "codeCopiedToCb": "කේතය පසුරු පුවරුවට පිටපත් කරන ලදී",
+            "userHasNoVideo": "සහභාගිවන්නාගේ වීඩියෝවක් නොමැත",
+            "openInBrowserAlert": "සමුළුවට සම්බන්ධ වීමට සෆාරි බ්‍රවුසරයේ සබැඳිය විවෘත කරන්න.",
+            "allowedVideoLimit": "මෙම කාමරයේ වීඩියෝ {{limit}} පමණක් අවසර ඇත",
+            "allowedAudioLimit": "මෙම කාමරය තුළ මයික්‍රෆෝන {{limit}} පමණක් අවසර ඇත",
+            "processingRecording": "පටිගත කිරීම සකසමින්..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "වීඩියෝ සැකසුම්",
+            "webCamera": "වෙබ් කැමරාව",
+            "screenSharing": "තිර බෙදාගැනීම",
+            "shareAnotherScreen": "වෙනත් තිරයක් බෙදා ගන්න",
+            "turnOffCameras": "කැමරාව ක්‍රියා විරහිත කරන්න",
+            "turnOffVideo": "කැමරා\/තිර බෙදාගැනීම අක්‍රිය කරන්න",
+            "turnOffAudioInput": "මයික්‍රෆෝනය නිශ්ශබ්ද කරන්න",
+            "turnOffScreenSharing": "තිර බෙදාගැනීම අක්‍රිය කරන්න",
+            "cameraIsTurnedOff": "කැමරාව ක්‍රියා විරහිත කර ඇත",
+            "micIsTurnedOff": "මයික්‍රෆෝනය ක්‍රියාවිරහිත කර ඇත",
+            "startFBLive": "Facebook Livestream ආරම්භ කරන්න",
+            "stopFBLive": "Facebook Livestream නවත්වන්න",
+            "startRecording": "පටිගත කිරීම ආරම්භ කරන්න",
+            "stopRecording": "පටිගත කිරීම නවත්වන්න",
+            "start": "ආරම්භ කරන්න",
+            "startClodRecording": "වලාකුළු පටිගත කිරීම ආරම්භ කරන්න",
+            "startLocRecording": "දේශීය පටිගත කිරීම ආරම්භ කරන්න",
+            "stopClodRecording": "වලාකුළු පටිගත කිරීම නවත්වන්න",
+            "stopLocRecording": "දේශීය පටිගත කිරීම නවත්වන්න",
+            "stop": "නවත්වන්න",
+            "share": "බෙදාගන්න",
+            "recordingInProgress": "පටිගත කිරීම සිදු වෙමින් පවතී...",
+            "fbLiveTitle": "සජීවී ප්‍රවාහයේ මාතෘකාව",
+            "fbLiveDescription": "ඔබේ සජීවී ප්‍රවාහය විස්තර කරන්න. එය කුමක් ගැනද?",
+            "fbOnlyMeLiveAccess": "මම විතරයි",
+            "fbFriendsAccess": "මිතුරන්",
+            "fbPublicAccess": "පොදු",
+            "publishOnTimeline": "කාලරාමුව මත පළ කරන්න",
+            "publishToGroup": "සමූහයට ප්‍රකාශ කරන්න",
+            "fbStartLive": "සජීවීව යන්න",
+            "fbStopLive": "සජීවී ප්‍රවාහය අවසන් කරන්න",
+            "streamingSettings": "සැකසීම්",
+            "manageStream": "Livestream කළමනාකරණය කරන්න",
+            "fbEmbedCode": "Embed",
+            "copy": "පිටපත් කරන්න",
+            "streamToRTMP": "අභිරුචි RTMP වෙත ප්‍රවාහ කරන්න",
+            "startBroadcasting": "විකාශනය ආරම්භ කරන්න",
+            "broadcastingInProgress": "විකාශනය සිදු වෙමින් පවතී"
+        },
+        "audioSettings": {
+            "dialogTitle": "ශ්රව්ය සැකසුම්",
+            "speakers": "කථිකයන්",
+            "microphone": "මයික්රෆෝනය"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "විකාශනය කළමනාකරණය කරන්න"
+        },
+        "participantsPopup": {
+            "dialogTitle": "සහභාගිවන්නන්ගේ සැකසුම්",
+            "disconnect": "විසන්ධි කරන්න",
+            "floatingScreens": "පාවෙන තිර",
+            "tiledScreens": "ටයිල් කළ තිර",
+            "loudestExceptMe": "මම හැර හයියෙන්",
+            "maximizeLoudest": "උපරිම ශබ්ද නඟා",
+            "staticMaximized": "ස්ථිතික උපරිමය",
+            "fullScreen": "පුන් තිරය",
+            "manual": "අත්පොත",
+            "turnOffCamera": "වීඩියෝව සඟවන්න",
+            "turnOffAudio": "ශ්‍රව්‍ය නිශ්ශබ්ද කරන්න",
+            "turnOffScreenSharing": "තිර බෙදාගැනීම සඟවන්න",
+            "turnOnCamera": "වීඩියෝව පෙන්වන්න",
+            "turnOnAudio": "ශ්‍රව්‍ය නිහඬ නොකරන්න",
+            "turnOnScreenSharing": "තිර බෙදාගැනීම පෙන්වන්න"
+        },
+        "streamingSettings": {
+            "title": "සජීවී ප්‍රවාහය"
+        },
+        "preview": {
+            "Meeting": "දුරස්ථ සම්මන්ත්රණ",
+            "MeetingEnded": "දුරකථන සම්මන්ත්‍රණය අවසන් විය"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "කතා කිරීමට ඉල්ලීම",
+            "msg": "දැනට {{count}} දෙනෙක් රැස්වීමේ කතා කරති. ඔවුන්ට කතා කිරීම අවසන් කිරීමට තත්පර {{seconds}} ඉඩ දී ඔවුන්ගෙන් එකක් ප්‍රතිස්ථාපනය කිරීමට ඔබට අවශ්‍යද?"
+        }
+    }
+}

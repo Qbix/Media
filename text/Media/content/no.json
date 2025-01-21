@@ -1,0 +1,256 @@
+{
+    "Shows": "Viser",
+    "Clips": "Klipp",
+    "Video": "Video",
+    "Audio": "Lyd",
+    "categories": {
+        "Clips": "Medieklipp",
+        "Episodes": "Episoder"
+    },
+    "presentation": {
+        "PutTogether": "Skal du presentere? Du kan bruke denne plassen til å laste opp sammen materiale til presentasjonen din. Bruk pluss-knappen.",
+        "Alert": "Når arrangementene starter, vil denne siden begynne å vise de tilhørende presentasjonene",
+        "ClickHereForFullscreen": "Presentasjoner vil vises her. Klikk her for å gå til fullskjerm.",
+        "question": {
+            "ScanThisQRCode": "Skann denne QR-koden for å svare"
+        }
+    },
+    "NewEpisode": "Ny episode",
+    "NewClip": "Lag et nytt klipp",
+    "NewClipTitlePlaceholder": "Skriv inn klipptittel",
+    "NewClipDescriptionPlaceholder": "Skriv inn klippbeskrivelse",
+    "switchVisualization": "Bytt visualisering",
+    "joinLiveShow": "Bli med på Live Show",
+    "showTwitchLiveStream": "Vis Twitch Live Stream",
+    "showVoiceChat": "Vis talechat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Er du sikker på at du vil starte denne brukeren?",
+    "Save": "Spare",
+    "ViewFullEpisode": "Se hele episoden",
+    "CreditsEarned": "Opptjente kreditter",
+    "VideoTitle": "Videotittel eller URL",
+    "AreYouSureDeleteEpisode": "Er du sikker på at du vil slette denne episoden?",
+    "Yes": "Ja",
+    "No": "Ingen",
+    "RealTimeCall": "Sanntidsanrop",
+    "JoinWebRTC": "Telekonferanse",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferanse",
+            "description": "en video\/lydkonferanse på nett"
+        },
+        "Media\/calls": {
+            "displayType": "Samtaler",
+            "description": "kategori for Media\/WebRTC",
+            "MaxRelationsExceeded": "Maks anrop er overskredet"
+        },
+        "Media\/clip": {
+            "displayType": "Klipp",
+            "description": "medieklipp"
+        }
+    },
+    "feeds": {
+        "Title": "Kameraer",
+        "filterByTitle": "Finn feeds etter tittel",
+        "RequestFeedAccess": "Be om feedtilgang",
+        "New": "+ Ny feed",
+        "filterFeeds": "Filtrer feeder",
+        "NewFeed": "Ny feed",
+        "NoneYet": "Ingen innmatinger er opprettet ennå.",
+        "AreYouSure": "Er du sikker?",
+        "FilterByDate": "Filtrer etter dato",
+        "newFeeds": "Du har {{1}} nye feeds",
+        "Description": "{{1}} feeder",
+        "Keywords": "{{1}} feeder"
+    },
+    "feed": {
+        "HostedBy": "Verten er {{name}}",
+        "Name": "Navn",
+        "Conversation": "Samtale",
+        "CloseFeed": {
+            "button": "Lukk feed",
+            "Cancel": "Er du sikker på at du vil lukke denne feeden?",
+            "Participant": "Det er 1 deltaker i denne feeden",
+            "Participants": "Det er {{count}} deltakere i denne feeden"
+        },
+        "Calendar": "Kalender",
+        "TitleOfFeed": "Tittel på feed:",
+        "EmptyList": "Tom liste",
+        "EmptyVideos": "Ingen klipp ennå",
+        "AccessReason": "vennligst oppgi årsaken",
+        "Proceed": "Fortsette",
+        "FeedAlreadyClosed": "Denne feeden er allerede stengt",
+        "RtmpLinkNote": "Klikk for å kopiere denne lenken til utklippstavlen",
+        "SelectClip": "Velg datoen du vil se",
+        "Request": "Forespørsel"
+    },
+    "newFeed": {
+        "Title": "Ny feed",
+        "locationTitle": "Angi posisjonen din",
+        "SetLocation": "Angi Min posisjon",
+        "Starting": "Starter",
+        "Day": "Dag",
+        "Create": "Skape",
+        "Continue": "Fortsette",
+        "FeedTitle": "Innmatingstittel",
+        "SetTitle": "Angi feedtittel"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ble med på samtalen din",
+        "SubjectJoinedYourCall": "{{subject}} ble med i samtalen din"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Du har ikke tillatelse til å bli med i denne strømmen.",
+        "streamTitle": "{{1}} startet en telefonkonferanse",
+        "allow": {
+            "dialogTitle": "Kobler til",
+            "microphoneBtn": "Aktiver mikrofon",
+            "cameraBtn": "Aktiver kamera",
+            "cameraAndMicrophoneBtn": "Aktiver kamera og mikrofon"
+        },
+        "preparing": {
+            "dialogTitle": "Slå kamera eller mikrofon på\/av før du blir med",
+            "micIsOff": "Mikrofonen er av",
+            "micIsOn": "Mikrofonen er på",
+            "cameraIsOff": "Kameraet er av",
+            "cameraIsOn": "Kameraet er på",
+            "screenSharingIsOn": "Skjermdeling er på",
+            "screenSharingIsOff": "Del skjerm",
+            "joinNow": "Bli med i samtalen"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instruksjoner",
+            "permissionDenied": "Tillatelse for {{kind}} nektet. Følg disse trinnene for å bruke den:",
+            "point1": "Gå til &quot;Innstillinger&quot; -&gt; &quot;Avansert&quot; -&gt; &quot;Personvern og sikkerhet&quot; -&gt; &quot;Nettstedinnstillinger&quot; -&gt; &quot;Kamera&quot; eller &quot;Siteinnstillinger&quot; -&gt; &quot;Mikrofon&quot;",
+            "point2": "Fjern {{hostname}} fra &quot;Blokker&quot;-listen"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instruksjoner",
+            "permissionDenied": "Tillatelse for {{kind}} nektet. Last denne siden på nytt og bekreft tilgang til {{kind}} for å bli med på konferansen."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instruksjoner",
+            "permissionDenied": "Tillatelse for {{kind}} nektet. Følg disse trinnene for å bruke den:",
+            "point1": "Gå til Android-innstillingene dine",
+            "point2": "Åpne &quot;Apper og varsler&quot;",
+            "point3": "Finn &quot; {{communityName}} &quot; og åpne den",
+            "point4": "Trykk på Tillatelser",
+            "point5": "Aktiver {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instruksjoner",
+            "permissionDenied": "Tillatelse for {{kind}} nektet. Følg disse trinnene for å bruke den:",
+            "point1": "Gå til iOS-innstillingene dine",
+            "point2": "Åpne &quot;Personvern&quot;",
+            "point3": "Finn {{kind}} og åpne den",
+            "point4": "Finn &quot; {{communityName}} &quot; og aktiver"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming startet"
+        },
+        "notices": {
+            "youJoinedRoom": "Du ble med i rommet",
+            "joining": "Deltakelse: {{userName}}",
+            "sbLeftRoom": "{{userName}} forlot rommet",
+            "switchingRoom": "Bytter rom...",
+            "forceDisconnecting": "Du vil bli frakoblet innen 5 sekunder",
+            "forceDisconnectingImmediately": "Du ble koblet fra av en vert",
+            "youLeftRoom": "Du forlot rommet",
+            "codeCopied": "Du forlot rommet",
+            "sbBeganFbLive": "{{userName}} begynte å kringkaste denne samtalen på Facebook",
+            "sbStoppedFbLive": "{{userName}} sluttet å kringkaste denne samtalen på Facebook",
+            "youBeganFbLive": "Du begynte å kringkaste denne samtalen på Facebook",
+            "youStoppedFbLive": "Du sluttet å kringkaste denne samtalen på Facebook",
+            "youStartedLive": "Du begynte å kringkaste denne samtalen til tilpasset RTMP",
+            "youStoppedLive": "Du sluttet å kringkaste denne samtalen til tilpasset RTMP",
+            "sbStartedLiveStreaming": "{{userName}} startet live",
+            "sbStoppedLiveStreaming": "{{userName}} ble avsluttet live",
+            "liveStopped": "Det oppstod en feil under sending av video til endepunkt",
+            "youBeganVideoRecording": "Du begynte å ta opp denne konferansen",
+            "youStoppedVideoRecording": "Du stoppet opptaket av denne konferansen",
+            "linkCopiedToCb": "Linken er kopiert til utklippstavlen",
+            "codeCopiedToCb": "Koden er kopiert til utklippstavlen",
+            "userHasNoVideo": "Deltakeren har ingen video",
+            "openInBrowserAlert": "Åpne lenken i Safari-nettleseren for å bli med i konferansen.",
+            "allowedVideoLimit": "Kun {{limit}} videoer tillatt i dette rommet",
+            "allowedAudioLimit": "Kun {{limit}} mikrofoner tillatt i dette rommet",
+            "processingRecording": "Behandler opptaket..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Videoinnstillinger",
+            "webCamera": "Webkamera",
+            "screenSharing": "Skjermdeling",
+            "shareAnotherScreen": "Del en annen skjerm",
+            "turnOffCameras": "Slå av kameraet",
+            "turnOffVideo": "Slå av kamera\/skjermdeling",
+            "turnOffAudioInput": "Demp mikrofonen",
+            "turnOffScreenSharing": "Slå av skjermdeling",
+            "cameraIsTurnedOff": "Kameraet er slått av",
+            "micIsTurnedOff": "Mikrofonen er slått av",
+            "startFBLive": "Start Facebook Livestream",
+            "stopFBLive": "Stopp Facebook Livestream",
+            "startRecording": "Start opptak",
+            "stopRecording": "Stopp opptak",
+            "start": "Start",
+            "startClodRecording": "Start skyopptak",
+            "startLocRecording": "Start lokalt opptak",
+            "stopClodRecording": "Stopp skyopptak",
+            "stopLocRecording": "Stopp lokalt opptak",
+            "stop": "Stoppe",
+            "share": "Dele",
+            "recordingInProgress": "Opptaket pågår...",
+            "fbLiveTitle": "Tittel på livestream",
+            "fbLiveDescription": "Beskriv livestreamen din. Hva handler det om?",
+            "fbOnlyMeLiveAccess": "Bare meg",
+            "fbFriendsAccess": "Venner",
+            "fbPublicAccess": "Offentlig",
+            "publishOnTimeline": "Publiser på tidslinjen",
+            "publishToGroup": "Publiser til gruppe",
+            "fbStartLive": "Gå live",
+            "fbStopLive": "Avslutt livestream",
+            "streamingSettings": "Innstillinger",
+            "manageStream": "Administrer livestream",
+            "fbEmbedCode": "Bygg inn",
+            "copy": "Kopiere",
+            "streamToRTMP": "Strøm til tilpasset RTMP",
+            "startBroadcasting": "Begynn å kringkaste",
+            "broadcastingInProgress": "Kringkastingen pågår"
+        },
+        "audioSettings": {
+            "dialogTitle": "Lydinnstillinger",
+            "speakers": "Høyttalere",
+            "microphone": "Mikrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Administrer kringkasting"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Deltakerinnstillinger",
+            "disconnect": "Frakople",
+            "floatingScreens": "Flytende skjermer",
+            "tiledScreens": "Flislagte skjermer",
+            "loudestExceptMe": "Høyest unntatt meg",
+            "maximizeLoudest": "Maksimer høyest",
+            "staticMaximized": "Statisk maksimert",
+            "fullScreen": "Fullskjerm",
+            "manual": "Håndbok",
+            "turnOffCamera": "Skjul video",
+            "turnOffAudio": "Demp lyden",
+            "turnOffScreenSharing": "Skjul skjermdeling",
+            "turnOnCamera": "Vis video",
+            "turnOnAudio": "Slå på lyden",
+            "turnOnScreenSharing": "Vis skjermdeling"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferanse",
+            "MeetingEnded": "Telekonferansen avsluttet"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Forespørsel om å snakke",
+            "msg": "Det er for tiden {{count}} personer som snakker i møtet. Vil du erstatte en av dem etter å ha gitt dem {{seconds}} sekunder på å snakke ferdig?"
+        }
+    }
+}

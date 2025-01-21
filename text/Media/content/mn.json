@@ -1,0 +1,256 @@
+{
+    "Shows": "Шоунууд",
+    "Clips": "Клип",
+    "Video": "Видео",
+    "Audio": "Аудио",
+    "categories": {
+        "Clips": "Хэвлэл мэдээллийн клип",
+        "Episodes": "Ангиуд"
+    },
+    "presentation": {
+        "PutTogether": "Та танилцуулах уу? Та энэ зайг ашиглан илтгэлийнхээ материалыг хамтдаа байршуулах боломжтой. Plus товчийг ашиглана уу.",
+        "Alert": "Үйл явдал эхлэхэд энэ хуудсанд холбогдох үзүүлэнгүүд гарч эхэлнэ",
+        "ClickHereForFullscreen": "Танилцуулга энд гарч ирнэ. Бүтэн дэлгэцээр үзэхийн тулд энд дарна уу.",
+        "question": {
+            "ScanThisQRCode": "Хариулахын тулд энэ QR кодыг уншина уу"
+        }
+    },
+    "NewEpisode": "Шинэ анги",
+    "NewClip": "Шинэ клип хийх",
+    "NewClipTitlePlaceholder": "Клипийн гарчиг оруулна уу",
+    "NewClipDescriptionPlaceholder": "Клипийн тайлбарыг оруулна уу",
+    "switchVisualization": "Дүрслэлийг солих",
+    "joinLiveShow": "Шууд шоунд нэгдээрэй",
+    "showTwitchLiveStream": "Twitch шууд дамжуулалтыг харуулах",
+    "showVoiceChat": "Дуут чат харуулах",
+    "LiveShow": "Шууд шоу",
+    "AreYouSureKick": "Та энэ хэрэглэгчийг хаахдаа итгэлтэй байна уу?",
+    "Save": "Хадгалах",
+    "ViewFullEpisode": "Бүтэн ангийг үзэх",
+    "CreditsEarned": "Зээл авсан",
+    "VideoTitle": "Видеоны гарчиг эсвэл URL",
+    "AreYouSureDeleteEpisode": "Та энэ ангийг устгахдаа итгэлтэй байна уу?",
+    "Yes": "Тиймээ",
+    "No": "Үгүй",
+    "RealTimeCall": "Бодит цагийн дуудлага",
+    "JoinWebRTC": "Телеконференц",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Телеконференц",
+            "description": "онлайн видео\/аудио хурал"
+        },
+        "Media\/calls": {
+            "displayType": "Дуудлага",
+            "description": "Media\/WebRTC ангилал",
+            "MaxRelationsExceeded": "Дуудлага хийх дээд хэмжээ хэтэрсэн"
+        },
+        "Media\/clip": {
+            "displayType": "Клип",
+            "description": "медиа клип"
+        }
+    },
+    "feeds": {
+        "Title": "Камерууд",
+        "filterByTitle": "Мэдээллийг гарчигаар нь олоорой",
+        "RequestFeedAccess": "Хангамжийн хандалт хүсэх",
+        "New": "+ Шинэ хангамж",
+        "filterFeeds": "Шүүлтүүрийн хангамж",
+        "NewFeed": "Шинэ хангамж",
+        "NoneYet": "Одоогоор ямар ч хангамж үүсгээгүй байна.",
+        "AreYouSure": "Та итгэлтэй байна уу?",
+        "FilterByDate": "Огноогоор шүүх",
+        "newFeeds": "Танд {{1}} шинэ хангамж байна",
+        "Description": "{{1}} тэжээл",
+        "Keywords": "{{1}} тэжээл"
+    },
+    "feed": {
+        "HostedBy": "{{name}} -ээс зохион байгуулдаг",
+        "Name": "Нэр",
+        "Conversation": "Яриа",
+        "CloseFeed": {
+            "button": "Хангамжийг хаах",
+            "Cancel": "Та энэ хангамжийг хаахдаа итгэлтэй байна уу?",
+            "Participant": "Энэ хангамжид 1 оролцогч байна",
+            "Participants": "Энэ хангамжид {{count}} оролцогч байна"
+        },
+        "Calendar": "Хуанли",
+        "TitleOfFeed": "Хангамжийн гарчиг:",
+        "EmptyList": "Хоосон жагсаалт",
+        "EmptyVideos": "Одоогоор клип байхгүй",
+        "AccessReason": "шалтгааныг хэлнэ үү",
+        "Proceed": "Үргэлжлүүлэх",
+        "FeedAlreadyClosed": "Энэ хангамж аль хэдийн хаагдсан байна",
+        "RtmpLinkNote": "Энэ холбоосыг санах ой руу хуулах бол товшино уу",
+        "SelectClip": "Харахыг хүсч буй огноогоо сонгоно уу",
+        "Request": "Хүсэлт"
+    },
+    "newFeed": {
+        "Title": "Шинэ хангамж",
+        "locationTitle": "Байршлаа тохируулна уу",
+        "SetLocation": "Миний байршлыг тохируулах",
+        "Starting": "Эхэлж байна",
+        "Day": "Өдөр",
+        "Create": "Үүсгэх",
+        "Continue": "Үргэлжлүүлэх",
+        "FeedTitle": "Хангамжийн гарчиг",
+        "SetTitle": "Хангамжийн гарчгийг тохируулна уу"
+    },
+    "notifications": {
+        "JoinedWebRTC": "таны дуудлагад нэгдсэн",
+        "SubjectJoinedYourCall": "{{subject}} таны дуудлагад нэгдсэн"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Танд энэ дамжуулалтад нэгдэх зөвшөөрөл байхгүй байна.",
+        "streamTitle": "{{1}} теле хурал эхлүүлсэн",
+        "allow": {
+            "dialogTitle": "Холбож байна",
+            "microphoneBtn": "Микрофоныг идэвхжүүл",
+            "cameraBtn": "Камерыг идэвхжүүл",
+            "cameraAndMicrophoneBtn": "Камер болон микрофоныг идэвхжүүлнэ үү"
+        },
+        "preparing": {
+            "dialogTitle": "Нэгдэхээсээ өмнө камер эсвэл микрофоноо асааж\/унтраана уу",
+            "micIsOff": "Микрофон унтраалттай байна",
+            "micIsOn": "Микрофон асаалттай байна",
+            "cameraIsOff": "Камер унтраалттай байна",
+            "cameraIsOn": "Камер асаалттай байна",
+            "screenSharingIsOn": "Дэлгэц хуваалцах боломжтой",
+            "screenSharingIsOff": "Дэлгэц хуваалцах",
+            "joinNow": "Дуудлагад нэгдээрэй"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Заавар",
+            "permissionDenied": "{{kind}} ийн зөвшөөрлийг үгүйсгэв. Үүнийг ашиглахын тулд дараах алхмуудыг дагана уу:",
+            "point1": "&quot;Тохиргоо&quot; -&gt; &quot;Нарийвчилсан&quot; -&gt; &quot;Нууцлал ба аюулгүй байдал&quot; -&gt; &quot;Сайтын тохиргоо&quot; -&gt; &quot;Камер&quot; эсвэл &quot;Сайтын тохиргоо&quot; -&gt; &quot;Микрофон&quot; руу очно уу.",
+            "point2": "&quot;Блоклох&quot; жагсаалтаас {{hostname}} устгана уу"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Заавар",
+            "permissionDenied": "{{kind}} ийн зөвшөөрлийг үгүйсгэв. Хуралд нэгдэхийн тулд энэ хуудсыг дахин ачаалж, {{kind}} руу нэвтрэх эрхийг баталгаажуулна уу."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Заавар",
+            "permissionDenied": "{{kind}} ийн зөвшөөрлийг үгүйсгэв. Үүнийг ашиглахын тулд дараах алхмуудыг дагана уу:",
+            "point1": "Өөрийн Android тохиргоо руу очно уу",
+            "point2": "&quot;Апп, мэдэгдлүүд&quot;-ийг нээх",
+            "point3": "&quot; {{communityName}} &quot;-г олоод нээнэ үү",
+            "point4": "Зөвшөөрөл дээр дарна уу",
+            "point5": "{{kind}} идэвхжүүл"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Заавар",
+            "permissionDenied": "{{kind}} ийн зөвшөөрлийг үгүйсгэв. Үүнийг ашиглахын тулд дараах алхмуудыг дагана уу.",
+            "point1": "Өөрийн iOS тохиргоо руу очно уу",
+            "point2": "&quot;Нууцлал&quot;-ыг нээх",
+            "point3": "{{kind}} олоод нээ",
+            "point4": "&quot; {{communityName}} &quot;-г олоод идэвхжүүлнэ үү"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook шууд дамжуулж эхэллээ"
+        },
+        "notices": {
+            "youJoinedRoom": "Та өрөөнд нэгдсэн",
+            "joining": "Нэгдсэн: {{userName}}",
+            "sbLeftRoom": "{{userName}} өрөөнөөс гарлаа",
+            "switchingRoom": "Өрөө солих...",
+            "forceDisconnecting": "Та 5 секундын дотор салгагдах болно",
+            "forceDisconnectingImmediately": "Таныг хост салгасан байна",
+            "youLeftRoom": "Та өрөөнөөс гарлаа",
+            "codeCopied": "Та өрөөнөөс гарлаа",
+            "sbBeganFbLive": "{{userName}} энэ дуудлагыг фэйсбүүкээр цацаж эхэлсэн",
+            "sbStoppedFbLive": "{{userName}} энэ дуудлагыг Facebook дээр дамжуулахаа больсон",
+            "youBeganFbLive": "Та энэ дуудлагыг Facebook дээр цацаж эхэлсэн",
+            "youStoppedFbLive": "Та энэ дуудлагыг Facebook дээр дамжуулахаа больсон",
+            "youStartedLive": "Та энэ дуудлагыг захиалгат RTMP руу цацаж эхэлсэн",
+            "youStoppedLive": "Та энэ дуудлагыг захиалгат RTMP руу дамжуулахаа больсон",
+            "sbStartedLiveStreaming": "{{userName}} шууд нэвтрүүлж эхэлсэн",
+            "sbStoppedLiveStreaming": "{{userName}} шууд нэвтрүүлгийг дуусгасан",
+            "liveStopped": "Төгсгөлийн цэг рүү видео илгээх явцад алдаа гарлаа",
+            "youBeganVideoRecording": "Та энэ хурлын бичлэгийг хийж эхэлсэн",
+            "youStoppedVideoRecording": "Та энэ хурлын бичлэгийг зогсоосон",
+            "linkCopiedToCb": "Холбоосыг санах ой руу хуулсан",
+            "codeCopiedToCb": "Кодыг санах ой руу хуулсан",
+            "userHasNoVideo": "Оролцогчид видео байхгүй",
+            "openInBrowserAlert": "Хуралд нэгдэхийн тулд Safari хөтөч дээр холбоосыг нээнэ үү.",
+            "allowedVideoLimit": "Энэ өрөөнд зөвхөн {{limit}} видеог зөвшөөрдөг",
+            "allowedAudioLimit": "Энэ өрөөнд зөвхөн {{limit}} микрофон ашиглахыг зөвшөөрдөг",
+            "processingRecording": "Бичлэгийг боловсруулж байна..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Видео тохиргоо",
+            "webCamera": "Вэб камер",
+            "screenSharing": "Дэлгэц хуваалцах",
+            "shareAnotherScreen": "Өөр дэлгэц хуваалцах",
+            "turnOffCameras": "Камерыг унтраа",
+            "turnOffVideo": "Камер\/дэлгэц хуваалцахыг унтраа",
+            "turnOffAudioInput": "Микрофоны дууг хаах",
+            "turnOffScreenSharing": "Дэлгэц хуваалцахыг унтраа",
+            "cameraIsTurnedOff": "Камер унтарсан байна",
+            "micIsTurnedOff": "Микрофон унтарсан байна",
+            "startFBLive": "Facebook Livestream эхлүүлнэ үү",
+            "stopFBLive": "Facebook шууд дамжуулалтыг зогсоо",
+            "startRecording": "Бичлэг хийж эхлэх",
+            "stopRecording": "Бичлэгээ зогсоох",
+            "start": "Эхлэх",
+            "startClodRecording": "Үүлэн бичлэгийг эхлүүлнэ үү",
+            "startLocRecording": "Орон нутгийн бичлэгийг эхлүүлэх",
+            "stopClodRecording": "Үүлэн бичлэгийг зогсоох",
+            "stopLocRecording": "Орон нутгийн бичлэгийг зогсоо",
+            "stop": "Зогс",
+            "share": "Хуваалцах",
+            "recordingInProgress": "Бичлэг хийгдэж байна...",
+            "fbLiveTitle": "Шууд дамжуулалтын гарчиг",
+            "fbLiveDescription": "Шууд дамжуулалтаа тайлбарлана уу. Энэ юуны тухай вэ?",
+            "fbOnlyMeLiveAccess": "Зөвхөн Би",
+            "fbFriendsAccess": "Найзууд",
+            "fbPublicAccess": "Олон нийтийн",
+            "publishOnTimeline": "Он цагийн хэлхээс дээр нийтлэх",
+            "publishToGroup": "Бүлэгт нийтлэх",
+            "fbStartLive": "Live хийх",
+            "fbStopLive": "Шууд дамжуулалтыг дуусгах",
+            "streamingSettings": "Тохиргоо",
+            "manageStream": "Шууд дамжуулалтыг удирдах",
+            "fbEmbedCode": "Оруулсан",
+            "copy": "Хуулбарлах",
+            "streamToRTMP": "Захиалгат RTMP руу дамжуулах",
+            "startBroadcasting": "Нэвтрүүлгийг эхлүүлэх",
+            "broadcastingInProgress": "Нэвтрүүлэг явагдаж байна"
+        },
+        "audioSettings": {
+            "dialogTitle": "Аудио тохиргоо",
+            "speakers": "Илтгэгчид",
+            "microphone": "Микрофон"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Өргөн нэвтрүүлгийг удирдах"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Оролцогчийн тохиргоо",
+            "disconnect": "Салгах",
+            "floatingScreens": "Хөвөгч дэлгэц",
+            "tiledScreens": "Хавтантай дэлгэц",
+            "loudestExceptMe": "Надаас бусад нь хамгийн чанга",
+            "maximizeLoudest": "Хамгийн чанга",
+            "staticMaximized": "Статикийг дээд зэргээр нэмэгдүүлсэн",
+            "fullScreen": "Бүтэн дэлгэц",
+            "manual": "Гарын авлага",
+            "turnOffCamera": "Видеог нуух",
+            "turnOffAudio": "Аудио хаах",
+            "turnOffScreenSharing": "Дэлгэц хуваалцахыг нуух",
+            "turnOnCamera": "Видео харуулах",
+            "turnOnAudio": "Дууны дууг нээх",
+            "turnOnScreenSharing": "Дэлгэц хуваалцахыг харуулах"
+        },
+        "streamingSettings": {
+            "title": "Шууд дамжуулалт"
+        },
+        "preview": {
+            "Meeting": "Телеконференц",
+            "MeetingEnded": "Телеконференц дууслаа"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Ярих хүсэлт",
+            "msg": "Хуралдаанд одоогоор {{count}} хүн үг хэлж байна. Та тэдэнд ярьж дуусгахад {{seconds}} секунд өгсний дараа нэгийг нь солихыг хүсэж байна уу?"
+        }
+    }
+}

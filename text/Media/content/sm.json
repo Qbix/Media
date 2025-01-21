@@ -1,0 +1,256 @@
+{
+    "Shows": "Fa&#39;aaliga",
+    "Clips": "Kilipi",
+    "Video": "Vitio",
+    "Audio": "Leo",
+    "categories": {
+        "Clips": "Ata fa&#39;asalalau",
+        "Episodes": "Vaega"
+    },
+    "presentation": {
+        "PutTogether": "O le a e tu&#39;uina atu? E mafai ona e fa&#39;aogaina lenei avanoa e fa&#39;apipi&#39;i fa&#39;atasi ai mea mo lau fa&#39;aaliga. Fa&#39;aaoga le fa&#39;amau fa&#39;aopoopo.",
+        "Alert": "A&#39;o amata mea na tutupu, o le itulau lenei o le a amata ona fa&#39;aalia a latou fa&#39;aaliga tutusa",
+        "ClickHereForFullscreen": "O fa&#39;aaliga o le a fa&#39;aalia iinei. Kiliki i&#39;i e alu i le ata atoa.",
+        "question": {
+            "ScanThisQRCode": "Va&#39;ai le QR code lea e tali ai"
+        }
+    },
+    "NewEpisode": "Vaega Fou",
+    "NewClip": "Fai se Kilipa Fou",
+    "NewClipTitlePlaceholder": "Ulufale Igoa Kilipi",
+    "NewClipDescriptionPlaceholder": "Ulufale atu Clip Description",
+    "switchVisualization": "Suia vaaiga vaaia",
+    "joinLiveShow": "Auai Live Show",
+    "showTwitchLiveStream": "Faaali atu le Twitch Live Stream",
+    "showVoiceChat": "Faaali Talanoaga leo",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "E te mautinoa e te mana&#39;o e fa&#39;ate&#39;a lenei fa&#39;aoga?",
+    "Save": "Faasaoina",
+    "ViewFullEpisode": "Va&#39;ai Tala&#39;aga Atoa",
+    "CreditsEarned": "Fa&#39;aaitalafu maua",
+    "VideoTitle": "Igoa Vitio po&#39;o le URL",
+    "AreYouSureDeleteEpisode": "E te mautinoa e te mana&#39;o e tape lenei mea?",
+    "Yes": "Ioe",
+    "No": "Leai",
+    "RealTimeCall": "Valaau Taimi Moni",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "se konafesi vitio\/leo i luga ole laiga"
+        },
+        "Media\/calls": {
+            "displayType": "Valaau",
+            "description": "vaega mo Media\/WebRTC",
+            "MaxRelationsExceeded": "Ua sili atu le tele o telefoni"
+        },
+        "Media\/clip": {
+            "displayType": "Kipi",
+            "description": "kilipa ala o faasalalauga"
+        }
+    },
+    "feeds": {
+        "Title": "Meapueata",
+        "filterByTitle": "Su&#39;e fafaga ile ulutala",
+        "RequestFeedAccess": "Talosaga avanoa fafaga",
+        "New": "+ Fafaga Fou",
+        "filterFeeds": "Fa&#39;amama fafaga",
+        "NewFeed": "Fafaga Fou",
+        "NoneYet": "E le&#39;i faia ni fafaga.",
+        "AreYouSure": "E mo&#39;i lava oe?",
+        "FilterByDate": "Filifili ile Aso",
+        "newFeeds": "E {{1}} au fafaga fou",
+        "Description": "{{1}} fafaga",
+        "Keywords": "{{1}} fafaga"
+    },
+    "feed": {
+        "HostedBy": "Talia e {{name}}",
+        "Name": "Igoa",
+        "Conversation": "Talanoaga",
+        "CloseFeed": {
+            "button": "Tapuni Fafaga",
+            "Cancel": "E te mautinoa e te mana&#39;o e tapuni lenei fafaga?",
+            "Participant": "E to&#39;atasi le tagata auai i lenei fafaga",
+            "Participants": "E {{count}} tagata auai i lenei fafaga"
+        },
+        "Calendar": "Kalena",
+        "TitleOfFeed": "Igoa o fafaga:",
+        "EmptyList": "Lisi gaogao",
+        "EmptyVideos": "Leai se kilipa i le taimi nei",
+        "AccessReason": "faamolemole ta&#39;u mai le mafuaaga",
+        "Proceed": "Fa&#39;aauau",
+        "FeedAlreadyClosed": "Ua uma ona tapunia lenei fafaga",
+        "RtmpLinkNote": "Kiliki e kopi le so&#39;oga lea ile laupapa kilipa",
+        "SelectClip": "Filifili le aso e te fia vaai i ai",
+        "Request": "Talosaga"
+    },
+    "newFeed": {
+        "Title": "Fafaga Fou",
+        "locationTitle": "Seti Lou Nofoaga",
+        "SetLocation": "Seti Lo&#39;u Nofoaga",
+        "Starting": "Amata",
+        "Day": "Aso",
+        "Create": "Fausia",
+        "Continue": "Fa&#39;aauau",
+        "FeedTitle": "Ulutala fafaga",
+        "SetTitle": "Fa&#39;amolemole seti le igoa fafaga"
+    },
+    "notifications": {
+        "JoinedWebRTC": "auai i lau valaau",
+        "SubjectJoinedYourCall": "{{subject}} na auai i lau telefoni"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "E leai sau fa&#39;atagaga e te &#39;auai i lenei vaitafe.",
+        "streamTitle": "{{1}} na amata ai se Teleconference",
+        "allow": {
+            "dialogTitle": "Feso&#39;ota&#39;i",
+            "microphoneBtn": "Fa&#39;aola le Microphone",
+            "cameraBtn": "Fa&#39;aaga meapueata",
+            "cameraAndMicrophoneBtn": "Fa&#39;aola meapueata ma le masini faaleotele leo"
+        },
+        "preparing": {
+            "dialogTitle": "Ia ki\/ tape le meapueata po o le leo leo ae e te lei auai",
+            "micIsOff": "Ua tape le leo",
+            "micIsOn": "O lo&#39;o ola le mic",
+            "cameraIsOff": "Pepe le meapueata",
+            "cameraIsOn": "Ua ola le meapueata",
+            "screenSharingIsOn": "O lo&#39;o ola le fa&#39;asoa mata",
+            "screenSharingIsOff": "Fa&#39;asoa lau",
+            "joinNow": "Auai i le Valaau"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Faatonuga",
+            "permissionDenied": "Fa&#39;atagaga mo {{kind}} ua teena. Ina ia faʻaaogaina faʻamolemole mulimuli i laasaga nei:",
+            "point1": "Alu i le &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; poʻo le &quot;Site Sets&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Aveese {{hostname}} mai le lisi &quot;Poka&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Faatonuga",
+            "permissionDenied": "Fa&#39;atagaga mo {{kind}} ua teena. Fa&#39;amolemole toe uta lenei itulau ma fa&#39;amaonia le avanoa i {{kind}} e auai i le konafesi."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Faatonuga",
+            "permissionDenied": "Fa&#39;atagaga mo {{kind}} ua teena. Ina ia faʻaaogaina faʻamolemole mulimuli i laasaga nei:",
+            "point1": "Alu i lau Android Seti",
+            "point2": "Tatala &quot;Apps &amp; notifications&quot;",
+            "point3": "Su&#39;e le &quot; {{communityName}} &quot; ma tatala",
+            "point4": "Tap i luga o Fa&#39;atagaga",
+            "point5": "Fa&#39;amalo {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Faatonuga",
+            "permissionDenied": "Fa&#39;atagaga mo {{kind}} ua teena. Ina ia faʻaaogaina faʻamolemole mulimuli i laasaga nei:",
+            "point1": "Alu i lau iOS Seti",
+            "point2": "Tatala le &quot;Privacy&quot;",
+            "point3": "Su&#39;e {{kind}} ma tatala",
+            "point4": "Su&#39;e &quot; {{communityName}} &quot; ma mafai"
+        },
+        "fbLive": {
+            "dialogTitle": "Na amata le fa&#39;asalalauina o le Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Na e auai i le potu",
+            "joining": "Auai: {{userName}}",
+            "sbLeftRoom": "{{userName}} na tuua le potu",
+            "switchingRoom": "Suia potu...",
+            "forceDisconnecting": "O le ae motusia i totonu ole 5 sekone",
+            "forceDisconnectingImmediately": "Na motusia oe e se talimalo",
+            "youLeftRoom": "Na e alu ese mai le potu",
+            "codeCopied": "Na e alu ese mai le potu",
+            "sbBeganFbLive": "{{userName}} na amata fa&#39;asalalauina lenei vala&#39;au ile Facebook",
+            "sbStoppedFbLive": "Na taofia e {{userName}} le faasalalauina o lenei valaau i le Facebook",
+            "youBeganFbLive": "Na e amata fa&#39;asalalauina lenei vala&#39;au ile Facebook",
+            "youStoppedFbLive": "Na e taofi le faʻasalalauina o lenei telefoni ile Facebook",
+            "youStartedLive": "Na e amata fa&#39;asalalauina lenei vala&#39;au ile RTMP masani",
+            "youStoppedLive": "Na e taofia le faasalalauina o lenei valaau ile RTMP masani",
+            "sbStartedLiveStreaming": "{{userName}} na amata ola",
+            "sbStoppedLiveStreaming": "{{userName}} fa&#39;amuta tuusao",
+            "liveStopped": "Ua tupu se mea sese a&#39;o auina atu le vitio i le pito",
+            "youBeganVideoRecording": "Sa amata ona e pueina lenei konafesi",
+            "youStoppedVideoRecording": "Na e taofia le pueina o lenei konafesi",
+            "linkCopiedToCb": "So&#39;oga kopiina ile laupapa kilipa",
+            "codeCopiedToCb": "Kopi le code ile laupapa kilipa",
+            "userHasNoVideo": "E leai se vitio a le tagata auai",
+            "openInBrowserAlert": "Tatala so&#39;oga i Safari browser e &#39;auai i le fonotaga.",
+            "allowedVideoLimit": "Na&#39;o {{limit}} vitiō fa&#39;atagaina i totonu o lenei potu",
+            "allowedAudioLimit": "E na&#39;o {{limit}} microphones e fa&#39;atagaina i totonu o lenei potu",
+            "processingRecording": "Fa&#39;agasolo le pu&#39;eina..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Seti Vitio",
+            "webCamera": "Upegapuepue",
+            "screenSharing": "Fetufa&#39;aiga Mata",
+            "shareAnotherScreen": "Faasoa se isi lau",
+            "turnOffCameras": "Tape le meapueata",
+            "turnOffVideo": "Tape le meapueata\/fa&#39;asoa mata",
+            "turnOffAudioInput": "Gūgū mea faaleotele leo",
+            "turnOffScreenSharing": "Tape le faasoaina o lau",
+            "cameraIsTurnedOff": "Ua tape le meapueata",
+            "micIsTurnedOff": "Ua tape le masini faaleotele leo",
+            "startFBLive": "Amata le Facebook Livestream",
+            "stopFBLive": "Taofi le Facebook Livestream",
+            "startRecording": "Amata le pueina",
+            "stopRecording": "Taofi le pueina",
+            "start": "Amata",
+            "startClodRecording": "Amata le pueina o le ao",
+            "startLocRecording": "Amata le pueina o le lotoifale",
+            "stopClodRecording": "Taofi le pueina o ao",
+            "stopLocRecording": "Taofi le pueina o le lotoifale",
+            "stop": "Taofi",
+            "share": "Faasoa",
+            "recordingInProgress": "O lo&#39;o fa&#39;agasolo le pu&#39;eina...",
+            "fbLiveTitle": "Ulutala o Livestream",
+            "fbLiveDescription": "Fa&#39;amatala lau Livestream. O le a le mea e uiga i ai?",
+            "fbOnlyMeLiveAccess": "Na&#39;o Au",
+            "fbFriendsAccess": "Uo",
+            "fbPublicAccess": "Lautele",
+            "publishOnTimeline": "Fa&#39;asalalau ile fa&#39;asologa ole taimi",
+            "publishToGroup": "Fa&#39;asalalau i vaega",
+            "fbStartLive": "Alu Ola",
+            "fbStopLive": "Fa&#39;ai&#39;u Livestream",
+            "streamingSettings": "Fa&#39;atonu",
+            "manageStream": "Puleaina Livestream",
+            "fbEmbedCode": "Fa&#39;amau",
+            "copy": "Kopi",
+            "streamToRTMP": "Fa&#39;asolo ile RTMP masani",
+            "startBroadcasting": "Amata fa&#39;asalalauga",
+            "broadcastingInProgress": "O lo&#39;o fa&#39;agasolo le fa&#39;asalalauga"
+        },
+        "audioSettings": {
+            "dialogTitle": "Seti leo",
+            "speakers": "Fofoga Fetalai",
+            "microphone": "Microphone"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Pulea Faasalalauga"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Fa&#39;atonuga o Tagata Auai",
+            "disconnect": "motusia",
+            "floatingScreens": "Mata opeopea",
+            "tiledScreens": "Mata Fa&#39;amea",
+            "loudestExceptMe": "Sili ona leotele vagana ai a&#39;u",
+            "maximizeLoudest": "Fa&#39;asilisili Sili",
+            "staticMaximized": "Fa&#39;ato&#39;a Fa&#39;asili",
+            "fullScreen": "Ata atoa",
+            "manual": "Tusi Lesona",
+            "turnOffCamera": "Natia le vitio",
+            "turnOffAudio": "Gūgū leo",
+            "turnOffScreenSharing": "Natia le faasoaina o lau",
+            "turnOnCamera": "Faaali le vitio",
+            "turnOnAudio": "Tatala leo",
+            "turnOnScreenSharing": "Faaali le faasoaina o lau"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Na muta le teleconference"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Talosaga e Tautala",
+            "msg": "O le taimi nei e {{count}} tagata o loo saunoa i le sauniga. E te mana&#39;o e sui se tasi oi latou pe a uma ona fa&#39;ataga {{seconds}} sekone e fa&#39;auma ai le tautala?"
+        }
+    }
+}

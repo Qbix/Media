@@ -1,0 +1,256 @@
+{
+    "Shows": "Montre",
+    "Clips": "Klip",
+    "Video": "Videyo",
+    "Audio": "Odyo",
+    "categories": {
+        "Clips": "Klip medya yo",
+        "Episodes": "Epizòd"
+    },
+    "presentation": {
+        "PutTogether": "Èske w ap prezante? Ou ka itilize espas sa a pou w telechaje ansanm materyèl pou prezantasyon w la. Sèvi ak bouton Plus la.",
+        "Alert": "Kòm evènman yo kòmanse, paj sa a pral kòmanse montre prezantasyon korespondan yo",
+        "ClickHereForFullscreen": "Prezantasyon yo ap parèt isit la. Klike la a pou ale plen ekran.",
+        "question": {
+            "ScanThisQRCode": "Eskane kòd QR sa a pou reponn"
+        }
+    },
+    "NewEpisode": "Nouvo Episode",
+    "NewClip": "Fè yon nouvo Clip",
+    "NewClipTitlePlaceholder": "Antre Tit Clip",
+    "NewClipDescriptionPlaceholder": "Antre nan Deskripsyon Clip",
+    "switchVisualization": "Chanje vizyalizasyon",
+    "joinLiveShow": "Antre nan Live Show",
+    "showTwitchLiveStream": "Montre Twitch Live Stream",
+    "showVoiceChat": "Montre Voice Chat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Èske w sèten ou vle demare itilizatè sa a?",
+    "Save": "Sove",
+    "ViewFullEpisode": "Gade Epizòd konplè",
+    "CreditsEarned": "Kredi ou touche",
+    "VideoTitle": "Tit videyo oswa URL",
+    "AreYouSureDeleteEpisode": "Èske w sèten ou vle efase epizòd sa a?",
+    "Yes": "Wi",
+    "No": "Non",
+    "RealTimeCall": "Rele an tan reyèl",
+    "JoinWebRTC": "Telekonferans",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferans",
+            "description": "yon konferans videyo\/odyo sou entènèt"
+        },
+        "Media\/calls": {
+            "displayType": "Apèl",
+            "description": "kategori pou Media\/WebRTC",
+            "MaxRelationsExceeded": "Max apèl yo depase"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "clip medya"
+        }
+    },
+    "feeds": {
+        "Title": "Kamera",
+        "filterByTitle": "Jwenn Feeds pa tit",
+        "RequestFeedAccess": "Mande aksè pou manje",
+        "New": "+ Nouvo Feed",
+        "filterFeeds": "Filtre manje",
+        "NewFeed": "Nouvo Feed",
+        "NoneYet": "Pa gen okenn manje ki fòme ankò.",
+        "AreYouSure": "Èske w sèten?",
+        "FilterByDate": "Filtre pa dat",
+        "newFeeds": "Ou gen {{1}} nouvo flux",
+        "Description": "{{1}} manje",
+        "Keywords": "{{1}} manje"
+    },
+    "feed": {
+        "HostedBy": "Akomode pa {{name}}",
+        "Name": "Non",
+        "Conversation": "Konvèsasyon",
+        "CloseFeed": {
+            "button": "Fèmen Feed",
+            "Cancel": "Èske w sèten ou vle fèmen fil sa a?",
+            "Participant": "Gen 1 patisipan nan fil sa a",
+            "Participants": "Gen {{count}} patisipan nan manje sa a"
+        },
+        "Calendar": "Kalandriye",
+        "TitleOfFeed": "Tit manje:",
+        "EmptyList": "Lis vid",
+        "EmptyVideos": "Pa gen okenn clip ankò",
+        "AccessReason": "tanpri endike rezon an",
+        "Proceed": "Kontinye",
+        "FeedAlreadyClosed": "Feed sa a deja fèmen",
+        "RtmpLinkNote": "Klike pou kopye lyen sa a nan clipboard",
+        "SelectClip": "Chwazi dat ou vle wè a",
+        "Request": "Mande"
+    },
+    "newFeed": {
+        "Title": "Nouvo Feed",
+        "locationTitle": "Mete Kote w la",
+        "SetLocation": "Mete kote mwen an",
+        "Starting": "Kòmanse",
+        "Day": "Jounen",
+        "Create": "Kreye",
+        "Continue": "Kontinye",
+        "FeedTitle": "Tit manje",
+        "SetTitle": "Tanpri mete tit pou manje"
+    },
+    "notifications": {
+        "JoinedWebRTC": "rantre nan apèl ou a",
+        "SubjectJoinedYourCall": "{{subject}} rantre nan apèl ou a"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Ou pa gen pèmisyon pou w rantre nan kouran sa a.",
+        "streamTitle": "{{1}} te kòmanse yon Telekonferans",
+        "allow": {
+            "dialogTitle": "Konekte",
+            "microphoneBtn": "Pèmèt Mikwofòn",
+            "cameraBtn": "Pèmèt Kamera",
+            "cameraAndMicrophoneBtn": "Pèmèt Kamera ak Mikwofòn"
+        },
+        "preparing": {
+            "dialogTitle": "Limen \/ fèmen kamera oswa mikwofòn anvan ou rantre nan",
+            "micIsOff": "Mikwo a koupe",
+            "micIsOn": "Mikwo a limen",
+            "cameraIsOff": "Kamera koupe",
+            "cameraIsOn": "Kamera limen",
+            "screenSharingIsOn": "Pataj ekran an sou",
+            "screenSharingIsOff": "Pataje ekran",
+            "joinNow": "Antre nan apèl la"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Enstriksyon yo",
+            "permissionDenied": "Pèmisyon pou {{kind}} refize. Pou itilize li tanpri swiv etap sa yo:",
+            "point1": "Ale nan &quot;Anviwònman&quot; -&gt; &quot;Avanse&quot; -&gt; &quot;Konfidansyalite ak sekirite&quot; -&gt; &quot;Anviwònman Sit&quot; -&gt; &quot;Kamera&quot; oswa &quot;Anviwònman Sit&quot; -&gt; &quot;Mikwofòn&quot;",
+            "point2": "Retire {{hostname}} nan lis &quot;Blòk&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Enstriksyon yo",
+            "permissionDenied": "Pèmisyon pou {{kind}} refize. Tanpri rechaje paj sa a epi konfime aksè a {{kind}} pou rantre nan konferans lan."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Enstriksyon yo",
+            "permissionDenied": "Pèmisyon pou {{kind}} refize. Pou itilize li tanpri swiv etap sa yo:",
+            "point1": "Ale nan Anviwònman Android ou",
+            "point2": "Louvri &quot;Aplikasyon ak notifikasyon&quot;",
+            "point3": "Jwenn &quot; {{communityName}} &quot; epi ouvri li",
+            "point4": "Tape sou Otorizasyon",
+            "point5": "Pèmèt {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Enstriksyon yo",
+            "permissionDenied": "Pèmisyon pou {{kind}} refize. Pou itilize li tanpri swiv etap sa yo:",
+            "point1": "Ale nan Anviwònman iOS ou yo",
+            "point2": "Louvri &quot;Konfidansyalite&quot;",
+            "point3": "Jwenn {{kind}} epi louvri li",
+            "point4": "Jwenn &quot; {{communityName}} &quot; epi pèmèt"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook ap viv difizyon te kòmanse"
+        },
+        "notices": {
+            "youJoinedRoom": "Ou rantre nan sal la",
+            "joining": "Antre nan: {{userName}}",
+            "sbLeftRoom": "{{userName}} kite chanm nan",
+            "switchingRoom": "Chanje chanm...",
+            "forceDisconnecting": "Ou pral dekonekte nan 5 segonn",
+            "forceDisconnectingImmediately": "Ou te dekonekte pa yon lame",
+            "youLeftRoom": "Ou kite chanm lan",
+            "codeCopied": "Ou kite chanm lan",
+            "sbBeganFbLive": "{{userName}} te kòmanse emèt apèl sa a sou Facebook",
+            "sbStoppedFbLive": "{{userName}} sispann emèt apèl sa a sou Facebook",
+            "youBeganFbLive": "Ou te kòmanse difize apèl sa a sou Facebook",
+            "youStoppedFbLive": "Ou sispann difize apèl sa a sou Facebook",
+            "youStartedLive": "Ou te kòmanse difize apèl sa a nan RTMP koutim",
+            "youStoppedLive": "Ou sispann difize apèl sa a nan RTMP koutim",
+            "sbStartedLiveStreaming": "{{userName}} te kòmanse viv",
+            "sbStoppedLiveStreaming": "{{userName}} te fini an live",
+            "liveStopped": "Te gen yon erè pandan w ap voye videyo nan pwen final la",
+            "youBeganVideoRecording": "Ou te kòmanse anrejistre konferans sa a",
+            "youStoppedVideoRecording": "Ou sispann anrejistre konferans sa a",
+            "linkCopiedToCb": "Lyen kopye nan clipboard",
+            "codeCopiedToCb": "Kòd kopye nan clipboard",
+            "userHasNoVideo": "Patisipan pa gen okenn videyo",
+            "openInBrowserAlert": "Louvri lyen nan navigatè Safari pou rantre nan konferans lan.",
+            "allowedVideoLimit": "Sèlman {{limit}} videyo pèmèt nan chanm sa a",
+            "allowedAudioLimit": "Sèlman {{limit}} mikwofòn pèmèt nan chanm sa a",
+            "processingRecording": "Pwosesis anrejistreman an..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Anviwònman videyo",
+            "webCamera": "Kamera Web",
+            "screenSharing": "Pataje ekran",
+            "shareAnotherScreen": "Pataje yon lòt ekran",
+            "turnOffCameras": "Etenn kamera",
+            "turnOffVideo": "Etenn pataje kamera\/ekran",
+            "turnOffAudioInput": "Mikwofòn bèbè",
+            "turnOffScreenSharing": "Etenn pataje ekran",
+            "cameraIsTurnedOff": "Kamera etenn",
+            "micIsTurnedOff": "Mikwofòn etenn",
+            "startFBLive": "Kòmanse Facebook Livestream",
+            "stopFBLive": "Sispann Facebook Livestream",
+            "startRecording": "Kòmanse anrejistreman",
+            "stopRecording": "Sispann anrejistreman",
+            "start": "Kòmanse",
+            "startClodRecording": "Kòmanse Cloud Recording",
+            "startLocRecording": "Kòmanse Anrejistreman Lokal",
+            "stopClodRecording": "Sispann Anrejistreman Cloud",
+            "stopLocRecording": "Sispann anrejistreman lokal yo",
+            "stop": "Sispann",
+            "share": "Pataje",
+            "recordingInProgress": "Anrejistreman an ap fèt...",
+            "fbLiveTitle": "Tit nan Livestream",
+            "fbLiveDescription": "Dekri Livestream ou a. Ki sa li sou?",
+            "fbOnlyMeLiveAccess": "Se mwen menm sèlman",
+            "fbFriendsAccess": "Zanmim yo",
+            "fbPublicAccess": "Piblik",
+            "publishOnTimeline": "Pibliye sou delè",
+            "publishToGroup": "Pibliye nan gwoup",
+            "fbStartLive": "Ale Live",
+            "fbStopLive": "Fen Livestream",
+            "streamingSettings": "Anviwònman",
+            "manageStream": "Jere Livestream",
+            "fbEmbedCode": "Afiche",
+            "copy": "Kopi",
+            "streamToRTMP": "Kouran nan RTMP koutim",
+            "startBroadcasting": "Kòmanse difize",
+            "broadcastingInProgress": "Emisyon an ap fèt"
+        },
+        "audioSettings": {
+            "dialogTitle": "Anviwònman odyo",
+            "speakers": "Moun kap pale",
+            "microphone": "Mikwofòn"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Jere emisyon"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Anviwònman Patisipan yo",
+            "disconnect": "Dekonekte",
+            "floatingScreens": "Ekran k ap flote",
+            "tiledScreens": "Tiled ekran",
+            "loudestExceptMe": "Pi fò eksepte mwen",
+            "maximizeLoudest": "Maksimize pi fò",
+            "staticMaximized": "Estatik Maksimize",
+            "fullScreen": "Ekran konplè",
+            "manual": "Manyèl",
+            "turnOffCamera": "Kache videyo",
+            "turnOffAudio": "Bèbè odyo",
+            "turnOffScreenSharing": "Kache pataje ekran",
+            "turnOnCamera": "Montre videyo",
+            "turnOnAudio": "Detounen odyo",
+            "turnOnScreenSharing": "Montre pataje ekran"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferans",
+            "MeetingEnded": "Telekonferans te fini"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Mande Pale",
+            "msg": "Kounye a gen {{count}} moun k ap pale nan reyinyon an. Èske ou vle ranplase youn nan yo apre yo fin pèmèt yo {{seconds}} segonn fini pale?"
+        }
+    }
+}

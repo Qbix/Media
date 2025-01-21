@@ -1,0 +1,256 @@
+{
+    "Shows": "Hōʻike",
+    "Clips": "Clips",
+    "Video": "wikiō",
+    "Audio": "Leo",
+    "categories": {
+        "Clips": "Nā Paʻi Media",
+        "Episodes": "Nā ʻāpana"
+    },
+    "presentation": {
+        "PutTogether": "E hōʻike ana ʻoe? Hiki iā ʻoe ke hoʻohana i kēia wahi e hoʻouka pū i nā mea no kāu hōʻike. E hoʻohana i ka pihi Plus.",
+        "Alert": "I ka hoʻomaka ʻana o nā hanana, e hoʻomaka ana kēia ʻaoʻao e hōʻike i kā lākou mau hōʻike like",
+        "ClickHereForFullscreen": "E hōʻike ʻia ma aneʻi. Kaomi maanei e hele i ka pale piha.",
+        "question": {
+            "ScanThisQRCode": "E ʻimi i kēia QR code e pane"
+        }
+    },
+    "NewEpisode": "Mokuna Hou",
+    "NewClip": "Hana i kahi kiʻi hou",
+    "NewClipTitlePlaceholder": "E hoʻokomo i ke poʻo inoa Clip",
+    "NewClipDescriptionPlaceholder": "E hoʻokomo i ka wehewehe ʻana",
+    "switchVisualization": "E hoʻololi i ka nānā ʻana",
+    "joinLiveShow": "E hui pū me Live Show",
+    "showTwitchLiveStream": "E hōʻike iā Twitch Live Stream",
+    "showVoiceChat": "Hōʻike i ke kamaʻilio leo",
+    "LiveShow": "Hoikeike Ola",
+    "AreYouSureKick": "Makemake ʻoe e hoʻopau i kēia mea hoʻohana?",
+    "Save": "Mālama",
+    "ViewFullEpisode": "E nana i ka pauku piha",
+    "CreditsEarned": "Loaʻa nā aie",
+    "VideoTitle": "Poʻo wikiō a i ʻole URL",
+    "AreYouSureDeleteEpisode": "Makemake ʻoe e holoi i kēia ʻāpana?",
+    "Yes": "ʻAe",
+    "No": "ʻAʻole",
+    "RealTimeCall": "Kahea Manawa maoli",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "he hālāwai wikiō\/leo pūnaewele"
+        },
+        "Media\/calls": {
+            "displayType": "Kāhea ʻia",
+            "description": "waeʻano no Media\/WebRTC",
+            "MaxRelationsExceeded": "Ua ʻoi aku ka nui o nā kelepona"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "kiʻi media"
+        }
+    },
+    "feeds": {
+        "Title": "Nā kiʻi paʻi kiʻi",
+        "filterByTitle": "E huli i nā meaʻai ma ke poʻo inoa",
+        "RequestFeedAccess": "Noi i ke komo ʻana i ka hānai",
+        "New": "+ Hanai Hou",
+        "filterFeeds": "kānana hānai",
+        "NewFeed": "Hanai Hou",
+        "NoneYet": "ʻAʻohe hānai i hana ʻia.",
+        "AreYouSure": "He ʻoiaʻiʻo kēnā?",
+        "FilterByDate": "kānana ma ka lā",
+        "newFeeds": "He {{1}} kāu mau hānai hou",
+        "Description": "{{1}} hānai",
+        "Keywords": "{{1}} hānai"
+    },
+    "feed": {
+        "HostedBy": "Hoʻokipa ʻia e {{name}}",
+        "Name": "Inoa",
+        "Conversation": "Kūkākūkā",
+        "CloseFeed": {
+            "button": "Pani i ka hānai",
+            "Cancel": "Makemake ʻoe e pani i kēia hānai?",
+            "Participant": "Aia he 1 mea komo i kēia hānai",
+            "Participants": "He {{count}} ka poʻe i komo i kēia hānai"
+        },
+        "Calendar": "Kalena",
+        "TitleOfFeed": "Poʻo inoa o ka hānai:",
+        "EmptyList": "Papa inoa hakahaka",
+        "EmptyVideos": "ʻAʻohe paʻi i kēia manawa",
+        "AccessReason": "e ʻoluʻolu e haʻi i ke kumu",
+        "Proceed": "E hoʻomau",
+        "FeedAlreadyClosed": "Ua pani ʻia kēia hānai",
+        "RtmpLinkNote": "Kaomi no ke kope ʻana i kēia loulou i ka papa paʻi",
+        "SelectClip": "E koho i ka lā āu e makemake ai e ʻike",
+        "Request": "Noi"
+    },
+    "newFeed": {
+        "Title": "Hanai Hou",
+        "locationTitle": "E hoʻonoho i kou wahi",
+        "SetLocation": "Hoʻonoho i koʻu wahi",
+        "Starting": "E hoomaka ana",
+        "Day": "Lā",
+        "Create": "Hana",
+        "Continue": "E hoʻomau",
+        "FeedTitle": "Poʻo inoa hānai",
+        "SetTitle": "E ʻoluʻolu e hoʻonoho i ke poʻo inoa hānai"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ua hui pū me kāu kelepona",
+        "SubjectJoinedYourCall": "Ua komo ʻo {{subject}} i kāu kelepona"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "ʻAʻohe ou ʻae e komo i kēia kahawai.",
+        "streamTitle": "Ua hoʻomaka ʻo {{1}} i kahi Teleconference",
+        "allow": {
+            "dialogTitle": "Hoʻopili",
+            "microphoneBtn": "E ho&#39;ā i ka Microphone",
+            "cameraBtn": "Hoʻā i ka pahupaʻikiʻi",
+            "cameraAndMicrophoneBtn": "E hoʻā i ka pahupaʻikiʻi a me ka microphone"
+        },
+        "preparing": {
+            "dialogTitle": "E hoʻā a hoʻopau i ka pahupaʻikiʻi a i ʻole ka mic ma mua o kou hui ʻana",
+            "micIsOff": "Paʻa ka mic",
+            "micIsOn": "Aia ka mic",
+            "cameraIsOff": "Paʻa ka pahupaʻikiʻi",
+            "cameraIsOn": "Aia ka pahupaʻikiʻi",
+            "screenSharingIsOn": "Hoʻomaka ʻia ka kaʻana like ʻana",
+            "screenSharingIsOff": "Kaʻana like pale",
+            "joinNow": "Hui i ka Call"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Nā kuhikuhi",
+            "permissionDenied": "ʻAʻole ʻae ʻia no {{kind}} . No ka hoʻohana ʻana, e hahai i kēia mau ʻanuʻu:",
+            "point1": "E hele i &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; or &quot;Site Settings&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Wehe iā {{hostname}} mai ka papa inoa &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Nā kuhikuhi",
+            "permissionDenied": "ʻAʻole ʻae ʻia no {{kind}} . E ʻoluʻolu e hoʻouka hou i kēia ʻaoʻao a hōʻoia i ke komo ʻana iā {{kind}} e komo i ka ʻaha kūkā."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Nā kuhikuhi",
+            "permissionDenied": "ʻAʻole ʻae ʻia no {{kind}} . No ka hoʻohana ʻana, e hahai i kēia mau ʻanuʻu:",
+            "point1": "E hele i kāu Android Settings",
+            "point2": "E wehe i &quot;Apps &amp; notifications&quot;",
+            "point3": "E huli i &quot; {{communityName}} &quot; a wehe",
+            "point4": "Piʻi i ka ʻae",
+            "point5": "Hiki iā {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Nā kuhikuhi",
+            "permissionDenied": "ʻAʻole ʻae ʻia no {{kind}} . No ka hoʻohana ʻana, e hahai i kēia mau ʻanuʻu:",
+            "point1": "E hele i kāu iOS Settings",
+            "point2": "E wehe i ka &quot;Privacy&quot;",
+            "point3": "E huli i {{kind}} a wehe ia",
+            "point4": "E huli i &quot; {{communityName}} &quot; a hiki"
+        },
+        "fbLive": {
+            "dialogTitle": "Ua hoʻomaka ʻo Facebook live streaming"
+        },
+        "notices": {
+            "youJoinedRoom": "Ua komo ʻoe i ka lumi",
+            "joining": "Hui pū: {{userName}}",
+            "sbLeftRoom": "Ua haʻalele ʻo {{userName}} i ka lumi",
+            "switchingRoom": "Ke hoʻololi lumi...",
+            "forceDisconnecting": "E hoʻopau ʻia ʻoe i loko o 5 kekona",
+            "forceDisconnectingImmediately": "Ua kāpae ʻia ʻoe e kekahi mea hoʻokipa",
+            "youLeftRoom": "Ua haʻalele ʻoe i ka lumi",
+            "codeCopied": "Ua haʻalele ʻoe i ka lumi",
+            "sbBeganFbLive": "Ua hoʻomaka ʻo {{userName}} e hoʻolaha i kēia kelepona ma Facebook",
+            "sbStoppedFbLive": "Ua kāpae ʻo {{userName}} i ka hoʻolaha ʻana i kēia kelepona ma Facebook",
+            "youBeganFbLive": "Ua hoʻomaka ʻoe e hoʻolaha i kēia kelepona ma Facebook",
+            "youStoppedFbLive": "Ua hooki ʻoe i ka hoʻolaha ʻana i kēia kelepona ma Facebook",
+            "youStartedLive": "Ua hoʻomaka ʻoe e hoʻolaha i kēia kelepona i ka RTMP maʻamau",
+            "youStoppedLive": "Ua hooki ʻoe i ka hoʻolaha ʻana i kēia kelepona i ka RTMP maʻamau",
+            "sbStartedLiveStreaming": "{{userName}} hoʻomaka ola",
+            "sbStoppedLiveStreaming": "{{userName}} pau ola",
+            "liveStopped": "Ua hewa i ka hoʻouna ʻana i ke wikiō i ka hope",
+            "youBeganVideoRecording": "Ua hoʻomaka ʻoe e hoʻopaʻa i kēia ʻaha kūkā",
+            "youStoppedVideoRecording": "Ua hooki ʻoe i ka hoʻopaʻa ʻana i kēia ʻaha kūkā",
+            "linkCopiedToCb": "Ua kope ʻia ka loulou i ka papa ʻokiʻoki",
+            "codeCopiedToCb": "Kope ʻia ke code i ka papa ʻokiʻoki",
+            "userHasNoVideo": "ʻAʻohe wikiō a ka mea komo",
+            "openInBrowserAlert": "E wehe i ka loulou ma ka polokalamu kele Safari e komo i ka ʻaha kūkā.",
+            "allowedVideoLimit": "ʻO {{limit}} wikiō wale nō i ʻae ʻia i loko o kēia lumi",
+            "allowedAudioLimit": "ʻO {{limit}} microphones wale nō i ʻae ʻia i loko o kēia lumi",
+            "processingRecording": "Ke hana nei i ka hoʻopaʻa ʻana..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Hoʻonohonoho wikiō",
+            "webCamera": "Paʻi kiʻi pūnaewele",
+            "screenSharing": "Kaʻana like pale",
+            "shareAnotherScreen": "Kaʻana like i kekahi pale",
+            "turnOffCameras": "Hoʻopau i ka pahupaʻikiʻi",
+            "turnOffVideo": "Hoʻopau i ka kaʻana like pahupaʻikiʻi",
+            "turnOffAudioInput": "Hoʻomumu leo leo",
+            "turnOffScreenSharing": "Hoʻopau i ka kaʻana like ʻana o ka pale",
+            "cameraIsTurnedOff": "Ua pio ka pahupaʻikiʻi",
+            "micIsTurnedOff": "Ua pio ka microphone",
+            "startFBLive": "E hoʻomaka i ka Facebook Livestream",
+            "stopFBLive": "E hooki i ka Facebook Livestream",
+            "startRecording": "Hoʻomaka Hoʻopaʻa",
+            "stopRecording": "Hoʻopau i ka hoʻopaʻa ʻana",
+            "start": "Hoʻomaka",
+            "startClodRecording": "E hoʻomaka i ka hoʻopaʻa ʻana i ke ao",
+            "startLocRecording": "E hoʻomaka i ka hoʻopaʻa ʻōlelo kūloko",
+            "stopClodRecording": "Hoʻopau i ka hoʻopaʻa ʻana i ke ao",
+            "stopLocRecording": "Hoʻopau i ka hoʻopaʻa ʻōlelo kūloko",
+            "stop": "Kāohi",
+            "share": "Kaʻana like",
+            "recordingInProgress": "Ke holo nei ka hoʻopaʻa ʻana...",
+            "fbLiveTitle": "Poʻo inoa o Livestream",
+            "fbLiveDescription": "E wehewehe i kāu Livestream. He aha ia mea?",
+            "fbOnlyMeLiveAccess": "ʻO wau wale nō",
+            "fbFriendsAccess": "E na hoa",
+            "fbPublicAccess": "lehulehu",
+            "publishOnTimeline": "Hoʻopuka ma ka laina manawa",
+            "publishToGroup": "Hoʻopuka i ka hui",
+            "fbStartLive": "Hele Ola",
+            "fbStopLive": "Hoʻopau Livestream",
+            "streamingSettings": "Nā hoʻonohonoho",
+            "manageStream": "E mālama i ka Livestream",
+            "fbEmbedCode": "Hoʻokomo",
+            "copy": "kope",
+            "streamToRTMP": "E kahe i ka RTMP maʻamau",
+            "startBroadcasting": "E hoʻomaka i ka hoʻolaha",
+            "broadcastingInProgress": "Ke hoʻomau nei ka hoʻolaha"
+        },
+        "audioSettings": {
+            "dialogTitle": "Nā hoʻonohonoho leo",
+            "speakers": "Nā mea haʻiʻōlelo",
+            "microphone": "Microphone"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Mālama i ka hoʻolaha"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Nā Hoʻonohonoho Hoʻokomo",
+            "disconnect": "Hoʻokaʻawale",
+            "floatingScreens": "Nā Paʻi lana",
+            "tiledScreens": "Nā Paʻi Kilika",
+            "loudestExceptMe": "Ka leo nui koe ia&#39;u",
+            "maximizeLoudest": "Hoʻonui i ka leo nui",
+            "staticMaximized": "Hoʻonui ʻia ʻo Static",
+            "fullScreen": "Palena Piha",
+            "manual": "Manual",
+            "turnOffCamera": "Hūnā wikiō",
+            "turnOffAudio": "Paʻa leo",
+            "turnOffScreenSharing": "Hūnā kaʻana like pale",
+            "turnOnCamera": "Hōʻike wikiō",
+            "turnOnAudio": "Wehe i ka leo",
+            "turnOnScreenSharing": "Hōʻike kaʻana like pale"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Ua pau ka teleconference"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Noi e haiolelo",
+            "msg": "Aia i kēia manawa {{count}} poʻe e kamaʻilio ana ma ka hālāwai. Makemake ʻoe e pani i kekahi o lākou ma hope o ka ʻae ʻana iā lākou i {{seconds}} kekona e hoʻopau i ka ʻōlelo?"
+        }
+    }
+}

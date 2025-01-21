@@ -1,0 +1,256 @@
+{
+    "Shows": "Spektakloj",
+    "Clips": "Klipoj",
+    "Video": "Video",
+    "Audio": "Aŭdio",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "Epizodoj"
+    },
+    "presentation": {
+        "PutTogether": "Ĉu vi prezentos? Vi povas uzi ĉi tiun spacon por alŝuti kune materialojn por via prezento. Uzu la butonon Plus.",
+        "Alert": "Ĉar eventoj komenciĝas, ĉi tiu paĝo komencos montri siajn respondajn prezentojn",
+        "ClickHereForFullscreen": "Prezentaĵoj aperos ĉi tie. Klaku ĉi tie por iri plenekranan.",
+        "question": {
+            "ScanThisQRCode": "Skanu ĉi tiun QR-kodon por respondi"
+        }
+    },
+    "NewEpisode": "Nova Epizodo",
+    "NewClip": "Faru Novan Klipeton",
+    "NewClipTitlePlaceholder": "Enigu Titolo de Clip",
+    "NewClipDescriptionPlaceholder": "Enigu Klipan Priskribon",
+    "switchVisualization": "Ŝanĝi bildigon",
+    "joinLiveShow": "Aliĝu al Viva Spektaklo",
+    "showTwitchLiveStream": "Montri Twitch Live Stream",
+    "showVoiceChat": "Montru Voĉan Babilejon",
+    "LiveShow": "Viva Spektaklo",
+    "AreYouSureKick": "Ĉu vi certas, ke vi volas eksigi ĉi tiun uzanton?",
+    "Save": "Konservu",
+    "ViewFullEpisode": "Rigardu Plenan Epizodon",
+    "CreditsEarned": "Kreditoj gajnitaj",
+    "VideoTitle": "Video Titolo aŭ URL",
+    "AreYouSureDeleteEpisode": "Ĉu vi certas, ke vi volas forigi ĉi tiun epizodon?",
+    "Yes": "Jes",
+    "No": "Ne",
+    "RealTimeCall": "Reala Tempo Voko",
+    "JoinWebRTC": "Telekonferenco",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferenco",
+            "description": "interreta video\/aŭdkonferenco"
+        },
+        "Media\/calls": {
+            "displayType": "Vokoj",
+            "description": "kategorio por Media\/WebRTC",
+            "MaxRelationsExceeded": "Maksimumo de vokoj superis"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "amaskomunikila klipo"
+        }
+    },
+    "feeds": {
+        "Title": "Fotiloj",
+        "filterByTitle": "Trovu fluojn laŭ titolo",
+        "RequestFeedAccess": "Petu aliron al feed",
+        "New": "+ Nova Fluo",
+        "filterFeeds": "Filtriloj",
+        "NewFeed": "Nova Fluo",
+        "NoneYet": "Neniuj fontoj ankoraŭ formiĝis.",
+        "AreYouSure": "Ĉu vi certas?",
+        "FilterByDate": "Filtrilo laŭ dato",
+        "newFeeds": "Vi havas {{1}} novajn fluojn",
+        "Description": "{{1}} nutraĵoj",
+        "Keywords": "{{1}} nutraĵoj"
+    },
+    "feed": {
+        "HostedBy": "Gastigita de {{name}}",
+        "Name": "Nomo",
+        "Conversation": "Konversacio",
+        "CloseFeed": {
+            "button": "Fermu Fluon",
+            "Cancel": "Ĉu vi certas, ke vi volas fermi ĉi tiun fonton?",
+            "Participant": "Estas 1 partoprenanto en ĉi tiu fluo",
+            "Participants": "Estas {{count}} partoprenantoj en ĉi tiu fonto"
+        },
+        "Calendar": "Kalendaro",
+        "TitleOfFeed": "Titolo de nutraĵo:",
+        "EmptyList": "Malplena listo",
+        "EmptyVideos": "Ankoraŭ neniuj klipoj",
+        "AccessReason": "bonvolu diri la kialon",
+        "Proceed": "Procedi",
+        "FeedAlreadyClosed": "Ĉi tiu feed jam fermiĝis",
+        "RtmpLinkNote": "Klaku por kopii ĉi tiun ligon al tondujo",
+        "SelectClip": "Elektu la daton, kiun vi volas vidi",
+        "Request": "Peto"
+    },
+    "newFeed": {
+        "Title": "Nova Fluo",
+        "locationTitle": "Agordu Vian Lokon",
+        "SetLocation": "Agordu Mian Lokon",
+        "Starting": "Komencante",
+        "Day": "Tago",
+        "Create": "Krei",
+        "Continue": "Daŭrigu",
+        "FeedTitle": "Titolo de nutraĵo",
+        "SetTitle": "Bonvolu agordi titolon de nutraĵo"
+    },
+    "notifications": {
+        "JoinedWebRTC": "aliĝis al via voko",
+        "SubjectJoinedYourCall": "{{subject}} aliĝis al via voko"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Vi ne havas permeson aliĝi al ĉi tiu fluo.",
+        "streamTitle": "{{1}} komencis Telekonferencon",
+        "allow": {
+            "dialogTitle": "Konektante",
+            "microphoneBtn": "Ebligu Mikrofonon",
+            "cameraBtn": "Ebligu Fotilon",
+            "cameraAndMicrophoneBtn": "Ebligu Fotilon kaj Mikrofonon"
+        },
+        "preparing": {
+            "dialogTitle": "Enŝaltu\/malŝaltu fotilon aŭ mikrofonon antaŭ ol aliĝi",
+            "micIsOff": "Mikfono estas malŝaltita",
+            "micIsOn": "Mikrofono estas ŝaltita",
+            "cameraIsOff": "Fotilo estas malŝaltita",
+            "cameraIsOn": "Fotilo estas ŝaltita",
+            "screenSharingIsOn": "Ekrandividado estas aktiva",
+            "screenSharingIsOff": "Kunhavigi ekranon",
+            "joinNow": "Aliĝu al la Voko"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instrukcioj",
+            "permissionDenied": "Permeso por {{kind}} rifuzita. Por uzi ĝin, bonvolu sekvi ĉi tiujn paŝojn:",
+            "point1": "Iru al &quot;Agordoj&quot; -&gt; &quot;Altnivelaj&quot; -&gt; &quot;Privateco kaj sekureco&quot; -&gt; &quot;Agordoj de la retejo&quot; -&gt; &quot;Fotilo&quot; aŭ &quot;Agordoj de la retejo&quot; -&gt; &quot;Mikrofono&quot;",
+            "point2": "Forigu {{hostname}} el &quot;Bloki&quot; listo"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instrukcioj",
+            "permissionDenied": "Permeso por {{kind}} rifuzita. Bonvolu reŝargi ĉi tiun paĝon kaj konfirmi aliron al {{kind}} por aliĝi al la konferenco."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instrukcioj",
+            "permissionDenied": "Permeso por {{kind}} rifuzita. Por uzi ĝin, bonvolu sekvi ĉi tiujn paŝojn:",
+            "point1": "Iru al viaj Android-Agordoj",
+            "point2": "Malfermu &quot;Aplikoj kaj sciigoj&quot;",
+            "point3": "Trovu &quot; {{communityName}} &quot; kaj malfermu ĝin",
+            "point4": "Alklaku Permesojn",
+            "point5": "Ebligu {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instrukcioj",
+            "permissionDenied": "Permeso por {{kind}} rifuzita. Por uzi ĝin, bonvolu sekvi ĉi tiujn paŝojn:",
+            "point1": "Iru al viaj iOS-Agordoj",
+            "point2": "Malfermu &quot;Privatecon&quot;",
+            "point3": "Trovu {{kind}} kaj malfermu ĝin",
+            "point4": "Trovu &quot; {{communityName}} &quot; kaj ebligu"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming komenciĝis"
+        },
+        "notices": {
+            "youJoinedRoom": "Vi aliĝis al la ĉambro",
+            "joining": "Aliĝo: {{userName}}",
+            "sbLeftRoom": "{{userName}} forlasis la ĉambron",
+            "switchingRoom": "Ŝanĝante ĉambron...",
+            "forceDisconnecting": "Vi estos malkonektita ene de 5 sekundoj",
+            "forceDisconnectingImmediately": "Vi estis malkonektita de gastiganto",
+            "youLeftRoom": "Vi forlasis la ĉambron",
+            "codeCopied": "Vi forlasis la ĉambron",
+            "sbBeganFbLive": "{{userName}} komencis dissendi ĉi tiun vokon en Fejsbuko",
+            "sbStoppedFbLive": "{{userName}} ĉesis dissendi ĉi tiun vokon en Fejsbuko",
+            "youBeganFbLive": "Vi komencis dissendi ĉi tiun vokon en Fejsbuko",
+            "youStoppedFbLive": "Vi ĉesis dissendi ĉi tiun vokon en Fejsbuko",
+            "youStartedLive": "Vi komencis dissendi ĉi tiun alvokon al kutima RTMP",
+            "youStoppedLive": "Vi ĉesis dissendi ĉi tiun vokon al kutima RTMP",
+            "sbStartedLiveStreaming": "{{userName}} komencis vivi",
+            "sbStoppedLiveStreaming": "{{userName}} finiĝis vive",
+            "liveStopped": "Okazis eraro dum sendado de video al finpunkto",
+            "youBeganVideoRecording": "Vi komencis registri ĉi tiun konferencon",
+            "youStoppedVideoRecording": "Vi ĉesis registri ĉi tiun konferencon",
+            "linkCopiedToCb": "Ligo kopiita al tondujo",
+            "codeCopiedToCb": "Kodo kopiita al tondujo",
+            "userHasNoVideo": "Partoprenanto ne havas videon",
+            "openInBrowserAlert": "Malfermu ligilon en Safari-retumilo por aliĝi al la konferenco.",
+            "allowedVideoLimit": "Nur {{limit}} filmetoj permesitaj en ĉi tiu ĉambro",
+            "allowedAudioLimit": "Nur {{limit}} mikrofonoj permesitaj en ĉi tiu ĉambro",
+            "processingRecording": "Prilaborado de la registrado..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Agordoj",
+            "webCamera": "Reteja Fotilo",
+            "screenSharing": "Ekrana Kunhavigo",
+            "shareAnotherScreen": "Kunhavigu alian ekranon",
+            "turnOffCameras": "Malŝaltu fotilon",
+            "turnOffVideo": "Malŝaltu fotilon\/ekranan kundividon",
+            "turnOffAudioInput": "Mutiga mikrofono",
+            "turnOffScreenSharing": "Malŝaltu ekrankundividon",
+            "cameraIsTurnedOff": "Fotilo estas malŝaltita",
+            "micIsTurnedOff": "Mikrofono estas malŝaltita",
+            "startFBLive": "Komencu Facebook Livestream",
+            "stopFBLive": "Ĉesu Facebook Livestream",
+            "startRecording": "Komencu Registradon",
+            "stopRecording": "Ĉesu Registradon",
+            "start": "Komencu",
+            "startClodRecording": "Komencu Nuban Registradon",
+            "startLocRecording": "Komencu Lokan Registradon",
+            "stopClodRecording": "Ĉesu Nuba Registrado",
+            "stopLocRecording": "Ĉesu Lokan Registradon",
+            "stop": "Haltu",
+            "share": "Kunhavigi",
+            "recordingInProgress": "Registrado estas en progreso...",
+            "fbLiveTitle": "Titolo de Livestream",
+            "fbLiveDescription": "Priskribu vian Livestream. Pri kio temas?",
+            "fbOnlyMeLiveAccess": "Nur Mi",
+            "fbFriendsAccess": "Amikoj",
+            "fbPublicAccess": "Publiko",
+            "publishOnTimeline": "Eldoni sur templinio",
+            "publishToGroup": "Publiki al grupo",
+            "fbStartLive": "Iru Live",
+            "fbStopLive": "Finu Livestream",
+            "streamingSettings": "Agordoj",
+            "manageStream": "Administri Livestream",
+            "fbEmbedCode": "Enigi",
+            "copy": "Kopiu",
+            "streamToRTMP": "Flui al kutima RTMP",
+            "startBroadcasting": "Komencu dissendi",
+            "broadcastingInProgress": "Dissendado estas en progreso"
+        },
+        "audioSettings": {
+            "dialogTitle": "Sonaj Agordoj",
+            "speakers": "Parolantoj",
+            "microphone": "Mikrofono"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Administri Elsendon"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Agordoj de partoprenantoj",
+            "disconnect": "Malkonekti",
+            "floatingScreens": "Flosantaj Ekranoj",
+            "tiledScreens": "Kahelitaj Ekranoj",
+            "loudestExceptMe": "Plej laŭta Krom Mi",
+            "maximizeLoudest": "Maksimumigi Plej laŭte",
+            "staticMaximized": "Statika Maksimumigita",
+            "fullScreen": "Plena Ekrano",
+            "manual": "Manlibro",
+            "turnOffCamera": "Kaŝi videon",
+            "turnOffAudio": "Mutigu audio",
+            "turnOffScreenSharing": "Kaŝi ekrankundividon",
+            "turnOnCamera": "Montru videon",
+            "turnOnAudio": "Malŝaltu audio",
+            "turnOnScreenSharing": "Montru ekrankundividon"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferenco",
+            "MeetingEnded": "Telekonferenco finiĝis"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Peto Paroli",
+            "msg": "Nuntempe {{count}} homoj parolas en la kunveno. Ĉu vi volas anstataŭigi unu el ili post permesado de {{seconds}} sekundoj por fini paroli?"
+        }
+    }
+}
