@@ -155,7 +155,6 @@
     overflow: hidden;
 }
 .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_users_con {
-    margin-top: -20px;
     position: relative;
     z-index: 200;
 }
@@ -167,7 +166,6 @@
     margin: 0;
 }
 .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_users_con .Streams_participants_summary{
-    margin-top:20px;
     padding: 0 2px 0 2px;
 }
 .Media_episodes_cards {
