@@ -39,6 +39,7 @@
 		"routes@start": {
 			"clip/:clipId": {"module": "Media", "action": "clip"},
 			"clip/:publisherId/:clipId": {"module":  "Media", "action":  "clip"},
+			"clip/:publisherId/:episodeDate/:clipTime": {"module":  "Media", "action":  "clip"},
 			"livestream/:publisherId/:livestreamId": { "module": "Media", "action": "livestream" },
 			"livestream/:publisherId/:livestreamId[]": {"module": "Media", "action": "livestream"},
 		    "meeting": { "module": "Media", "action": "meeting" },
@@ -232,7 +233,7 @@
 			"Media/episode": {
 				"emoji": "📺",
 				"defaults": {
-					"icon": "{{Media}}/img/icons/Media/clip",
+					"icon": "{{Media}}/img/icons/Media/episode",
 					"title": "Untitled Episode",
 					"readLevel": 40,
 					"writeLevel": 10,
