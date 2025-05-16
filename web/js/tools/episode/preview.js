@@ -291,7 +291,7 @@
 							var videoTool = Q.Tool.from($(".Q_video_tool", dialog), "Q/video");
 							if (videoTool) {
 								videoTool.state.url = videoUrl;
-								videoTool.implement();
+								videoTool.refresh();
 							} else {
 								$("<div>").insertBefore($submit).tool("Q/video", {
 									url: videoUrl

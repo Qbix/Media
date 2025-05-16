@@ -14,6 +14,11 @@ function Media_clip_response($params)
 	Q_Response::addScript('{{Media}}/js/pages/clip.js');
 	$uri = Q_Dispatcher::uri();
 	$clipId = Q::ifset($uri, 'clipId', null);
+	$episodeDate = Q::ifset($uri, 'episodeDate', '');
+	$clipTime = Q::ifset($uri, 'clipTime', '');
+	if ($episodeDate && $clipTime) {
+		$clipId = "$episodeDate/$clipTime";
+	}
 	Q_Response::setScriptData("Q.plugins.Media.clip.selectedClipId", $clipId);
 
 	if ($clipId) {
@@ -33,7 +38,7 @@ function Media_clip_response($params)
 			// try to find stream among clips and episodes
 			$params['stream'] = $stream = Streams_Stream::select()->where(array(
 				"publisherId" => $publisherId,
-				"name" => array("Media/clip/$clipId", "Media/episode/$clipId")
+				"name" => array("$clipId", "Media/clip/$clipId", "Media/episode/$clipId")
 			))->fetchDbRow();
 			if (empty($stream)) {
 				throw new Exception("Clip not found");
