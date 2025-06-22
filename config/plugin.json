@@ -57,6 +57,18 @@
 			"contentSecurityPolicy": {
 				"script": ["https://www.youtube.com", "https://cdnjs.cloudflare.com"]
 			}
+		},
+		"images": {
+			"Media/episode": {
+				"sizes": ["40", "50", "80", "200", "400", "x400", "400x"],
+				"defaultSize": "50",
+				"maxStretch": 40
+			},
+			"Media/clip": {
+				"sizes": ["40", "50", "80", "200", "400", "x400", "400x"],
+				"defaultSize": "50",
+				"maxStretch": 40
+			}
 		}
 	},
 	"Users": {
