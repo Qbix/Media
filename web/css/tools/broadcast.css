@@ -4,7 +4,7 @@
 .notice-container {
     position:absolute;
     top:20px;
-    background: #18aa8d;
+    background: rgba(100, 100, 100, 0.75);
     padding: 10px 20px 10px 10px;
     color: white;
     transition-timing-function: ease-in;
