@@ -97,7 +97,8 @@
     },
     "notifications": {
         "JoinedWebRTC": "joined your call",
-        "SubjectJoinedYourCall": "{{subject}} joined your call"
+        "SubjectJoinedYourCall": "{{subject}} joined your call",
+        "Streams\/relatedTo\/Media\/call": "New Call Started in {{toTitle}}"
     },
     "webrtc": {
         "notAllowedToJoinCall": "You don't have permission to join this stream.",

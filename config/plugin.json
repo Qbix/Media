@@ -147,7 +147,23 @@
 			"*": {
 				"relatedTo": {
 					"Media/webrtc": {
-						"description": ["Streams/content", ["notifications", "Streams/relatedTo/Streams/call"]]
+						"description": ["Media/content", ["notifications", "Streams/relatedTo/Media/call"]]
+					}
+				}
+			},
+			"Streams/chat": {
+				"emoji": "💬",
+				"create": true,
+				"edit": ["icon", "title", "content"],
+				"subscriptions": {
+					"filter": {
+						"types": ["Media/call"]
+					}
+				},
+				"messages": {
+					"Media/call": {
+						"description": ["Streams/content", ["description", "Media/call"]],
+						"subject": ["Streams/content", ["notifications", "Media/call"]]
 					}
 				}
 			},
