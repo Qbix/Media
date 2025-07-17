@@ -1749,6 +1749,7 @@
 }
 .Media_webrtc_popup-box {
     background: #fff;
+    color: #000;
 }
 .Media_webrtc_popup-box .Media_webrtc_choose-device h4,
 .Media_webrtc_dialog-box .Media_webrtc_choose-device h4{
