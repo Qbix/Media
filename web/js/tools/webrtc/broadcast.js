@@ -26,8 +26,8 @@ window.WebRTCWebcastClient = function (options) {
         disconnectTime: 3000,
         turnCredentials: null,
         livestreamStreamData: null,
-        audioOnly: true,
-        dataChannelMode: true,
+        audioOnly: false,
+        dataChannelMode: false,
         debug: true,
     };
 
@@ -44,8 +44,6 @@ window.WebRTCWebcastClient = function (options) {
         }
         options = mergedOptions;
     }
-
-    console.log('options', options)
 
     app.getOptions = function () {
         return options;
@@ -79,8 +77,6 @@ window.WebRTCWebcastClient = function (options) {
     function generateId() {
         return Date.now().toString(36) + Math.random().toString(36).replace(/\./g, "");
     }
-
-    console.log('broadcastClient.create', app.id);
 
     var _isMobile;
     var _isiOS;
@@ -127,7 +123,6 @@ window.WebRTCWebcastClient = function (options) {
                 delete turn['url'];
             }
         }
-        console.log('pc_config', pc_config)
     } else {
         var testPeerConnection = new RTCPeerConnection(pc_config);
     }
@@ -447,12 +442,6 @@ window.WebRTCWebcastClient = function (options) {
             signalingState._state = null;
             signalingState.stage = null;
             signalingState.setStage = function (stage) {
-                try {
-                    var err = (new Error);
-                    console.log(err.stack);
-                } catch (e) {
-
-                }
                 signalingState.stage = stage;
                 app.event.dispatch('signalingStageChange', { participant: participant, signalingState: signalingState });
                 log('setStage', instance, signalingState)
@@ -462,13 +451,6 @@ window.WebRTCWebcastClient = function (options) {
             Object.defineProperties(signalingState, {
                 'state': {
                     'set': function (value) {
-                        console.log('signalingState setState')
-                        try {
-                            var err = (new Error);
-                            console.log(err.stack);
-                        } catch (e) {
-
-                        }
                         this._state = value;
                     },
                     'get': function () {
@@ -619,7 +601,6 @@ window.WebRTCWebcastClient = function (options) {
                 let _mediaSource = new MediaSource();
                 let _sourceBuffer;
                 _mediaSource.addEventListener('sourceopen', function () {
-                    console.log('MediaSource is sourceopen');
                     _sourceBuffer = _mediaSource.addSourceBuffer('audio/mp4;codecs=mp4a.40.2');
                     _sourceBuffer.addEventListener('updateend', appendNextChunk);
                 });
@@ -1317,33 +1298,22 @@ window.WebRTCWebcastClient = function (options) {
         }
 
         function webrtcToHTMLMediaInterface() {
-            var _mediaElement = document.createElement('VIDEO');
-            _mediaElement.controls = true;
-            _mediaElement.muted = options.audioOnly ? false : true;
-            _mediaElement.controls = true;
-            _mediaElement.autoplay = true;
-            _mediaElement.playsInline = true;
-            _mediaElement.style.position = 'absolute';
-            _mediaElement.style.bottom = '0';
-            _mediaElement.style.right = '0';
-            _mediaElement.style.zIndex = '9999999999999';
-            _mediaElement.setAttribute('webkit-playsinline', true);
-            document.body.appendChild(_mediaElement);
+            var _mediaStream = new MediaStream();
 
-            var _mediaStream;
-            try {
-                if (options.useCordovaPlugins && typeof cordova != "undefined" && _isiOS && participant.isLocal && (participant.audioStream != null || participant.videoStream != null)) {
-
-                    _mediaStream = track.kind == 'audio' ? participant.audioStream : participant.videoStream
-                } else {
-                    _mediaStream = new MediaStream();
+            function publishStream(stream) {
+                if(options.role != 'publisher') return;
+                console.log('publishStream');
+                var tracks = stream.getTracks();
+                for (var t in tracks) {
+                    var trackToAttach = new Track();
+                    trackToAttach.kind = tracks[t].kind;
+                    trackToAttach.mediaStreamTrack = tracks[t];
+                    trackToAttach.stream = stream;
+                    //localParticipant.tracks.push(trackToAttach);
+                    attachTrack(trackToAttach, localParticipant)
                 }
-            } catch (e) {
-                console.error(e.name + ': ' + e.message)
             }
-            _mediaElement.srcObject = _mediaStream;
-
-
+            
             function videoTrackIsAdded(track) {
                 log('videoTrackIsAdding');
                 if (options.audioOnly) {
@@ -1453,8 +1423,24 @@ window.WebRTCWebcastClient = function (options) {
                 }
             }
 
+            function getMediaElement(asAudio) {
+                var _mediaElement = document.createElement(asAudio ? 'AUDIO' : 'VIDEO');
+                _mediaElement.controls = true;
+                _mediaElement.muted = asAudio ? false : true;
+                _mediaElement.controls = true;
+                _mediaElement.autoplay = true;
+                _mediaElement.playsInline = true;
+                _mediaElement.setAttribute('webkit-playsinline', true);
+
+                
+                _mediaElement.srcObject = _mediaStream;
+                return _mediaElement;
+            }
+
             return {
-                attachTrack: attachTrack
+                attachTrack: attachTrack,
+                publishStream: publishStream,
+                getMediaElement: getMediaElement
             }
         }
 
@@ -1468,8 +1454,8 @@ window.WebRTCWebcastClient = function (options) {
 
         return {
             publishStream: publishStream,
-            getMediaElement: function () {
-                return _mediaElement;
+            getMediaElement: function (asAudio) {
+                return modeInterface.getMediaElement(asAudio);
             },
             getMediaStream: function () {
                 return _mediaStream;
@@ -3269,6 +3255,13 @@ window.WebRTCWebcastClient = function (options) {
                 if (roomParticipants[p].iosrtcRTCPeerConnection != null) roomParticipants[p].iosrtcRTCPeerConnection.close();
             }
 
+            for(let t in roomParticipants[p].tracks) {
+                if(roomParticipants[p].tracks[t].mediaStreamTrack != null) {
+                    console.log('broadcastClient.disconnect stop track', roomParticipants[p], roomParticipants[p].tracks[t].mediaStreamTrack);
+
+                    roomParticipants[p].tracks[t].mediaStreamTrack.stop();
+                }
+            }
             if (!switchRoom) roomParticipants[p].remove();
         }
 

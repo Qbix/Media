@@ -117,16 +117,6 @@
             },
             stop:function() {
                 var tool = this;
-                console.log('STOP tool.context state', tool.state, tool.context.state);
-                console.log('STOP tool source', tool.state.source);
-                console.log('STOP tool status', tool.state.status);
-
-                try {
-                    var err = (new Error);
-                    console.log(err.stack);
-                } catch (e) {
-
-                }
                 if(tool.state.status == 'stopped') {
                     return console.warn('Tool already stopped');
                 }
@@ -139,14 +129,10 @@
                 }
                 if(tool.context) {
                     tool.context.close();
-                    console.log('tool.context state2', tool.context.state)
-
                 }
             },
             pause:function() {
                 var tool = this;
-                console.log('visualization: pause');
-                console.log('tool.context state', tool.context.state);
                 if(tool.state.status == 'stopped') {
                     return console.warn('Tool already stopped');
                 }
@@ -155,14 +141,11 @@
                 }
                 tool.state.status = 'paused';
                 if(tool.currentVisualization) {
-                    console.log('pause:  tool.currentVisualization',  tool.currentVisualization);
-
                     tool.currentVisualization.stopRender();
                 }
             },
             resume:function() {
                 var tool = this;
-                console.log('tool.context resume');
                 if(tool.state.status == 'active') {
                     return console.warn('Tool already paused');
                 }
@@ -454,7 +437,6 @@
                                 if(i == circlesLength - 1) {
                                     circle.volume = average;
                                     var radius = (average / 255) * 100;
-                                    // console.log('radius', radius);
                                     /*if(radius > 100)
                                         radius = 100;
                                     else if(circle.volume < 0.005) radius = 0.1;*/
@@ -609,7 +591,6 @@
                                 );
                                 const maxAmplitude = Math.max(...bandData);
                                 const audioLevel = Math.floor((maxAmplitude / 255) * 8);
-                                //console.log('audioLevel', audioLevel)
                                 // Ignore low noise volume below the threshold
                                 if (maxAmplitude < minThreshold) {
                                     levels.push(0);
@@ -812,7 +793,6 @@
                         var canvas = _canvas = document.createElement("canvas");
                         canvas.width = state.size.width;
                         canvas.height = state.size.height;
-                        console.log('tool.element', tool.element.offsetWidth, tool.element.offsetHeight)
                         tool.element.appendChild(canvas);
 
                         startRender()
@@ -822,7 +802,6 @@
                         var ctx = _canvas.getContext("2d");
 
                         var bufferLength = tool.analyser.frequencyBinCount;
-                        console.log(bufferLength);
 
                         var dataArray = new Uint8Array(bufferLength);
 
@@ -922,7 +901,6 @@
                         var canvas = _canvas = document.createElement("canvas");
                         canvas.width = state.size.width;
                         canvas.height = state.size.height;
-                        console.log('tool.element', tool.element.offsetWidth, tool.element.offsetHeight)
                         tool.element.appendChild(canvas);
 
                         startRender();

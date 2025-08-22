@@ -4,28 +4,7 @@ require MEDIA_PLUGIN_DIR.DS.'vendor'.DS.'autoload.php';
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VideoGrant;
 use Twilio\Rest\Client;
-/**
- * @module Media
- */
 
-interface Media_WebRTC_Interface
-{
-    /**
-     * Interface that an adapter must support
-     * to implement the Media_WebRTC class.
-     * @class Media_WebRTC_Interface
-     * @constructor
-     */
-
-    /**
-     * @method getOrCreateRoomStream
-     * @param {string} $publisherId Id of room's publisher/initiator
-     * @param {string} $roomId Room id in Qbix (last marp of stream name)
-     * @return {Object}
-     */
-    function getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, $accessLevels, $permissions);
-
-}
 
 /**
  * Base class for Media_WebRTC_... adapters
@@ -36,11 +15,126 @@ abstract class Media_WebRTC
 {
 
     /**
+     * Creates or joins a room
+     * @method getOrCreateRoomStream
+     * @param {string} $publisherId Id of room's publisher
+     * @param {string} $roomId Room id in Qbix (last segment of stream name).
+     *  If it is empty, then a new room is created.
+     * @param {string} $resumeClosed Use existing stream if it exists
+     * @param {integer|string} $writeLevel To be used
+     * @return {array} The keys are "stream", "created", "roomId", "socketServer"
+     */
+    static function getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, $accessLevels = ['readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20], $permissions = ['mic', 'camera', 'screen']) {
+        if (empty($publisherId)) {
+            throw new Q_Exception_RequiredField(array('field' => 'publisherId'));
+        }
+
+        if(count($accessLevels) < 3) {
+            $accessLevels = array_merge (['readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20], $accessLevels);
+        }
+
+        $webrtcStream = Media_WebRTC::getOrCreateStream($publisherId, $roomId, $resumeClosed, $permissions, $accessLevels);
+
+        if (!$webrtcStream) {
+            throw new Exception('Something went wrong when creating WebRTC stream');
+        }
+
+        if ($resumeClosed) {
+            $webrtcStream->closedTime = null;
+            $webrtcStream->changed();
+
+            $endTime = $webrtcStream->getAttribute('endTime');
+            $startTime = $webrtcStream->getAttribute('startTime');
+            if($startTime == null || ($endTime != null && round(microtime(true) * 1000) > $endTime)) {
+                $startTime =  round(microtime(true) * 1000);
+                $webrtcStream->setAttribute('startTime', $startTime);
+                $webrtcStream->clearAttribute('endTime');
+                $webrtcStream->save();
+            }
+        }
+
+        return $webrtcStream;
+    }
+
+    static function createWaitingRoomStream() {
+        $userId = Users::loggedInUser(true)->id;
+        $fields = array(
+            'title' => Streams::displayName($userId) . " waiting room"
+        );
+
+        $fields['readLevel'] = 0;
+        $fields['writeLevel'] = 0;
+        $fields['adminLevel'] = 0;
+
+        $stream = Streams::create($userId, $userId, 'Media/webrtc', $fields);
+        if($stream) {
+            $stream->setAttribute('isWaitingRoom', true);
+            $stream->save();
+            return $stream;
+        } else {
+            throw new Exception("Something went wrong when creating waiting room");
+        }
+    }
+
+    static function getRoomStreamByInviteToken($invite) {
+        return Streams_Stream::fetch(Users::loggedInUser(true)->id, $invite->publisherId, $invite->streamName, true);
+    }
+
+    static function getRoomStreamRelatedTo($toPublisherId, $toStreamName, $fromPublisherId, $fromStreamName, $type, $resumeClosed) {
+        if (empty($toPublisherId)) {
+            throw new Q_Exception_RequiredField(array('field' => 'publisherId'));
+        }
+
+        $fields = array(
+            "toPublisherId" => $toPublisherId,
+            "toStreamName" => $toStreamName,
+            "type" => $type
+        );
+
+        if(!is_null($fromPublisherId)) {
+            $fields['fromPublisherId'] = $fromPublisherId;
+        }
+        if(!is_null($fromStreamName)) {
+            $fields['fromStreamName'] = $fromStreamName;
+        }
+        
+        $lastRelated = Streams_RelatedTo::select()->where($fields)->orderBy("weight", false)->limit(1)->fetchDbRow();
+
+        if ($lastRelated) {
+            $webrtcStream = Streams_Stream::fetch(null, $lastRelated->fields['fromPublisherId'], $lastRelated->fields['fromStreamName']);
+
+            if ($webrtcStream && $resumeClosed) {
+                $webrtcStream->closedTime = null;
+                $webrtcStream->changed();
+
+                $endTime = $webrtcStream->getAttribute('endTime');
+                $startTime = $webrtcStream->getAttribute('startTime');
+                if($startTime == null || ($endTime != null && round(microtime(true) * 1000) > $endTime)) {
+                    $startTime =  round(microtime(true) * 1000);
+                    $webrtcStream->setAttribute('startTime', $startTime);
+                    $webrtcStream->clearAttribute('endTime');
+                    $webrtcStream->save();
+                }
+
+
+            }
+
+            if (!$webrtcStream->testWriteLevel('join')) {
+                throw new Users_Exception_NotAuthorized();
+            }
+            return $webrtcStream;
+        }
+
+
+        return null;
+    }
+
+    /**
      * @method getTwilioTurnCredentials Retrievs credentials for using twilio turn server
      * @return {Array|null}
      * @throws Twilio_Exception
      */
-    function getTwilioTurnCredentials() {
+    static function getTwilioTurnCredentials() {
         $twilioAccountSid = Q_Config::expect('Media', 'twilio', 'accountSid');
         $twilioApiKey = Q_Config::expect('Media', 'twilio', 'apiKey');
         $twilioApiSecret = Q_Config::expect('Media', 'twilio', 'apiSecret');
@@ -164,8 +258,6 @@ abstract class Media_WebRTC
      * @return {array} The keys are "stream", "created", "roomId", "socketServer"
      */
     static function getOrCreateStream($publisherId, $roomId, $resumeClosed, $permissions, $accessLevels) {
-        $streamName = null;
-
         if(strpos($roomId ? $roomId : '', 'Media/webrtc/') !== false) {
             $roomId = explode('/', $roomId)[2];
         }
@@ -182,6 +274,127 @@ abstract class Media_WebRTC
         }
 
         throw new Q_Exception("Failed during create webrtc stream");
+    }
+
+    /**
+     * Gives the user access to WebRTC room (stream of type Media/webrtc) by creating access record in the DB
+     * This method is called when user is currently in the waiting room before joining WebRTC room
+     * @method admitUserToRoom
+     * @param {string} $publisherId publisherId of stream (type: Media/webrtc)
+     * @param {string} $streamName streamName of WebRTC stream
+     * @param {string} $waitingRoomStreamName stream name of the user's waiting room where user is waiting before joining the WebRTC room
+     * @param {string} $userIdToAdmit id of a user to whom access to WebRTC room will be given
+     */
+    static function admitUserToRoom($publisherId, $streamName, $waitingRoomStreamName, $userIdToAdmit) {
+        $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $publisherId, $streamName);
+        if(!$webrtcStream->testAdminLevel('manage')) {
+            throw new Users_Exception_NotAuthorized();
+        }
+
+        if($userIdToAdmit == $publisherId) {
+            throw new Exception("Admin's permissions/access cannot be changed");
+        }
+
+        $access = new Streams_Access();
+        $access->publisherId = $publisherId;
+        $access->streamName = $streamName;
+        $access->ofUserId = $userIdToAdmit;
+        $access->retrieve();
+        $access->readLevel = Streams::$READ_LEVEL['max'];
+        $access->writeLevel = Streams::$WRITE_LEVEL['relate'];
+        $access->adminLevel = Streams::$ADMIN_LEVEL['invite'];
+        $access->save();
+
+        $waitingRoomStream = Streams_Stream::fetch($userIdToAdmit, $userIdToAdmit, $waitingRoomStreamName);
+
+        //print_r($waitingRoomStream);die;
+        if (!is_null($waitingRoomStream)) {
+            $waitingRoomStream->setAttribute('status', 'accepted');    
+            //$waitingRoomStream->close($userIdToAdmit);
+            $waitingRoomStream->changed();
+            //$waitingRoomStream->save();
+
+            $waitingRoomStream->post($userIdToAdmit, array(
+                'type' => 'Media/webrtc/admit',
+                'instructions' => ['msg' => 'You will be joined to the room now']
+            ));
+        }
+    }
+
+    /**
+     * Cancels access to webrtc room for specific participant by his user id by changing access record (readLevel) in DB
+     * This method is called when the host clicks "Put in waiting room" near the WebRTC participant
+     * @method cancelAccessToRoom
+     * @param {string} $publisherId publisherId of stream (type: Media/webrtc)
+     * @param {string} $streamName streamName of WebRTC stream
+     * @param {string} $userId user id of participant to whom access will be canceled
+     */
+    static function cancelAccessToRoom($publisherId, $streamName, $userId) {
+        $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $publisherId, $streamName);
+        if(!$webrtcStream->testAdminLevel('manage')) {
+            throw new Users_Exception_NotAuthorized();
+        }
+
+        if($userId == $publisherId) {
+            throw new Exception("Admin's permissions/access cannot be changed");
+        }
+
+        $access = new Streams_Access();
+        $access->publisherId = $publisherId;
+        $access->streamName = $streamName;
+        $access->ofUserId = $userId;
+        if($access->retrieve()){
+            $access->readLevel = Streams::$READ_LEVEL['none'];
+            $access->save();
+        }
+
+        $signalingServer = self::getSignalingSocketServerAddress();
+
+        if($signalingServer) {
+            Q_Utils::sendToNode(array(
+                "Q/method" => "Media/webrtc/putInWaitingRoom",
+                "roomPublisherId" => $publisherId,
+                "userId" => $userId,
+                "roomId" => explode('/', $streamName)[2],
+                "soocketRoomId" => $publisherId . '_' . explode('/', $streamName)[2],
+            ), $signalingServer);
+        }
+    }
+
+    /**
+     * Removed user's waiting room. This method is called when the host dismisses user from joining WebRTC room 
+     * by clicking "Remove" on the user's waiting room in the list of waiting rooms.
+     * Closing waiting room doesn't mean that user will not be able to ask to join again (then waiting room will be reopened)
+     * @method closeWaitingRoom
+     * @param {string} $publisherId publisherId of stream (type: Media/webrtc)
+     * @param {string} $streamName streamName of WebRTC stream
+     * @param {string} $waitingRoomStreamName stream name of the stream for waiting room where user is waiting before joining the WebRTC room
+     * @param {string} $waitingRoomUserId id of the user who created the waiting room
+     */
+    static function closeWaitingRoom($publisherId, $streamName, $waitingRoomStreamName, $waitingRoomUserId) {
+        $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $publisherId, $streamName);
+        if(!$webrtcStream->testAdminLevel('manage')) {
+            throw new Users_Exception_Authorized();
+        }
+
+        $waitingRoomStream = Streams_Stream::fetch($waitingRoomUserId, $waitingRoomUserId, $waitingRoomStreamName);
+
+        if (!is_null($waitingRoomStream)) {
+            $waitingRoomStream->setAttribute('status', 'closed');            
+            $waitingRoomStream->post($waitingRoomUserId, array(
+                'type' => 'Media/webrtc/close',
+                'instructions' => ['msg' => 'Your waiting room was closed.']
+            ));
+            $waitingRoomStream->changed();
+            $waitingRoomStream->save();
+            $waitingRoomStream->close($waitingRoomUserId);
+        }
+    }
+
+    static function getSignalingSocketServerAddress() {
+        $nodeh = Q_Config::expect('Q', 'nodeInternal', 'host');
+        $nodep = Q_Config::expect('Q', 'nodeInternal', 'port');
+        return $nodep && $nodeh ? "http://$nodeh:$nodep/Q/webrtc" : false;
     }
 
     /**

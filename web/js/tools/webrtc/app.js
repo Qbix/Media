@@ -93,7 +93,7 @@ Q.Media.WebRTCRoomClient = function app(options){
     //node.js vars
     var socket;
     app.socketConnection = function() { return socket; }
-    app.socketMessage = function() { console.log('arguments', arguments);return socket.emit.apply(socket, arguments); }
+    app.socketMessage = function() { return socket.emit.apply(socket, arguments); }
     app.onSocketMessage = function() { return socket.on.apply(socket, arguments); }
     app.offSocketMessage = function() { return socket.off.apply(socket, arguments); }
 
@@ -881,7 +881,6 @@ Q.Media.WebRTCRoomClient = function app(options){
 
         function addFilterOnLocalSide(filter, participant) {
             return new Promise(function (resolve, reject) {
-                console.log('addFilterOnLocalSide')
                 participant.localFilters.push(filter);
                 filterVideoOfParticipantLocally(participant);
                 resolve();
@@ -890,7 +889,6 @@ Q.Media.WebRTCRoomClient = function app(options){
 
         function removeFilterOnLocalSide(filter, participant) {
             return new Promise(function (resolve, reject) {
-                console.log('addFilterOnLocalSide')
                 participant.localFilters.push(filter);
                 filterVideoOfParticipantLocally(participant);
                 resolve();
@@ -1295,18 +1293,15 @@ Q.Media.WebRTCRoomClient = function app(options){
             }
            
             video.addEventListener('loadeddata', function () {
-                console.log('createCanvasElement loadeddata')
                 if (!track.videoProcessor) {
                     track.videoProcessor = createVideoProcessor();
                 }
             
             })
             video.addEventListener('loadedmetadata', function () {
-                console.log('createCanvasElement loadedmetadata')            
             });
 
             video.addEventListener('play', function () {
-                console.log('createCanvasElement play')
                 if (!track.videoProcessor) {
                     track.videoProcessor = createVideoProcessor();
                 }
@@ -1314,17 +1309,14 @@ Q.Media.WebRTCRoomClient = function app(options){
             })
 
             video.addEventListener('pause', function () {
-                console.log('createCanvasElement pause')   
                 track.videoProcessor.pause();
             })
 
             video.addEventListener('ended', function () {
-                console.log('createCanvasElement ended')   
                 track.videoProcessor.pause();
             })
 
             video.addEventListener('error', function () {
-                console.log('createCanvasElement error')   
                 console.error('Error loading the video');
             });
 
@@ -3353,7 +3345,6 @@ Q.Media.WebRTCRoomClient = function app(options){
 
             function init(participantData) {
                 var senderParticipant = roomParticipants.filter(function (existingParticipant) {
-                    console.log('existingParticipant', existingParticipant.sid)
                     return (existingParticipant.sid == participantData.fromSid || (participantData.oldSids && participantData.oldSids.indexOf(existingParticipant.sid) != -1)) && existingParticipant.RTCPeerConnection;
                 })[0];
                 log('socketParticipantConnected', participantData, senderParticipant);
@@ -4142,6 +4133,7 @@ Q.Media.WebRTCRoomClient = function app(options){
                             if(!options.startWith[localTracks[i].kind]) {
                                 log('socketRoomJoined skip track of kind ' + localTracks[i].kind);
                                 //localParticipant.notForUsingTracks.push(localTracks[i]);
+
                                 options.notForUsingTracks.push(localTracks[i]);
                                 continue;
                             }
@@ -4299,13 +4291,11 @@ Q.Media.WebRTCRoomClient = function app(options){
                         if(audioOutputGroupIds.indexOf(device.groupId) != -1) {
                             continue;
                         }
-                        console.log('audiooutput123', device.deviceId.toLowerCase() == options.sinkId, options.sinkId, currentAudioOutputDevice, device.deviceId.toLowerCase(), device.label.toLowerCase())
                         if(device.deviceId.toLowerCase() == 'default' || device.label.toLowerCase() == 'default') {
                             defaultAudioOutputDevice = device;
                         }
                         if(currentAudioOutputDevice == null && (options.sinkId && device.deviceId.toLowerCase() == options.sinkId)) {
                             currentAudioOutputDevice = device;
-                            console.log('audiooutput1234444')
 
                             app.event.dispatch('currentAudiooutputDeviceChanged', currentAudioOutputDevice);
                         }
@@ -4323,7 +4313,6 @@ Q.Media.WebRTCRoomClient = function app(options){
                     currentAudioOutputDevice = defaultAudioOutputDevice;
                 }
 
-                console.log('deviceListUpdated0')
                 app.event.dispatch('deviceListUpdated');
 
             } else if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
@@ -4898,7 +4887,6 @@ Q.Media.WebRTCRoomClient = function app(options){
                 }
             }
             currentAudioOutputDevice = outputDevice;
-            console.log('currentAudiooutputDeviceChanged', currentAudioOutputDevice)
             app.event.dispatch('currentAudiooutputDeviceChanged', currentAudioOutputDevice);
         }
 
@@ -5249,7 +5237,6 @@ Q.Media.WebRTCRoomClient = function app(options){
 
                         for (let t in videoTracks) {
                             if(videoTracks[t].mediaStreamTrack.readyState == 'ended' || !videoTracks[t].stream.active) continue;
-                            console.log('enableVideoTracks processedTrack', videoTracks[t], videoTracks[t].mediaStreamTrack.readyState, videoTracks[t].videoProcessors[participant.sid])
                             let trackToAdd = participant.filtersToApply.length != 0 ? videoTracks[t].videoProcessors[participant.sid].processedTrack : videoTracks[t]
                             log('enableVideoTracks: addTrack: id = ' + (trackToAdd.mediaStreamTrack.id), trackToAdd.stream.id);
                             let videoSenderExist = participant.RTCPeerConnection.getSenders().filter(function (sender) {
@@ -5394,7 +5381,6 @@ Q.Media.WebRTCRoomClient = function app(options){
                         nativeTracksToDisable.push(tracksToDisable[n].mediaStreamTrack);
                         if (tracksToDisable[n].videoProcessors[participant.sid] && tracksToDisable[n].videoProcessors[participant.sid].processedTrack) nativeTracksToDisable.push(tracksToDisable[n].videoProcessors[participant.sid].processedTrack.mediaStreamTrack);
                     }
-                    console.log('nativeTracksToDisable', nativeTracksToDisable)
                     videoSenders = participant.RTCPeerConnection.getSenders().filter(function (sender) {
                         return sender.track != null && sender.track.kind == 'video' && nativeTracksToDisable.indexOf(sender.track) != -1;
                     });

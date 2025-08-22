@@ -555,9 +555,8 @@
         initCallCenter: function () {
             var tool = this;
             if(!tool.stream) {
-                return console.log('tool.stream not found');
+                return;
             }
-            console.log('initCallCenter');
             //if (tool.stream.testWriteLevel("edit")) {
             if (Q.Users.roles['Users/hosts'] != null || Q.Users.roles['Users/screeners'] != null) {
 
@@ -654,8 +653,6 @@
             } else {
                 tool.getMainWebRTCStreams().then(function (stream) {
                     if(!stream) {
-                        console.log('no webrtc stream found');
-
                         return;
                     }
                     let callIcon = document.createElement('DIV');
@@ -671,7 +668,6 @@
                             publisherId: stream.fields.publisherId,
                             streamName: stream.fields.name,
                             onStatusChange: function (isActive) {
-                                console.log('onStatusChange', isActive);
                                 if(isActive) {
                                     callIcon.innerHTML = _icons.hungUp;
                                     callIcon.classList.add('Media_clips_end_call_btn');
@@ -700,7 +696,6 @@
 
                             /*callCenterClient.showWaitingLoader = function (title, text) {
                                 var chatTool = Q.Tool.from($(".Q_tool.Streams_chat_tool[data-streams-chat*='" + tool.stream.fields.name + "']"), "Streams/chat");
-                                console.log('chatTool', chatTool)
                                 if (chatTool) {
                                     let dialogContentCon = document.createElement('DIV');
                                     dialogContentCon.className = 'media-callcenter-c-waiting-dialog';

@@ -2421,7 +2421,6 @@
                     //turn on mic+show avatar; turn on mic+camera
                     selectMediaDialog: function (callback, onCloseCallback) {
                         tool.webrtcSignalingLib.localMediaControls.getRoomLimitsInfo().then(function (result) {
-                            console.log('selectMediaDialog')
                             let dialogCon = document.createElement('DIV');
                             dialogCon.className = 'Media_webrtc_request_speak_con'
                             let dialogInner = document.createElement('DIV');

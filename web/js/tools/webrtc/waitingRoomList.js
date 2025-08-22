@@ -91,7 +91,6 @@
                         creatable: false,
                         realtime: true,
                         onUpdate: function (e) {
-                            console.log('waitingrooms: onUpdate', e, this)
                             tool.relatedStreams = e.relatedStreams;
                             tool.reloadWaitingRoomsList();
                             if (!tool.roomsListLoaded) {
@@ -115,7 +114,6 @@
                 //check whether some waiting rooms are already inactive and close them
                 for (let i in tool.waitingRoomsList) {
                     let roomDataObject = tool.waitingRoomsList[i];
-                    console.log('onRoomsListFirstLoadHandler: closeIfOffline', roomDataObject.webrtcStream.fields.publisherId, roomDataObject.webrtcStream.fields.name, roomDataObject.webrtcStream.getAttribute('socketId'));
 
                     Q.req("Media/webrtc", ["closeIfOffline"], function (err, response) {
                         var msg = Q.firstErrorMessage(err, response && response.errors);
@@ -151,7 +149,6 @@
                 //TODO: refactor
                 stream.onMessage('Media/webrtc/admit').set(function (message) {
                     Q.Streams.get(message.publisherId, message.streamName, function (err) {
-                        console.log('Streams/changed0', this, this.getAttribute('status'));
                         roomDataObject.webrtcStream = this;
                         tool.relatedStreams[`${this.fields.publisherId}\t${this.fields.name}`] = this;
                         tool.reloadWaitingRoomsList();
@@ -159,7 +156,6 @@
                 });
                 stream.onMessage('Streams/changed').set(function (message) {
                     Q.Streams.get(message.publisherId, message.streamName, function (err) {
-                        console.log('Streams/changed1', this.getAttribute('status'));
                         roomDataObject.webrtcStream = this;
                         tool.relatedStreams[`${this.fields.publisherId}\t${this.fields.name}`] = this;
                         tool.reloadWaitingRoomsList();
@@ -170,22 +166,18 @@
             reloadWaitingRoomsList: function () {
                 var tool = this;
                 var relatedStreams = tool.relatedStreams;
-                console.log('reloadRoomsList: relatedStreams', relatedStreams);
                 for (let s in relatedStreams) {
                     //add very new waiting rooms
                     let stream = relatedStreams[s];
                     let roomExists;
                     for (let c in tool.waitingRoomsList) {
-                        console.log('reloadRoomsList: for', stream.fields.name, tool.waitingRoomsList[c].webrtcStream.fields.name);
                         if (stream.fields.name == tool.waitingRoomsList[c].webrtcStream.fields.name) {
                             roomExists = tool.waitingRoomsList[c];
                             break;
                         }
                     }
-                    console.log('reloadRoomsList: roomExists', roomExists);
 
                     var status = stream.getAttribute('status');
-                    console.log('reloadRoomsList: status', status);
 
                     if(roomExists != null) {
                         continue;
@@ -205,7 +197,6 @@
                     
                     createRoomItemElement(roomDataObject);
 
-                    console.log('reloadRoomsList: roomDataObject', roomDataObject);
                     tool.waitingRoomsList.unshift(roomDataObject);
 
                     tool.waitingRoomsList.sort(function (x, y) {
@@ -219,21 +210,16 @@
                     tool.waitingRoomsListEl.appendChild(tool.waitingRoomsList[c].roomElement);
                 }
 
-                console.log('reloadRoomsList: roomsList', tool.waitingRoomsList.length)
                 for (let i = tool.waitingRoomsList.length - 1; i >= 0; i--) {
-                    console.log('reloadRoomsList: roomsList for', i)
-
                     let roomIsClosed = true;
                     for (let n in relatedStreams) {
                         let status = relatedStreams[n].getAttribute('status');
-                        console.log('reloadRoomsList: roomsList for status', status, tool.waitingRoomsList[i].webrtcStream)
 
                         if (relatedStreams[n].fields.name == tool.waitingRoomsList[i].webrtcStream.fields.name && status == 'waiting') {
                             roomIsClosed = false;
                         }
                     }
                     if (roomIsClosed) {
-                        console.log('reloadRoomsList: roomsList for remove', i)
                         if (tool.waitingRoomsList[i].roomElement && tool.waitingRoomsList[i].roomElement.parentElement != null) {
                             tool.waitingRoomsList[i].roomElement.parentElement.removeChild(tool.waitingRoomsList[i].roomElement);
                         }

@@ -87,7 +87,6 @@
                 });
 
                 tool.roomStream.onMessage("Media/webrtc/addOrRemoveCohost").set(function (message) {
-                    console.log('bindStreamsEvents: Media/webrtc/addOrRemoveCohost', message);
                     var insturctions = JSON.parse(message.instructions);
                     if(!insturctions.ofUserId) {
                         return;
@@ -316,7 +315,6 @@
             updateUIAccordingAccess: function () {
                 var tool = this;
                 var localParticipant = tool.webrtcSignalingLib.localParticipant();
-                console.log('localParticipant.access.isCohost || localParticipant.access.isAdmin', localParticipant.access.isCohost, localParticipant.access.isAdmin)
                 if(localParticipant.access.isCohost || localParticipant.access.isAdmin) {
                     if(!tool.waitingRoomsListTool) {
                         var waitingRoomsListToolCon = document.createElement('DIV');
@@ -340,7 +338,6 @@
                     }
                 } else {
                     if(tool.waitingRoomsListTool) {
-                        console.log('tool.waitingRoomsListTool.element', tool.waitingRoomsListTool.element)
                         Q.Tool.remove(tool.waitingRoomsListTool.element, true, true);
                         tool.waitingRoomsListTool = null;
                         tool.waitingRoomsList.innerHTML = '';
@@ -802,7 +799,7 @@
                         {
                             content: optionsMenu.menuEl,
                             className: 'participants-popup-more-options',
-                            triggerOn: 'click',
+                            triggerOn: 'lmb',
                             parent: participantItem
                         }
                     ),
@@ -897,16 +894,12 @@
                             }
                         }
 
-                        console.log('updateMenuItems', roomParticipant.access.isCohost, localParticipant.access.isAdmin);
                         if(!roomParticipant.access.isCohost && localParticipant.access.isAdmin) {
-                            console.log('updateMenuItems 1');
-
                             if(removeHost.parentElement) {
                                 removeHost.parentElement.removeChild(removeHost);
                             }
                             optionsMenuCon.append(makeHost);
                         } else if (roomParticipant.access.isCohost && localParticipant.access.isAdmin) {
-                            console.log('updateMenuItems 2');
                             if(makeHost.parentElement) {
                                 makeHost.parentElement.removeChild(makeHost);
                             }
@@ -1008,7 +1001,6 @@
 
                     if(item.moreOptionsMenu) {
                         if (item.moreOptionsMenu.menuTriggerButton) {
-                            console.log('item.moreOptionsMenu.menuTriggerButton', item.moreOptionsMenu.menuTriggerButton, localParticipant.access.isCohost)
                             if (((localParticipant.access.isCohost || localParticipant.access.isAdmin) && !item.participant.access.isCohost  && !item.participant.access.isAdmin)
                             || localParticipant.access.isAdmin) {
                                 item.moreOptionsMenu.menuTriggerButton.style.display = 'block';

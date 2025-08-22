@@ -193,15 +193,12 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                         recording: false,
                         onDataAvailable: function (buffer) {
                             //parseMp4(buffer);
-                            //console.log('onDataAvailable')
                             let blob = new Blob([buffer]);
                             if (_streamingSocket[service] == null) return;
-                            /* let string = new TextDecoder().decode(buffer);
-                            console.log('onDataAvailable', string.toString(16)) */
+                            
                             if (_streamingSocket[service].connected) {
                                 _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
                                 /* if(_streamingSocket[service].chunksSkipped != 0) {
-                                    console.log('onDataAvailable send init blob', _streamingSocket[service].chunksSkipped, _mp4Streamer.ftypBox);
 
                                     let ftypBlob = new Blob([_mp4Streamer.ftypBox]);
                                     _streamingSocket[service].socket.emit('Media/webrtc/videoData', ftypBlob);
@@ -211,8 +208,6 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
 
                                     _streamingSocket[service].chunksSkipped = 0;
                                 } else {
-                                    console.log('onDataAvailable send regular blob');
-
                                     _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
                                 } */
                             } else {
@@ -803,7 +798,6 @@ function Mp4Recorder(options) {
         framesGenerated = 0;
 
         if (videoTrack) {
-            console.log('videoTrack', videoTrack)
             let videoTrackProcessor = new MediaStreamTrackProcessor({ track: videoTrack });
             let consumer = new WritableStream({
                 write(frame) {

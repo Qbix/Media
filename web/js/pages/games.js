@@ -95,7 +95,6 @@ Q.page("Media/games", function () {
     }
 
     function activateTool(publisherId, streamName) {
-        console.log('activateTool', publisherId, streamName);
         Q.activate(
             Q.Tool.setUpElement(gameElement, 'Games/quickdraw', {
                 publisherId: publisherId,

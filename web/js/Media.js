@@ -73,6 +73,10 @@
 		"Media/feed/composer": "{{Media}}/js/tools/feed/composer.js",
 		"Media/audioVisualization"	 : "{{Media}}/js/tools/webrtc/audioVisualization.js",
 		"Media/webrtc"	   : "{{Media}}/js/tools/webrtc/webrtc.js",
+		"Media/webrtc/scheduler"  : {
+			js: "{{Media}}/js/tools/webrtc/webrtcScheduler.js",
+			css: "{{Media}}/css/tools/webrtcScheduler.css",
+		},
 		"Media/webrtc/preview" : "{{Media}}/js/tools/webrtc/preview.js",
 		"Media/webrtc/default/preview" : "{{Media}}/js/tools/webrtc/default/preview.js",
 		"Media/webrtc/call/preview" : "{{Media}}/js/tools/webrtc/call/preview.js",

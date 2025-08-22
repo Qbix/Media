@@ -18,7 +18,6 @@
      */
     Q.Tool.define("Media/webrtc/callCenter/manager", function (options) {
         var tool = this;
-        console.log('Media/webrtc/callCenter/manager START', tool.activated, tool.activating, tool)
 
         //window = tool.element.ownerDocument.defaultView;
         //document = window.document;
@@ -45,7 +44,6 @@
         tool.loadStyles().then(function() {
             return tool.getCallCenterEndpointStream();
         }).then(function(stream) {
-            console.log('stream to get', stream, stream.testReadLevel('relations'), stream.testWriteLevel('relate'), stream.testAdminLevel('invite'))
             if(!stream.testReadLevel('relations') || !stream.testWriteLevel('relate') || !stream.testAdminLevel('invite')) {
                 return console.error('You are now allowed to create call center on this stream');
             }
@@ -55,7 +53,6 @@
             } 
             tool.callCenterMode = mode;
             tool.callCenterStream = stream;
-            console.log('callCenterStream', tool.callCenterStream);
             tool.callCenterStream.observe();
             
         }).then(function () {
@@ -243,9 +240,6 @@
                 var tool = this;
                 var socketConns = Q.Socket.get();
                 if (!socketConns) {
-                    console.log('buildInterface no socket',socketConns)
-
-
                     setTimeout(function () {
                         tool.buildInterface();
                     }, 300)
@@ -253,7 +247,6 @@
                     return;
                 } else if (socketConns && !socketConns.socket.id) {
                     Q.Socket.onConnect().add(function () {
-                        console.log('onSession: no socket connection yet');
                         tool.buildInterface();
                     })
                 } 
@@ -263,10 +256,7 @@
                     return;
                 }  
 
-                console.log('tool.state.operatorSocketId socketConns',socketConns)
-
                 tool.state.operatorSocketId = socketConns.socket.id;
-                console.log('tool.state.operatorSocketId', tool.state.operatorSocketId)
 
                 var toolContainer = document.createElement('DIV');
                 toolContainer.className = 'media-callcenter-m';
@@ -298,8 +288,6 @@
                             tool.startOrJoinLiveShowTeleconference();
                         });
                     }
-
-                    console.log('tool.callCenterStream.testAdminLevel', tool.callCenterStream.testAdminLevel('manage'))
 
                     let adminLabel = tool.myRolesInCallCenter.indexOf('Users/admins') != -1 || tool.state.publisherId == Q.Users.loggedInUserId();
                     if (adminLabel) {
@@ -442,8 +430,6 @@
                             "offset": 0,
                         },
                         onUpdate: function (e) {
-                            console.log('onUpdate', e, this)
-                            console.log('onUpdate e.relatedStreams', e.relatedStreams)
                             tool.relatedStreams = e.relatedStreams;
                             tool.reloadCallsList();
                             if(!tool.callsListLoaded) {
@@ -451,9 +437,7 @@
                                 tool.onCallsListFirstLoadHandler()
                             }
                         },
-                        beforeRenderPreview: function (e) {
-                            console.log('beforeRenderPreview', e, this)
-                        }
+                        beforeRenderPreview: function (e) { }
                     }),
                     {},
                     function () {
@@ -486,10 +470,8 @@
                     Q.Tool.setUpElement(roles, 'Streams/userChooser', {}),
                     {},
                     function () {
-                        console.log('Streams/userChooser')
                         tool.userChooserTool = this;
                         this.state.onChoose.set(function (userId, avatar) {
-                            console.log('userId, avatar', userId, avatar);
                             addSelectedUser(userId)
                         }, tool);
                     }
@@ -499,7 +481,6 @@
 
                 function updateRolesList(retnderList) {
                     getCurrentRoles().then(function (contacts) {
-                        console.log('getCurrentRoles', contacts);
                         for(let i in contacts) {
                             let userAlreadyExists = tool.moderators.findIndex(function (el) {
                                 return el.contactUserId == contacts[i].contactUserId;
@@ -516,7 +497,6 @@
 
                 function addSelectedUser(userId, contactInstance) {
                     var contactInstance = contactInstance || null;
-                    console.log('addSelectedUser')
                     var labels = [
                         {
                             key: 'hosts',
@@ -578,11 +558,8 @@
 
                     userItemRole.addEventListener('change', function () {
                         var newLabel = userItemRole.value;
-                        console.log('change', newLabel)
-                        if(contactInstance) console.log('change', contactInstance.roleInCallCenter)
                         if(contactInstance && newLabel != contactInstance.roleInCallCenter) {
                             var promises = [];
-                            console.log('tool.moderators', tool.moderators)
                             for (let m in tool.moderators) {
                                 if(tool.moderators[m].contactUserId == userId) {
                                     promises.push(removeRole(tool.moderators[m].label, userId));
@@ -617,7 +594,6 @@
                     });
 
                     removeUser.addEventListener('click', function () {
-                        console.log('contactInstance', contactInstance)
                         if(contactInstance) {
                             removeRole(contactInstance.label, contactInstance.contactUserId).then(function() {
                                 userItem.parentElement.removeChild(userItem);
@@ -631,8 +607,6 @@
                 }
 
                 function removeRole(label, contactUserId) {
-                    console.log('removeRole', label)
-
                     return new Promise(function (resolve, reject) {
                         Q.req('Users/contact', '', function (err, data) {
                             var msg = Q.firstErrorMessage(err, data);
@@ -656,22 +630,16 @@
                 function changeRole(newLabel, userId) {
                     return new Promise (function (resolve, reject) {
                         getPublisherUsersLabels().then(function (myLabels) {
-                            console.log('myLabels', myLabels)
                             var existingLabels = Object.keys(myLabels)
     
-                            if(existingLabels.indexOf(newLabel) == -1) {
-                                console.log('change 1')
-    
+                            if(existingLabels.indexOf(newLabel) == -1) {    
                                 return createUsersLabel(newLabel).then(function (labelInstance) {
-                                    console.log('labelInstance', labelInstance)
                                     return assignLabelToUser(newLabel, userId)
                                 }).then(function (contactInstance) {
-                                    console.log('contactInstance', contactInstance)
                                     resolve(contactInstance);
                                 });
                             } else {
                                 return assignLabelToUser(newLabel, userId).then(function (contactInstance) {
-                                    console.log('contactInstance', contactInstance)
                                     resolve(contactInstance);
                                 });
                             }
@@ -687,7 +655,6 @@
                                 return reject(msg)
                             }
 
-                            console.log('getCurrentRoles data.slots.contacts', tool.state.publisherId, data.slots.contacts)
                             Q.each(data.slots.contacts, function (i) {
                                 data.slots.contacts[i] = new Q.Users.Contact(data.slots.contacts[i]);
                             });
@@ -746,10 +713,8 @@
                 }
 
                 function assignLabelToUser(label, contactUserId) {
-                    console.log('assignLabelToUser', label)
                     return new Promise(function (resolve, reject) {
                         Q.req('Users/contact', 'contact', function (err, data) {
-                            console.log('ata.slots.contact', data.slots.contact);
                             var msg = Q.firstErrorMessage(err, data);
                             if (msg) {
                                 return reject(msg);
@@ -807,7 +772,6 @@
             },
             reloadCallsList: function () {
                 var tool = this;
-                console.log('reloadCallsList: relatedStreams', tool.relatedStreams);
                 
                 if(Object.keys(tool.relatedStreams).length == 0) {
                     tool.endpointCallsListEl.innerHTML = '';
@@ -832,7 +796,6 @@
                             break;
                         }
                     }
-                    console.log('reloadCallsList: callExists', callExists);
 
                     if(callExists != null) {
                         if(callExists.title != stream.fields.title) {
@@ -845,7 +808,6 @@
                     }
 
                     var status = stream.getAttribute('status');
-                    console.log('reloadCallsList: status', status);
 
                     var isApproved = stream.getAttribute('isApproved');
                     var onHold = stream.getAttribute('onHold');
@@ -874,7 +836,6 @@
                     createCallItemElement(callDataObject);
                     tool.updateCallButtons(callDataObject);
 
-                    console.log('reloadCallsList: callDataObject', callDataObject);
                     tool.callsList.unshift(callDataObject);
 
                     tool.callsList.sort(function(x, y){
@@ -888,10 +849,7 @@
                     tool.endpointCallsListEl.appendChild(tool.callsList[c].callElement);
                 }
 
-                console.log('reloadCallsList: callsList', tool.callsList.length)
                 for (let i = tool.callsList.length - 1; i >= 0; i--) {
-                    console.log('reloadCallsList: callsList for', i)
-
                     let callIsClosed = true;
                     for (let n in relatedStreams) {
                         if(relatedStreams[n].fields.name == tool.callsList[i].webrtcStream.fields.name) {
@@ -899,7 +857,6 @@
                         }
                     }
                     if(callIsClosed) {
-                        console.log('reloadCallsList: callsList for remove', i)
                         if(tool.callsList[i].callElement && tool.callsList[i].callElement.parentElement != null) {
                             tool.callsList[i].callElement.parentElement.removeChild(tool.callsList[i].callElement);
                         }
@@ -1120,14 +1077,10 @@
                 
                 function convertDateToTimestamp(str) {
                     const [dateComponents, timeComponents] = str.split(' ');
-                    console.log(dateComponents); 
-                    console.log(timeComponents); 
-
                     const [year, month, day] = dateComponents.split('-');
                     const [hours, minutes, seconds] = timeComponents.split(':');
 
                     const date = new Date(+year, month - 1, +day, +hours, +minutes, +seconds);
-                    console.log(date); 
 
                     const timestamp = date.getTime();
                     return timestamp;
@@ -1284,29 +1237,24 @@
     
                         if (markApprovedButton) {
                             if (callDataObject.statusInfo.isApproved) {
-                                console.log('updateCallButtons 4');
                                 markApprovedButtonText.innerHTML = 'Approved!';
                                 markApprovedButton.classList.add('media-callcenter-m-calls-item-buttons-approved')
                                 markApprovedButton.classList.remove('media-callcenter-m-calls-item-buttons-btn-scroll');
                             } else if (!callDataObject.statusInfo.isApproved) {
-                                console.log('updateCallButtons 5');
                                 markApprovedButton.classList.remove('media-callcenter-m-calls-item-buttons-approved');
                                 markApprovedButtonText.innerHTML = 'Mark Approved';
                             }
                         }
                     } else if(tool.callCenterMode == 'liveShow') {
                         if(callDataObject.statusInfo.status == 'created') {
-                            console.log('updateCallButtons 1');
                             hideButton(holdButton);
                             showButton(markApprovedButton);
                             showButton(acceptButton);
                             showButton(interviewButton);
                             showButton(declineButton);
                         } else if(callDataObject.statusInfo.status == 'interview' && (callDataObject.statusInfo.interviewedByUserId == Q.Users.loggedInUserId() || callDataObject.statusInfo.interviewedByUserId == null)) {
-                            console.log('updateCallButtons 2');
                             let room = tool.currentActiveWebRTCRoom;
                             let weAreAtTheUsersWaitingRoomNow = room && (room.roomStream() && room.roomStream().fields.name == callDataObject.webrtcStream.fields.name || (room.pendingRoomSwitch && room.pendingRoomSwitch.streamName == callDataObject.webrtcStream.fields.name)) ? true : false;
-                            console.log('weAreAtTheUsersWaitingRoomNow', weAreAtTheUsersWaitingRoomNow)
                             
                             if(room && !weAreAtTheUsersWaitingRoomNow && tool.state.status.current != 'windowInterview') {
                                 hideButton(holdButton);
@@ -1322,14 +1270,12 @@
                                 showButton(acceptButton);
                             }
                         } else if(callDataObject.statusInfo.status == 'interview' && callDataObject.statusInfo.interviewedByUserId != Q.Users.loggedInUserId()) {
-                            console.log('updateCallButtons 2.1');
                             hideButton(holdButton);
                             showButton(interviewButton, true);
                             showButton(declineButton);
                             showButton(markApprovedButton);
                             showButton(acceptButton);
                         } else if(callDataObject.statusInfo.status == 'accepted') {
-                            console.log('updateCallButtons 3');
                             showButton(declineButton);
                             showButton(holdButton);
                             hideButton(markApprovedButton);
@@ -1339,12 +1285,10 @@
                         
                         if(markApprovedButton) {
                             if(callDataObject.statusInfo.isApproved) {
-                                console.log('updateCallButtons 4');
                                 markApprovedButtonText.innerHTML = 'Approved!';
                                 markApprovedButton.classList.add('media-callcenter-m-calls-item-buttons-approved')
                                 markApprovedButton.classList.remove('media-callcenter-m-calls-item-buttons-btn-scroll');
                             } else if (!callDataObject.statusInfo.isApproved) {
-                                console.log('updateCallButtons 5');
                                 markApprovedButton.classList.remove('media-callcenter-m-calls-item-buttons-approved')
                                 markApprovedButtonText.innerHTML = 'Mark Approved';
                             }
@@ -1386,24 +1330,19 @@
 
                     let webrtcStarted = false;
                                     
-                    window.addEventListener('message', function (e) {
-                        console.log('GOT MESSAGE FROM CHILD', e.data)
-    
+                    window.addEventListener('message', function (e) {    
                         if (e.origin !== Q.url('{{baseUrl}}')) {
                             reject('Wrong event or origin');
                             return;
                         }
                         if(e.data == 'webrtcstarted') {
-                            let webrtcRoom = newWindow.Q.Media.WebRTCRooms[0];
-                            console.log('newWindow.Q.Media.onWebRTCStarted 1', newWindow.Q.Media.WebRTCRooms)
-        
+                            let webrtcRoom = newWindow.Q.Media.WebRTCRooms[0];        
                             if (!webrtcRoom) {
                                 reject('Room was not loaded');
                                 return;
                             }
                             tool.currentActiveWebRTCRoom.muteRoom();
                             let waitingNotice = webrtcRoom.notice.show('Waiting on listener...', true)
-                            console.log('newWindow.Q.Media.onWebRTCStarted 2')
                             let signallingLib = webrtcRoom.getWebrtcSignalingLib();
                             signallingLib.event.on('participantConnected', function (participant) {
                                 if(participant.isLocal) {
@@ -1413,7 +1352,6 @@
                             });
 
                             newWindow.addEventListener('beforeunload', function () {
-                                console.log('newWindow.Q.Media.onWebRTCStarted 3')
                                 //if call was put on hold
                                 if(callDataObject.statusInfo.status == 'interview') {
                                     tool.onHoldHandler(callDataObject);
@@ -1447,7 +1385,6 @@
             },
             onCallsListFirstLoadHandler: function () {
                 var tool = this;
-                console.log('onCallsListFirstLoadHandler', tool.callsList.length)
                 //check whether some calls are already inactive after callCenterManager loaded for the first time
                 for(let i in tool.callsList) {
                     let callDataObject = tool.callsList[i];
@@ -1457,7 +1394,6 @@
                         if (msg) {
                             return console.error(msg);
                         }
-                        console.log('requestCall: closeIfOffline', response.slots.closeIfOffline);
 
                     }, {
                         method: 'post',
@@ -1471,9 +1407,7 @@
                 }
             },
             updateCallButtons: function (callDataObject) {
-                var tool = this;
-                console.log('updateCallButtons', callDataObject.statusInfo, tool.callCenterMode);
-                
+                var tool = this;                
             },
             startOrJoinLiveShowTeleconference: function () {
                 var tool = this;
@@ -1499,7 +1433,6 @@
                 });
             },
             joinUsersWaitingRooom: function (callDataObject, createNewWindow, onDisconnect) {
-                console.log('joinUsersWaitingRooom START');
                 var tool = this;
                 if(createNewWindow) {
                     return tool.openCallInNewWindow(callDataObject);
@@ -1508,11 +1441,8 @@
                 tool.state.status.setStatus('interview');
                 if (tool.currentActiveWebRTCRoom && tool.currentActiveWebRTCRoom.isActive()) {
                     return new Promise(function (resolve, reject) {
-                        console.log('joinUsersWaitingRooom switchTo');
                         tool.currentActiveWebRTCRoom.switchTo(callDataObject.webrtcStream.fields.publisherId, callDataObject.webrtcStream.fields.name.split('/').pop(), {}).then(function () {
                             let signalingLibInstance = tool.currentActiveWebRTCRoom.getWebrtcSignalingLib();
-                            console.log('joinUsersWaitingRooom switchTo:result', callDataObject.webrtcStream.fields.name, tool.currentActiveWebRTCRoom.roomStream().fields.name);
-
                             if (onDisconnect) {
                                 signalingLibInstance.event.on('disconnected', function () {
                                     onDisconnect(callDataObject);
@@ -1524,7 +1454,6 @@
 
                 } else {
                     return new Promise(function (resolve, reject) {
-                        console.log('joinUsersWaitingRooom webrtc.start');
                         tool.currentActiveWebRTCRoom = Q.Media.WebRTC({
                             roomId: callDataObject.webrtcStream.fields.name,
                             roomPublisherId: callDataObject.webrtcStream.fields.publisherId,
@@ -1550,7 +1479,6 @@
             onMarkApprovedHandler: function (callDataObject) {
                 var tool = this;
                 //if(tool.callCenterMode != 'liveShow') return;
-                console.log('onMarkApprovedHandler', callDataObject.statusInfo.isApproved)
                 var approveStatusToSet = callDataObject.statusInfo.isApproved ? false : true;
                 Q.req("Media/callCenter", ["markApprovedHandler"], function (err, response) {
                     var msg = Q.firstErrorMessage(err, response && response.errors);
@@ -1660,7 +1588,6 @@
                 var tool = this;
                 if(tool.callCenterMode != 'liveShow') return;
                 return new Promise(function (resolve, reject) {
-                    console.log('onAcceptHandler', callDataObject.statusInfo.status)
                     //onAcceptHandler can be fired only in "liveShow", this handler moves user from his waiting room to liveShow webrtc room
                     //so firstly, we need to give him max readLevel access, secondly - post message to his waiting room allowing user to join
                     tool.state.status.setStatus('regular');
@@ -1674,7 +1601,6 @@
                             return console.error(msg);
                         }
     
-                        console.log('onAcceptHandler', response, prevStatus, tool.iAmConnectedToCallCenterRoom);
                         if (prevStatus == 'interview' && tool.iAmConnectedToCallCenterRoom) {
                             tool.switchBackToLiveShowRoom();
                         } else if (tool.currentActiveWebRTCRoom && !tool.iAmConnectedToCallCenterRoom) {
@@ -1694,13 +1620,11 @@
             },
             onDeclineHandler: function (callDataObject) {
                 var tool = this;
-                console.log('onDeclineHandler', callDataObject.statusInfo.status);
                 return new Promise(function (resolve, reject) {
                     tool.state.status.setStatus('regular');
                     var content, action;
                    
                     if(callDataObject.statusInfo.status == 'interview' || callDataObject.statusInfo.status == 'accepted') {
-                        console.log('onDeclineHandler 1');
                         action = 'endCall';
                         content = JSON.stringify({
                             immediate: true,
@@ -1708,7 +1632,6 @@
                             msg: 'Call ended'
                         })
                     } else {
-                        console.log('onDeclineHandler 2');
                         action = 'declineCall';
                         content = JSON.stringify({
                             immediate: true,
@@ -1757,7 +1680,6 @@
                         columnClass: 'Communities_column_chat',
                         onActivate: function (columnElement) {
                             tool.chatColumn = columnElement;
-                            console.log('onChatHandler onActivate',this, arguments)
                             Q.Streams.Message.Total.seen(callDataObject.webrtcStream.fields.publisherId, callDataObject.webrtcStream.fields.name, 'Streams/chat', true);
                         }, 
                         onClose: function () {

@@ -126,7 +126,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
     }
 
     function saveOrUpdateChannelInDB(destinationObject, remove) {
-        console.log('saveOrUpdateChannelInDB', destinationObject)
         return new Promise(function (resolve, reject) {
             Q.req("Media/livestream", ["createOrUpdateChannel"], function (err, response) {
                 var msg = Q.firstErrorMessage(err, response && response.errors);
@@ -179,7 +178,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                             }
                         }
 
-                        console.log('synchronizeDbWithLocalStorage liveDestItem', liveDestItem);
                         if (liveDestItem) {
                             liveDestItem.channelInfo.channelTitle = storageItem.channelTitle;
                             liveDestItem.channelInfo.channelDesc = storageItem.channelDesc;
@@ -195,7 +193,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                             }
                         }
 
-                        console.log('synchronizeDbWithLocalStorage liveDestItem 2', liveDestItem, storageItem);
                         if (liveDestItem) {
                             liveDestItem.channelInfo.accessToken = storageItem.accessToken;
                             liveDestItem.channelInfo.accessTokenExpiresIn = storageItem.accessTokenExpiresIn;
@@ -385,7 +382,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
     }
 
     function slideViewLeft(element) {
-        console.log('slideViewLeft START');
         if (_activeView == element) return;
 
         var elementToShow = element;
@@ -413,8 +409,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
         }, 0)
 
         function onSlideTransitionEnd(e) {
-            console.log('transitionend 1', e.target, e.currentTraget)
-
             if (e.target != elementToShow) return;
 
             elementToHide.classList.remove('view-slider-hidden-on-left');
@@ -428,12 +422,10 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
         }
 
         function onParentSizeTransitionEnd(e) {
-            console.log('transitionend', e.target, _mainContainer, e.currentTraget)
             if (e.target != _mainContainer) return;
             _mainContainer.classList.remove('view-slider-transition');
             _mainContainer.style.width = 'auto';
             _mainContainer.style.height = 'auto';
-            console.log('transitionend REMOVE')
 
             _mainContainer.removeEventListener('transitionend', onParentSizeTransitionEnd);
 
@@ -468,8 +460,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
         }, 0)
 
         function onSlideTransitionEnd(e) {
-            console.log('transitionend 1', e.target, e.currentTraget)
-
             if (e.target != elementToShow) return;
 
             elementToHide.classList.remove('view-slider-hidden-on-right');
@@ -483,7 +473,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
         }
 
         function onParentSizeTransitionEnd(e) {
-            console.log('transitionend', e.target, e.currentTraget)
             if (e.target != _mainContainer) return;
             _mainContainer.classList.remove('view-slider-transition');
             _mainContainer.style.width = 'auto';
@@ -891,7 +880,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                 {
                     content: _addDestinationMenuEl,
                     className: 'live-editor-stream-to-add-popup',
-                    triggerOn: 'click'
+                    triggerOn: 'lmb'
                 }
             ),
             {},
@@ -1332,9 +1321,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
     }
 
     function getRtmpForEachDestination(index, rtmpsArr, oneDestinationLiveProcessed) {
-        console.log('getRtmpForEachDestination START', index, _destinations[index].channelInfo.accessToken)
-        console.log('getRtmpForEachDestination id', _destinations[index].channelInfo.enabled)
-
         if (_destinations[index].channelInfo.enabled === false) {
             proceedToNextDestination();
             return;
@@ -1360,7 +1346,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                     return bindYoutubeLivestreamToBroadcast(broadcastId, streamId, destinationItem);
                 })
                 .then(function (response) {
-                    console.log('getRtmpForEachDestination: initYoutubeLivestream', response)
                     let rtmpData = {
                         rtmpUrl: ingestionInfo.rtmpsIngestionAddress + '/' + ingestionInfo.streamName,
                         type: 'youtube',
@@ -1373,7 +1358,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                     if(oneDestinationLiveProcessed) oneDestinationLiveProcessed({ destination: destinationItem, success: true });
                 })
                 .catch(function (e) {
-                    console.log('getRtmpForEachDestination: initYoutubeLivestream err', e)
                     if (e.code == 401) {
                         connectGoogleAccount()
                             .then(function () {
@@ -1403,9 +1387,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                 });
         } else if (destinationItem.channelInfo.type == 'facebook') {
             initFacebookLivestream(destinationItem)
-                .then(function (response) {
-                    console.log('getRtmpForEachDestination: initYoutubeLivestream 2', response)
-                    
+                .then(function (response) {                    
                     let rtmpData = {
                         rtmpUrl: response.stream_url,
                         linkToLive: '',
@@ -1425,7 +1407,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                     });
                 })
                 .catch(function (e) {
-                    console.log('getRtmpForEachDestination: initYoutubeLivestream err 2', e)
                     if (e.code == 401) {
                         connectFacebookAccount()
                             .then(function () {
@@ -1615,15 +1596,11 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                         return;
                     }
                     getYoutubeBroadcast(destItem)
-                        .then(function (response) {
-                            console.log('getYoutubeLivestream 1', response.items[0])
-                        });
+                        .then(function (response) { });
     
                     function checkIfStreamIsActive() {
                         getYoutubeLivestream(destItem)
-                            .then(function (response) {
-                                console.log('getYoutubeLivestream 2', response.items[0]);
-    
+                            .then(function (response) {    
                                 if (response.items[0].status.streamStatus == 'ready' || response.items[0].status.streamStatus == 'active') {
                                     destItem.published = true;
                                     if (youtubeDestinations[index + 1]) publishYoutubeBroadcast(index + 1);
@@ -1664,7 +1641,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
 
                 })
                 .catch(function (e) {
-                    console.log('getRtmpForEachDestination: initYoutubeLivestream err', e)
                     if (e.code == 401) {
                         connectGoogleAccount()
                             .then(function () {
@@ -1683,7 +1659,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
 
                 })
                 .catch(function (e) {
-                    console.log('getRtmpForEachDestination: initYoutubeLivestream err', e)
                     if (e.code == 401) {
                         connectFacebookAccount()
                             .then(function () {
@@ -1737,19 +1712,18 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                 tool.livestreamStream.fields.name,
                 null,
                 true,
+                { dontFilterUsers: true },
                 function (err) {
                     if (err) {
                         console.warn('Error while retrieving related streams');
                         reject();
                     }
                     let relatedStreams = this.relatedStreams;
-                    console.log('relatedStreams', relatedStreams)
 
                     function refreshAllStreams() {
                         function refreshStream(streams, key) {
                             return new Promise(function (resolve, reject) {
                                 streams[key].refresh(function (arg1, arg2) {
-                                    console.log('arg1, arg2', this)
                                     streams[key] = this;
                                     resolve();
                                 },
@@ -1782,8 +1756,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
 
                     refreshAllStreams().then(function () {
                         for (let i in relatedStreams) {
-                            console.log('relatedStreams closed', relatedStreams[i].fields.closedTime)
-
                             if (!relatedStreams[i].fields.content || relatedStreams[i].fields.closedTime) {
                                 continue;
                             }
@@ -1796,7 +1768,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                                     break;
                                 }
                             }
-                            console.log('relatedStreams chennelItem', chennelItem)
 
                             if (channelExist !== false) {
                                 channelExist.channelInfo = chennelItem;
@@ -1813,7 +1784,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                             let destinationItem = _destinations[i];
                             let exist = false;
                             for (let s in relatedStreams) {
-                                console.log('relatedStreams[s].fields.name', relatedStreams[s].fields.closedTime)
                                 if (relatedStreams[s].fields.name == 'Media/livestream/dest/' + destinationItem.channelInfo.destId && !relatedStreams[s].fields.closedTime) {
                                     exist = true;
                                     break;

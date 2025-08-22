@@ -201,8 +201,6 @@
         var appDebug = (function () {
             var _infoLog = [];
 
-            console.log('_localInfo',_localInfo)
-
             _infoLog.push({type: 'info', log:_localInfo});
 
             var stderror = console.error.bind(console);
@@ -1115,7 +1113,6 @@
         }())
 
         if (sandbox) {
-            console.log('_options.onWebRTCRoomCreated', _options.onWebRTCRoomCreated)
             let originalCallback = _options.onWebRTCRoomCreated;
             _options.onWebRTCRoomCreated = function () {
                 originalCallback();
@@ -1185,7 +1182,6 @@
                     } else {
                         if (sortedByTop[n - 1] != null && sortedByTop[n - 1].top != null) {
                             let top = (sortedByTop[n - 1].top + sortedByTop[n - 1].element.offsetHeight + 20);
-                            console.log('top', top)
                             sortedByTop[n].element.style.top = top + 'px';
                             sortedByTop[n].top = top;
                         }
@@ -2186,7 +2182,6 @@
                 for(i = 0; participantScreen = roomScreens[i]; i++) {
                     var resizeTool = Q.Tool.from(participantScreen.screenEl, "Q/resize");
                     if(resizeTool == null) {
-                        console.log('bindScreensEvents videoTrackEl', participantScreen.videoTrackEl)
                         let screen = participantScreen;
                         Q.activate(
                             Q.Tool.setUpElement(
@@ -2673,7 +2668,6 @@
                     ;
                 }
 
-                console.log('modeToSwitch', modeToSwitch)
                 if((modeToSwitch == null || modeToSwitch == 'regular') && !Q.info.isMobile) {
                     renderDesktopScreensGrid();
                 } else if(modeToSwitch == 'minimized') {
@@ -3478,8 +3472,6 @@
 
 
             function maximizeLoudestUser(state) {
-                //console.log('maximizeLoudestUser', state.stopped);
-
                 if(state.stopped === true) {
                     return;
                 }
@@ -3501,13 +3493,10 @@
                 //let voiceMeterTool = prev.voiceMeterTools.simple.state.status == active ? prev.voiceMeterTools.simple : prev.voiceMeterTools.circles;
             
                 const loudestParticipant = roomParticipants.reduce(function(prev, current) {
-                    //console.log('maximizeLoudestUser return', prev.voiceMeterTools.simple.state.info.average);
                     return  (!current.voiceMeterAverage || prev.voiceMeterAverage > current.voiceMeterAverage) ? prev : current
                 }, fakeDefaultLoudest)
 
                 if(loudestParticipant == fakeDefaultLoudest)  {
-                    //console.log('maximizeLoudestUser return');
-
                     /*if(Q.info.isMobile){
                         renderMinimizedScreensGridMobile();
                     } else renderMinimizedScreensGrid();*/
@@ -3515,7 +3504,6 @@
                     return;
                 }
 
-                console.log('activeScreen != loudestParticipant.screens[0]', activeScreen != loudestParticipant.screens[0], (viewMode != 'minimized' && viewMode != 'maximized'))
                 if(activeScreen != loudestParticipant.screens[0] || (viewMode != 'minimized' && viewMode != 'maximized')) {
                     if (!Q.info.isMobile) {
                         renderMaximizedScreensGrid(loudestParticipant.screens[0], 0);
@@ -3568,7 +3556,6 @@
 
             function toggleLoudestScreenMode(mode) {
                 loudestMode = mode;
-                console.log('toggleLoudestScreenMode 1', mode)
                 disableLoudesScreenMode();
 
                 if (mode == 'disabled') {
@@ -3586,7 +3573,6 @@
                 }
 
                 if(mode == 'all') {
-                    console.log('toggleLoudestScreenMode 2')
                     let state = loudestModeIntervalFunc = {
                         stopped: false
                     };
@@ -3616,7 +3602,6 @@
             function disableLoudesScreenMode() {
                 if (loudestModeIntervalFunc != null) {
                     loudestModeIntervalFunc.stopped = true;
-                    console.log('disableLoudesScreenMode');
                     cancelAnimationFrame(loudestModeIntervalFunc.animationRequest)
                     loudestModeIntervalFunc = null;
                 }
@@ -6352,15 +6337,11 @@
             }
 
             function onScreensharingStarting(e) {
-                log('onScreensharingStarting', e)
                 let videoTracks = e.participant.videoTracks(true);
-                console.log('onScreensharingStarting: videoTracks', videoTracks)
                 if(videoTracks.length != 0) {
-                    log('onScreensharingStarting 1')
                     var screenForScreensharing = createRoomScreen(e.participant);
                     screenForScreensharing.screensharing = true;
                 } else {
-                    log('onScreensharingStarting 2')
                     e.participant.screens[0].screensharing = true;
                 }
             }
@@ -6524,50 +6505,41 @@
             });
 
             stream.onMessage("Media/webrtc/globalPermissionsAdded").set(function (message) {
-                console.log('bindStreamsEvents: Media/webrtc/globalPermissionsAdded', message);
                 var insturctions = JSON.parse(message.instructions);
                 onGlobalPermissionAdded(insturctions)
             });
 
             stream.onMessage("Media/webrtc/globalPermissionsRemoved").set(function (message) {
-                console.log('bindStreamsEvents: Media/webrtc/globalPermissionsRemoved', message);
                 var insturctions = JSON.parse(message.instructions);
                 onGlobalPermissionRemoved(insturctions)
             });
 
             stream.onMessage("Media/webrtc/personalPermissionsAdded").set(function (message) {
-                console.log('bindStreamsEvents: Media/webrtc/personalPermissionsAdded', message);
                 var insturctions = JSON.parse(message.instructions);
                 onPersonalPermissionAdded(insturctions)
             });
 
             stream.onMessage("Media/webrtc/personalPermissionsRemoved").set(function (message) {
-                console.log('bindStreamsEvents: Media/webrtc/personalPermissionsRemoved', message);
                 var insturctions = JSON.parse(message.instructions);
                 onPersonalPermissionUpdated(insturctions)
             });
 
             stream.onMessage("Media/webrtc/makeCohost").set(function (message) {
-                console.log('bindStreamsEvents: Media/webrtc/makeCohost', message);
                 var insturctions = JSON.parse(message.instructions);
                 onPersonalPermissionUpdated(insturctions)
             });
 
             stream.onMessage("Media/webrtc/resetPersonalPermissions").set(function (message) {
-                console.log('bindStreamsEvents: Media/webrtc/resetPersonalPermissions', message);
                 var insturctions = JSON.parse(message.instructions);
                 onPersonalPermissionUpdated(insturctions)
             });
 
             stream.onMessage("Media/webrtc/addOrRemoveCohost").set(function (message) {
-                console.log('bindStreamsEvents: Media/webrtc/addOrRemoveCohost', message);
                 var insturctions = JSON.parse(message.instructions);
                 onPersonalPermissionUpdated(insturctions)
             });
 
             function onGlobalPermissionAdded(insturctions) {
-                console.log('onGlobalPermissionAdded', insturctions)
-
                 let localParticipant = webrtcSignalingLib.localParticipant();
                 if (!localParticipant.access.personalAccess) {
                     if (insturctions.permission == 'mic' && !localParticipant.hasPermission('mic')) {
@@ -6590,7 +6562,6 @@
             }
 
             function onGlobalPermissionRemoved(insturctions) {
-                console.log('onGlobalPermissionRemoved', insturctions)
                 let localParticipant = webrtcSignalingLib.localParticipant();
                 var participants = webrtcSignalingLib.roomParticipants();
                 for (let i = participants.length - 1; i >= 0; i--) {
@@ -6640,9 +6611,7 @@
             }
 
             function onPersonalPermissionUpdated(insturctions) {
-                console.log('insturctions.ofUserId', insturctions, stream)
                 if (insturctions.ofUserId == Q.Users.loggedInUserId()) {
-                    console.log('onPersonalPermissionUpdated 1', insturctions.ofUserId)
                     let localParticipant = webrtcSignalingLib.localParticipant();
 
                     let prevMicPermission = localParticipant.hasPermission('mic');
@@ -6674,15 +6643,12 @@
                 }
 
                 var participants = webrtcSignalingLib.roomParticipants();
-                console.log('onPersonalPermissionUpdated 3', participants.length)
                 for (let i = participants.length - 1; i >= 0; i--) {
                     var userId = participants[i].identity != null ? participants[i].identity.split('\t')[0] : null;
 
-                    console.log('onPersonalPermissionUpdated for', userId, insturctions.ofUserId)
                     if(insturctions.ofUserId != userId) {
                         continue;
                     }
-                    console.log('onPersonalPermissionUpdated for', participants[i].access, insturctions.access)
 
                     participants[i].access = insturctions.access;
 
@@ -7412,7 +7378,6 @@
                         }
 
                     } else if(_options.startWith.audio === true && audioIsAlreadyEnabled !== false && preJoiningStreams[audioIsAlreadyEnabled].stream != null) {
-                        log('switchMic: audioIsAlreadyEnabled ' + audioIsAlreadyEnabled)
 
                         if(off) {
                             let tracks = preJoiningStreams[audioIsAlreadyEnabled].stream.getAudioTracks();
@@ -7519,8 +7484,6 @@
 
                         });
                     } else if(cameraIsAlreadyEnabled !== false && preJoiningStreams[cameraIsAlreadyEnabled].stream != null) {
-                        log('switchCamera: cameraIsAlreadyEnabled ' + cameraIsAlreadyEnabled)
-
                         let tracks = preJoiningStreams[cameraIsAlreadyEnabled].stream.getVideoTracks();
                         for(let t in tracks) {
                             tracks[t].stop();
@@ -7612,8 +7575,6 @@
                             console.error(error.name + ': ' + error.message);
                         });
                     } else if(screenIsAlreadyEnabled !== false && preJoiningStreams[screenIsAlreadyEnabled].stream != null) {
-                        log('switchScreenshare: getUserScreen: screenIsAlreadyEnabled ' + screenIsAlreadyEnabled)
-
                         let tracks = preJoiningStreams[screenIsAlreadyEnabled].stream.getVideoTracks();
                         for(let t in tracks) {
                             tracks[t].stop();
@@ -7721,7 +7682,7 @@
 
 
                     Q.Dialogs.push({
-                        title: Q.text.Media.WebRTC.preparing.dialogTitle,
+                        title: text.webrtc.preparing.dialogTitle,
                         className: 'Media_webrtc_preparing_dialog',
                         content: mediaDevicesDialog,
                         apply: false,
@@ -7883,31 +7844,6 @@
 
         }
 
-
-        /**
-         * Update stream participant's data after user got socket id
-         * @method updateParticipantData
-         */
-        function updateParticipantData() {
-            log('initWithNodeServer: webrtcSignalingLi 2', webrtcSignalingLib);
-            log('initWithNodeServer: webrtcSignalingLi 3', webrtcSignalingLib.localParticipant());
-            Q.req("Media/webrtc", ["updateParticipantSid"], function (err, response) {
-                var msg = Q.firstErrorMessage(err, response && response.errors);
-
-                if (msg) {
-                    return Q.alert(msg);
-                }
-
-            }, {
-                method: 'put',
-                fields: {
-                    streamName: _roomStream.fields.name,
-                    publisherId: _roomStream.fields.publisherId,
-                    participantSid: webrtcSignalingLib.localParticipant().sid
-                }
-            })
-        }
-
         /**
          * Init conference using own node.js server for signalling process.
          * @method initWithStreams
@@ -7928,9 +7864,9 @@
                     let audioTracks = streams[s].getAudioTracks();
                     let videoTracks = streams[s].getVideoTracks();
 
-                    console.log('filterStreams audioTracks.length', audioTracks.length, module.hasPermission('mic'));
                     if(audioTracks.length != 0 && !module.hasPermission('mic')) {
                         for(let t in audioTracks) {
+                            audioTracks[t].stop();
                             streams[s].removeTrack(audioTracks[t]);
                         }
                         _options.startWith.audio = false;
@@ -7950,6 +7886,7 @@
                         let cameraIsNotAllowed, screenIsNotAllowed;
                         if(cameraTracks.length != 0 && !module.hasPermission('camera')) {
                             for(let t in cameraTracks) {
+                                cameraTracks[t].stop();
                                 streams[s].removeTrack(cameraTracks[t]);
                             }
                             cameraIsNotAllowed = true;
@@ -7957,6 +7894,7 @@
 
                         if(screensharingTracks.length != 0 && !module.hasPermission('screen')) {
                             for(let t in screensharingTracks) {
+                                screensharingTracks[t].stop();
                                 streams[s].removeTrack(screensharingTracks[t]);
                             }
                             screenIsNotAllowed = true;
@@ -7972,12 +7910,6 @@
 
             var initConference = function(){
                 log('initWithNodeServer: initConference');
-                try {
-                    var err = (new Error);
-                    console.log(err.stack);
-                } catch (e) {
-
-                }
 
                 if(typeof Media.WebRTCRoomClient == 'undefined') return;
                 var roomId = (_roomStream.fields.name).replace('Media/webrtc/', '');
@@ -8319,10 +8251,6 @@
                     setTimeout(startConference, 100)
                     return;
                 }
-                console.log('startConference START', socket);
-                log('start: load time ' + (performance.now() - _debugTimer.loadStart));
-                log('start: onTextLoad: _options', _options);
-                log('Start WebRTC conference room', module);
 
                 var preparingWindow = (_options.showPreparingDialog/* || (!_options.startWith.video && !_options.startWith.audio)*/);
 
@@ -8602,17 +8530,13 @@
                 }
 
                 if(rememberedVideoDeviceId !== false && rememberedVideoDeviceId !== null) {
-                    console.log('rememberedVideoDeviceId 1')
                     videoConstraints = {deviceId: rememberedVideoDeviceId}
                     _options.startWith.video = true;
                 } else if(rememberedVideoDeviceId == false) {
-                    console.log('rememberedVideoDeviceId 2')
                     videoConstraints = false;
                 } else if(startWith.video) {
-                    console.log('rememberedVideoDeviceId 3')
                     videoConstraints = true;
                 } else {
-                    console.log('rememberedVideoDeviceId 4')
                     videoConstraints = false;
                     _options.startWith.video = false;
                 }
@@ -8639,7 +8563,8 @@
                             if(streams.length != 0) {
                                 let audioTracks = streams[0].getAudioTracks();
                                 if(audioTracks.length != 0) {
-                                    _options.notForUsingTracks.push(audioTracks[0].clone());
+                                    let trackClone = audioTracks[0].clone();
+                                    _options.notForUsingTracks.push(trackClone);
                                 } else {
                                     Q.confirm('Allow access to microphone to be able to join videoconference', function (result) {
                                         if (!result) return;
@@ -8802,14 +8727,13 @@
 
                     } else {
                         let premissionGrantedCallback = function (streams) {
-                            console.log('premissionGrantedCallback', streams, _options);
                             _options.streams = _options.streams.concat(streams);
+
                             if(streams.length != 0) {
                                 let audioTracks = streams[0].getAudioTracks();
-                                console.log('premissionGrantedCallback audioTracks', audioTracks);
                                 if(audioTracks.length != 0) {
-                                    console.log('premissionGrantedCallback audioTracks 2');
-                                    _options.notForUsingTracks.push(audioTracks[0].clone());
+                                    let trackClone = audioTracks[0].clone();
+                                    _options.notForUsingTracks.push(trackClone);
                                 } else {
                                     Q.confirm('Allow access to microphone to be able to join videoconference', function (result) {
                                         if (!result) return;
@@ -9049,7 +8973,6 @@
             window.removeEventListener('beforeunload', stop);
             unsetResizeObserver();
             webrtcSignalingLib = null;
-            console.log('_options.onWebRTCRoomEnded', _options.onWebRTCRoomEnded);
             Q.handle(_options.onWebRTCRoomEnded);
             if(window.opener) {
                 window.opener.postMessage('webrtcstopped', '*');
@@ -9081,8 +9004,6 @@
         module.refreshRoomStream = function () {
             return new Promise(function (resolve, reject) {
                 _roomStream.refresh(function () {
-                    console.log('refreshRoomStream', this.access.permissions)
-
                     _roomStream = this;
                     resolve(this);
                 }, {evenIfNotRetained: true})
@@ -9258,8 +9179,6 @@
             relationType: "Media/webrtc",
             resumeClosed: true
         }, options);
-
-        console.log('Media.WebRTC.start', options)
 
         let conference = Q.Media.WebRTC({
             audioOnlyMode: options.audioOnlyMode,

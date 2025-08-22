@@ -25,7 +25,6 @@
 
         tool.loadStyles().then(function () {
             tool.loadRoomStream().then(function () {
-                console.log('aaaaaa')
                 tool.createUI();
                 //tool.declareEventsHandlers();
                 Q.handle(tool.state.onLoad, tool, []);
