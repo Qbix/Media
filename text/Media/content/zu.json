@@ -1,0 +1,256 @@
+{
+    "Shows": "Imibukiso",
+    "Clips": "Iziqeshana",
+    "Video": "Ividiyo",
+    "Audio": "Umsindo",
+    "categories": {
+        "Clips": "Iziqeshana Zemidiya",
+        "Episodes": "Iziqephu"
+    },
+    "presentation": {
+        "PutTogether": "Ingabe uzokwethula? Ungasebenzisa lesi sikhala ukuze ulayishe ndawonye izinto zokusebenza zephrezentheshini yakho. Sebenzisa inkinobho yokuhlanganisa.",
+        "Alert": "Njengoba imicimbi iqala, leli khasi lizoqala ukubonisa izethulo ezihambisanayo",
+        "ClickHereForFullscreen": "Amaphrezentheshini azovela lapha. Chofoza lapha ukuze ungene esikrinini esigcwele.",
+        "question": {
+            "ScanThisQRCode": "Skena le khodi ye-QR ukuze uphendule"
+        }
+    },
+    "NewEpisode": "Isiqephu esisha",
+    "NewClip": "Yenza Isiqeshana Esisha",
+    "NewClipTitlePlaceholder": "Faka Isihloko Sesiqeshana",
+    "NewClipDescriptionPlaceholder": "Faka Incazelo yesiqeshana",
+    "switchVisualization": "Shintsha ukubona ngeso",
+    "joinLiveShow": "Joyina I-Live Show",
+    "showTwitchLiveStream": "Bonisa i-Twitch Live Stream",
+    "showVoiceChat": "Bonisa Ingxoxo Yezwi",
+    "LiveShow": "I-Live Show",
+    "AreYouSureKick": "Uqinisekile ukuthi ufuna ukukhahlela lo msebenzisi?",
+    "Save": "Londoloza",
+    "ViewFullEpisode": "Buka Isiqephu Esigcwele",
+    "CreditsEarned": "Amakhredithi atholiwe",
+    "VideoTitle": "Isihloko sevidiyo noma i-URL",
+    "AreYouSureDeleteEpisode": "Uqinisekile ukuthi ufuna ukususa lesi siqephu?",
+    "Yes": "Yebo",
+    "No": "Cha",
+    "RealTimeCall": "Isikhathi Sangempela Call",
+    "JoinWebRTC": "Inkomfa yocingo",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Inkomfa yocingo",
+            "description": "ingqungquthela yevidiyo\/yomsindo eku-inthanethi"
+        },
+        "Media\/calls": {
+            "displayType": "Izingcingo",
+            "description": "isigaba seMedia\/WebRTC",
+            "MaxRelationsExceeded": "Amakholi amaningi eqiwe"
+        },
+        "Media\/clip": {
+            "displayType": "Isiqeshana",
+            "description": "isiqeshana semidiya"
+        }
+    },
+    "feeds": {
+        "Title": "Amakhamera",
+        "filterByTitle": "Thola okuphakelayo ngesihloko",
+        "RequestFeedAccess": "Cela ukufinyelela kokuphakelayo",
+        "New": "+ Okuphakelayo Okusha",
+        "filterFeeds": "Hlunga okuphakelayo",
+        "NewFeed": "Okuphakelayo Okusha",
+        "NoneYet": "Akukho okuphakelayo okwenziwe okwamanje.",
+        "AreYouSure": "Uqinisekile?",
+        "FilterByDate": "Hlunga Ngedethi",
+        "newFeeds": "Unokuphakelayo okusha okungu {{1}}",
+        "Description": "{{1}} okuphakelayo",
+        "Keywords": "{{1}} okuphakelayo"
+    },
+    "feed": {
+        "HostedBy": "Ibungazwe ngu {{name}}",
+        "Name": "Igama",
+        "Conversation": "Ingxoxo",
+        "CloseFeed": {
+            "button": "Vala Okuphakelayo",
+            "Cancel": "Uqinisekile ukuthi ufuna ukuvala lesi siphakeli?",
+            "Participant": "Kunombambiqhaza ongu-1 kulokhu kuphakela",
+            "Participants": "Kunabahlanganyeli {{count}} kulokhu kudla"
+        },
+        "Calendar": "Ikhalenda",
+        "TitleOfFeed": "Isihloko sokuphakelayo:",
+        "EmptyList": "Uhlu olungenalutho",
+        "EmptyVideos": "Azikho iziqeshana okwamanje",
+        "AccessReason": "ngicela usho isizathu",
+        "Proceed": "Qhubeka",
+        "FeedAlreadyClosed": "Lesi siphakeli sesivele sivaliwe",
+        "RtmpLinkNote": "Chofoza ukuze ukopishele lesi sixhumanisi ebhodini lokunamathisela",
+        "SelectClip": "Khetha idethi ofuna ukuyibona",
+        "Request": "Isicelo"
+    },
+    "newFeed": {
+        "Title": "Okuphakelayo Okusha",
+        "locationTitle": "Setha Indawo Yakho",
+        "SetLocation": "Setha Indawo Yami",
+        "Starting": "Iyaqala",
+        "Day": "Usuku",
+        "Create": "Dala",
+        "Continue": "Qhubeka",
+        "FeedTitle": "Isihloko sokuphakelayo",
+        "SetTitle": "Sicela usethe isihloko sokuphakelayo"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ujoyine ikholi yakho",
+        "SubjectJoinedYourCall": "{{subject}} bajoyine ikholi yakho"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Awunayo imvume yokujoyina lokhu kusakaza.",
+        "streamTitle": "{{1}} iqale i-Teleconference",
+        "allow": {
+            "dialogTitle": "Iyaxhuma",
+            "microphoneBtn": "Nika amandla imakrofoni",
+            "cameraBtn": "Nika amandla Ikhamera",
+            "cameraAndMicrophoneBtn": "Nika amandla Ikhamera nemakrofoni"
+        },
+        "preparing": {
+            "dialogTitle": "Vula\/vala ikhamera noma imakrofoni ngaphambi kokuthi ujoyine",
+            "micIsOff": "Imakrofoni ivaliwe",
+            "micIsOn": "Imakrofoni ivuliwe",
+            "cameraIsOff": "Ikhamera ivaliwe",
+            "cameraIsOn": "Ikhamera ivuliwe",
+            "screenSharingIsOn": "Ukwabelana ngesikrini kuvuliwe",
+            "screenSharingIsOff": "Yabelana ngesikrini",
+            "joinNow": "Joyina Ucingo"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Iziyalezo",
+            "permissionDenied": "Imvume ka {{kind}} inqatshiwe. Ukuze uyisebenzise sicela ulandele lezi zinyathelo:",
+            "point1": "Iya kokuthi &quot;Izilungiselelo&quot; -&gt; &quot;Okuthuthukisiwe&quot; -&gt; &quot;Ubumfihlo Nokuphepha&quot; -&gt; &quot;Izilungiselelo Zesayithi&quot; -&gt; &quot;Ikhamera&quot; noma &quot;Izilungiselelo Zesayithi&quot; -&gt; &quot;Imakrofoni&quot;",
+            "point2": "Susa {{hostname}} ohlwini &quot;Vimba&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Iziyalezo",
+            "permissionDenied": "Imvume ka {{kind}} inqatshiwe. Sicela ulayishe kabusha leli khasi futhi uqinisekise ukufinyelela ku {{kind}} ukuze ujoyine ingqungquthela."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Iziyalezo",
+            "permissionDenied": "Imvume ka {{kind}} inqatshiwe. Ukuze uyisebenzise sicela ulandele lezi zinyathelo:",
+            "point1": "Iya kuzilungiselelo zakho ze-Android",
+            "point2": "Vula &quot;Izinhlelo zokusebenza nezaziso&quot;",
+            "point3": "Thola u-&quot; {{communityName}} &quot; bese uyivula",
+            "point4": "Thepha kokuthi Izimvume",
+            "point5": "Nika amandla {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Iziyalezo",
+            "permissionDenied": "Imvume ka {{kind}} inqatshiwe. Ukuze uyisebenzise sicela ulandele lezi zinyathelo:",
+            "point1": "Iya kokuthi Izilungiselelo zakho ze-iOS",
+            "point2": "Vula &quot;Ubumfihlo&quot;",
+            "point3": "Thola {{kind}} bese uyivula",
+            "point4": "Thola &quot; {{communityName}} &quot; bese uvula amandla"
+        },
+        "fbLive": {
+            "dialogTitle": "Ukusakazwa bukhoma kwe-Facebook kuqalile"
+        },
+        "notices": {
+            "youJoinedRoom": "Ujoyine igumbi",
+            "joining": "Ukujoyina: {{userName}}",
+            "sbLeftRoom": "{{userName}} baphume ekamelweni",
+            "switchingRoom": "Ishintsha igumbi...",
+            "forceDisconnecting": "Uzonqanyulwa phakathi kwamasekhondi angu-5",
+            "forceDisconnectingImmediately": "Unqanyulwe umsingathi",
+            "youLeftRoom": "Ushiye igumbi",
+            "codeCopied": "Ushiye igumbi",
+            "sbBeganFbLive": "{{userName}} iqale ukusakaza lolu cingo kuFacebook",
+            "sbStoppedFbLive": "{{userName}} iyekile ukusakaza lolu cingo ku-Facebook",
+            "youBeganFbLive": "Uqale ukusakaza le kholi ku-Facebook",
+            "youStoppedFbLive": "Uyeke ukusakaza le kholi ku-Facebook",
+            "youStartedLive": "Uqale ukusakaza le kholi ku-RTMP yangokwezifiso",
+            "youStoppedLive": "Uyeke ukusakaza le kholi ku-RTMP yangokwezifiso",
+            "sbStartedLiveStreaming": "{{userName}} baqale bukhoma",
+            "sbStoppedLiveStreaming": "{{userName}} iphele bukhoma",
+            "liveStopped": "Kwenzeke iphutha ngesikhathi kuthunyelwa ividiyo endaweni yokugcina",
+            "youBeganVideoRecording": "Uqale ukuqopha le ngqungquthela",
+            "youStoppedVideoRecording": "Uyeke ukurekhoda le ngqungquthela",
+            "linkCopiedToCb": "Isixhumanisi sikopishelwe ebhodini lokunamathisela",
+            "codeCopiedToCb": "Ikhodi ikopishelwe ebhodini lokunamathisela",
+            "userHasNoVideo": "Umbambi qhaza akanayo ividiyo",
+            "openInBrowserAlert": "Vula isixhumanisi kusiphequluli se-Safari ukuze ujoyine ingqungquthela.",
+            "allowedVideoLimit": "Amavidiyo {{limit}} kuphela avunyelwe kuleli gumbi",
+            "allowedAudioLimit": "Amamakrofoni {{limit}} kuphela avunyelwe kuleli gumbi",
+            "processingRecording": "Icubungula okurekhodiwe..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Izilungiselelo zevidiyo",
+            "webCamera": "Ikhamera Yewebhu",
+            "screenSharing": "Ukwabelana Kwesikrini",
+            "shareAnotherScreen": "Yabelana ngesinye isikrini",
+            "turnOffCameras": "Vala ikhamera",
+            "turnOffVideo": "Vala ukwabelana ngekhamera\/isikrini",
+            "turnOffAudioInput": "Thulisa imakrofoni",
+            "turnOffScreenSharing": "Vala ukwabelana kwesikrini",
+            "cameraIsTurnedOff": "Ikhamera ivaliwe",
+            "micIsTurnedOff": "Imakrofoni ivaliwe",
+            "startFBLive": "Qala i-Facebook Livestream",
+            "stopFBLive": "Misa ukusakaza bukhoma kwe-Facebook",
+            "startRecording": "Qala Ukuqopha",
+            "stopRecording": "Misa Ukuqopha",
+            "start": "Qala",
+            "startClodRecording": "Qala Ukuqopha Kwamafu",
+            "startLocRecording": "Qala Ukuqopha Kwasendaweni",
+            "stopClodRecording": "Misa Ukuqopha Kwamafu",
+            "stopLocRecording": "Misa Ukuqopha Kwasendaweni",
+            "stop": "Ima",
+            "share": "Yabelana",
+            "recordingInProgress": "Ukurekhoda kuyaqhubeka...",
+            "fbLiveTitle": "Isihloko se-Livestream",
+            "fbLiveDescription": "Chaza ukusakaza kwakho bukhoma. Imayelana nani?",
+            "fbOnlyMeLiveAccess": "Mina kuphela",
+            "fbFriendsAccess": "Abangane",
+            "fbPublicAccess": "Esidlangalaleni",
+            "publishOnTimeline": "Shicilela kumugqa wesikhathi",
+            "publishToGroup": "Shicilela eqenjini",
+            "fbStartLive": "Hamba Bukhoma",
+            "fbStopLive": "Qeda ukusakaza bukhoma",
+            "streamingSettings": "Izilungiselelo",
+            "manageStream": "Phatha ukusakaza bukhoma",
+            "fbEmbedCode": "Shumeka",
+            "copy": "Kopisha",
+            "streamToRTMP": "Sakaza ku-RTMP yangokwezifiso",
+            "startBroadcasting": "Qala ukusakaza",
+            "broadcastingInProgress": "Ukusakaza kuyaqhubeka"
+        },
+        "audioSettings": {
+            "dialogTitle": "Izilungiselelo zomsindo",
+            "speakers": "Izipikha",
+            "microphone": "Imakrofoni"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Phatha Ukusakaza"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Izilungiselelo Zombambi qhaza",
+            "disconnect": "Nqamula",
+            "floatingScreens": "Izikrini Ezintantayo",
+            "tiledScreens": "Izikrini ezifakwe amathayela",
+            "loudestExceptMe": "Umsindo Kakhulu Ngaphandle Kwami",
+            "maximizeLoudest": "Khulisa Kakhulu Kakhulu",
+            "staticMaximized": "I-Static Maximized",
+            "fullScreen": "Iskrini esigcwele",
+            "manual": "Imanuwali",
+            "turnOffCamera": "Fihla ividiyo",
+            "turnOffAudio": "Thulisa umsindo",
+            "turnOffScreenSharing": "Fihla ukwabelana kwesikrini",
+            "turnOnCamera": "Bonisa ividiyo",
+            "turnOnAudio": "Susa ukuthula komsindo",
+            "turnOnScreenSharing": "Bonisa ukwabelana kwesikrini"
+        },
+        "streamingSettings": {
+            "title": "Ukusakaza bukhoma"
+        },
+        "preview": {
+            "Meeting": "Inkomfa yocingo",
+            "MeetingEnded": "I-Teleconference iphelile"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Isicelo Sokukhuluma",
+            "msg": "Njengamanje bangu {{count}} abantu abakhulumayo emhlanganweni. Ingabe ufuna ukushintsha enye yazo ngemva kokuyivumela imizuzwana {{seconds}} ukuthi iqede ukukhuluma?"
+        }
+    }
+}

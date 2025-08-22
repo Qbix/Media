@@ -1,0 +1,256 @@
+{
+    "Shows": "കാണിക്കുന്നു",
+    "Clips": "ക്ലിപ്പുകൾ",
+    "Video": "വീഡിയോ",
+    "Audio": "ഓഡിയോ",
+    "categories": {
+        "Clips": "മീഡിയ ക്ലിപ്പുകൾ",
+        "Episodes": "എപ്പിസോഡുകൾ"
+    },
+    "presentation": {
+        "PutTogether": "നിങ്ങൾ അവതരിപ്പിക്കുമോ? നിങ്ങളുടെ അവതരണത്തിനുള്ള മെറ്റീരിയലുകൾ ഒരുമിച്ച് അപ്‌ലോഡ് ചെയ്യാൻ നിങ്ങൾക്ക് ഈ ഇടം ഉപയോഗിക്കാം. പ്ലസ് ബട്ടൺ ഉപയോഗിക്കുക.",
+        "Alert": "ഇവൻ്റുകൾ ആരംഭിക്കുമ്പോൾ, ഈ പേജ് അവയുടെ അനുബന്ധ അവതരണങ്ങൾ കാണിക്കാൻ തുടങ്ങും",
+        "ClickHereForFullscreen": "അവതരണങ്ങൾ ഇവിടെ ദൃശ്യമാകും. പൂർണ്ണ സ്‌ക്രീനിലേക്ക് പോകാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക.",
+        "question": {
+            "ScanThisQRCode": "ഉത്തരം നൽകാൻ ഈ QR കോഡ് സ്കാൻ ചെയ്യുക"
+        }
+    },
+    "NewEpisode": "പുതിയ എപ്പിസോഡ്",
+    "NewClip": "ഒരു പുതിയ ക്ലിപ്പ് ഉണ്ടാക്കുക",
+    "NewClipTitlePlaceholder": "ക്ലിപ്പ് ശീർഷകം നൽകുക",
+    "NewClipDescriptionPlaceholder": "ക്ലിപ്പ് വിവരണം നൽകുക",
+    "switchVisualization": "ദൃശ്യവൽക്കരണം മാറുക",
+    "joinLiveShow": "ലൈവ് ഷോയിൽ ചേരുക",
+    "showTwitchLiveStream": "Twitch ലൈവ് സ്ട്രീം കാണിക്കുക",
+    "showVoiceChat": "വോയ്സ് ചാറ്റ് കാണിക്കുക",
+    "LiveShow": "ലൈവ് ഷോ",
+    "AreYouSureKick": "ഈ ഉപയോക്താവിനെ പുറത്താക്കണമെന്ന് തീർച്ചയാണോ?",
+    "Save": "സംരക്ഷിക്കുക",
+    "ViewFullEpisode": "മുഴുവൻ എപ്പിസോഡ് കാണുക",
+    "CreditsEarned": "ക്രെഡിറ്റുകൾ നേടി",
+    "VideoTitle": "വീഡിയോ ശീർഷകം അല്ലെങ്കിൽ URL",
+    "AreYouSureDeleteEpisode": "ഈ എപ്പിസോഡ് ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?",
+    "Yes": "അതെ",
+    "No": "ഇല്ല",
+    "RealTimeCall": "തത്സമയ കോൾ",
+    "JoinWebRTC": "ടെലികോൺഫറൻസ്",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "ടെലികോൺഫറൻസ്",
+            "description": "ഒരു ഓൺലൈൻ വീഡിയോ\/ഓഡിയോ കോൺഫറൻസ്"
+        },
+        "Media\/calls": {
+            "displayType": "വിളിക്കുന്നു",
+            "description": "മീഡിയ\/WebRTC എന്നതിനായുള്ള വിഭാഗം",
+            "MaxRelationsExceeded": "പരമാവധി കോളുകൾ കവിഞ്ഞു"
+        },
+        "Media\/clip": {
+            "displayType": "ക്ലിപ്പ്",
+            "description": "മീഡിയ ക്ലിപ്പ്"
+        }
+    },
+    "feeds": {
+        "Title": "ക്യാമറകൾ",
+        "filterByTitle": "ശീർഷകം അനുസരിച്ച് ഫീഡുകൾ കണ്ടെത്തുക",
+        "RequestFeedAccess": "ഫീഡ് ആക്‌സസ് അഭ്യർത്ഥിക്കുക",
+        "New": "+ പുതിയ ഫീഡ്",
+        "filterFeeds": "ഫിൽട്ടർ ഫീഡുകൾ",
+        "NewFeed": "പുതിയ ഫീഡ്",
+        "NoneYet": "ഇതുവരെ ഫീഡുകളൊന്നും രൂപീകരിച്ചിട്ടില്ല.",
+        "AreYouSure": "നിങ്ങൾക്ക് ഉറപ്പാണോ?",
+        "FilterByDate": "തീയതി പ്രകാരം ഫിൽട്ടർ ചെയ്യുക",
+        "newFeeds": "നിങ്ങൾക്ക് {{1}} പുതിയ ഫീഡുകൾ ഉണ്ട്",
+        "Description": "{{1}} ഫീഡുകൾ",
+        "Keywords": "{{1}} ഫീഡുകൾ"
+    },
+    "feed": {
+        "HostedBy": "{{name}} ആതിഥേയത്വം വഹിക്കുന്നത്",
+        "Name": "പേര്",
+        "Conversation": "സംഭാഷണം",
+        "CloseFeed": {
+            "button": "ഫീഡ് അടയ്ക്കുക",
+            "Cancel": "ഈ ഫീഡ് അടയ്‌ക്കണമെന്ന് തീർച്ചയാണോ?",
+            "Participant": "ഈ ഫീഡിൽ 1 പങ്കാളിയുണ്ട്",
+            "Participants": "ഈ ഫീഡിൽ {{count}} പങ്കാളികളുണ്ട്"
+        },
+        "Calendar": "കലണ്ടർ",
+        "TitleOfFeed": "ഫീഡിൻ്റെ പേര്:",
+        "EmptyList": "ശൂന്യമായ ലിസ്റ്റ്",
+        "EmptyVideos": "ഇതുവരെ ക്ലിപ്പുകളൊന്നുമില്ല",
+        "AccessReason": "ദയവായി കാരണം പറയൂ",
+        "Proceed": "തുടരുക",
+        "FeedAlreadyClosed": "ഈ ഫീഡ് ഇതിനകം അടച്ചിരിക്കുന്നു",
+        "RtmpLinkNote": "ഈ ലിങ്ക് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്താൻ ക്ലിക്കുചെയ്യുക",
+        "SelectClip": "നിങ്ങൾ കാണാൻ ആഗ്രഹിക്കുന്ന തീയതി തിരഞ്ഞെടുക്കുക",
+        "Request": "അഭ്യർത്ഥിക്കുക"
+    },
+    "newFeed": {
+        "Title": "പുതിയ ഫീഡ്",
+        "locationTitle": "നിങ്ങളുടെ ലൊക്കേഷൻ സജ്ജമാക്കുക",
+        "SetLocation": "എൻ്റെ ലൊക്കേഷൻ സജ്ജമാക്കുക",
+        "Starting": "ആരംഭിക്കുന്നു",
+        "Day": "ദിവസം",
+        "Create": "സൃഷ്ടിക്കുക",
+        "Continue": "തുടരുക",
+        "FeedTitle": "ഫീഡ് ശീർഷകം",
+        "SetTitle": "ഫീഡ് ശീർഷകം സജ്ജീകരിക്കുക"
+    },
+    "notifications": {
+        "JoinedWebRTC": "നിങ്ങളുടെ കോളിൽ ചേർന്നു",
+        "SubjectJoinedYourCall": "{{subject}} നിങ്ങളുടെ കോളിൽ ചേർന്നു"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "ഈ സ്ട്രീമിൽ ചേരാൻ നിങ്ങൾക്ക് അനുമതിയില്ല.",
+        "streamTitle": "{{1}} ഒരു ടെലികോൺഫറൻസ് ആരംഭിച്ചു",
+        "allow": {
+            "dialogTitle": "ബന്ധിപ്പിക്കുന്നു",
+            "microphoneBtn": "മൈക്രോഫോൺ പ്രവർത്തനക്ഷമമാക്കുക",
+            "cameraBtn": "ക്യാമറ പ്രവർത്തനക്ഷമമാക്കുക",
+            "cameraAndMicrophoneBtn": "ക്യാമറയും മൈക്രോഫോണും പ്രവർത്തനക്ഷമമാക്കുക"
+        },
+        "preparing": {
+            "dialogTitle": "നിങ്ങൾ ചേരുന്നതിന് മുമ്പ് ക്യാമറയോ മൈക്കോ ഓൺ\/ഓഫ് ചെയ്യുക",
+            "micIsOff": "മൈക്ക് ഓഫാണ്",
+            "micIsOn": "മൈക്ക് ഓണാണ്",
+            "cameraIsOff": "ക്യാമറ ഓഫാണ്",
+            "cameraIsOn": "ക്യാമറ ഓണാണ്",
+            "screenSharingIsOn": "സ്‌ക്രീൻ പങ്കിടൽ ഓണാണ്",
+            "screenSharingIsOff": "സ്ക്രീൻ പങ്കിടുക",
+            "joinNow": "കോളിൽ ചേരുക"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "നിർദ്ദേശങ്ങൾ",
+            "permissionDenied": "{{kind}} പേർക്ക് അനുമതി നിഷേധിച്ചു. ഇത് ഉപയോഗിക്കുന്നതിന്, ഈ ഘട്ടങ്ങൾ പാലിക്കുക:",
+            "point1": "&quot;ക്രമീകരണങ്ങൾ&quot; -&gt; &quot;വിപുലമായത്&quot; -&gt; &quot;സ്വകാര്യതയും സുരക്ഷയും&quot; -&gt; &quot;സൈറ്റ് ക്രമീകരണങ്ങൾ&quot; -&gt; &quot;ക്യാമറ&quot; അല്ലെങ്കിൽ &quot;സൈറ്റ് ക്രമീകരണങ്ങൾ&quot; -&gt; &quot;മൈക്രോഫോൺ&quot; എന്നതിലേക്ക് പോകുക",
+            "point2": "&quot;ബ്ലോക്ക്&quot; ലിസ്റ്റിൽ നിന്ന് {{hostname}} നീക്കം ചെയ്യുക"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "നിർദ്ദേശങ്ങൾ",
+            "permissionDenied": "{{kind}} പേർക്ക് അനുമതി നിഷേധിച്ചു. കോൺഫറൻസിൽ ചേരുന്നതിന് ദയവായി ഈ പേജ് വീണ്ടും ലോഡുചെയ്‌ത് {{kind}} ലേക്കുള്ള ആക്‌സസ് സ്ഥിരീകരിക്കുക."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "നിർദ്ദേശങ്ങൾ",
+            "permissionDenied": "{{kind}} പേർക്ക് അനുമതി നിഷേധിച്ചു. ഇത് ഉപയോഗിക്കുന്നതിന്, ഈ ഘട്ടങ്ങൾ പാലിക്കുക:",
+            "point1": "നിങ്ങളുടെ Android ക്രമീകരണങ്ങളിലേക്ക് പോകുക",
+            "point2": "&quot;ആപ്പുകളും അറിയിപ്പുകളും&quot; തുറക്കുക",
+            "point3": "&quot; {{communityName}} &quot; കണ്ടെത്തി അത് തുറക്കുക",
+            "point4": "അനുമതികളിൽ ടാപ്പ് ചെയ്യുക",
+            "point5": "{{kind}} പ്രവർത്തനക്ഷമമാക്കുക"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "നിർദ്ദേശങ്ങൾ",
+            "permissionDenied": "{{kind}} പേർക്ക് അനുമതി നിഷേധിച്ചു. ഇത് ഉപയോഗിക്കുന്നതിന്, ഈ ഘട്ടങ്ങൾ പാലിക്കുക:",
+            "point1": "നിങ്ങളുടെ iOS ക്രമീകരണങ്ങളിലേക്ക് പോകുക",
+            "point2": "&quot;സ്വകാര്യത&quot; തുറക്കുക",
+            "point3": "{{kind}} കണ്ടെത്തി അത് തുറക്കുക",
+            "point4": "&quot; {{communityName}} &quot; കണ്ടെത്തി പ്രവർത്തനക്ഷമമാക്കുക"
+        },
+        "fbLive": {
+            "dialogTitle": "ഫേസ്ബുക്ക് ലൈവ് സ്ട്രീമിംഗ് ആരംഭിച്ചു"
+        },
+        "notices": {
+            "youJoinedRoom": "നിങ്ങൾ മുറിയിൽ ചേർന്നു",
+            "joining": "ചേരുന്നത്: {{userName}}",
+            "sbLeftRoom": "{{userName}} മുറി വിട്ടു",
+            "switchingRoom": "മുറി മാറുന്നു...",
+            "forceDisconnecting": "5 സെക്കൻഡിനുള്ളിൽ നിങ്ങൾ വിച്ഛേദിക്കപ്പെടും",
+            "forceDisconnectingImmediately": "ഒരു ഹോസ്റ്റ് നിങ്ങളെ വിച്ഛേദിച്ചു",
+            "youLeftRoom": "നിങ്ങൾ മുറി വിട്ടു",
+            "codeCopied": "നിങ്ങൾ മുറി വിട്ടു",
+            "sbBeganFbLive": "{{userName}} ഫേസ്ബുക്കിൽ ഈ കോൾ പ്രക്ഷേപണം ചെയ്യാൻ തുടങ്ങി",
+            "sbStoppedFbLive": "{{userName}} ഈ കോൾ ഫേസ്ബുക്കിൽ സംപ്രേക്ഷണം ചെയ്യുന്നത് നിർത്തി",
+            "youBeganFbLive": "നിങ്ങൾ ഈ കോൾ Facebook-ൽ പ്രക്ഷേപണം ചെയ്യാൻ തുടങ്ങി",
+            "youStoppedFbLive": "നിങ്ങൾ ഈ കോൾ Facebook-ൽ സംപ്രേക്ഷണം ചെയ്യുന്നത് നിർത്തി",
+            "youStartedLive": "ഇഷ്‌ടാനുസൃത RTMP-യിലേക്ക് നിങ്ങൾ ഈ കോൾ പ്രക്ഷേപണം ചെയ്യാൻ തുടങ്ങി",
+            "youStoppedLive": "ഇഷ്‌ടാനുസൃത RTMP-ലേക്ക് ഈ കോൾ പ്രക്ഷേപണം ചെയ്യുന്നത് നിങ്ങൾ നിർത്തി",
+            "sbStartedLiveStreaming": "{{userName}} തത്സമയം ആരംഭിച്ചു",
+            "sbStoppedLiveStreaming": "{{userName}} തത്സമയം അവസാനിച്ചു",
+            "liveStopped": "എൻഡ് പോയിൻ്റിലേക്ക് വീഡിയോ അയയ്‌ക്കുമ്പോൾ പിശക് സംഭവിച്ചു",
+            "youBeganVideoRecording": "നിങ്ങൾ ഈ സമ്മേളനം റെക്കോർഡ് ചെയ്യാൻ തുടങ്ങി",
+            "youStoppedVideoRecording": "നിങ്ങൾ ഈ കോൺഫറൻസ് റെക്കോർഡ് ചെയ്യുന്നത് നിർത്തി",
+            "linkCopiedToCb": "ലിങ്ക് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി",
+            "codeCopiedToCb": "കോഡ് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി",
+            "userHasNoVideo": "പങ്കെടുക്കുന്നയാൾക്ക് വീഡിയോ ഇല്ല",
+            "openInBrowserAlert": "കോൺഫറൻസിൽ ചേരാൻ സഫാരി ബ്രൗസറിൽ ലിങ്ക് തുറക്കുക.",
+            "allowedVideoLimit": "ഈ മുറിയിൽ {{limit}} വീഡിയോകൾ മാത്രമേ അനുവദിച്ചിട്ടുള്ളൂ",
+            "allowedAudioLimit": "ഈ മുറിയിൽ {{limit}} മൈക്രോഫോണുകൾ മാത്രമേ അനുവദിക്കൂ",
+            "processingRecording": "റെക്കോർഡിംഗ് പ്രോസസ്സ് ചെയ്യുന്നു..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "വീഡിയോ ക്രമീകരണങ്ങൾ",
+            "webCamera": "വെബ് ക്യാമറ",
+            "screenSharing": "സ്ക്രീൻ പങ്കിടൽ",
+            "shareAnotherScreen": "മറ്റൊരു സ്ക്രീൻ പങ്കിടുക",
+            "turnOffCameras": "ക്യാമറ ഓഫ് ചെയ്യുക",
+            "turnOffVideo": "ക്യാമറ\/സ്ക്രീൻ പങ്കിടൽ ഓഫാക്കുക",
+            "turnOffAudioInput": "മൈക്രോഫോൺ നിശബ്ദമാക്കുക",
+            "turnOffScreenSharing": "സ്ക്രീൻ പങ്കിടൽ ഓഫാക്കുക",
+            "cameraIsTurnedOff": "ക്യാമറ ഓഫാക്കി",
+            "micIsTurnedOff": "മൈക്രോഫോൺ ഓഫാക്കി",
+            "startFBLive": "ഫേസ്ബുക്ക് ലൈവ് സ്ട്രീം ആരംഭിക്കുക",
+            "stopFBLive": "ഫേസ്ബുക്ക് ലൈവ് സ്ട്രീം നിർത്തുക",
+            "startRecording": "റെക്കോർഡിംഗ് ആരംഭിക്കുക",
+            "stopRecording": "റെക്കോർഡിംഗ് നിർത്തുക",
+            "start": "ആരംഭിക്കുക",
+            "startClodRecording": "ക്ലൗഡ് റെക്കോർഡിംഗ് ആരംഭിക്കുക",
+            "startLocRecording": "പ്രാദേശിക റെക്കോർഡിംഗ് ആരംഭിക്കുക",
+            "stopClodRecording": "ക്ലൗഡ് റെക്കോർഡിംഗ് നിർത്തുക",
+            "stopLocRecording": "ലോക്കൽ റെക്കോർഡിംഗ് നിർത്തുക",
+            "stop": "നിർത്തുക",
+            "share": "പങ്കിടുക",
+            "recordingInProgress": "റെക്കോർഡിംഗ് പുരോഗമിക്കുന്നു...",
+            "fbLiveTitle": "ലൈവ് സ്ട്രീമിൻ്റെ പേര്",
+            "fbLiveDescription": "നിങ്ങളുടെ ലൈവ് സ്ട്രീം വിവരിക്കുക. അത് എന്തിനെക്കുറിച്ചാണ്?",
+            "fbOnlyMeLiveAccess": "ഞാൻ മാത്രം",
+            "fbFriendsAccess": "സുഹൃത്തുക്കൾ",
+            "fbPublicAccess": "പൊതു",
+            "publishOnTimeline": "ടൈംലൈനിൽ പ്രസിദ്ധീകരിക്കുക",
+            "publishToGroup": "ഗ്രൂപ്പിൽ പ്രസിദ്ധീകരിക്കുക",
+            "fbStartLive": "തത്സമയം പോകൂ",
+            "fbStopLive": "ലൈവ് സ്ട്രീം അവസാനിപ്പിക്കുക",
+            "streamingSettings": "ക്രമീകരണങ്ങൾ",
+            "manageStream": "ലൈവ് സ്ട്രീം മാനേജ് ചെയ്യുക",
+            "fbEmbedCode": "ഉൾച്ചേർക്കുക",
+            "copy": "പകർത്തുക",
+            "streamToRTMP": "ഇഷ്ടാനുസൃത RTMP-യിലേക്ക് സ്ട്രീം ചെയ്യുക",
+            "startBroadcasting": "പ്രക്ഷേപണം ആരംഭിക്കുക",
+            "broadcastingInProgress": "സംപ്രേക്ഷണം പുരോഗമിക്കുകയാണ്"
+        },
+        "audioSettings": {
+            "dialogTitle": "ഓഡിയോ ക്രമീകരണങ്ങൾ",
+            "speakers": "സ്പീക്കറുകൾ",
+            "microphone": "മൈക്രോഫോൺ"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "പ്രക്ഷേപണം നിയന്ത്രിക്കുക"
+        },
+        "participantsPopup": {
+            "dialogTitle": "പങ്കാളി ക്രമീകരണങ്ങൾ",
+            "disconnect": "വിച്ഛേദിക്കുക",
+            "floatingScreens": "ഫ്ലോട്ടിംഗ് സ്ക്രീനുകൾ",
+            "tiledScreens": "ടൈൽ ചെയ്ത സ്ക്രീനുകൾ",
+            "loudestExceptMe": "ഞാനൊഴികെ ഏറ്റവും വലിയ ശബ്ദം",
+            "maximizeLoudest": "ഉച്ചത്തിൽ പരമാവധിയാക്കുക",
+            "staticMaximized": "സ്റ്റാറ്റിക് മാക്സിമൈസ് ചെയ്തു",
+            "fullScreen": "പൂർണ്ണ സ്ക്രീൻ",
+            "manual": "മാനുവൽ",
+            "turnOffCamera": "വീഡിയോ മറയ്ക്കുക",
+            "turnOffAudio": "ഓഡിയോ നിശബ്ദമാക്കുക",
+            "turnOffScreenSharing": "സ്‌ക്രീൻ പങ്കിടൽ മറയ്‌ക്കുക",
+            "turnOnCamera": "വീഡിയോ കാണിക്കുക",
+            "turnOnAudio": "ഓഡിയോ അൺമ്യൂട്ട് ചെയ്യുക",
+            "turnOnScreenSharing": "സ്ക്രീൻ പങ്കിടൽ കാണിക്കുക"
+        },
+        "streamingSettings": {
+            "title": "തത്സമയ സ്ട്രീം"
+        },
+        "preview": {
+            "Meeting": "ടെലികോൺഫറൻസ്",
+            "MeetingEnded": "ടെലി കോൺഫറൻസ് അവസാനിച്ചു"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "സംസാരിക്കാനുള്ള അഭ്യർത്ഥന",
+            "msg": "നിലവിൽ {{count}} പേരാണ് യോഗത്തിൽ സംസാരിക്കുന്നത്. സംഭാഷണം പൂർത്തിയാക്കാൻ {{seconds}} സെക്കൻഡ് അനുവദിച്ചതിന് ശേഷം അവയിലൊന്ന് മാറ്റിസ്ഥാപിക്കണോ?"
+        }
+    }
+}

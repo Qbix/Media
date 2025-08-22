@@ -1,0 +1,256 @@
+{
+    "Shows": "ښیې",
+    "Clips": "کلیپونه",
+    "Video": "ویډیو",
+    "Audio": "آډیو",
+    "categories": {
+        "Clips": "د رسنیو کلیپونه",
+        "Episodes": "قسطونه"
+    },
+    "presentation": {
+        "PutTogether": "تاسو به وړاندې شي؟ تاسو کولی شئ دا ځای د خپل پریزنټشن لپاره یوځای مواد پورته کولو لپاره وکاروئ. د پلس تڼۍ وکاروئ.",
+        "Alert": "لکه څنګه چې پیښې پیل کیږي، دا پاڼه به د دوی اړونده پریزنټشنونو ښودلو پیل وکړي",
+        "ClickHereForFullscreen": "پریزنټشنونه به دلته ښکاره شي. د بشپړ سکرین د تګ لپاره دلته کلیک وکړئ.",
+        "question": {
+            "ScanThisQRCode": "د ځواب لپاره دا QR کوډ سکین کړئ"
+        }
+    },
+    "NewEpisode": "نوی قسط",
+    "NewClip": "یو نوی کلیپ جوړ کړئ",
+    "NewClipTitlePlaceholder": "د کلیپ سرلیک دننه کړئ",
+    "NewClipDescriptionPlaceholder": "د کلیپ توضیحات دننه کړئ",
+    "switchVisualization": "د لید لید بدل کړئ",
+    "joinLiveShow": "په ژوندۍ خپرونه کې ګډون وکړئ",
+    "showTwitchLiveStream": "د Twitch ژوندی جریان ښکاره کړئ",
+    "showVoiceChat": "غږیز چیٹ ښکاره کړئ",
+    "LiveShow": "ژوندۍ خپرونه",
+    "AreYouSureKick": "ایا تاسو ډاډه یاست چې تاسو غواړئ دا کارن پیل کړئ؟",
+    "Save": "خوندي کړئ",
+    "ViewFullEpisode": "بشپړه برخه وګورئ",
+    "CreditsEarned": "کریډیټ ترلاسه کړل",
+    "VideoTitle": "د ویډیو سرلیک یا URL",
+    "AreYouSureDeleteEpisode": "ایا تاسو ډاډه یاست چې تاسو غواړئ دا قسط حذف کړئ؟",
+    "Yes": "هو",
+    "No": "نه",
+    "RealTimeCall": "د ریښتیني وخت زنګ",
+    "JoinWebRTC": "مخابراتي کنفرانس",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "مخابراتي کنفرانس",
+            "description": "آنلاین ویډیو \/ آډیو کنفرانس"
+        },
+        "Media\/calls": {
+            "displayType": "زنګونه",
+            "description": "د رسنیو\/WebRTC لپاره کټګورۍ",
+            "MaxRelationsExceeded": "مکس زنګونه زیات شول"
+        },
+        "Media\/clip": {
+            "displayType": "کلیپ",
+            "description": "د رسنیو کلیپ"
+        }
+    },
+    "feeds": {
+        "Title": "کیمرې",
+        "filterByTitle": "د سرلیک له مخې فیډونه ومومئ",
+        "RequestFeedAccess": "د فیډ لاسرسي غوښتنه وکړئ",
+        "New": "+ نوی فیډ",
+        "filterFeeds": "فیډونه فلټر کړئ",
+        "NewFeed": "نوی فیډ",
+        "NoneYet": "تراوسه هیڅ فیډ نه دی جوړ شوی.",
+        "AreYouSure": "ایا تاسو ډاډه یاست؟",
+        "FilterByDate": "د نیټې له مخې فلټر کړئ",
+        "newFeeds": "تاسو {{1}} نوي فیډونه لرئ",
+        "Description": "{{1}} فیډونه",
+        "Keywords": "{{1}} فیډونه"
+    },
+    "feed": {
+        "HostedBy": "د {{name}} لخوا کوربه شوی",
+        "Name": "نوم",
+        "Conversation": "خبرې اترې",
+        "CloseFeed": {
+            "button": "فیډ بند کړئ",
+            "Cancel": "ایا تاسو ډاډه یاست چې دا فیډ بندول غواړئ؟",
+            "Participant": "په دې فیډ کې 1 ګډون کوونکی دی",
+            "Participants": "په دې فیډ کې {{count}} برخه اخیستونکي دي"
+        },
+        "Calendar": "جنتري",
+        "TitleOfFeed": "د تغذیې عنوان:",
+        "EmptyList": "خالي لیست",
+        "EmptyVideos": "تراوسه هیڅ کلیپ نشته",
+        "AccessReason": "مهرباني وکړئ دلیل یې بیان کړئ",
+        "Proceed": "پرمخ لاړ شه",
+        "FeedAlreadyClosed": "دا فیډ لا دمخه تړل شوی",
+        "RtmpLinkNote": "کلیکبورډ ته د دې لینک کاپي کولو لپاره کلیک وکړئ",
+        "SelectClip": "هغه نیټه وټاکئ چې تاسو یې غواړئ وګورئ",
+        "Request": "غوښتنه"
+    },
+    "newFeed": {
+        "Title": "نوی فیډ",
+        "locationTitle": "خپل ځای وټاکئ",
+        "SetLocation": "زما ځای وټاکئ",
+        "Starting": "پیل کول",
+        "Day": "ورځ",
+        "Create": "جوړ کړئ",
+        "Continue": "ادامه ورکړئ",
+        "FeedTitle": "د فیډ سرلیک",
+        "SetTitle": "مهرباني وکړئ د فیډ سرلیک وټاکئ"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ستاسو په تلیفون کې شامل شو",
+        "SubjectJoinedYourCall": "{{subject}} ستاسو په تلیفون کې شامل شو"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "تاسو په دې جریان کې د شاملیدو اجازه نلرئ.",
+        "streamTitle": "{{1}} یو ټیلیفوني کنفرانس پیل کړ",
+        "allow": {
+            "dialogTitle": "نښلول",
+            "microphoneBtn": "مایکروفون فعال کړئ",
+            "cameraBtn": "کیمره فعاله کړئ",
+            "cameraAndMicrophoneBtn": "کیمره او مایکروفون فعال کړئ"
+        },
+        "preparing": {
+            "dialogTitle": "مخکې له دې چې ګډون وکړئ کیمره یا مایک چالان کړئ",
+            "micIsOff": "مایک بند دی",
+            "micIsOn": "مایک آن دی",
+            "cameraIsOff": "کیمره بنده ده",
+            "cameraIsOn": "کیمره روانه ده",
+            "screenSharingIsOn": "د سکرین شریکول روان دي",
+            "screenSharingIsOff": "سکرین شریک کړئ",
+            "joinNow": "په کال کې ګډون وکړئ"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "لارښوونې",
+            "permissionDenied": "{{kind}} لپاره اجازه رد شوه. د دې کارولو لپاره مهرباني وکړئ دا ګامونه تعقیب کړئ:",
+            "point1": "&quot;ترتیبات&quot; ته لاړ شئ -&gt; &quot;پرمختللی&quot; -&gt; &quot;محرمیت او امنیت&quot; -&gt; &quot;سایټ ترتیبات&quot; -&gt; &quot;کیمره&quot; یا &quot;سایټ ترتیبات&quot; -&gt; &quot;مایکروفون&quot;",
+            "point2": "د &quot;بلاک&quot; لیست څخه {{hostname}} لرې کړئ"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "لارښوونې",
+            "permissionDenied": "{{kind}} لپاره اجازه رد شوه. مهرباني وکړئ دا پاڼه بیا پورته کړئ او په کنفرانس کې د ګډون لپاره {{kind}} ته لاسرسی تایید کړئ."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "لارښوونې",
+            "permissionDenied": "{{kind}} لپاره اجازه رد شوه. د دې کارولو لپاره مهرباني وکړئ دا ګامونه تعقیب کړئ:",
+            "point1": "خپل د Android ترتیباتو ته لاړ شئ",
+            "point2": "&quot;ایپس او خبرتیاوې&quot; خلاص کړئ",
+            "point3": "&quot; {{communityName}} &quot; ومومئ او خلاص یې کړئ",
+            "point4": "په اجازې کلیک وکړئ",
+            "point5": "{{kind}} فعال کړئ"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "لارښوونې",
+            "permissionDenied": "{{kind}} لپاره اجازه رد شوه. د دې کارولو لپاره مهرباني وکړئ دا ګامونه تعقیب کړئ:",
+            "point1": "خپل iOS ترتیباتو ته لاړ شئ",
+            "point2": "&quot;رازداری&quot; خلاص کړئ",
+            "point3": "{{kind}} ومومئ او خلاص یې کړئ",
+            "point4": "&quot; {{communityName}} &quot; ومومئ او فعال کړئ"
+        },
+        "fbLive": {
+            "dialogTitle": "د فیسبوک ژوندی خپرونه پیل شوه"
+        },
+        "notices": {
+            "youJoinedRoom": "تاسو د کوټې سره یوځای شو",
+            "joining": "یوځای کیدل: {{userName}}",
+            "sbLeftRoom": "{{userName}} کوټه پریښوده",
+            "switchingRoom": "د بدلولو کوټه...",
+            "forceDisconnecting": "تاسو به په 5 ثانیو کې منحل شئ",
+            "forceDisconnectingImmediately": "تاسو د کوربه لخوا منحل شوي یاست",
+            "youLeftRoom": "تاسو کوټه پریښوده",
+            "codeCopied": "تاسو کوټه پریښوده",
+            "sbBeganFbLive": "{{userName}} په فیسبوک کې د دې کال خپرول پیل کړل",
+            "sbStoppedFbLive": "{{userName}} په فیسبوک کې د دې کال نشرول بند کړل",
+            "youBeganFbLive": "تاسو په فیسبوک کې د دې کال خپرول پیل کړل",
+            "youStoppedFbLive": "تاسو په فیسبوک کې د دې کال نشرول بند کړل",
+            "youStartedLive": "تاسو د دې زنګ دودیز RTMP ته نشر کول پیل کړل",
+            "youStoppedLive": "تاسو دودیز RTMP ته د دې کال نشرول بند کړل",
+            "sbStartedLiveStreaming": "{{userName}} په ژوندۍ بڼه پیل کړه",
+            "sbStoppedLiveStreaming": "{{userName}} ژوندی پای ته ورسید",
+            "liveStopped": "پای ټکی ته د ویډیو لیږلو په وخت کې تېروتنه رامنځته شوه",
+            "youBeganVideoRecording": "تاسو د دې کنفرانس ثبتول پیل کړل",
+            "youStoppedVideoRecording": "تاسو د دې کنفرانس ثبتول بند کړل",
+            "linkCopiedToCb": "لینک کلپ بورډ ته کاپي شوی",
+            "codeCopiedToCb": "کوډ کلپ بورډ ته کاپي شوی",
+            "userHasNoVideo": "برخه اخیستونکی هیڅ ویډیو نلري",
+            "openInBrowserAlert": "په کنفرانس کې د ګډون لپاره په سفاري براوزر کې لینک خلاص کړئ.",
+            "allowedVideoLimit": "په دې خونه کې یوازې {{limit}} ویډیو اجازه لري",
+            "allowedAudioLimit": "په دې خونه کې یوازې {{limit}} مایکروفون اجازه لري",
+            "processingRecording": "د ثبت کولو پروسس کول ..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "د ویډیو ترتیبات",
+            "webCamera": "ویب کیمره",
+            "screenSharing": "د سکرین شریکول",
+            "shareAnotherScreen": "بل سکرین شریک کړئ",
+            "turnOffCameras": "کیمره بنده کړئ",
+            "turnOffVideo": "د کیمرې \/ سکرین شریکول بند کړئ",
+            "turnOffAudioInput": "مایکروفون خاموش کړئ",
+            "turnOffScreenSharing": "د سکرین شریکول بند کړئ",
+            "cameraIsTurnedOff": "کیمره بنده ده",
+            "micIsTurnedOff": "مایکروفون بند دی",
+            "startFBLive": "د فیسبوک ژوندی جریان پیل کړئ",
+            "stopFBLive": "د فیسبوک ژوندی جریان بند کړئ",
+            "startRecording": "ثبت کول پیل کړئ",
+            "stopRecording": "ثبت کول بند کړئ",
+            "start": "پیل",
+            "startClodRecording": "د کلاوډ ثبت کول پیل کړئ",
+            "startLocRecording": "محلي ثبت کول پیل کړئ",
+            "stopClodRecording": "د کلاوډ ثبت کول بند کړئ",
+            "stopLocRecording": "د محلي ثبت کول بند کړئ",
+            "stop": "ودریږئ",
+            "share": "شریکول",
+            "recordingInProgress": "ثبتول روان دي...",
+            "fbLiveTitle": "د ژوندی جریان سرلیک",
+            "fbLiveDescription": "خپل ژوندی جریان تشریح کړئ. دا د څه په اړه ده؟",
+            "fbOnlyMeLiveAccess": "یوازې زه",
+            "fbFriendsAccess": "ملګرو",
+            "fbPublicAccess": "عامه",
+            "publishOnTimeline": "په مهال ویش کې خپور کړئ",
+            "publishToGroup": "ګروپ ته خپور کړئ",
+            "fbStartLive": "ژوندی لاړ شه",
+            "fbStopLive": "ژوندی جریان پای ته ورسوئ",
+            "streamingSettings": "ترتیبات",
+            "manageStream": "ژوندی جریان اداره کړئ",
+            "fbEmbedCode": "امبډ کړئ",
+            "copy": "کاپي",
+            "streamToRTMP": "دودیز RTMP ته جریان",
+            "startBroadcasting": "خپرونه پیل کړئ",
+            "broadcastingInProgress": "نشرات په جریان کې دي"
+        },
+        "audioSettings": {
+            "dialogTitle": "د آډیو ترتیبات",
+            "speakers": "ويناوالو",
+            "microphone": "مایکروفون"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "د نشراتو اداره کول"
+        },
+        "participantsPopup": {
+            "dialogTitle": "د ګډون کونکي تنظیمات",
+            "disconnect": "منحل کول",
+            "floatingScreens": "فلوټینګ سکرینونه",
+            "tiledScreens": "ټایل شوي سکرینونه",
+            "loudestExceptMe": "زما پرته تر ټولو لوړ غږ",
+            "maximizeLoudest": "تر ټولو لوړ غږ",
+            "staticMaximized": "جامد اعظمي",
+            "fullScreen": "بشپړ سکرین",
+            "manual": "لارښود",
+            "turnOffCamera": "ویډیو پټ کړئ",
+            "turnOffAudio": "غږ بند کړئ",
+            "turnOffScreenSharing": "د سکرین شریکول پټ کړئ",
+            "turnOnCamera": "ویډیو وښایه",
+            "turnOnAudio": "غږ غږول",
+            "turnOnScreenSharing": "د سکرین شریکول ښکاره کړئ"
+        },
+        "streamingSettings": {
+            "title": "ژوندی جریان"
+        },
+        "preview": {
+            "Meeting": "مخابراتي کنفرانس",
+            "MeetingEnded": "ټلیفوني کنفرانس پای ته ورسید"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "د خبرو کولو غوښتنه وکړئ",
+            "msg": "په غونډه کې اوس مهال {{count}} کسان خبرې کوي. ایا تاسو غواړئ یو یې بدل کړئ وروسته له دې چې دوی ته {{seconds}} ثانیې اجازه ورکړئ چې خبرې پای ته ورسوي؟"
+        }
+    }
+}

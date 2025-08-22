@@ -39,6 +39,7 @@
 		"routes@start": {
 			"clip/:clipId": {"module": "Media", "action": "clip"},
 			"clip/:publisherId/:clipId": {"module":  "Media", "action":  "clip"},
+			"clip/:publisherId/:episodeDate/:clipTime": {"module":  "Media", "action":  "clip"},
 			"livestream/:publisherId/:livestreamId": { "module": "Media", "action": "livestream" },
 			"livestream/:publisherId/:livestreamId[]": {"module": "Media", "action": "livestream"},
 		    "meeting": { "module": "Media", "action": "meeting" },
@@ -55,6 +56,18 @@
 		"web": {
 			"contentSecurityPolicy": {
 				"script": ["https://www.youtube.com", "https://cdnjs.cloudflare.com"]
+			}
+		},
+		"images": {
+			"Media/episode": {
+				"sizes": ["40", "50", "80", "200", "400", "x400", "400x"],
+				"defaultSize": "50",
+				"maxStretch": 40
+			},
+			"Media/clip": {
+				"sizes": ["40", "50", "80", "200", "400", "x400", "400x"],
+				"defaultSize": "50",
+				"maxStretch": 40
 			}
 		}
 	},
@@ -141,7 +154,23 @@
 			"*": {
 				"relatedTo": {
 					"Media/webrtc": {
-						"description": ["Streams/content", ["notifications", "Streams/relatedTo/Streams/call"]]
+						"description": ["Media/content", ["notifications", "Streams/relatedTo/Media/call"]]
+					}
+				}
+			},
+			"Streams/chat": {
+				"emoji": "💬",
+				"create": true,
+				"edit": ["icon", "title", "content"],
+				"subscriptions": {
+					"filter": {
+						"types": ["Media/call"]
+					}
+				},
+				"messages": {
+					"Media/call": {
+						"description": ["Streams/content", ["description", "Media/call"]],
+						"subject": ["Streams/content", ["notifications", "Media/call"]]
 					}
 				}
 			},
@@ -247,7 +276,7 @@
 			"Media/episode": {
 				"emoji": "📺",
 				"defaults": {
-					"icon": "{{Media}}/img/icons/Media/clip",
+					"icon": "{{Media}}/img/icons/Media/episode",
 					"title": "Untitled Episode",
 					"readLevel": 40,
 					"writeLevel": 10,

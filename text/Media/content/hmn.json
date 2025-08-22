@@ -1,0 +1,256 @@
+{
+    "Shows": "Qhia",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Suab",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "Cov ntu"
+    },
+    "presentation": {
+        "PutTogether": "Koj puas yuav nthuav tawm? Koj tuaj yeem siv qhov chaw no los upload ua ke cov ntaub ntawv rau koj qhov kev nthuav qhia. Siv lub Plus khawm.",
+        "Alert": "Thaum cov xwm txheej pib, nplooj ntawv no yuav pib qhia lawv cov kev nthuav qhia sib raug",
+        "ClickHereForFullscreen": "Kev nthuav qhia yuav tshwm sim ntawm no. Nyem qhov no mus puv npo.",
+        "question": {
+            "ScanThisQRCode": "Luam theej duab QR code no los teb"
+        }
+    },
+    "NewEpisode": "Zaj Tshiab",
+    "NewClip": "Ua Clip Tshiab",
+    "NewClipTitlePlaceholder": "Sau npe Clip",
+    "NewClipDescriptionPlaceholder": "Sau Clip Description",
+    "switchVisualization": "Hloov visualization",
+    "joinLiveShow": "Koom Live Show",
+    "showTwitchLiveStream": "Qhia Twitch Live Stream",
+    "showVoiceChat": "Qhia Lub Suab Sib Tham",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Koj puas paub tseeb tias koj xav ncaws tawm tus neeg siv no?",
+    "Save": "Txuag",
+    "ViewFullEpisode": "Saib Full Episode",
+    "CreditsEarned": "Cov qhab nia khwv tau",
+    "VideoTitle": "Video Title lossis URL",
+    "AreYouSureDeleteEpisode": "Koj puas paub tseeb tias koj xav rho tawm ntu no?",
+    "Yes": "Yog lawm",
+    "No": "Tsis muaj",
+    "RealTimeCall": "Real Time Hu",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "kev sib tham hauv online video\/suab"
+        },
+        "Media\/calls": {
+            "displayType": "Hu",
+            "description": "qeb rau Media\/WebRTC",
+            "MaxRelationsExceeded": "Max hu tau tshaj"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "xov xwm clip"
+        }
+    },
+    "feeds": {
+        "Title": "Cov koob yees duab",
+        "filterByTitle": "Nrhiav feeds los ntawm lub npe",
+        "RequestFeedAccess": "Thov pub nkag",
+        "New": "+ Pub tshiab",
+        "filterFeeds": "Lim cov khoom noj",
+        "NewFeed": "Pub tshiab",
+        "NoneYet": "Tseem tsis tau muaj kev pub noj.",
+        "AreYouSure": "Koj puas paub tseeb?",
+        "FilterByDate": "Lim Los Ntawm Hnub",
+        "newFeeds": "Koj muaj {{1}} tshiab pub",
+        "Description": "{{1}} ua",
+        "Keywords": "{{1}} ua"
+    },
+    "feed": {
+        "HostedBy": "Hosted los ntawm {{name}}",
+        "Name": "Lub npe",
+        "Conversation": "Kev sib tham",
+        "CloseFeed": {
+            "button": "Kaw Pub",
+            "Cancel": "Koj puas paub tseeb tias koj xav kaw qhov pub no?",
+            "Participant": "Muaj 1 tus neeg koom nrog hauv qhov pub no",
+            "Participants": "Muaj {{count}} tus neeg koom nrog hauv qhov pub no"
+        },
+        "Calendar": "Daim ntawv qhia hnub",
+        "TitleOfFeed": "Title of feed:",
+        "EmptyList": "Daim ntawv tsis muaj",
+        "EmptyVideos": "Tseem tsis tau clips",
+        "AccessReason": "thov qhia qhov laj thawj",
+        "Proceed": "Ua mus",
+        "FeedAlreadyClosed": "Cov zaub mov no twb kaw lawm",
+        "RtmpLinkNote": "Nyem rau luam qhov txuas no mus rau cov ntawv teev cia",
+        "SelectClip": "Xaiv hnub koj xav pom",
+        "Request": "Thov"
+    },
+    "newFeed": {
+        "Title": "Pub tshiab",
+        "locationTitle": "Teem Koj Qhov Chaw",
+        "SetLocation": "Teem Kuv Qhov Chaw",
+        "Starting": "Pib",
+        "Day": "Hnub",
+        "Create": "Tsim",
+        "Continue": "Mus ntxiv",
+        "FeedTitle": "Pub lub npe",
+        "SetTitle": "Thov teem lub npe pub"
+    },
+    "notifications": {
+        "JoinedWebRTC": "koom nrog koj hu",
+        "SubjectJoinedYourCall": "{{subject}} tuaj koom koj"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Koj tsis muaj kev tso cai los koom nrog kwj no.",
+        "streamTitle": "{{1}} pib lub rooj sib tham hauv xov tooj",
+        "allow": {
+            "dialogTitle": "Kev sib txuas",
+            "microphoneBtn": "Qhib Microphone",
+            "cameraBtn": "Qhib lub koob yees duab",
+            "cameraAndMicrophoneBtn": "Qhib lub koob yees duab thiab Microphone"
+        },
+        "preparing": {
+            "dialogTitle": "Tig lub koob yees duab lossis mic rau \/ tawm ua ntej koj koom",
+            "micIsOff": "Mic tawm",
+            "micIsOn": "Mic nyob rau",
+            "cameraIsOff": "Lub koob yees duab kaw",
+            "cameraIsOn": "Lub koob yees duab nyob rau",
+            "screenSharingIsOn": "Screensharing yog nyob rau",
+            "screenSharingIsOff": "Qhia tawm screen",
+            "joinNow": "Koom nrog Hu"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Cov lus qhia",
+            "permissionDenied": "Tso cai rau {{kind}} tsis pom zoo. Txhawm rau siv nws thov ua raws li cov kauj ruam no:",
+            "point1": "Mus rau &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; or &quot;Site Settings&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Tshem tawm {{hostname}} ntawm &quot;Block&quot; daim ntawv teev npe"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Cov lus qhia",
+            "permissionDenied": "Tso cai rau {{kind}} tsis pom zoo. Thov rov rub nplooj ntawv no thiab lees paub nkag mus rau {{kind}} los koom lub rooj sib tham."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Cov lus qhia",
+            "permissionDenied": "Tso cai rau {{kind}} tsis pom zoo. Txhawm rau siv nws thov ua raws li cov kauj ruam no:",
+            "point1": "Mus rau koj qhov chaw Android",
+            "point2": "Qhib &quot;Apps &amp; ceeb toom&quot;",
+            "point3": "Nrhiav &quot; {{communityName}} &quot; thiab qhib nws",
+            "point4": "Coj mus rhaub rau Permissions",
+            "point5": "Qhib {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Cov lus qhia",
+            "permissionDenied": "Tso cai rau {{kind}} tsis pom zoo. Txhawm rau siv nws thov ua raws li cov kauj ruam no:",
+            "point1": "Mus rau koj qhov chaw iOS no",
+            "point2": "Qhib &quot;Privacy&quot;",
+            "point3": "Nrhiav {{kind}} thiab qhib nws",
+            "point4": "Nrhiav &quot; {{communityName}} &quot; thiab pab"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook nyob streaming pib"
+        },
+        "notices": {
+            "youJoinedRoom": "Koj tau koom nrog chav",
+            "joining": "sib: {{userName}}",
+            "sbLeftRoom": "{{userName}} tawm hauv chav",
+            "switchingRoom": "Hloov chav...",
+            "forceDisconnecting": "Koj yuav raug txiav tsis pub dhau 5 vib nas this",
+            "forceDisconnectingImmediately": "Koj raug rho tawm los ntawm tus tswv tsev",
+            "youLeftRoom": "Koj tawm hauv chav",
+            "codeCopied": "Koj tawm hauv chav",
+            "sbBeganFbLive": "{{userName}} tau pib tshaj tawm qhov kev hu no hauv Facebook",
+            "sbStoppedFbLive": "{{userName}} txwv tsis pub tshaj tawm xov tooj no hauv Facebook",
+            "youBeganFbLive": "Koj tau pib tshaj tawm qhov kev hu no hauv Facebook",
+            "youStoppedFbLive": "Koj txwv tsis pub tshaj tawm xov tooj no hauv Facebook",
+            "youStartedLive": "Koj tau pib tshaj tawm qhov kev hu no rau kev cai RTMP",
+            "youStoppedLive": "Koj tau tso tseg qhov kev hu xov tooj no mus rau RTMP kev cai",
+            "sbStartedLiveStreaming": "{{userName}} pib live",
+            "sbStoppedLiveStreaming": "{{userName}} tas live",
+            "liveStopped": "Yuam kev thaum xa video mus rau qhov kawg tshwm sim",
+            "youBeganVideoRecording": "Koj tau pib sau lub rooj sab laj no",
+            "youStoppedVideoRecording": "Koj tso tseg lub rooj sab laj no",
+            "linkCopiedToCb": "Txuas tau theej rau daim ntawv teev lus",
+            "codeCopiedToCb": "Code theej rau daim ntawv teev lus",
+            "userHasNoVideo": "Cov neeg koom tsis muaj video",
+            "openInBrowserAlert": "Qhib qhov txuas hauv Safari browser los koom nrog lub rooj sib tham.",
+            "allowedVideoLimit": "Tsuas yog {{limit}} video tso cai rau hauv chav no",
+            "allowedAudioLimit": "Tsuas yog {{limit}} microphones tso cai rau hauv chav no",
+            "processingRecording": "Processing cov ntaub ntawv..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Chaw",
+            "webCamera": "Lub Koob Yees Duab",
+            "screenSharing": "Kev Sib Tham",
+            "shareAnotherScreen": "Qhia lwm qhov screen",
+            "turnOffCameras": "Tua lub koob yees duab",
+            "turnOffVideo": "Tua lub koob yees duab \/ npo sib koom",
+            "turnOffAudioInput": "Mute microphone",
+            "turnOffScreenSharing": "Tua tawm kev sib koom ntawm qhov screen",
+            "cameraIsTurnedOff": "Lub koob yees duab kaw lawm",
+            "micIsTurnedOff": "Microphone raug kaw",
+            "startFBLive": "Pib Facebook Livestream",
+            "stopFBLive": "Nres Facebook Livestream",
+            "startRecording": "Pib Sau",
+            "stopRecording": "Tso tseg",
+            "start": "Pib",
+            "startClodRecording": "Pib Cloud Recording",
+            "startLocRecording": "Pib Cov Ntaub Ntawv Hauv Zos",
+            "stopClodRecording": "Nres Cloud Recording",
+            "stopLocRecording": "Tso tseg Cov Ntaub Ntawv Hauv Zos",
+            "stop": "Nres",
+            "share": "Qhia",
+            "recordingInProgress": "Cov ntaub ntawv tseem tab tom ua ...",
+            "fbLiveTitle": "Lub npe ntawm Livestream",
+            "fbLiveDescription": "Piav koj Livestream. Nws yog dab tsi?",
+            "fbOnlyMeLiveAccess": "Tsuas yog kuv xwb",
+            "fbFriendsAccess": "phooj ywg",
+            "fbPublicAccess": "Public",
+            "publishOnTimeline": "Tshaj tawm ntawm ncua sij hawm",
+            "publishToGroup": "Tshaj tawm rau pawg",
+            "fbStartLive": "Mus Nyob",
+            "fbStopLive": "Xaus Livestream",
+            "streamingSettings": "Chaw",
+            "manageStream": "Tswj Livestream",
+            "fbEmbedCode": "Embed",
+            "copy": "Luam",
+            "streamToRTMP": "kwj rau kev cai RTMP",
+            "startBroadcasting": "Pib tshaj tawm",
+            "broadcastingInProgress": "Kev tshaj tawm tab tom ua"
+        },
+        "audioSettings": {
+            "dialogTitle": "Suab Settings",
+            "speakers": "Cov neeg hais lus",
+            "microphone": "Microphone"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Tswj kev tshaj tawm"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Kev Koom Tes",
+            "disconnect": "Txiav tawm",
+            "floatingScreens": "Floating Screens",
+            "tiledScreens": "Cov ntxaij vab tshaus",
+            "loudestExceptMe": "Suab nrov Tsuas yog Kuv",
+            "maximizeLoudest": "Ua kom nrov tshaj plaws",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Full Screen",
+            "manual": "Phau ntawv",
+            "turnOffCamera": "Nkaum video",
+            "turnOffAudio": "Mute audio",
+            "turnOffScreenSharing": "Nkaum kev tshuaj ntsuam sib qhia",
+            "turnOnCamera": "Qhia video",
+            "turnOnAudio": "Unmute suab",
+            "turnOnScreenSharing": "Qhia qhov screen sib koom"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Teleconference xaus"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Thov Hais Lus",
+            "msg": "Tam sim no muaj {{count}} tus neeg hais lus hauv lub rooj sib tham. Koj puas xav hloov ib qho ntawm lawv tom qab tso cai rau lawv {{seconds}} vib nas this kom tiav hais lus?"
+        }
+    }
+}

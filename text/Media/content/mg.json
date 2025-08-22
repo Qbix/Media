@@ -1,0 +1,256 @@
+{
+    "Shows": "mampiseho",
+    "Clips": "rakitsary",
+    "Video": "Video",
+    "Audio": "teny",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "fizarana"
+    },
+    "presentation": {
+        "PutTogether": "Haneho hevitra ve ianao? Azonao ampiasaina ity habaka ity mba hampidirana fitaovana miaraka amin&#39;ny famelabelaranao. Ampiasao ny bokotra Plus.",
+        "Alert": "Rehefa manomboka ny hetsika dia hanomboka haneho ny famelabelarana mifanaraka amin&#39;izany ity pejy ity",
+        "ClickHereForFullscreen": "Hiseho eto ny famelabelarana. Tsindrio eto raha handeha amin&#39;ny efijery feno.",
+        "question": {
+            "ScanThisQRCode": "Tsindrio ity kaody QR ity mba hamaliana"
+        }
+    },
+    "NewEpisode": "Episode Vaovao",
+    "NewClip": "Manaova Clip Vaovao",
+    "NewClipTitlePlaceholder": "Ampidiro ny lohatenin&#39;ny Clip",
+    "NewClipDescriptionPlaceholder": "Ampidiro ny Clip Description",
+    "switchVisualization": "Avereno sary an-tsaina",
+    "joinLiveShow": "Midira amin&#39;ny Live Show",
+    "showTwitchLiveStream": "Asehoy ny Twitch Live Stream",
+    "showVoiceChat": "Asehoy ny Voice Chat",
+    "LiveShow": "Seho mivantana",
+    "AreYouSureKick": "Tena te handroaka an&#39;io mpampiasa io ve ianao?",
+    "Save": "afa-tsy",
+    "ViewFullEpisode": "Jereo ny fizarana feno",
+    "CreditsEarned": "Credits azo",
+    "VideoTitle": "Lohateny na URL",
+    "AreYouSureDeleteEpisode": "Tena te-hamafa ity fizarana ity ve ianao?",
+    "Yes": "ENY",
+    "No": "tsy misy",
+    "RealTimeCall": "Antso tena fotoana",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "fihaonambe video\/peo an-tserasera"
+        },
+        "Media\/calls": {
+            "displayType": "antso",
+            "description": "sokajy ho an&#39;ny Media\/WebRTC",
+            "MaxRelationsExceeded": "Nihoatra ny antso max"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "clip amin&#39;ny haino aman-jery"
+        }
+    },
+    "feeds": {
+        "Title": "Cameras",
+        "filterByTitle": "Mitadiava fahana araka ny lohateny",
+        "RequestFeedAccess": "Mangataka fidirana amin&#39;ny sakafo",
+        "New": "+ Famahanana vaovao",
+        "filterFeeds": "Sivana fahana",
+        "NewFeed": "Famahanana vaovao",
+        "NoneYet": "Tsy mbola nisy fahana niforona.",
+        "AreYouSure": "Azonao antoka ve izany?",
+        "FilterByDate": "Sivana Araka ny Daty",
+        "newFeeds": "Manana fahana vaovao {{1}} ianao",
+        "Description": "{{1}} fahana",
+        "Keywords": "{{1}} fahana"
+    },
+    "feed": {
+        "HostedBy": "Nampiantranoin&#39;i {{name}}",
+        "Name": "Anarana",
+        "Conversation": "RESAKA",
+        "CloseFeed": {
+            "button": "Akatona ny fahana",
+            "Cancel": "Tena te hanakatona ity fahana ity ve ianao?",
+            "Participant": "Misy mpandray anjara 1 amin&#39;ity fahana ity",
+            "Participants": "Miisa {{count}} ny mpandray anjara amin&#39;ity fahana ity"
+        },
+        "Calendar": "Calendar",
+        "TitleOfFeed": "Lohatenin&#39;ny fahana:",
+        "EmptyList": "Lisitra foana",
+        "EmptyVideos": "Tsy mbola misy clip",
+        "AccessReason": "mba lazao ny antony",
+        "Proceed": "ivoahan&#39;ny",
+        "FeedAlreadyClosed": "Efa mihidy ity fahana ity",
+        "RtmpLinkNote": "Kitiho raha handika ity rohy ity amin&#39;ny takelaka",
+        "SelectClip": "Fidio ny daty tianao ho hita",
+        "Request": "i Paoly Apostoly"
+    },
+    "newFeed": {
+        "Title": "Famahanana vaovao",
+        "locationTitle": "Ovao ho ny toerana misy anao",
+        "SetLocation": "Apetraho ny toerana misy ahy",
+        "Starting": "manomboka",
+        "Day": "Andro",
+        "Create": "MANANGANA",
+        "Continue": "FOANA",
+        "FeedTitle": "Lohateny fahana",
+        "SetTitle": "Mametraha lohatenin&#39;ny fahana azafady"
+    },
+    "notifications": {
+        "JoinedWebRTC": "nanatevin-daharana ny antsonao",
+        "SubjectJoinedYourCall": "{{subject}} dia nanatevin-daharana ny antsonao"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Tsy manana alalana hiditra amin&#39;ity stream ity ianao.",
+        "streamTitle": "{{1}} dia nanomboka Teleconference",
+        "allow": {
+            "dialogTitle": "mampifandray",
+            "microphoneBtn": "Alefaso ny Microphone",
+            "cameraBtn": "Enable Camera",
+            "cameraAndMicrophoneBtn": "Alefaso ny Camera sy Microphone"
+        },
+        "preparing": {
+            "dialogTitle": "Ampidiro ny fakan-tsary na mikrô alohan&#39;ny hidiranao",
+            "micIsOff": "Mic tsy maty",
+            "micIsOn": "Mic dia mandeha",
+            "cameraIsOff": "Tsy mandeha ny fakan-tsary",
+            "cameraIsOn": "Mandeha ny fakan-tsary",
+            "screenSharingIsOn": "Misokatra ny fifampizarana efijery",
+            "screenSharingIsOff": "Zarao ny efijery",
+            "joinNow": "Midira amin&#39;ny Antso"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "torolalana",
+            "permissionDenied": "Nolavina ny fahazoan-dàlana ho an&#39;ny {{kind}} . Raha hampiasa azy dia araho ireto dingana ireto:",
+            "point1": "Mandehana any amin&#39;ny &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; na &quot;Site Settings&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Esory {{hostname}} amin&#39;ny lisitra &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "torolalana",
+            "permissionDenied": "Nolavina ny fahazoan-dàlana ho an&#39;ny {{kind}} . Avereno azafady ity pejy ity ary hamafiso ny fidirana amin&#39;ny {{kind}} raha te hanatevin-daharana ny fihaonambe."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "torolalana",
+            "permissionDenied": "Nolavina ny fahazoan-dàlana ho an&#39;ny {{kind}} . Raha hampiasa azy dia araho ireto dingana ireto:",
+            "point1": "Mandehana any amin&#39;ny Settings Android anao",
+            "point2": "Sokafy ny &quot;Apps &amp; notifications&quot;",
+            "point3": "Tadiavo ny &quot; {{communityName}} &quot; ary sokafy",
+            "point4": "Tsindrio ny Permissions",
+            "point5": "Enable {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "torolalana",
+            "permissionDenied": "Nolavina ny fahazoan-dàlana ho an&#39;ny {{kind}} . Raha hampiasa azy dia araho ireto dingana ireto:",
+            "point1": "Mandehana any amin&#39;ny iOS Settings anao",
+            "point2": "Sokafy ny &quot;Privacy&quot;",
+            "point3": "Mitadiava {{kind}} ary sokafy",
+            "point4": "Tadiavo ny &quot; {{communityName}} &quot; ary avelao"
+        },
+        "fbLive": {
+            "dialogTitle": "Nanomboka ny fandefasana mivantana Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Niditra tao amin&#39;ny efitrano ianao",
+            "joining": "Ampahany : {{userName}}",
+            "sbLeftRoom": "{{userName}} no nandao ny efitrano",
+            "switchingRoom": "Efitrano mifandimby...",
+            "forceDisconnecting": "Ho tapaka ianao ao anatin&#39;ny 5 segondra",
+            "forceDisconnectingImmediately": "Notapahina tamin&#39;ny mpampiantrano iray ianao",
+            "youLeftRoom": "Nivoaka ny efitrano ianao",
+            "codeCopied": "Nivoaka ny efitrano ianao",
+            "sbBeganFbLive": "Nanomboka nandefa ity antso ity tao amin&#39;ny Facebook {{userName}}",
+            "sbStoppedFbLive": "{{userName}} dia nijanona tsy nandefa ity antso ity tao amin&#39;ny Facebook",
+            "youBeganFbLive": "Nanomboka nandefa ity antso ity tao amin&#39;ny Facebook ianao",
+            "youStoppedFbLive": "Nitsahatra tsy nandefa ity antso ity tao amin&#39;ny Facebook ianao",
+            "youStartedLive": "Nanomboka nandefa ity antso ity tamin&#39;ny RTMP mahazatra ianao",
+            "youStoppedLive": "Nitsahatra tsy nandefa ity antso ity tamin&#39;ny RTMP mahazatra ianao",
+            "sbStartedLiveStreaming": "{{userName}} nanomboka mivantana",
+            "sbStoppedLiveStreaming": "{{userName}} dia nifarana mivantana",
+            "liveStopped": "Nisy hadisoana teo am-pandefasana horonan-tsary mankany amin&#39;ny teboka farany",
+            "youBeganVideoRecording": "Nanomboka nandrakitra ity fihaonambe ity ianao",
+            "youStoppedVideoRecording": "Nitsahatra tsy nandrakitra ity fihaonambe ity ianao",
+            "linkCopiedToCb": "Nadika ho amin&#39;ny solaitrabe ny rohy",
+            "codeCopiedToCb": "Kaody nadika amin&#39;ny solaitrabe",
+            "userHasNoVideo": "Tsy manana video ny mpandray anjara",
+            "openInBrowserAlert": "Sokafy ny rohy ao amin&#39;ny navigateur Safari raha hanatevin-daharana ny fihaonambe.",
+            "allowedVideoLimit": "Vidéo {{limit}} ihany no navela tao amin&#39;ity efitrano ity",
+            "allowedAudioLimit": "Mikrofonina {{limit}} ihany no navela tao amin&#39;ity efitrano ity",
+            "processingRecording": "Mikarakara ny fandraisam-peo..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Settings",
+            "webCamera": "Web Camera",
+            "screenSharing": "Fizarana efijery",
+            "shareAnotherScreen": "Mizarà efijery hafa",
+            "turnOffCameras": "Vonoy ny fakantsary",
+            "turnOffVideo": "Vonoy ny fizarana fakantsary\/ecran",
+            "turnOffAudioInput": "Mangina mikrô",
+            "turnOffScreenSharing": "Vonoy ny fizarana efijery",
+            "cameraIsTurnedOff": "Mamono ny fakan-tsary",
+            "micIsTurnedOff": "Novonoina ny mikrô",
+            "startFBLive": "Manomboka Facebook Livestream",
+            "stopFBLive": "Atsaharo ny Livestream Facebook",
+            "startRecording": "Atombohy ny firaketana",
+            "stopRecording": "Atsaharo ny firaketana",
+            "start": "fanombohana",
+            "startClodRecording": "Manomboka Cloud Recording",
+            "startLocRecording": "Atombohy ny firaketana an-toerana",
+            "stopClodRecording": "Atsaharo ny firaketana rahona",
+            "stopLocRecording": "Atsaharo ny firaketana an-toerana",
+            "stop": "Mijanòna",
+            "share": "anjara",
+            "recordingInProgress": "An-dalam-pandraiketana...",
+            "fbLiveTitle": "Lohatenin&#39;ny Livestream",
+            "fbLiveDescription": "Farito ny Livestream-nao. Momba ny inona?",
+            "fbOnlyMeLiveAccess": "Izaho ihany",
+            "fbFriendsAccess": "NAMANA",
+            "fbPublicAccess": "-bahoaka",
+            "publishOnTimeline": "Avoahy amin&#39;ny fandaharam-potoana",
+            "publishToGroup": "Avoahy amin&#39;ny vondrona",
+            "fbStartLive": "Mandehana mivantana",
+            "fbStopLive": "Farano ny Livestream",
+            "streamingSettings": "Fikirana",
+            "manageStream": "Tantano ny Livestream",
+            "fbEmbedCode": "Ampidiro",
+            "copy": "dika mitovy",
+            "streamToRTMP": "Mandehana mankany amin&#39;ny RTMP mahazatra",
+            "startBroadcasting": "Manomboka mandefa",
+            "broadcastingInProgress": "Mandeha ny fampielezam-peo"
+        },
+        "audioSettings": {
+            "dialogTitle": "Fikirana Audio",
+            "speakers": "mpandahateny",
+            "microphone": "mikrô"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Mitantana Broadcast"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Fikirana mpandray anjara",
+            "disconnect": "elektrônika",
+            "floatingScreens": "Screens mitsingevana",
+            "tiledScreens": "Tiled Screens",
+            "loudestExceptMe": "Mahery indrindra afa-tsy Izaho",
+            "maximizeLoudest": "Maximize Loudest",
+            "staticMaximized": "static Maximized",
+            "fullScreen": "Mameno efijery",
+            "manual": "BOKY",
+            "turnOffCamera": "Afeno ny video",
+            "turnOffAudio": "Mangina feo",
+            "turnOffScreenSharing": "Afeno ny fizarana efijery",
+            "turnOnCamera": "Ampisehoy video",
+            "turnOnAudio": "Atsaharo ny feo",
+            "turnOnScreenSharing": "Asehoy ny fizarana efijery"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Nifarana ny teleconference"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Fangatahana hiteny",
+            "msg": "Miisa {{count}} ny olona miteny amin’izao fivoriana izao. Te-hanolo ny iray amin&#39;izy ireo ve ianao rehefa navela {{seconds}} segondra hamita ny fiteniny?"
+        }
+    }
+}

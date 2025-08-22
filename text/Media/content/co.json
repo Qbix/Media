@@ -1,0 +1,256 @@
+{
+    "Shows": "Mostra",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Media Clips",
+        "Episodes": "Episodi"
+    },
+    "presentation": {
+        "PutTogether": "Vi presenterete ? Pudete aduprà stu spaziu per carricà inseme materiali per a vostra presentazione. Aduprà u buttone Plus.",
+        "Alert": "Quandu l&#39;avvenimenti cumincianu, sta pagina cumminciarà à mustrà e so presentazioni currispondenti",
+        "ClickHereForFullscreen": "I presentazioni appariscenu quì. Cliccate quì per andà in full screen.",
+        "question": {
+            "ScanThisQRCode": "Scansate stu codice QR per risponde"
+        }
+    },
+    "NewEpisode": "Novu Episodiu",
+    "NewClip": "Fate un novu Clip",
+    "NewClipTitlePlaceholder": "Entre in Titulu di Clip",
+    "NewClipDescriptionPlaceholder": "Entre in a descrizione di u clip",
+    "switchVisualization": "Cambia a visualizazione",
+    "joinLiveShow": "Unisciti à u Live Show",
+    "showTwitchLiveStream": "Mostra Twitch Live Stream",
+    "showVoiceChat": "Mostra Chat Voice",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Sò sicuru chì vulete scaccià stu utilizatore?",
+    "Save": "Salvà",
+    "ViewFullEpisode": "Vede l&#39;episodiu cumpletu",
+    "CreditsEarned": "Crediti guadagnati",
+    "VideoTitle": "Titulu di Video o URL",
+    "AreYouSureDeleteEpisode": "Sò sicuru chì vulete sguassà stu episodiu ?",
+    "Yes": "Iè",
+    "No": "Innò",
+    "RealTimeCall": "Chjama in tempu reale",
+    "JoinWebRTC": "Teleconferenza",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconferenza",
+            "description": "una cunferenza video \/ audio in linea"
+        },
+        "Media\/calls": {
+            "displayType": "Chjama",
+            "description": "categuria per Media\/WebRTC",
+            "MaxRelationsExceeded": "Max chiamate superatu"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "clip media"
+        }
+    },
+    "feeds": {
+        "Title": "Cameras",
+        "filterByTitle": "Truvate i feed per titulu",
+        "RequestFeedAccess": "Richiede l&#39;accessu à u feed",
+        "New": "+ Novu Feed",
+        "filterFeeds": "Filtre i filtri",
+        "NewFeed": "New Feed",
+        "NoneYet": "Nisun feed furmati ancora.",
+        "AreYouSure": "Sì sicuru?",
+        "FilterByDate": "Filtra per data",
+        "newFeeds": "Avete {{1}} feed novi",
+        "Description": "{{1}} feed",
+        "Keywords": "{{1}} feed"
+    },
+    "feed": {
+        "HostedBy": "Ospitatu da {{name}}",
+        "Name": "Nome",
+        "Conversation": "Cunversazione",
+        "CloseFeed": {
+            "button": "Close Feed",
+            "Cancel": "Sò sicuru chì vulete chjude stu feed?",
+            "Participant": "Ci hè 1 participante in questu feed",
+            "Participants": "Ci sò {{count}} participanti in questu feed"
+        },
+        "Calendar": "Calendariu",
+        "TitleOfFeed": "Titre de l&#39;alimentation :",
+        "EmptyList": "Lista viota",
+        "EmptyVideos": "Nisun clip ancora",
+        "AccessReason": "per piacè dichjarà u mutivu",
+        "Proceed": "Avanzate",
+        "FeedAlreadyClosed": "Stu feed hè digià chjusu",
+        "RtmpLinkNote": "Cliccate per copià stu ligame in u clipboard",
+        "SelectClip": "Sceglite a data chì vulete vede",
+        "Request": "Richiesta"
+    },
+    "newFeed": {
+        "Title": "New Feed",
+        "locationTitle": "Stabbilisce a vostra Locazione",
+        "SetLocation": "Set My Location",
+        "Starting": "Partendu",
+        "Day": "Ghjornu",
+        "Create": "Crià",
+        "Continue": "Cuntinuà",
+        "FeedTitle": "Titulu di l&#39;alimentu",
+        "SetTitle": "Per piacè stabilisce u titulu di u feed"
+    },
+    "notifications": {
+        "JoinedWebRTC": "unitu à a vostra chjama",
+        "SubjectJoinedYourCall": "{{subject}} hà unitu à a vostra chjamata"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Ùn avete micca permessu di unisce à stu flussu.",
+        "streamTitle": "{{1}} hà iniziatu una Teleconferenza",
+        "allow": {
+            "dialogTitle": "Cunnessu",
+            "microphoneBtn": "Habilita microfonu",
+            "cameraBtn": "Attivà Camera",
+            "cameraAndMicrophoneBtn": "Habilita a Camera è u Micrufonu"
+        },
+        "preparing": {
+            "dialogTitle": "Accende \/ spegne a camera o u mic prima di unisce",
+            "micIsOff": "Mic hè spenta",
+            "micIsOn": "Mic hè attivatu",
+            "cameraIsOff": "A camera hè spenta",
+            "cameraIsOn": "A camera hè accesa",
+            "screenSharingIsOn": "U screensharing hè attivatu",
+            "screenSharingIsOff": "Share screen",
+            "joinNow": "Unisci à a Chjama"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Istruzzioni",
+            "permissionDenied": "Permissione per {{kind}} denegata. Per aduprà, seguite questi passi:",
+            "point1": "Andà à &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; o &quot;Site Settings&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Eliminate {{hostname}} da a lista &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Istruzzioni",
+            "permissionDenied": "Permissione per {{kind}} denegata. Per piacè ricaricate sta pagina è cunfirmà l&#39;accessu à {{kind}} per unisce à a cunferenza."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Istruzzioni",
+            "permissionDenied": "Permissione per {{kind}} denegata. Per aduprà, seguite questi passi:",
+            "point1": "Andà à u vostru Settings Android",
+            "point2": "Aprite &quot;Applicazioni è notificazioni&quot;",
+            "point3": "Truvate &quot; {{communityName}} &quot; è apre",
+            "point4": "Tap su Permissions",
+            "point5": "Attivà {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Istruzzioni",
+            "permissionDenied": "Permissione per {{kind}} denegata. Per aduprà, seguite questi passi:",
+            "point1": "Andà à u vostru Settings iOS",
+            "point2": "Aprite &quot;Privacy&quot;",
+            "point3": "Truvate {{kind}} è apre",
+            "point4": "Truvate &quot; {{communityName}} &quot; è attivate"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming hà iniziatu"
+        },
+        "notices": {
+            "youJoinedRoom": "Avete unitu à a stanza",
+            "joining": "Uniscimentu: {{userName}}",
+            "sbLeftRoom": "{{userName}} abbandunò a stanza",
+            "switchingRoom": "Stanza di cambiamentu ...",
+            "forceDisconnecting": "Vi sarà disconnected in 5 seconde",
+            "forceDisconnectingImmediately": "Avete statu disconnectatu da un host",
+            "youLeftRoom": "Avete lasciatu a stanza",
+            "codeCopied": "Avete lasciatu a stanza",
+            "sbBeganFbLive": "{{userName}} hà cuminciatu à trasmette sta chjama in Facebook",
+            "sbStoppedFbLive": "{{userName}} hà cessatu di trasmette sta chjama in Facebook",
+            "youBeganFbLive": "Avete cuminciatu à trasmette sta chjama in Facebook",
+            "youStoppedFbLive": "Avete cessatu di trasmette sta chjama in Facebook",
+            "youStartedLive": "Avete cuminciatu à trasmette sta chjama à RTMP persunalizata",
+            "youStoppedLive": "Avete cessatu di trasmette sta chjama à RTMP persunalizata",
+            "sbStartedLiveStreaming": "{{userName}} hà iniziatu in diretta",
+            "sbStoppedLiveStreaming": "{{userName}} hè finitu in diretta",
+            "liveStopped": "Errore durante l&#39;invio di video à l&#39;endpoint",
+            "youBeganVideoRecording": "Avete cuminciatu à registrà sta cunferenza",
+            "youStoppedVideoRecording": "Avete cessatu di arregistrà sta cunferenza",
+            "linkCopiedToCb": "Link copiatu à u clipboard",
+            "codeCopiedToCb": "Codice copiatu in u clipboard",
+            "userHasNoVideo": "U participante ùn hà micca video",
+            "openInBrowserAlert": "Apri ligame in u navigatore Safari per unisce à a cunferenza.",
+            "allowedVideoLimit": "Solu {{limit}} video permessi in questa stanza",
+            "allowedAudioLimit": "Solu {{limit}} microfoni permessi in questa stanza",
+            "processingRecording": "Trattamentu di a registrazione..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Settings Video",
+            "webCamera": "Camera Web",
+            "screenSharing": "Sharing Screen",
+            "shareAnotherScreen": "Condividi un altru screnu",
+            "turnOffCameras": "Spegne a camera",
+            "turnOffVideo": "Disattiva a camera \/ schermu spartera",
+            "turnOffAudioInput": "Mute microfonu",
+            "turnOffScreenSharing": "Disattiva a spartera di u screnu",
+            "cameraIsTurnedOff": "A camera hè spenta",
+            "micIsTurnedOff": "U microfonu hè disattivatu",
+            "startFBLive": "Cumincià Facebook Livestream",
+            "stopFBLive": "Stop Facebook Livestream",
+            "startRecording": "Cumincià a registrazione",
+            "stopRecording": "Stop Recording",
+            "start": "Principià",
+            "startClodRecording": "Cumincià a Registrazione in Nuvola",
+            "startLocRecording": "Cumincià a Registrazione Locale",
+            "stopClodRecording": "Stop Recording Cloud",
+            "stopLocRecording": "Stop Recording Local",
+            "stop": "Stop",
+            "share": "sparte",
+            "recordingInProgress": "A registrazione hè in corso...",
+            "fbLiveTitle": "Titulu di Livestream",
+            "fbLiveDescription": "Descrivite u vostru Livestream. Chì si tratta ?",
+            "fbOnlyMeLiveAccess": "Solu mè",
+            "fbFriendsAccess": "Amici",
+            "fbPublicAccess": "Publicu",
+            "publishOnTimeline": "Publicà nantu à u timeline",
+            "publishToGroup": "Publicà à u gruppu",
+            "fbStartLive": "Andate in diretta",
+            "fbStopLive": "Finisce u livestream",
+            "streamingSettings": "Settings",
+            "manageStream": "Gestisce u livestream",
+            "fbEmbedCode": "Incrustà",
+            "copy": "Copia",
+            "streamToRTMP": "Stream à RTMP persunalizata",
+            "startBroadcasting": "Cumincià à trasmette",
+            "broadcastingInProgress": "A trasmissione hè in corso"
+        },
+        "audioSettings": {
+            "dialogTitle": "Settings Audio",
+            "speakers": "I parlanti",
+            "microphone": "Micrufonu"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Gestisce a trasmissione"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Impostazioni di i participanti",
+            "disconnect": "Disconnect",
+            "floatingScreens": "schermi flottanti",
+            "tiledScreens": "Schermi piastrellati",
+            "loudestExceptMe": "U più forte eccettu mè",
+            "maximizeLoudest": "Maximize Loudest",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Pantalla piena",
+            "manual": "Manuale",
+            "turnOffCamera": "Oculta u video",
+            "turnOffAudio": "Silenzia l&#39;audio",
+            "turnOffScreenSharing": "Oculte a spartera di u screnu",
+            "turnOnCamera": "Mostra u video",
+            "turnOnAudio": "Riattiva l&#39;audio",
+            "turnOnScreenSharing": "Mostra a spartera di u screnu"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconferenza",
+            "MeetingEnded": "A teleconferenza hè finita"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Richiesta di parlà",
+            "msg": "Ci sò attualmente {{count}} persone chì parlanu in a riunione. Vulete rimpiazzà unu di elli dopu avè permessu di {{seconds}} seconde per finisce di parlà?"
+        }
+    }
+}

@@ -1,0 +1,256 @@
+{
+    "Shows": "Nuduhake",
+    "Clips": "Klip",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Klip Media",
+        "Episodes": "Episode"
+    },
+    "presentation": {
+        "PutTogether": "Apa sampeyan bakal presentasi? Sampeyan bisa nggunakake papan iki kanggo ngunggah bebarengan materi kanggo presentation. Gunakake tombol Plus.",
+        "Alert": "Nalika acara diwiwiti, kaca iki bakal miwiti nuduhake presentasi sing cocog",
+        "ClickHereForFullscreen": "Presentasi bakal katon ing kene. Klik kene kanggo mbukak layar wutuh.",
+        "question": {
+            "ScanThisQRCode": "Pindai kode QR iki kanggo mangsuli"
+        }
+    },
+    "NewEpisode": "Episode Anyar",
+    "NewClip": "Nggawe Klip Anyar",
+    "NewClipTitlePlaceholder": "Ketik Judul Klip",
+    "NewClipDescriptionPlaceholder": "Ketik Deskripsi Klip",
+    "switchVisualization": "Ngalih visualisasi",
+    "joinLiveShow": "Gabung Live Show",
+    "showTwitchLiveStream": "Tampilake Twitch Live Stream",
+    "showVoiceChat": "Tampilake Voice Chat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Apa sampeyan yakin pengin miwiti pangguna iki?",
+    "Save": "Simpen",
+    "ViewFullEpisode": "Ndeleng Episode Full",
+    "CreditsEarned": "Credits entuk",
+    "VideoTitle": "Judhul video utawa URL",
+    "AreYouSureDeleteEpisode": "Apa sampeyan yakin pengin mbusak episode iki?",
+    "Yes": "ya wis",
+    "No": "Ora",
+    "RealTimeCall": "Telpon Real Time",
+    "JoinWebRTC": "Telekonferensi",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferensi",
+            "description": "konferensi video \/ audio online"
+        },
+        "Media\/calls": {
+            "displayType": "Telpon",
+            "description": "kategori kanggo Media\/WebRTC",
+            "MaxRelationsExceeded": "Telpon max ngluwihi"
+        },
+        "Media\/clip": {
+            "displayType": "Klip",
+            "description": "klip media"
+        }
+    },
+    "feeds": {
+        "Title": "kamera",
+        "filterByTitle": "Golek feed miturut judhul",
+        "RequestFeedAccess": "Njaluk akses feed",
+        "New": "+ Feed Anyar",
+        "filterFeeds": "Filter feed",
+        "NewFeed": "Feed anyar",
+        "NoneYet": "Durung ana feed kawangun.",
+        "AreYouSure": "Apa sampeyan yakin?",
+        "FilterByDate": "Filter Miturut Tanggal",
+        "newFeeds": "Sampeyan duwe {{1}} feed anyar",
+        "Description": "{{1}} feed",
+        "Keywords": "{{1}} feed"
+    },
+    "feed": {
+        "HostedBy": "Tuan rumah dening {{name}}",
+        "Name": "jeneng",
+        "Conversation": "pacelathon",
+        "CloseFeed": {
+            "button": "Tutup Feed",
+            "Cancel": "Apa sampeyan yakin arep nutup feed iki?",
+            "Participant": "Ana 1 peserta ing feed iki",
+            "Participants": "Ana {{count}} peserta ing feed iki"
+        },
+        "Calendar": "Tanggalan",
+        "TitleOfFeed": "Judul feed:",
+        "EmptyList": "Daftar kosong",
+        "EmptyVideos": "Durung ana klip",
+        "AccessReason": "tulung sebutno alesane",
+        "Proceed": "nerusake",
+        "FeedAlreadyClosed": "Feed iki wis ditutup",
+        "RtmpLinkNote": "Klik kanggo nyalin link iki menyang clipboard",
+        "SelectClip": "Pilih tanggal sing pengin dideleng",
+        "Request": "Panjaluk"
+    },
+    "newFeed": {
+        "Title": "Feed anyar",
+        "locationTitle": "Setel Lokasi Sampeyan",
+        "SetLocation": "Setel Lokasiku",
+        "Starting": "miwiti",
+        "Day": "dina",
+        "Create": "Nggawe",
+        "Continue": "Terusake",
+        "FeedTitle": "Judhul feed",
+        "SetTitle": "Mangga nyetel judhul feed"
+    },
+    "notifications": {
+        "JoinedWebRTC": "melu telpon sampeyan",
+        "SubjectJoinedYourCall": "{{subject}} melu telpon sampeyan"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Sampeyan ora duwe idin kanggo gabung karo stream iki.",
+        "streamTitle": "{{1}} miwiti Teleconference",
+        "allow": {
+            "dialogTitle": "Nyambung",
+            "microphoneBtn": "Aktifake Mikropon",
+            "cameraBtn": "Aktifake Kamera",
+            "cameraAndMicrophoneBtn": "Aktifake Kamera lan Mikropon"
+        },
+        "preparing": {
+            "dialogTitle": "Uripake \/ mateni kamera utawa mikrofon sadurunge gabung",
+            "micIsOff": "Mic mati",
+            "micIsOn": "Mic urip",
+            "cameraIsOff": "Kamera mati",
+            "cameraIsOn": "Kamera urip",
+            "screenSharingIsOn": "Enggo bareng layar aktif",
+            "screenSharingIsOff": "Nuduhake layar",
+            "joinNow": "Gabung Telpon"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "instruksi",
+            "permissionDenied": "Idin kanggo {{kind}} ditolak. Kanggo nggunakake, tindakake langkah iki:",
+            "point1": "Pindhah menyang &quot;Setelan&quot; -&gt; &quot;Lanjutan&quot; -&gt; &quot;Privasi lan keamanan&quot; -&gt; &quot;Setelan Situs&quot; -&gt; &quot;Kamera&quot; utawa &quot;Setelan Situs&quot; -&gt; &quot;Mikropon&quot;",
+            "point2": "Mbusak {{hostname}} saka dhaptar &quot;Blok&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "instruksi",
+            "permissionDenied": "Idin kanggo {{kind}} ditolak. Mangga muat ulang kaca iki lan konfirmasi akses menyang {{kind}} kanggo melu konferensi."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "instruksi",
+            "permissionDenied": "Idin kanggo {{kind}} ditolak. Kanggo nggunakake, tindakake langkah iki:",
+            "point1": "Pindhah menyang Setelan Android sampeyan",
+            "point2": "Bukak &quot;Aplikasi &amp; kabar&quot;",
+            "point3": "Temokake &quot; {{communityName}} &quot; lan bukak",
+            "point4": "Tutul Idin",
+            "point5": "Aktifake {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "instruksi",
+            "permissionDenied": "Idin kanggo {{kind}} ditolak. Kanggo nggunakake, tindakake langkah iki:",
+            "point1": "Pindhah menyang Setelan iOS",
+            "point2": "Bukak &quot;Privasi&quot;",
+            "point3": "Golek {{kind}} banjur bukak",
+            "point4": "Temokake &quot; {{communityName}} &quot; lan aktifake"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming diwiwiti"
+        },
+        "notices": {
+            "youJoinedRoom": "Sampeyan melu kamar",
+            "joining": "Gabung: {{userName}}",
+            "sbLeftRoom": "{{userName}} metu saka kamar",
+            "switchingRoom": "Ngalih kamar...",
+            "forceDisconnecting": "Sampeyan bakal pedhot ing 5 detik",
+            "forceDisconnectingImmediately": "Sampeyan wis pedhot dening host",
+            "youLeftRoom": "Sampeyan metu saka kamar",
+            "codeCopied": "Sampeyan metu saka kamar",
+            "sbBeganFbLive": "{{userName}} wiwit nyebarake telpon iki ing Facebook",
+            "sbStoppedFbLive": "{{userName}} mandheg nyebarake telpon iki ing Facebook",
+            "youBeganFbLive": "Sampeyan wiwit nyebarake telpon iki ing Facebook",
+            "youStoppedFbLive": "Sampeyan mandheg nyebarake telpon iki ing Facebook",
+            "youStartedLive": "Sampeyan wiwit nyebarake telpon iki menyang RTMP khusus",
+            "youStoppedLive": "Sampeyan mandheg nyebarake telpon iki menyang RTMP khusus",
+            "sbStartedLiveStreaming": "{{userName}} miwiti urip",
+            "sbStoppedLiveStreaming": "{{userName}} rampung urip",
+            "liveStopped": "Ana kesalahan nalika ngirim video menyang titik pungkasan",
+            "youBeganVideoRecording": "Sampeyan wiwit ngrekam konferensi iki",
+            "youStoppedVideoRecording": "Sampeyan mandheg ngrekam konferensi iki",
+            "linkCopiedToCb": "Link disalin menyang clipboard",
+            "codeCopiedToCb": "Kode disalin menyang clipboard",
+            "userHasNoVideo": "Peserta ora duwe video",
+            "openInBrowserAlert": "Bukak link ing browser Safari kanggo melu konferensi.",
+            "allowedVideoLimit": "Mung {{limit}} video sing diidini ing ruangan iki",
+            "allowedAudioLimit": "Mung {{limit}} mikropon sing diidini ing kamar iki",
+            "processingRecording": "Ngolah rekaman..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Setelan Video",
+            "webCamera": "Kamera Web",
+            "screenSharing": "Nuduhake Layar",
+            "shareAnotherScreen": "Nuduhake layar liyane",
+            "turnOffCameras": "Pateni kamera",
+            "turnOffVideo": "Pateni enggo bareng kamera\/layar",
+            "turnOffAudioInput": "Mikropon bisu",
+            "turnOffScreenSharing": "Pateni enggo bareng layar",
+            "cameraIsTurnedOff": "Kamera dipateni",
+            "micIsTurnedOff": "Mikropon dipateni",
+            "startFBLive": "Miwiti Facebook Livestream",
+            "stopFBLive": "Mungkasi Facebook Livestream",
+            "startRecording": "Mulai Rekam",
+            "stopRecording": "Mungkasi Rekaman",
+            "start": "Miwiti",
+            "startClodRecording": "Miwiti Rekaman Awan",
+            "startLocRecording": "Miwiti Rekaman Lokal",
+            "stopClodRecording": "Mungkasi Rekaman Awan",
+            "stopLocRecording": "Mungkasi Rekaman Lokal",
+            "stop": "mandeg",
+            "share": "Nuduhake",
+            "recordingInProgress": "Rekaman lagi ditindakake...",
+            "fbLiveTitle": "Judule Livestream",
+            "fbLiveDescription": "Nerangake Livestream Panjenengan. Apa bab iku?",
+            "fbOnlyMeLiveAccess": "Mung Aku",
+            "fbFriendsAccess": "Kanca-kanca",
+            "fbPublicAccess": "Umum",
+            "publishOnTimeline": "Nerbitake ing timeline",
+            "publishToGroup": "Nerbitake menyang grup",
+            "fbStartLive": "Go Live",
+            "fbStopLive": "Mungkasi Livestream",
+            "streamingSettings": "Setelan",
+            "manageStream": "Ngatur Livestream",
+            "fbEmbedCode": "Embed",
+            "copy": "Nyalin",
+            "streamToRTMP": "Stream menyang RTMP khusus",
+            "startBroadcasting": "Miwiti siaran",
+            "broadcastingInProgress": "Panyiaran lagi ditindakake"
+        },
+        "audioSettings": {
+            "dialogTitle": "Setelan Audio",
+            "speakers": "Speakers",
+            "microphone": "Mikropon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Ngatur Siaran"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Setelan Peserta",
+            "disconnect": "Pedhot",
+            "floatingScreens": "Layar Ngambang",
+            "tiledScreens": "Layar Tiled",
+            "loudestExceptMe": "Paling Keras Kejaba Aku",
+            "maximizeLoudest": "Maksimalkan Paling Keras",
+            "staticMaximized": "Maksimal statis",
+            "fullScreen": "Layar Lengkap",
+            "manual": "Manual",
+            "turnOffCamera": "Singidaken video",
+            "turnOffAudio": "Mute audio",
+            "turnOffScreenSharing": "Singidaken enggo bareng layar",
+            "turnOnCamera": "Tampilake video",
+            "turnOnAudio": "Mbusak swara",
+            "turnOnScreenSharing": "Nuduhake enggo bareng layar"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferensi",
+            "MeetingEnded": "Teleconference rampung"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Panjaluk Ngomong",
+            "msg": "Saiki ana {{count}} wong sing ngomong ing rapat kasebut. Apa sampeyan pengin ngganti salah sijine sawise ngidini {{seconds}} detik rampung ngomong?"
+        }
+    }
+}

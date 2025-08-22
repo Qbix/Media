@@ -1,0 +1,256 @@
+{
+    "Shows": "weist",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Medien Clips",
+        "Episodes": "Episoden"
+    },
+    "presentation": {
+        "PutTogether": "Wäert Dir presentéieren? Dir kënnt dëse Raum benotze fir zesummen Material fir Är Presentatioun eropzelueden. Benotzt de Plus Knäppchen.",
+        "Alert": "Wéi d&#39;Evenementer ufänken, fänkt dës Säit un hir entspriechend Presentatiounen ze weisen",
+        "ClickHereForFullscreen": "Presentatiounen wäerten hei erschéngen. Klickt hei fir op de Vollbild ze goen.",
+        "question": {
+            "ScanThisQRCode": "Scannen dëse QR Code fir ze äntweren"
+        }
+    },
+    "NewEpisode": "Nei Episod",
+    "NewClip": "Maacht en neie Clip",
+    "NewClipTitlePlaceholder": "Gitt Clip Titel",
+    "NewClipDescriptionPlaceholder": "Gitt Clip Beschreiwung",
+    "switchVisualization": "Schalt Visualiséierung",
+    "joinLiveShow": "Maacht mat bei Live Show",
+    "showTwitchLiveStream": "Show Twitch Live Stream",
+    "showVoiceChat": "Show Voice Chat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Sidd Dir sécher, datt Dir dëse Benotzer wëllt ofsetzen?",
+    "Save": "Späicheren",
+    "ViewFullEpisode": "View Full Episod",
+    "CreditsEarned": "Credits verdéngt",
+    "VideoTitle": "Video Titel oder URL",
+    "AreYouSureDeleteEpisode": "Sidd Dir sécher, datt Dir dës Episod läschen wëllt?",
+    "Yes": "Jo",
+    "No": "Nee",
+    "RealTimeCall": "Echtzäit Call",
+    "JoinWebRTC": "Telekonferenz",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferenz",
+            "description": "eng online Video \/ Audio Konferenz"
+        },
+        "Media\/calls": {
+            "displayType": "Appellen",
+            "description": "Kategorie fir Medien \/ WebRTC",
+            "MaxRelationsExceeded": "Max Uruff iwwerschratt"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "Medien Clip"
+        }
+    },
+    "feeds": {
+        "Title": "Kameraen",
+        "filterByTitle": "Fannt Feeds nom Titel",
+        "RequestFeedAccess": "Ufro fidderen Zougang",
+        "New": "+ Neie Feed",
+        "filterFeeds": "Filter Feeds",
+        "NewFeed": "Neie Feed",
+        "NoneYet": "Et gi keng Feeds nach geformt.",
+        "AreYouSure": "Bass du secher?",
+        "FilterByDate": "Filter no Datum",
+        "newFeeds": "Dir hutt {{1}} nei fidderen",
+        "Description": "{{1}} fidderen",
+        "Keywords": "{{1}} fidderen"
+    },
+    "feed": {
+        "HostedBy": "Hostéiert vum {{name}}",
+        "Name": "Numm",
+        "Conversation": "Gespréich",
+        "CloseFeed": {
+            "button": "Zoumaachen Feed",
+            "Cancel": "Sidd Dir sécher datt Dir dëse Feed zoumaachen wëllt?",
+            "Participant": "Et gëtt 1 Participant an dësem Feed",
+            "Participants": "Et sinn {{count}} Participanten an dësem Feed"
+        },
+        "Calendar": "Kalenner",
+        "TitleOfFeed": "Titel vum Feed:",
+        "EmptyList": "Eidel Lëscht",
+        "EmptyVideos": "Nach keng Clips",
+        "AccessReason": "gitt weg de Grond",
+        "Proceed": "Fuert weider",
+        "FeedAlreadyClosed": "Dëse Feed ass scho zou",
+        "RtmpLinkNote": "Klickt fir dëse Link op de Clipboard ze kopéieren",
+        "SelectClip": "Wielt den Datum deen Dir wëllt gesinn",
+        "Request": "Ufro"
+    },
+    "newFeed": {
+        "Title": "Neie Feed",
+        "locationTitle": "Set Är Location",
+        "SetLocation": "Set Meng Location",
+        "Starting": "Ugefaangen",
+        "Day": "Dag",
+        "Create": "Schafen",
+        "Continue": "Fuert weider",
+        "FeedTitle": "Feed Titel",
+        "SetTitle": "Setzt w.e.g. Feedtitel"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ass mat Ärem Opruff ugeschloss",
+        "SubjectJoinedYourCall": "{{subject}} ass mat Ärem Opruff ugeschloss"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Dir hutt keng Erlaabnis fir dëse Stream matzemaachen.",
+        "streamTitle": "{{1}} huet eng Telekonferenz ugefaangen",
+        "allow": {
+            "dialogTitle": "Verbannen",
+            "microphoneBtn": "Mikrofon aktivéieren",
+            "cameraBtn": "Kamera aktivéieren",
+            "cameraAndMicrophoneBtn": "Aktivéiert Kamera a Mikrofon"
+        },
+        "preparing": {
+            "dialogTitle": "Schalt d&#39;Kamera oder de Mikro un \/ aus ier Dir matmaacht",
+            "micIsOff": "De Mikro ass aus",
+            "micIsOn": "Mic ass op",
+            "cameraIsOff": "Kamera ass aus",
+            "cameraIsOn": "Kamera ass op",
+            "screenSharingIsOn": "Screensharing ass op",
+            "screenSharingIsOff": "Deelen Écran",
+            "joinNow": "Maacht mat beim Call"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Uweisungen",
+            "permissionDenied": "Erlaabnis fir {{kind}} refuséiert. Fir et ze benotzen, befollegt dës Schrëtt:",
+            "point1": "Gitt op &quot;Astellungen&quot; -&gt; &quot;Fortgeschratt&quot; -&gt; &quot;Privatsphär a Sécherheet&quot; -&gt; &quot;Site Astellungen&quot; -&gt; &quot;Kamera&quot; oder &quot;Site Astellungen&quot; -&gt; &quot;Mikrofon&quot;",
+            "point2": "Ewechzehuelen {{hostname}} aus &quot;Block&quot; Lëscht"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Uweisungen",
+            "permissionDenied": "Erlaabnis fir {{kind}} refuséiert. W.e.g. lued dës Säit nei a bestätegt den Zougang zu {{kind}} fir op d&#39;Konferenz matzemaachen."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Uweisungen",
+            "permissionDenied": "Erlaabnis fir {{kind}} refuséiert. Fir et ze benotzen, befollegt dës Schrëtt:",
+            "point1": "Gitt op Är Android Astellungen",
+            "point2": "Open &quot;Apps &amp; Notifikatiounen&quot;",
+            "point3": "Fannt &quot; {{communityName}} &quot; an oppen",
+            "point4": "Tippen op Permissiounen",
+            "point5": "{{kind}} aktivéieren"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Uweisungen",
+            "permissionDenied": "Erlaabnis fir {{kind}} refuséiert. Fir et ze benotzen, befollegt dës Schrëtt:",
+            "point1": "Gitt op Är iOS Astellungen",
+            "point2": "Open &quot;Privatsphär&quot;",
+            "point3": "Fannt {{kind}} an oppen",
+            "point4": "Fannt &quot; {{communityName}} &quot; an aktivéiert"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook Live Streaming huet ugefaang"
+        },
+        "notices": {
+            "youJoinedRoom": "Dir sidd an de Raum ugeschloss",
+            "joining": "Umeldung: {{userName}}",
+            "sbLeftRoom": "{{userName}} hunn de Sall verlooss",
+            "switchingRoom": "Raum wiesselen ...",
+            "forceDisconnecting": "Dir wäert bannent 5 Sekonnen disconnected ginn",
+            "forceDisconnectingImmediately": "Dir sidd vun engem Host ofgeschloss",
+            "youLeftRoom": "Dir hutt de Raum verlooss",
+            "codeCopied": "Dir hutt de Raum verlooss",
+            "sbBeganFbLive": "{{userName}} huet ugefaang dësen Uruff op Facebook ze iwwerdroen",
+            "sbStoppedFbLive": "{{userName}} huet opgehalen dësen Uruff op Facebook ze iwwerdroen",
+            "youBeganFbLive": "Dir hutt ugefaang dësen Uruff op Facebook ze iwwerdroen",
+            "youStoppedFbLive": "Dir hutt opgehalen dësen Uruff op Facebook ze iwwerdroen",
+            "youStartedLive": "Dir hutt ugefaang dësen Uruff op personaliséiert RTMP ze iwwerdroen",
+            "youStoppedLive": "Dir hutt opgehalen dësen Uruff op personaliséiert RTMP ze iwwerdroen",
+            "sbStartedLiveStreaming": "{{userName}} huet live ugefaangen",
+            "sbStoppedLiveStreaming": "{{userName}} ass live opgehalen",
+            "liveStopped": "Feeler beim Schécken vum Video op Endpunkt ass geschitt",
+            "youBeganVideoRecording": "Dir hutt ugefaang dës Konferenz opzehuelen",
+            "youStoppedVideoRecording": "Dir hutt opgehalen dës Konferenz opzehuelen",
+            "linkCopiedToCb": "Link op Clipboard kopéiert",
+            "codeCopiedToCb": "Code op Clipboard kopéiert",
+            "userHasNoVideo": "Participant huet kee Video",
+            "openInBrowserAlert": "Open Link am Safari Browser fir un der Konferenz matzemaachen.",
+            "allowedVideoLimit": "Nëmmen {{limit}} Video erlaabt an dësem Raum",
+            "allowedAudioLimit": "Nëmmen {{limit}} Mikrofonen erlaabt an dësem Raum",
+            "processingRecording": "Veraarbechtung vun der Opnam ..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Astellungen",
+            "webCamera": "Web Kamera",
+            "screenSharing": "Écran Deele",
+            "shareAnotherScreen": "Deelt en aneren Écran",
+            "turnOffCameras": "Kamera ausschalten",
+            "turnOffVideo": "Schalt d&#39;Kamera \/ Écran Deelen aus",
+            "turnOffAudioInput": "Mikrofon mute",
+            "turnOffScreenSharing": "Ausschalten Écran Deele",
+            "cameraIsTurnedOff": "D&#39;Kamera ass ausgeschalt",
+            "micIsTurnedOff": "De Mikrofon ass ausgeschalt",
+            "startFBLive": "Start Facebook Livestream",
+            "stopFBLive": "Stop Facebook Livestream",
+            "startRecording": "Start Recording",
+            "stopRecording": "Stop Recording",
+            "start": "Start",
+            "startClodRecording": "Start Cloud Recording",
+            "startLocRecording": "Start Local Recording",
+            "stopClodRecording": "Stop Cloud Recording",
+            "stopLocRecording": "Stop Local Recording",
+            "stop": "Stop",
+            "share": "Deelen",
+            "recordingInProgress": "D&#39;Opnahm ass amgaang ...",
+            "fbLiveTitle": "Titel vum Livestream",
+            "fbLiveDescription": "Beschreift Äre Livestream. Ëm wat geet et?",
+            "fbOnlyMeLiveAccess": "Nëmmen ech",
+            "fbFriendsAccess": "Frënn",
+            "fbPublicAccess": "Ëffentlech",
+            "publishOnTimeline": "Verëffentlechen op Timeline",
+            "publishToGroup": "Verëffentlechen zu Grupp",
+            "fbStartLive": "Gitt Live",
+            "fbStopLive": "Enn Livestream",
+            "streamingSettings": "Astellungen",
+            "manageStream": "Livestream managen",
+            "fbEmbedCode": "Embed",
+            "copy": "Kopie",
+            "streamToRTMP": "Stream op personaliséiert RTMP",
+            "startBroadcasting": "Start Sendung",
+            "broadcastingInProgress": "D&#39;Sendung ass amgaang"
+        },
+        "audioSettings": {
+            "dialogTitle": "Audio Astellungen",
+            "speakers": "Spriecher",
+            "microphone": "Mikrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Verwalte Broadcast"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Participant Astellunge",
+            "disconnect": "Trennen",
+            "floatingScreens": "Schwammen Schiirme",
+            "tiledScreens": "Fliesen Schiirme",
+            "loudestExceptMe": "Lautst Ausser mech",
+            "maximizeLoudest": "Maximum Laudest",
+            "staticMaximized": "Statesch maximéiert",
+            "fullScreen": "Voll Écran",
+            "manual": "Manuell",
+            "turnOffCamera": "Video verstoppen",
+            "turnOffAudio": "Audio ausmaachen",
+            "turnOffScreenSharing": "Verstoppen Écran Deele",
+            "turnOnCamera": "Show Video",
+            "turnOnAudio": "Audio auszeschalten",
+            "turnOnScreenSharing": "Show Écran Deele"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferenz",
+            "MeetingEnded": "D&#39;Telekonferenz ass eriwwer"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Ufro fir ze schwätzen",
+            "msg": "Et schwätze momentan {{count}} Leit an der Versammlung. Wëllt Dir ee vun hinnen ersetzen nodeems Dir hinnen {{seconds}} Sekonnen erlaabt ze schwätzen?"
+        }
+    }
+}

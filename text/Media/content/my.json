@@ -1,0 +1,256 @@
+{
+    "Shows": "ရှိုးပွဲ",
+    "Clips": "ကလစ်များ",
+    "Video": "ဗီဒီယို",
+    "Audio": "အသံ",
+    "categories": {
+        "Clips": "မီဒီယာကလစ်များ",
+        "Episodes": "ဇာတ်လမ်းတွဲများ"
+    },
+    "presentation": {
+        "PutTogether": "တင်ပြမှာလား။ သင့်တင်ပြချက်အတွက် အကြောင်းအရာများကို အတူတကွ အပ်လုဒ်လုပ်ရန် ဤနေရာကို အသုံးပြုနိုင်သည်။ Plus ခလုတ်ကိုသုံးပါ။",
+        "Alert": "ပွဲများစတင်သည်နှင့်အမျှ၊ ဤစာမျက်နှာသည် ၎င်းတို့၏သက်ဆိုင်ရာတင်ပြချက်များကိုပြသရန်စတင်မည်ဖြစ်သည်။",
+        "ClickHereForFullscreen": "တင်ပြချက်များ ဤနေရာတွင် ပေါ်လာပါမည်။ မျက်နှာပြင်အပြည့်သွားရန် ဤနေရာကိုနှိပ်ပါ။",
+        "question": {
+            "ScanThisQRCode": "ဖြေဆိုရန် ဤ QR ကုဒ်ကို စကင်န်ဖတ်ပါ။"
+        }
+    },
+    "NewEpisode": "အပိုင်းသစ်",
+    "NewClip": "Clip အသစ်တစ်ခုလုပ်ပါ။",
+    "NewClipTitlePlaceholder": "Clip ခေါင်းစဉ်ကို ထည့်ပါ။",
+    "NewClipDescriptionPlaceholder": "Clip ဖော်ပြချက်ကို ထည့်ပါ။",
+    "switchVisualization": "စိတ်ကူးပုံဖော်မှုကို ပြောင်းပါ။",
+    "joinLiveShow": "တိုက်ရိုက်ရှိုးတွင် ပါဝင်ပါ။",
+    "showTwitchLiveStream": "Twitch တိုက်ရိုက်ထုတ်လွှင့်မှုကို ပြသပါ။",
+    "showVoiceChat": "Voice Chat ကို ပြပါ။",
+    "LiveShow": "တိုက်ရိုက်ရှိုး",
+    "AreYouSureKick": "ဤအသုံးပြုသူကို စတင်ထုတ်လိုသည်မှာ သေချာပါသလား။",
+    "Save": "သိမ်းဆည်းပါ။",
+    "ViewFullEpisode": "အပိုင်းအပြည့်အစုံကို ကြည့်ရှုပါ။",
+    "CreditsEarned": "ခရက်ဒစ်များ ရရှိခဲ့သည်။",
+    "VideoTitle": "ဗီဒီယို ခေါင်းစဉ် သို့မဟုတ် URL",
+    "AreYouSureDeleteEpisode": "ဤအပိုင်းကို ဖျက်လိုသည်မှာ သေချာပါသလား။",
+    "Yes": "ဟုတ်ကဲ့",
+    "No": "မရှိ",
+    "RealTimeCall": "အချိန်နှင့်တပြေးညီခေါ်ဆိုပါ။",
+    "JoinWebRTC": "တယ်လီကွန်ဖရင့်",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "တယ်လီကွန်ဖရင့်",
+            "description": "အွန်လိုင်းဗီဒီယို\/အသံကွန်ဖရင့်"
+        },
+        "Media\/calls": {
+            "displayType": "ခေါ်ဆိုမှုများ",
+            "description": "Media\/WebRTC အတွက် အမျိုးအစား",
+            "MaxRelationsExceeded": "အများဆုံးခေါ်ဆိုမှု ကျော်လွန်သွားပါပြီ။"
+        },
+        "Media\/clip": {
+            "displayType": "အပိုင်း",
+            "description": "မီဒီယာကလစ်"
+        }
+    },
+    "feeds": {
+        "Title": "ကင်မရာများ",
+        "filterByTitle": "ခေါင်းစဉ်အလိုက် feeds ကိုရှာပါ။",
+        "RequestFeedAccess": "ဖိဒ်ဝင်ရောက်ခွင့် တောင်းဆိုပါ။",
+        "New": "+ အစားအစာအသစ်",
+        "filterFeeds": "ဖိုင်များကို စစ်ထုတ်ပါ။",
+        "NewFeed": "Feed အသစ်",
+        "NoneYet": "ဖိဒ်များ မဖွဲ့စည်းရသေးပါ။",
+        "AreYouSure": "သေချာလား?",
+        "FilterByDate": "ရက်စွဲအလိုက် စစ်ထုတ်ပါ။",
+        "newFeeds": "သင့်တွင် ဖိဒ်အသစ် {{1}} ရှိသည်။",
+        "Description": "{{1}} feeds",
+        "Keywords": "{{1}} feeds"
+    },
+    "feed": {
+        "HostedBy": "{{name}} မှ တင်ဆက်သည်။",
+        "Name": "နာမည်",
+        "Conversation": "စကားဝိုင်း",
+        "CloseFeed": {
+            "button": "Feed ကိုပိတ်ပါ။",
+            "Cancel": "ဤဖိဒ်ကို ပိတ်လိုသည်မှာ သေချာပါသလား။",
+            "Participant": "ဤဖိဒ်တွင် ပါဝင်သူ 1 ဦး ရှိပါသည်။",
+            "Participants": "ဤဖိဒ်တွင် ပါဝင်သူ {{count}} ဦးရှိသည်။"
+        },
+        "Calendar": "ပြက္ခဒိန်",
+        "TitleOfFeed": "feed ခေါင်းစဉ်-",
+        "EmptyList": "ဗလာစာရင်း",
+        "EmptyVideos": "ကလစ်များ မရှိသေးပါ။",
+        "AccessReason": "ကျေးဇူးပြု၍ အကြောင်းပြချက်ပြောပြပါ။",
+        "Proceed": "ရှေ့ဆက်ပါ။",
+        "FeedAlreadyClosed": "ဤဖိဒ်ကို ပိတ်ထားပြီးဖြစ်သည်။",
+        "RtmpLinkNote": "ဤလင့်ခ်ကို ကလစ်ဘုတ်သို့ ကူးယူရန် နှိပ်ပါ။",
+        "SelectClip": "သင်မြင်လိုသောရက်စွဲကို ရွေးပါ။",
+        "Request": "တောင်းဆိုခြင်း။"
+    },
+    "newFeed": {
+        "Title": "Feed အသစ်",
+        "locationTitle": "သင်၏တည်နေရာကိုသတ်မှတ်ပါ။",
+        "SetLocation": "ကျွန်ုပ်၏တည်နေရာကို သတ်မှတ်ပါ။",
+        "Starting": "စတင်ခြင်း။",
+        "Day": "နေ့",
+        "Create": "ဖန်တီးပါ။",
+        "Continue": "ဆက်ရန်",
+        "FeedTitle": "ခေါင်းစဉ်ကျွေးပါ။",
+        "SetTitle": "ကျေးဇူးပြု၍ ဖိဒ်ခေါင်းစဉ်သတ်မှတ်ပါ။"
+    },
+    "notifications": {
+        "JoinedWebRTC": "သင့်ခေါ်ဆိုမှုတွင် ပါဝင်ခဲ့သည်။",
+        "SubjectJoinedYourCall": "{{subject}} သင့်ခေါ်ဆိုမှုတွင် ပါဝင်ခဲ့သည်။"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "ဤစီးကြောင်းတွင် ပါဝင်ရန် သင့်တွင် ခွင့်ပြုချက်မရှိပါ။",
+        "streamTitle": "{{1}} တယ်လီကွန်ဖရင့်တစ်ခု စတင်ခဲ့သည်။",
+        "allow": {
+            "dialogTitle": "ချိတ်ဆက်နေသည်။",
+            "microphoneBtn": "မိုက်ခရိုဖုန်းကို ဖွင့်ပါ။",
+            "cameraBtn": "ကင်မရာကိုဖွင့်ပါ။",
+            "cameraAndMicrophoneBtn": "ကင်မရာနှင့် မိုက်ခရိုဖုန်းကို ဖွင့်ပါ။"
+        },
+        "preparing": {
+            "dialogTitle": "သင်မပါဝင်မီ ကင်မရာ သို့မဟုတ် မိုက်ကို ဖွင့်\/ပိတ်ပါ။",
+            "micIsOff": "မိုက်ကို ပိတ်ထားသည်။",
+            "micIsOn": "မိုက်ကို ဖွင့်ထားသည်။",
+            "cameraIsOff": "ကင်မရာပိတ်ထားသည်။",
+            "cameraIsOn": "ကင်မရာဖွင့်ထားသည်။",
+            "screenSharingIsOn": "မျက်နှာပြင်မျှဝေခြင်းကို ဖွင့်ထားသည်။",
+            "screenSharingIsOff": "မျက်နှာပြင်ကို မျှဝေပါ။",
+            "joinNow": "ခေါ်ဆိုမှုတွင် ပါဝင်ပါ။"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "ညွှန်ကြားချက်များ",
+            "permissionDenied": "{{kind}} အတွက် ခွင့်ပြုချက်ကို ငြင်းပယ်ခဲ့သည်။ ၎င်းကိုအသုံးပြုရန် အောက်ပါအဆင့်များကို လိုက်နာပါ-",
+            "point1": "&quot;ဆက်တင်များ&quot; -&gt; &quot;အဆင့်မြင့်&quot; -&gt; &quot;ကိုယ်ရေးကိုယ်တာနှင့် လုံခြုံရေး&quot; -&gt; &quot;ဆိုက်ဆက်တင်များ&quot; -&gt; &quot;ကင်မရာ&quot; သို့မဟုတ် &quot;ဆိုက်ဆက်တင်များ&quot; -&gt; &quot;မိုက်ခရိုဖုန်း&quot; သို့ သွားပါ။",
+            "point2": "&quot;Block&quot; စာရင်းမှ {{hostname}} ဖယ်ရှားပါ။"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "ညွှန်ကြားချက်များ",
+            "permissionDenied": "{{kind}} အတွက် ခွင့်ပြုချက်ကို ငြင်းပယ်ခဲ့သည်။ ကျေးဇူးပြု၍ ဤစာမျက်နှာကို ပြန်လည်စတင်ပြီး ညီလာခံတွင် ပါဝင်ရန် {{kind}} သို့ ဝင်ရောက်ခွင့်ကို အတည်ပြုပါ။"
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "ညွှန်ကြားချက်များ",
+            "permissionDenied": "{{kind}} အတွက် ခွင့်ပြုချက်ကို ငြင်းပယ်ခဲ့သည်။ ၎င်းကိုအသုံးပြုရန် အောက်ပါအဆင့်များကို လိုက်နာပါ-",
+            "point1": "သင်၏ Android ဆက်တင်များသို့ သွားပါ။",
+            "point2": "&quot;အက်ပ်များနှင့် အသိပေးချက်များ&quot; ကိုဖွင့်ပါ",
+            "point3": "&quot; {{communityName}} &quot; ကိုရှာပြီးဖွင့်ပါ။",
+            "point4": "ခွင့်ပြုချက်များကို နှိပ်ပါ။",
+            "point5": "{{kind}} ကိုဖွင့်ပါ။"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "ညွှန်ကြားချက်များ",
+            "permissionDenied": "{{kind}} အတွက် ခွင့်ပြုချက်ကို ငြင်းပယ်ခဲ့သည်။ ၎င်းကိုအသုံးပြုရန် အောက်ပါအဆင့်များကို လိုက်နာပါ-",
+            "point1": "သင်၏ iOS ဆက်တင်များသို့ သွားပါ။",
+            "point2": "&quot;ကိုယ်ရေးကိုယ်တာ&quot; ကိုဖွင့်ပါ",
+            "point3": "{{kind}} ရှာပြီးဖွင့်ပါ။",
+            "point4": "&quot; {{communityName}} &quot; ကိုရှာပြီးဖွင့်ပါ။"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook တိုက်ရိုက်လွှင့်ခြင်း စတင်ပါပြီ။"
+        },
+        "notices": {
+            "youJoinedRoom": "မင်း အခန်းထဲဝင်သွားပြီ",
+            "joining": "ပါဝင်ခြင်း- {{userName}}",
+            "sbLeftRoom": "{{userName}} အခန်းထဲက ထွက်သွားတယ်။",
+            "switchingRoom": "အခန်းပြောင်းခြင်း...",
+            "forceDisconnecting": "5 စက္ကန့်အတွင်း သင့်ကို အဆက်အသွယ်ဖြတ်သွားပါမည်။",
+            "forceDisconnectingImmediately": "သင့်အား လက်ခံဆောင်ရွက်ပေးသူမှ အဆက်အသွယ်ဖြတ်ထားသည်။",
+            "youLeftRoom": "မင်းအခန်းထဲကထွက်သွားတယ်။",
+            "codeCopied": "မင်းအခန်းထဲကထွက်သွားတယ်။",
+            "sbBeganFbLive": "{{userName}} ဤခေါ်ဆိုမှုကို Facebook တွင် စတင်ထုတ်လွှင့်ခဲ့သည်။",
+            "sbStoppedFbLive": "{{userName}} ဤခေါ်ဆိုမှုကို Facebook တွင် ထုတ်လွှင့်ခြင်းကို ရပ်လိုက်သည်။",
+            "youBeganFbLive": "သင်သည် ဤခေါ်ဆိုမှုကို Facebook တွင် စတင်ထုတ်လွှင့်ခဲ့သည်။",
+            "youStoppedFbLive": "သင်သည် ဤခေါ်ဆိုမှုကို Facebook တွင် ထုတ်လွှင့်ခြင်းကို ရပ်လိုက်ပါပြီ။",
+            "youStartedLive": "သင်သည် ဤခေါ်ဆိုမှုကို စိတ်ကြိုက် RTMP သို့ စတင်ထုတ်လွှင့်ခဲ့သည်။",
+            "youStoppedLive": "သင်သည် ဤခေါ်ဆိုမှုကို စိတ်ကြိုက် RTMP သို့ ထုတ်လွှင့်ခြင်းကို ရပ်လိုက်ပါပြီ။",
+            "sbStartedLiveStreaming": "{{userName}} တိုက်ရိုက်ထုတ်လွှင့်ခဲ့သည်။",
+            "sbStoppedLiveStreaming": "{{userName}} တိုက်ရိုက်ထုတ်လွှင့်မှုပြီးဆုံးခဲ့သည်။",
+            "liveStopped": "ဗီဒီယိုကို အဆုံးမှတ်သို့ ပို့စဉ် အမှားဖြစ်သွားသည်။",
+            "youBeganVideoRecording": "သင်သည် ဤညီလာခံကို စတင်မှတ်တမ်းတင်ခဲ့သည်။",
+            "youStoppedVideoRecording": "သင်သည် ဤညီလာခံကို မှတ်တမ်းတင်ခြင်းကို ရပ်လိုက်သည်။",
+            "linkCopiedToCb": "လင့်ခ်ကို ကလစ်ဘုတ်သို့ ကူးယူထားသည်။",
+            "codeCopiedToCb": "ကုဒ်ကို ကလစ်ဘုတ်သို့ ကူးယူထားသည်။",
+            "userHasNoVideo": "ပါဝင်သူတွင် ဗီဒီယိုမရှိပါ။",
+            "openInBrowserAlert": "ညီလာခံတက်ရောက်ရန် Safari ဘရောက်ဆာတွင် လင့်ခ်ကိုဖွင့်ပါ။",
+            "allowedVideoLimit": "ဤအခန်းတွင် ဗီဒီယို {{limit}} သာ ခွင့်ပြုထားသည်။",
+            "allowedAudioLimit": "ဤအခန်းတွင် မိုက်ခရိုဖုန်း {{limit}} လုံးသာ ခွင့်ပြုထားသည်။",
+            "processingRecording": "မှတ်တမ်းတင်ခြင်းကို လုပ်ဆောင်နေသည်..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "ဗီဒီယို ဆက်တင်များ",
+            "webCamera": "ဝဘ်ကင်မရာ",
+            "screenSharing": "မျက်နှာပြင်မျှဝေခြင်း။",
+            "shareAnotherScreen": "အခြားမျက်နှာပြင်ကို မျှဝေပါ။",
+            "turnOffCameras": "ကင်မရာကို ပိတ်ပါ။",
+            "turnOffVideo": "ကင်မရာ\/စခရင် မျှဝေခြင်းကို ပိတ်ပါ။",
+            "turnOffAudioInput": "မိုက်ခရိုဖုန်းကို အသံတိတ်ပါ။",
+            "turnOffScreenSharing": "မျက်နှာပြင်မျှဝေခြင်းကို ပိတ်ပါ။",
+            "cameraIsTurnedOff": "ကင်မရာကို ပိတ်ထားသည်။",
+            "micIsTurnedOff": "မိုက်ခရိုဖုန်းကို ပိတ်ထားသည်။",
+            "startFBLive": "Facebook တိုက်ရိုက်ထုတ်လွှင့်မှုကို စတင်ပါ။",
+            "stopFBLive": "Facebook တိုက်ရိုက်ထုတ်လွှင့်မှုကို ရပ်ပါ။",
+            "startRecording": "စတင်ရိုက်ကူးပါ။",
+            "stopRecording": "မှတ်တမ်းတင်ခြင်းကို ရပ်ပါ။",
+            "start": "စတင်ပါ။",
+            "startClodRecording": "Cloud Recording ကို စတင်ပါ။",
+            "startLocRecording": "Local Recording စတင်ပါ။",
+            "stopClodRecording": "Cloud Recording ကို ရပ်ပါ။",
+            "stopLocRecording": "Local Recording ကို ရပ်ပါ။",
+            "stop": "ရပ်",
+            "share": "မျှဝေပါ။",
+            "recordingInProgress": "မှတ်တမ်းတင်ခြင်းကို လုပ်ဆောင်နေသည်...",
+            "fbLiveTitle": "တိုက်ရိုက်ထုတ်လွှင့်မှု ခေါင်းစဉ်",
+            "fbLiveDescription": "သင်၏ တိုက်ရိုက်ထုတ်လွှင့်မှုကို ဖော်ပြပါ။ အဲဒါက ဘာအကြောင်းလဲ။",
+            "fbOnlyMeLiveAccess": "ငါသာလျှင်",
+            "fbFriendsAccess": "သူငယ်ချင်း",
+            "fbPublicAccess": "အများသူငှာ",
+            "publishOnTimeline": "Timeline တွင် လွှင့်တင်ပါ။",
+            "publishToGroup": "အဖွဲ့သို့ လွှင့်တင်ပါ။",
+            "fbStartLive": "တိုက်ရိုက်သွားပါ။",
+            "fbStopLive": "တိုက်ရိုက်ထုတ်လွှင့်မှုကို အဆုံးသတ်ပါ။",
+            "streamingSettings": "ဆက်တင်များ",
+            "manageStream": "တိုက်ရိုက်ထုတ်လွှင့်မှုကို စီမံပါ။",
+            "fbEmbedCode": "မြှုပ်ထား",
+            "copy": "ကော်ပီ",
+            "streamToRTMP": "စိတ်ကြိုက် RTMP သို့ တိုက်ရိုက်လွှင့်ပါ။",
+            "startBroadcasting": "စတင်ထုတ်လွှင့်သည်။",
+            "broadcastingInProgress": "ရုပ်သံလွှင့်ခြင်းကို လုပ်ဆောင်နေသည်။"
+        },
+        "audioSettings": {
+            "dialogTitle": "အသံ ဆက်တင်များ",
+            "speakers": "စပီကာများ",
+            "microphone": "မိုက်ခရိုဖုန်း"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "ထုတ်လွှင့်မှုကို စီမံပါ။"
+        },
+        "participantsPopup": {
+            "dialogTitle": "ပါဝင်သူ ဆက်တင်များ",
+            "disconnect": "အဆက်ဖြတ်ပါ။",
+            "floatingScreens": "ရေပေါ်မျက်နှာပြင်များ",
+            "tiledScreens": "ကြွေပြားစခရင်များ",
+            "loudestExceptMe": "ငါမှလွဲ၍ အသံအကျယ်ဆုံး",
+            "maximizeLoudest": "အကျယ်ဆုံးကို ချဲ့ပါ။",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "မျက်နှာပြင်အပြည့်",
+            "manual": "လူကိုယ်တိုင်",
+            "turnOffCamera": "ဗီဒီယိုကို ဖျောက်ပါ။",
+            "turnOffAudio": "အသံတိတ်",
+            "turnOffScreenSharing": "မျက်နှာပြင်မျှဝေခြင်းကို ဝှက်ထားပါ။",
+            "turnOnCamera": "ဗီဒီယိုပြပါ။",
+            "turnOnAudio": "အသံပြန်ဖွင့်ပါ။",
+            "turnOnScreenSharing": "မျက်နှာပြင်မျှဝေခြင်းကိုပြသပါ။"
+        },
+        "streamingSettings": {
+            "title": "တိုက်ရိုက်ထုတ်လွှင့်မှု"
+        },
+        "preview": {
+            "Meeting": "တယ်လီကွန်ဖရင့်",
+            "MeetingEnded": "တယ်လီကွန်ဖရင့် ပြီးသွားသည်။"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "စကားပြောရန် တောင်းဆိုခြင်း။",
+            "msg": "အစည်းအဝေးမှာ ဟောပြောသူ {{count}} ဦးရှိပါတယ်။ သူတို့ကို စက္ကန့် {{seconds}} အချိန်ပေးပြီး စကားပြောခွင့်ပြုပြီးနောက် ၎င်းတို့ထဲမှ တစ်ခုကို အစားထိုးလိုပါသလား။"
+        }
+    }
+}

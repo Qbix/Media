@@ -62,7 +62,11 @@ html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
     flex-direction: column;
 }
 .Media_clip_tool .Media_clip_player_inner {
+    height: 100%;
     flex-basis: 100%;
+}
+.Media_clip_player_inner .Media_player {
+    height: 100%;
 }
 .Media_clip_tool.Media_clip_live .Streams_chat_call,
 .Media_clip_tool.Media_clip_live .Media_clip_player,

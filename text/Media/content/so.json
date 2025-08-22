@@ -1,0 +1,256 @@
+{
+    "Shows": "Bandhigyada",
+    "Clips": "clips",
+    "Video": "Video",
+    "Audio": "Maqal",
+    "categories": {
+        "Clips": "Muuqaallada Warbaahinta",
+        "Episodes": "Qaybaha"
+    },
+    "presentation": {
+        "PutTogether": "Ma soo bandhigi doontaa? Waxaad booskan u isticmaali kartaa inaad isla geliso agabka bandhiggaaga. Isticmaal badhanka Plus.",
+        "Alert": "Marka ay dhacdooyinku bilaabaan, boggani wuxuu bilaabi doonaa inuu muujiyo bandhigyadooda u dhigma",
+        "ClickHereForFullscreen": "Bandhigyo ayaa ka muuqan doona halkan Riix halkan si aad u gasho shaashad buuxda",
+        "question": {
+            "ScanThisQRCode": "Sawir code-kan si aad uga jawaabto"
+        }
+    },
+    "NewEpisode": "Dhacdo Cusub",
+    "NewClip": "Samee Clip Cusub",
+    "NewClipTitlePlaceholder": "Geli Cinwaanka Clip",
+    "NewClipDescriptionPlaceholder": "Geli Sharaxaada Clip",
+    "switchVisualization": "Beddel aragga",
+    "joinLiveShow": "Ku Soo Biir Show Live",
+    "showTwitchLiveStream": "Muuji Twitch Live Stream",
+    "showVoiceChat": "Muuji Wadahadalka Codka",
+    "LiveShow": "Show Live",
+    "AreYouSureKick": "Ma hubtaa inaad doonayso inaad shaqada ka saarto isticmaalyahan?",
+    "Save": "Badbaadin",
+    "ViewFullEpisode": "Daawo Dhacdo Dhamaystiran",
+    "CreditsEarned": "Dhibcaha la kasbaday",
+    "VideoTitle": "Cinwaanka Fiidiyowga ama URL",
+    "AreYouSureDeleteEpisode": "Ma hubtaa inaad rabto inaad tirtirto dhacdadan?",
+    "Yes": "Haa",
+    "No": "Maya",
+    "RealTimeCall": "Wicista Waqtiga dhabta ah",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "shir muuqaal\/maqal online ah"
+        },
+        "Media\/calls": {
+            "displayType": "Wicitaannada",
+            "description": "qaybta Media\/WebRTC",
+            "MaxRelationsExceeded": "Wicitaannada ugu badan ayaa dhaafey"
+        },
+        "Media\/clip": {
+            "displayType": "clip",
+            "description": "clip media"
+        }
+    },
+    "feeds": {
+        "Title": "kamarado",
+        "filterByTitle": "Ku raadi quudinta cinwaan ahaan",
+        "RequestFeedAccess": "Codso gelitaanka quudinta",
+        "New": "+ Quudinta Cusub",
+        "filterFeeds": "Sifee quudinta",
+        "NewFeed": "Quudinta Cusub",
+        "NoneYet": "Weli wax quudin ah lama samayn",
+        "AreYouSure": "Ma hubtaa?",
+        "FilterByDate": "Ku Shaandhayso Taariikhda",
+        "newFeeds": "Waxaad haysataa {{1}} quudin cusub",
+        "Description": "{{1}} quudin",
+        "Keywords": "{{1}} quudin"
+    },
+    "feed": {
+        "HostedBy": "Waxaa marti galiyay {{name}}",
+        "Name": "Magaca",
+        "Conversation": "Wada sheekeysi",
+        "CloseFeed": {
+            "button": "Xir Quudinta",
+            "Cancel": "Ma hubtaa inaad doonayso inaad xidho quudintan?",
+            "Participant": "Waxaa jira 1 ka qaybgale quudintan",
+            "Participants": "Waxaa jira {{count}} ka qaybgalayaasha quudintan"
+        },
+        "Calendar": "Kalandarka",
+        "TitleOfFeed": "Magaca quudinta:",
+        "EmptyList": "Liis madhan",
+        "EmptyVideos": "Wali wax clips ah ma jiraan",
+        "AccessReason": "fadlan sheeg sababta",
+        "Proceed": "Sii wad",
+        "FeedAlreadyClosed": "Quudintan mar hore ayaa la xidhay",
+        "RtmpLinkNote": "Guji si aad u koobiyeeyso xiriirkan si aad u gashid kilib-boodhka",
+        "SelectClip": "Dooro taariikhda aad rabto inaad aragto",
+        "Request": "Codsi"
+    },
+    "newFeed": {
+        "Title": "Quudinta Cusub",
+        "locationTitle": "Deji Goobtaada",
+        "SetLocation": "Deji Goobtayda",
+        "Starting": "Bilawga",
+        "Day": "Maalinta",
+        "Create": "Abuur",
+        "Continue": "Sii wad",
+        "FeedTitle": "Cinwaanka quudinta",
+        "SetTitle": "Fadlan deji cinwaanka quudinta"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ku biiray wicitaankaaga",
+        "SubjectJoinedYourCall": "{{subject}} ayaa ku soo biiray wicitaankaaga"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Ma haysatid fasax aad ku biirto qulqulkan.",
+        "streamTitle": "{{1}} ayaa bilaabay shir-is-gaarsiineed",
+        "allow": {
+            "dialogTitle": "Isku xirka",
+            "microphoneBtn": "Daar makarafoonka",
+            "cameraBtn": "Daar kamarada",
+            "cameraAndMicrophoneBtn": "Daar kamarada iyo makarafoonka"
+        },
+        "preparing": {
+            "dialogTitle": "Dami kamarada ama makarafoonka dami ka hor intaadan ku biirin",
+            "micIsOff": "Makarafoonku waa dansan yahay",
+            "micIsOn": "Micku waa daaran yahay",
+            "cameraIsOff": "Kamarada ayaa dansan",
+            "cameraIsOn": "Kamaradu waa shid",
+            "screenSharingIsOn": "Shaashada shaashadu waa daaran tahay",
+            "screenSharingIsOff": "La wadaag shaashadda",
+            "joinNow": "Ku biir Wicitaanka"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Tilmaamaha",
+            "permissionDenied": "Ogolaanshaha {{kind}} waa la diiday. Si aad u isticmaasho fadlan raac talaabooyinkan:",
+            "point1": "Tag &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; ama &quot;Site Settings&quot; -&gt; &quot;Mikrofoon&quot;",
+            "point2": "Ka saar {{hostname}} liiska &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Tilmaamaha",
+            "permissionDenied": "Ogolaanshaha {{kind}} waa la diiday. Fadlan dib u soo deji boggan oo xaqiiji gelitaanka {{kind}} si aad ugu biirto shirka."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Tilmaamaha",
+            "permissionDenied": "Ogolaanshaha {{kind}} waa la diiday. Si aad u isticmaasho fadlan raac talaabooyinkan:",
+            "point1": "Aad Settings Android kaaga",
+            "point2": "Fur &quot;Apps &amp; ogeysiisyada&quot;",
+            "point3": "Soo hel &quot; {{communityName}} &quot; oo fur",
+            "point4": "Taabo ogolaanshaha",
+            "point5": "Daar {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Tilmaamaha",
+            "permissionDenied": "Ogolaanshaha {{kind}} waa la diiday. Si aad u isticmaasho fadlan raac talaabooyinkan:",
+            "point1": "Aad IOS Settings kaaga",
+            "point2": "Fur &quot;Privacy&quot;",
+            "point3": "Soo hel {{kind}} oo fur",
+            "point4": "Soo hel &quot; {{communityName}} &quot; oo karti"
+        },
+        "fbLive": {
+            "dialogTitle": "Soo daawaynta tooska ah ee Facebook ayaa bilaabatay"
+        },
+        "notices": {
+            "youJoinedRoom": "Qolka ayaad ku biirtay",
+            "joining": "Ku biiray: {{userName}}",
+            "sbLeftRoom": "{{userName}} ayaa qolka ka baxay",
+            "switchingRoom": "Qolka beddelka...",
+            "forceDisconnecting": "Waxa lagu goyn doonaa 5 ilbiriqsi gudahood",
+            "forceDisconnectingImmediately": "Waxaa gooyay martigeliyaha",
+            "youLeftRoom": "Qolkii ayaad ka baxday",
+            "codeCopied": "Qolkii ayaad ka baxday",
+            "sbBeganFbLive": "{{userName}} ayaa bilaabay baahinta baaqan Facebook",
+            "sbStoppedFbLive": "{{userName}} ayaa joojiyay baahinta wicitaankan Facebook-ga",
+            "youBeganFbLive": "Waxaad wicitaan ka bilowday Facebook-ga",
+            "youStoppedFbLive": "Waxaad joojisay baahinta wicitaankan Facebook-ga",
+            "youStartedLive": "Waxaad bilawday in aad u baahiso wacitaankan RTMP caadada u ah",
+            "youStoppedLive": "Waxaad joojisay baahinta wacitaankan RTMP caadada u ah",
+            "sbStartedLiveStreaming": "{{userName}} ayaa si toos ah u bilowday",
+            "sbStoppedLiveStreaming": "{{userName}} ayaa ku dhamaaday si toos ah",
+            "liveStopped": "Cilad markii fiidyaha loo dirayay barta dhamaadka ayaa dhacday",
+            "youBeganVideoRecording": "Waxaad bilowday duubista shirkan",
+            "youStoppedVideoRecording": "Waad joojisay duubista shirkan",
+            "linkCopiedToCb": "Xiriirinta waa la koobiyeeyay sabuuraddii",
+            "codeCopiedToCb": "Koodhka waxaa lagu koobiyeeyay sabuuraddii",
+            "userHasNoVideo": "Ka qaybqaataha ma haysto muuqaal",
+            "openInBrowserAlert": "Fur xiriiriyaha browserka Safari si aad ugu biirto shirka",
+            "allowedVideoLimit": "Kaliya {{limit}} muqaal ayaa loo ogolyahay qolkan",
+            "allowedAudioLimit": "Kaliya {{limit}} makarafoon ayaa loo ogolyahay qolkan",
+            "processingRecording": "Hagaajinta duubista..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Dejinta Fiidiyowga",
+            "webCamera": "Kamarada Shabakadda",
+            "screenSharing": "Wadaagista Shaashada",
+            "shareAnotherScreen": "La wadaag shaashad kale",
+            "turnOffCameras": "Dami kamarada",
+            "turnOffVideo": "Demi wadaagista kamarada\/shaashadda",
+            "turnOffAudioInput": "aamus makarafoonka",
+            "turnOffScreenSharing": "Demi wadaagista shaashadda",
+            "cameraIsTurnedOff": "Kamarada waa dansan yahay",
+            "micIsTurnedOff": "Makarafoonku waa dansan yahay",
+            "startFBLive": "Bilow Facebook Livestream",
+            "stopFBLive": "Jooji Facebook Livestream",
+            "startRecording": "Bilow Duubista",
+            "stopRecording": "Jooji Duubista",
+            "start": "Bilow",
+            "startClodRecording": "Bilow duubista daruuraha",
+            "startLocRecording": "Bilow Duubista Maxaliga",
+            "stopClodRecording": "Jooji Duubista Daruuraha",
+            "stopLocRecording": "Jooji Duubista Deegaanka",
+            "stop": "Jooji",
+            "share": "La wadaag",
+            "recordingInProgress": "Duubista ayaa socota...",
+            "fbLiveTitle": "Cinwaanka Livestream",
+            "fbLiveDescription": "Sharaxaad ka bixi socodkaaga Tooska ah. Maxaa ku saabsan?",
+            "fbOnlyMeLiveAccess": "Aniga Kaliya",
+            "fbFriendsAccess": "Asxaabta",
+            "fbPublicAccess": "Dadweynaha",
+            "publishOnTimeline": "Ku daabac waqtiga",
+            "publishToGroup": "U daabac kooxda",
+            "fbStartLive": "Toos u soco",
+            "fbStopLive": "Dhamaadka Livestream",
+            "streamingSettings": "Dejinta",
+            "manageStream": "Maamul Livestream",
+            "fbEmbedCode": "Ku dheji",
+            "copy": "Nuqul",
+            "streamToRTMP": "U qulquli RTMP caadadii",
+            "startBroadcasting": "Bilow baahinta",
+            "broadcastingInProgress": "baahinta ayaa socota"
+        },
+        "audioSettings": {
+            "dialogTitle": "Dejinta maqalka",
+            "speakers": "Ku hadlaayo",
+            "microphone": "Makarafoon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Maamul Baahinta"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Dejinta ka qaybqaataha",
+            "disconnect": "Xiriirka ka jar",
+            "floatingScreens": "Shaashado sabbaynaya",
+            "tiledScreens": "Shaashado goglan",
+            "loudestExceptMe": "Aniga Mooyee",
+            "maximizeLoudest": "Kordhi ugu qaylada dheer",
+            "staticMaximized": "Heerarka ugu sarreeya",
+            "fullScreen": "Shaashada buuxda",
+            "manual": "Buugga",
+            "turnOffCamera": "Qari muuqaalka",
+            "turnOffAudio": "Codka xidh",
+            "turnOffScreenSharing": "Qari wadaagista shaashadda",
+            "turnOnCamera": "Muuji muuqaal",
+            "turnOnAudio": "Ka saar codka",
+            "turnOnScreenSharing": "Muuji wadaagista shaashadda"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Teleconference ayaa dhamaaday"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Codsiga in la hadlo",
+            "msg": "Waxaa hadda shirka ka hadlaya {{count}} qof. Ma rabtaa inaad mid ka mid ah badasho ka dib markaad u ogolaato {{seconds}} ilbiriqsi inay dhameeyaan hadalka?"
+        }
+    }
+}

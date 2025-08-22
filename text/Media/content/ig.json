@@ -1,0 +1,256 @@
+{
+    "Shows": "Ihe ngosi",
+    "Clips": "Mpempe akwụkwọ",
+    "Video": "Vidiyo",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Ngwa mgbasa ozi",
+        "Episodes": "Ihe omume"
+    },
+    "presentation": {
+        "PutTogether": "Ị ga-egosi? Ị nwere ike iji oghere a bulite ọnụ ihe maka ngosi gị. Jiri bọtịnụ Plus.",
+        "Alert": "Ka mmemme na-amalite, ibe a ga-amalite igosi ihe ngosi ha kwekọrọ",
+        "ClickHereForFullscreen": "Ihe ngosi ga-apụta ebe a. Pịa ebe a ka ịga na ihuenyo zuru oke.",
+        "question": {
+            "ScanThisQRCode": "Nyochaa koodu QR a ka ịza"
+        }
+    },
+    "NewEpisode": "Ihe nkiri ọhụrụ",
+    "NewClip": "Mee ihe nkiri ọhụrụ",
+    "NewClipTitlePlaceholder": "Tinye aha clip",
+    "NewClipDescriptionPlaceholder": "Tinye nkọwa clip",
+    "switchVisualization": "Gbanwee ọhụụ",
+    "joinLiveShow": "Sonyere ihe ngosi Live",
+    "showTwitchLiveStream": "Gosi Twitch Live Stream",
+    "showVoiceChat": "Gosi nkata olu",
+    "LiveShow": "Ihe ngosi Live",
+    "AreYouSureKick": "Ị ji n&#39;aka na ịchọrọ ịchụpụ onye ọrụ a?",
+    "Save": "Chekwa",
+    "ViewFullEpisode": "Lelee ihe nkiri zuru oke",
+    "CreditsEarned": "E nwetara kredit",
+    "VideoTitle": "Aha vidiyo ma ọ bụ URL",
+    "AreYouSureDeleteEpisode": "Ị ji n&#39;aka na ịchọrọ ihichapụ ihe omume a?",
+    "Yes": "Ee",
+    "No": "Mba",
+    "RealTimeCall": "Ezi Oge Oku",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "ogbako vidiyo \/ ọdịyo dị n&#39;ịntanetị"
+        },
+        "Media\/calls": {
+            "displayType": "Oku",
+            "description": "udi maka Media\/WebRTC",
+            "MaxRelationsExceeded": "Oku kacha elu gafere"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "mgbasa ozi clip"
+        }
+    },
+    "feeds": {
+        "Title": "Igwefoto",
+        "filterByTitle": "Chọta ndepụta site na aha",
+        "RequestFeedAccess": "Rịọ ịnweta ndepụta nri",
+        "New": "+ Nri ọhụrụ",
+        "filterFeeds": "Nzacha ndepụta",
+        "NewFeed": "Nri ọhụrụ",
+        "NoneYet": "Ọnwebeghị ndepụta nri emepụtara.",
+        "AreYouSure": "O doro gị anya?",
+        "FilterByDate": "Nzacha Site na Ụbọchị",
+        "newFeeds": "Ị nwere ndepụta ọhụrụ {{1}}",
+        "Description": "{{1}} ndepụta",
+        "Keywords": "{{1}} ndepụta"
+    },
+    "feed": {
+        "HostedBy": "{{name}} kwadoro ya",
+        "Name": "Aha",
+        "Conversation": "Mkparịta ụka",
+        "CloseFeed": {
+            "button": "Mechie nri",
+            "Cancel": "Ị ji n&#39;aka na ị chọrọ imechi ndepụta a?",
+            "Participant": "Enwere onye so na ndepụta a",
+            "Participants": "Enwere ndị sonyere {{count}} na ndepụta a"
+        },
+        "Calendar": "Kalenda",
+        "TitleOfFeed": "Aha ndepụta:",
+        "EmptyList": "Ndepụta efu",
+        "EmptyVideos": "Enweghị obere vidiyo ma",
+        "AccessReason": "biko kwuo ihe kpatara ya",
+        "Proceed": "Gaba",
+        "FeedAlreadyClosed": "Ihe oriri a emechielarị",
+        "RtmpLinkNote": "Pịa ka idetuo njikọ a na klipbọọdụ",
+        "SelectClip": "Họrọ ụbọchị ịchọrọ ịhụ",
+        "Request": "Arịrịọ"
+    },
+    "newFeed": {
+        "Title": "Nri ọhụrụ",
+        "locationTitle": "Tọọ ebe gị",
+        "SetLocation": "Tọọ ebe m",
+        "Starting": "Malite",
+        "Day": "Ụbọchị",
+        "Create": "Mepụta",
+        "Continue": "Gaa n&#39;ihu",
+        "FeedTitle": "Aha ndepụta",
+        "SetTitle": "Biko tọọ aha ndepụta ndepụta"
+    },
+    "notifications": {
+        "JoinedWebRTC": "sonyeere oku gi",
+        "SubjectJoinedYourCall": "{{subject}} sonyeere oku gị"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Ịnweghị ikike isonye na iyi a.",
+        "streamTitle": "{{1}} malitere teleconference",
+        "allow": {
+            "dialogTitle": "Na-ejikọta",
+            "microphoneBtn": "Kwado igweokwu",
+            "cameraBtn": "Kwado igwefoto",
+            "cameraAndMicrophoneBtn": "Kwado igwefoto na igweokwu"
+        },
+        "preparing": {
+            "dialogTitle": "Gbanyụọ igwefoto ma ọ bụ igweokwu tupu ịbanye",
+            "micIsOff": "Agbanyụrụ igwe okwu",
+            "micIsOn": "Igwe okwu agbanyere",
+            "cameraIsOff": "Igwefoto agbanyụrụ",
+            "cameraIsOn": "Igwefoto agbanyere",
+            "screenSharingIsOn": "Ịkekọrịta ihuenyo agbanyere",
+            "screenSharingIsOff": "Kekọrịta ihuenyo",
+            "joinNow": "Soro oku a"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Ntuziaka",
+            "permissionDenied": "Ajụrụ ikike maka {{kind}} . Iji jiri ya biko soro usoro ndị a:",
+            "point1": "Gaa na &quot;Ntọala&quot; -&gt; &quot;Elu elu&quot; -&gt; &quot;Nzuzo na nchekwa&quot; -&gt; &quot;Ntọala saịtị&quot; -&gt; &quot;igwefoto&quot; ma ọ bụ &quot;Ntọala saịtị&quot; -&gt; &quot;igweokwu&quot;",
+            "point2": "Wepu {{hostname}} na listi &quot;Mgbochi&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Ntuziaka",
+            "permissionDenied": "Ajụrụ ikike maka {{kind}} . Biko bugharịa ibe a ma gosi na ịnweta {{kind}} iji sonyere ọgbakọ a."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Ntuziaka",
+            "permissionDenied": "Ajụrụ ikike maka {{kind}} . Iji jiri ya biko soro usoro ndị a:",
+            "point1": "Gaa na ntọala gam akporo gị",
+            "point2": "Mepee &quot;ngwa na ngosi&quot;",
+            "point3": "Chọta &quot; {{communityName}} &quot; wee mepee ya",
+            "point4": "Pịa ikike",
+            "point5": "Kwado {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Ntuziaka",
+            "permissionDenied": "Ajụrụ ikike maka {{kind}} . Iji jiri ya biko soro usoro ndị a:",
+            "point1": "Gaa na ntọala iOS gị",
+            "point2": "Mepee &quot;Nzuzo&quot;",
+            "point3": "Chọta {{kind}} wee mepee ya",
+            "point4": "Chọta &quot; {{communityName}} &quot; wee gbanye"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook malitere nkwanye ndụ ndụ"
+        },
+        "notices": {
+            "youJoinedRoom": "Ị sonyere n&#39;ime ụlọ ahụ",
+            "joining": "Ntinye: {{userName}}",
+            "sbLeftRoom": "{{userName}} hapụrụ ụlọ ahụ",
+            "switchingRoom": "Ime ụlọ na-agbanwe...",
+            "forceDisconnecting": "A ga-ewepụ gị n&#39;ime sekọnd ise",
+            "forceDisconnectingImmediately": "Onye ọbịa kwụsịrị gị njikọ",
+            "youLeftRoom": "Ị hapụrụ ụlọ ahụ",
+            "codeCopied": "Ị hapụrụ ụlọ ahụ",
+            "sbBeganFbLive": "{{userName}} malitere ịgbasa oku a na Facebook",
+            "sbStoppedFbLive": "{{userName}} kwụsịrị ịgbasa oku a na Facebook",
+            "youBeganFbLive": "Ị malitere ịgbasa oku a na Facebook",
+            "youStoppedFbLive": "Ị kwụsịrị ịgbasa oku a na Facebook",
+            "youStartedLive": "Ị malitere ịgbasa oku a na RTMP omenala",
+            "youStoppedLive": "Ị kwụsịrị ịgbasa oku a na RTMP omenala",
+            "sbStartedLiveStreaming": "{{userName}} malitere ndụ",
+            "sbStoppedLiveStreaming": "{{userName}} biri ndụ",
+            "liveStopped": "Njehie mgbe ị na-eziga vidiyo na njedebe njedebe mere",
+            "youBeganVideoRecording": "Ị malitere ịdekọ ogbako a",
+            "youStoppedVideoRecording": "Ị kwụsịrị ịdekọ ogbako a",
+            "linkCopiedToCb": "Eṅomiri njikọ na klipbọọdụ",
+            "codeCopiedToCb": "Eṅomiri koodu na klipbọọdụ",
+            "userHasNoVideo": "Onye so na ya enweghị vidiyo",
+            "openInBrowserAlert": "Mepee njikọ n&#39;ime ihe nchọgharị Safari iji sonyere ọgbakọ ahụ.",
+            "allowedVideoLimit": "Naanị vidiyo {{limit}} anabatara n&#39;ime ụlọ a",
+            "allowedAudioLimit": "Naanị igwe okwu {{limit}} ekwenyere n&#39;ime ụlọ a",
+            "processingRecording": "Na-ahazi ndekọ..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Ntọala vidiyo",
+            "webCamera": "Igwefoto Weebụ",
+            "screenSharing": "Ịkekọrịta ihuenyo",
+            "shareAnotherScreen": "Kekọrịta ihuenyo ọzọ",
+            "turnOffCameras": "Gbanyụọ igwefoto",
+            "turnOffVideo": "Gbanyụọ ikesa igwefoto\/ihuenyo",
+            "turnOffAudioInput": "Mechie igwe okwu",
+            "turnOffScreenSharing": "Gbanyụọ nkesa ihuenyo",
+            "cameraIsTurnedOff": "Agbanyụrụ igwefoto",
+            "micIsTurnedOff": "Agbanyụrụ igwe okwu",
+            "startFBLive": "Malite Facebook Livestream",
+            "stopFBLive": "Kwụsị Facebook Livestream",
+            "startRecording": "Malite ndekọ",
+            "stopRecording": "Kwụsị ịdekọ",
+            "start": "Malite",
+            "startClodRecording": "Bido ndekọ igwe ojii",
+            "startLocRecording": "Bido ndekọ mpaghara",
+            "stopClodRecording": "Kwụsị ndekọ igwe ojii",
+            "stopLocRecording": "Kwụsị ndekọ mpaghara",
+            "stop": "Kwụsị",
+            "share": "Kekọrịta",
+            "recordingInProgress": "Ndekọ na-aga n&#39;ihu...",
+            "fbLiveTitle": "Aha nke Livestream",
+            "fbLiveDescription": "Kọwaa Livestream gị. Kedu ihe ọ bụ?",
+            "fbOnlyMeLiveAccess": "Naanị m",
+            "fbFriendsAccess": "Enyi",
+            "fbPublicAccess": "Ọha",
+            "publishOnTimeline": "Bipụta na usoro iheomume",
+            "publishToGroup": "Bipụta ya na otu",
+            "fbStartLive": "Gaa Live",
+            "fbStopLive": "Kwụsị Livestream",
+            "streamingSettings": "Ntọala",
+            "manageStream": "Jikwaa Livestream",
+            "fbEmbedCode": "Tinye",
+            "copy": "Detuo",
+            "streamToRTMP": "Gbanye na RTMP omenala",
+            "startBroadcasting": "Malite mgbasa ozi",
+            "broadcastingInProgress": "Mgbasa ozi na-aga n&#39;ihu"
+        },
+        "audioSettings": {
+            "dialogTitle": "Ntọala ọdịyo",
+            "speakers": "Ndị na-ekwu okwu",
+            "microphone": "Igwe okwu"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Jikwaa Mgbasa ozi"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Ntọala ndị so na ya",
+            "disconnect": "Kwupu njikọ",
+            "floatingScreens": "Ihuenyo na-ese n&#39;elu mmiri",
+            "tiledScreens": "Ihuenyo tiled",
+            "loudestExceptMe": "Kachasị ụda Ewezuga M",
+            "maximizeLoudest": "Mee ka ụda kacha sie ike",
+            "staticMaximized": "Static kachasị",
+            "fullScreen": "Ihuenyo zuru oke",
+            "manual": "Akwụkwọ ntuziaka",
+            "turnOffCamera": "Zoo vidiyo",
+            "turnOffAudio": "Mechie ọdịyo",
+            "turnOffScreenSharing": "Zoo nkesa ihuenyo",
+            "turnOnCamera": "Gosi vidiyo",
+            "turnOnAudio": "Wepụ ụda olu",
+            "turnOnScreenSharing": "Gosi ikesa ihuenyo"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Ekwentị ekwensu kwụsịrị"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Arịrịọ ikwu okwu",
+            "msg": "Enwere mmadụ {{count}} na-ekwu okwu na nzukọ a ugbu a. Ịchọrọ iji dochie otu n&#39;ime ha mgbe ikwe ka {{seconds}} sekọnd kwuchaa ikwu okwu?"
+        }
+    }
+}

@@ -26,7 +26,7 @@
         var sel2 = '.Streams_chat_composer input[type=text]';
         var $input = tool.$(isTextarea ? sel1: sel2);
 
-        chatTool.state.onRefresh.set(function () {
+        chatTool.state.onRefresh.add(function () {
             var $element = $('<div class="Streams_chat_call Streams_chat_submit_replacement Q_appear" data-touchlabel="' + tool.chatTool.text.chat.JoinWebRTC + '"></div>');
             $(this.element).find('.Streams_chat_submit').after($element);
             $element.on(Q.Pointer.fastclick, function(e){

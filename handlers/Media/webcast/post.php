@@ -16,13 +16,8 @@
  */
 function Media_webcast_post($params = array())
 {
-
-    $nodeUrl = trim(preg_replace('/(http\:\/\/)||(https\:\/\/)/', '', Q_Config::get('Q', 'node', 'url', null)), '/');
-    $nodeHost = explode(':', $nodeUrl)[0];
-    $nodePort = Q_Config::get('Q', 'node', 'port', null);
     $nodeUrl = Q_Config::get('Q', 'node', 'url', null);
-    $https = strpos($nodeUrl, 'https:');
-    $socketServer = ($https !== false ? 'https://' : 'http://') . $nodeHost . ':' . ((int)$nodePort);
+    $socketServer = Q_Uri::interpolateUrl($nodeUrl);
 
     $config = Q_Config::get('Media', 'webrtc', Q_Config::get('Media', 'webrtc', array()));
 
