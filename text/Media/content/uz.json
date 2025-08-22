@@ -1,0 +1,256 @@
+{
+    "Shows": "Ko&#39;rsatuvlar",
+    "Clips": "Kliplar",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Media kliplar",
+        "Episodes": "Epizodlar"
+    },
+    "presentation": {
+        "PutTogether": "Taqdim etasizmi? Bu joydan taqdimotingiz uchun materiallarni birga yuklash uchun foydalanishingiz mumkin. Plus tugmasidan foydalaning.",
+        "Alert": "Voqealar boshlanishi bilan bu sahifada tegishli taqdimotlar ko&#39;rsatila boshlaydi",
+        "ClickHereForFullscreen": "Taqdimotlar shu yerda paydo bo&#39;ladi. Toʻliq ekranga oʻtish uchun shu yerni bosing.",
+        "question": {
+            "ScanThisQRCode": "Javob berish uchun ushbu QR kodni skanerlang"
+        }
+    },
+    "NewEpisode": "Yangi Qism",
+    "NewClip": "Yangi klip yaratish",
+    "NewClipTitlePlaceholder": "Klip nomini kiriting",
+    "NewClipDescriptionPlaceholder": "Klip tavsifini kiriting",
+    "switchVisualization": "Vizualizatsiyani almashtirish",
+    "joinLiveShow": "Jonli ko&#39;rsatuvga qo&#39;shiling",
+    "showTwitchLiveStream": "Twitch jonli efirini ko&#39;rsatish",
+    "showVoiceChat": "Ovozli suhbatni ko‘rsatish",
+    "LiveShow": "Jonli shou",
+    "AreYouSureKick": "Haqiqatan ham bu foydalanuvchini o&#39;chirib tashlamoqchimisiz?",
+    "Save": "Saqlash",
+    "ViewFullEpisode": "Toʻliq qismni koʻrish",
+    "CreditsEarned": "Olingan kreditlar",
+    "VideoTitle": "Video nomi yoki URL",
+    "AreYouSureDeleteEpisode": "Haqiqatan ham bu qismni oʻchirib tashlamoqchimisiz?",
+    "Yes": "Ha",
+    "No": "Yo&#39;q",
+    "RealTimeCall": "Haqiqiy vaqtda qo&#39;ng&#39;iroq",
+    "JoinWebRTC": "Telekonferentsiya",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferentsiya",
+            "description": "onlayn video\/audio konferentsiya"
+        },
+        "Media\/calls": {
+            "displayType": "Qo&#39;ng&#39;iroqlar",
+            "description": "Media\/WebRTC uchun toifa",
+            "MaxRelationsExceeded": "Maksimal qoʻngʻiroqlar soni oshib ketdi"
+        },
+        "Media\/clip": {
+            "displayType": "Klip",
+            "description": "media klip"
+        }
+    },
+    "feeds": {
+        "Title": "Kameralar",
+        "filterByTitle": "Sarlavha bo&#39;yicha tasmalarni toping",
+        "RequestFeedAccess": "Tasmaga kirishni soʻrash",
+        "New": "+ Yangi tasma",
+        "filterFeeds": "Tasmalarni filtrlash",
+        "NewFeed": "Yangi tasma",
+        "NoneYet": "Hali hech qanday tasma yaratilmagan.",
+        "AreYouSure": "Ishonchingiz komilmi?",
+        "FilterByDate": "Sana boʻyicha filtrlash",
+        "newFeeds": "Sizda {{1}} yangi tasma bor",
+        "Description": "{{1}} ta tasma",
+        "Keywords": "{{1}} ta tasma"
+    },
+    "feed": {
+        "HostedBy": "{{name}} tomonidan mezbonlik qiladi",
+        "Name": "Ism",
+        "Conversation": "Suhbat",
+        "CloseFeed": {
+            "button": "Tasmani yopish",
+            "Cancel": "Haqiqatan ham bu tasmani yopmoqchimisiz?",
+            "Participant": "Bu tasmada 1 ta ishtirokchi bor",
+            "Participants": "Ushbu tasmada {{count}} ta ishtirokchi bor"
+        },
+        "Calendar": "Kalendar",
+        "TitleOfFeed": "Tasma nomi:",
+        "EmptyList": "Bo&#39;sh ro&#39;yxat",
+        "EmptyVideos": "Hali klip yo&#39;q",
+        "AccessReason": "iltimos sababini ayting",
+        "Proceed": "Davom eting",
+        "FeedAlreadyClosed": "Bu tasma allaqachon yopilgan",
+        "RtmpLinkNote": "Ushbu havolani vaqtinchalik xotiraga nusxalash uchun bosing",
+        "SelectClip": "Ko&#39;rmoqchi bo&#39;lgan sanani tanlang",
+        "Request": "So&#39;rov"
+    },
+    "newFeed": {
+        "Title": "Yangi tasma",
+        "locationTitle": "Joylashuvingizni sozlang",
+        "SetLocation": "Mening joylashuvimni o&#39;rnating",
+        "Starting": "Boshlanmoqda",
+        "Day": "kun",
+        "Create": "Yaratish",
+        "Continue": "Davom eting",
+        "FeedTitle": "Tasma sarlavhasi",
+        "SetTitle": "Iltimos, tasma sarlavhasini belgilang"
+    },
+    "notifications": {
+        "JoinedWebRTC": "qo&#39;ng&#39;iroqingizga qo&#39;shildi",
+        "SubjectJoinedYourCall": "{{subject}} qoʻngʻiroqingizga qoʻshildi"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Sizda bu oqimga qo‘shilish uchun ruxsat yo‘q.",
+        "streamTitle": "{{1}} telekonferentsiyani boshladi",
+        "allow": {
+            "dialogTitle": "Ulanmoqda",
+            "microphoneBtn": "Mikrofonni yoqing",
+            "cameraBtn": "Kamerani yoqish",
+            "cameraAndMicrophoneBtn": "Kamera va mikrofonni yoqing"
+        },
+        "preparing": {
+            "dialogTitle": "Qo‘shilishdan oldin kamera yoki mikrofonni yoqing\/o‘chiring",
+            "micIsOff": "Mikrofon oʻchiq",
+            "micIsOn": "Mikrofon yoqilgan",
+            "cameraIsOff": "Kamera oʻchirilgan",
+            "cameraIsOn": "Kamera yoqilgan",
+            "screenSharingIsOn": "Ekran almashish yoqilgan",
+            "screenSharingIsOff": "Ekranni ulashish",
+            "joinNow": "Qo&#39;ng&#39;iroqqa qo&#39;shiling"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Ko&#39;rsatmalar",
+            "permissionDenied": "{{kind}} uchun ruxsat rad etildi. Uni ishlatish uchun quyidagi amallarni bajaring:",
+            "point1": "&quot;Sozlamalar&quot; -&gt; &quot;Kengaytirilgan&quot; -&gt; &quot;Maxfiylik va xavfsizlik&quot; -&gt; &quot;Sayt sozlamalari&quot; -&gt; &quot;Kamera&quot; yoki &quot;Sayt sozlamalari&quot; -&gt; &quot;Mikrofon&quot; bo&#39;limiga o&#39;ting.",
+            "point2": "&quot;Bloklash&quot; ro&#39;yxatidan {{hostname}} olib tashlang"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Ko&#39;rsatmalar",
+            "permissionDenied": "{{kind}} uchun ruxsat rad etildi. Iltimos, ushbu sahifani qayta yuklang va konferentsiyaga qo&#39;shilish uchun {{kind}} kirishni tasdiqlang."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Ko&#39;rsatmalar",
+            "permissionDenied": "{{kind}} uchun ruxsat rad etildi. Uni ishlatish uchun quyidagi amallarni bajaring:",
+            "point1": "Android sozlamalaringizga o&#39;ting",
+            "point2": "&quot;Ilovalar va bildirishnomalar&quot; ni oching",
+            "point3": "&quot; {{communityName}} &quot; ni toping va uni oching",
+            "point4": "Ruxsatlar ustiga bosing",
+            "point5": "{{kind}} yoqing"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Ko&#39;rsatmalar",
+            "permissionDenied": "{{kind}} uchun ruxsat rad etildi. Uni ishlatish uchun quyidagi amallarni bajaring:",
+            "point1": "iOS sozlamalaringizga o&#39;ting",
+            "point2": "&quot;Maxfiylik&quot; ni oching",
+            "point3": "{{kind}} ni toping va uni oching",
+            "point4": "&quot; {{communityName}} &quot; ni toping va yoqing"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebookda jonli efir boshlandi"
+        },
+        "notices": {
+            "youJoinedRoom": "Siz xonaga kirdingiz",
+            "joining": "Qo&#39;shilish: {{userName}}",
+            "sbLeftRoom": "{{userName}} xonani tark etdi",
+            "switchingRoom": "Xonani almashtirish...",
+            "forceDisconnecting": "5 soniya ichida aloqangiz uziladi",
+            "forceDisconnectingImmediately": "Siz uy egasi tomonidan uzildingiz",
+            "youLeftRoom": "Siz xonani tark etdingiz",
+            "codeCopied": "Siz xonani tark etdingiz",
+            "sbBeganFbLive": "{{userName}} ushbu qo&#39;ng&#39;iroqni Facebookda translyatsiya qilishni boshladi",
+            "sbStoppedFbLive": "{{userName}} ushbu qo&#39;ng&#39;iroqni Facebookda translyatsiya qilishni to&#39;xtatdi",
+            "youBeganFbLive": "Siz ushbu qo&#39;ng&#39;iroqni Facebookda translyatsiya qilishni boshladingiz",
+            "youStoppedFbLive": "Siz bu qoʻngʻiroqni Facebookda translyatsiya qilishni toʻxtatdingiz",
+            "youStartedLive": "Siz ushbu qo‘ng‘iroqni maxsus RTMPga translyatsiya qilishni boshladingiz",
+            "youStoppedLive": "Siz ushbu qo‘ng‘iroqni maxsus RTMPga translyatsiya qilishni to‘xtatdingiz",
+            "sbStartedLiveStreaming": "{{userName}} jonli efirni boshladi",
+            "sbStoppedLiveStreaming": "{{userName}} jonli efirni tugatdi",
+            "liveStopped": "Videoni oxirgi nuqtaga yuborishda xatolik yuz berdi",
+            "youBeganVideoRecording": "Siz ushbu konferensiyani yozib olishni boshladingiz",
+            "youStoppedVideoRecording": "Siz ushbu konferensiyani yozib olishni toʻxtatdingiz",
+            "linkCopiedToCb": "Havola vaqtinchalik xotiraga nusxalandi",
+            "codeCopiedToCb": "Kod vaqtinchalik xotiraga nusxalandi",
+            "userHasNoVideo": "Ishtirokchida video yo&#39;q",
+            "openInBrowserAlert": "Konferentsiyaga qo&#39;shilish uchun Safari brauzerida havolani oching.",
+            "allowedVideoLimit": "Bu xonada faqat {{limit}} videoga ruxsat berilgan",
+            "allowedAudioLimit": "Bu xonada faqat {{limit}} mikrofonga ruxsat berilgan",
+            "processingRecording": "Yozuvga ishlov berilmoqda..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video sozlamalari",
+            "webCamera": "Veb-kamera",
+            "screenSharing": "Ekran almashish",
+            "shareAnotherScreen": "Boshqa ekranni ulashing",
+            "turnOffCameras": "Kamerani o&#39;chiring",
+            "turnOffVideo": "Kamera\/ekran almashishni o&#39;chiring",
+            "turnOffAudioInput": "Mikrofon ovozini o&#39;chirish",
+            "turnOffScreenSharing": "Ekranni almashishni o&#39;chiring",
+            "cameraIsTurnedOff": "Kamera o&#39;chirilgan",
+            "micIsTurnedOff": "Mikrofon o&#39;chirilgan",
+            "startFBLive": "Facebook Livestream-ni ishga tushiring",
+            "stopFBLive": "Facebook Livestreamni to‘xtating",
+            "startRecording": "Yozishni boshlang",
+            "stopRecording": "Yozishni to‘xtating",
+            "start": "Boshlash",
+            "startClodRecording": "Bulutli yozishni boshlang",
+            "startLocRecording": "Mahalliy yozishni boshlang",
+            "stopClodRecording": "Bulutli yozishni to&#39;xtating",
+            "stopLocRecording": "Mahalliy yozishni to&#39;xtating",
+            "stop": "STOP",
+            "share": "Ulashish",
+            "recordingInProgress": "Yozish davom etmoqda...",
+            "fbLiveTitle": "Jonli efir sarlavhasi",
+            "fbLiveDescription": "Jonli efiringizni tasvirlab bering. Gap nima haqida?",
+            "fbOnlyMeLiveAccess": "Faqat Men",
+            "fbFriendsAccess": "Do&#39;stlar",
+            "fbPublicAccess": "Ommaviy",
+            "publishOnTimeline": "Vaqt jadvalida nashr qilish",
+            "publishToGroup": "Guruhga nashr qilish",
+            "fbStartLive": "Jonli efirga chiqing",
+            "fbStopLive": "Jonli efirni tugatish",
+            "streamingSettings": "Sozlamalar",
+            "manageStream": "Livestreamni boshqarish",
+            "fbEmbedCode": "Oʻrnatish",
+            "copy": "Nusxalash",
+            "streamToRTMP": "Maxsus RTMP ga uzating",
+            "startBroadcasting": "Efirni boshlash",
+            "broadcastingInProgress": "Translatsiya davom etmoqda"
+        },
+        "audioSettings": {
+            "dialogTitle": "Audio sozlamalari",
+            "speakers": "Spikerlar",
+            "microphone": "Mikrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Translyatsiyani boshqarish"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Ishtirokchi sozlamalari",
+            "disconnect": "Ulanishni uzing",
+            "floatingScreens": "Suzuvchi ekranlar",
+            "tiledScreens": "Plitkali ekranlar",
+            "loudestExceptMe": "Mendan boshqa eng baland ovoz",
+            "maximizeLoudest": "Eng baland ovozli",
+            "staticMaximized": "Statik maksimallashtirilgan",
+            "fullScreen": "To&#39;liq ekran",
+            "manual": "Qo&#39;llanma",
+            "turnOffCamera": "Videoni yashirish",
+            "turnOffAudio": "Ovozni oʻchirish",
+            "turnOffScreenSharing": "Ekran almashishni yashirish",
+            "turnOnCamera": "Videoni ko&#39;rsatish",
+            "turnOnAudio": "Ovozni yoqish",
+            "turnOnScreenSharing": "Ekran almashishni ko&#39;rsatish"
+        },
+        "streamingSettings": {
+            "title": "Jonli efir"
+        },
+        "preview": {
+            "Meeting": "Telekonferentsiya",
+            "MeetingEnded": "Telekonferentsiya yakunlandi"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Gapirish uchun so&#39;rov",
+            "msg": "Hozirda yig‘ilishda {{count}} kishi so‘zga chiqmoqda. Gapirishni tugatish uchun {{seconds}} soniyadan keyin ulardan birini almashtirmoqchimisiz?"
+        }
+    }
+}

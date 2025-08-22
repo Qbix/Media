@@ -1,0 +1,256 @@
+{
+    "Shows": "ការបង្ហាញ",
+    "Clips": "ឃ្លីប",
+    "Video": "វីដេអូ",
+    "Audio": "អូឌីយ៉ូ",
+    "categories": {
+        "Clips": "ឃ្លីបប្រព័ន្ធផ្សព្វផ្សាយ",
+        "Episodes": "ភាគ"
+    },
+    "presentation": {
+        "PutTogether": "តើអ្នកនឹងបង្ហាញទេ? អ្នក​អាច​ប្រើ​ទំហំ​នេះ​ដើម្បី​ផ្ទុក​ឡើង​នូវ​សម្ភារៈ​រួម​គ្នា​សម្រាប់​ការ​បង្ហាញ​របស់​អ្នក។ ប្រើប៊ូតុងបូក។",
+        "Alert": "នៅពេលដែលព្រឹត្តិការណ៍ចាប់ផ្តើម ទំព័រនេះនឹងចាប់ផ្តើមបង្ហាញបទបង្ហាញដែលត្រូវគ្នា។",
+        "ClickHereForFullscreen": "បទបង្ហាញនឹងបង្ហាញនៅទីនេះ។ សូមចុចទីនេះដើម្បីដំណើរការពេញអេក្រង់។",
+        "question": {
+            "ScanThisQRCode": "ស្កេនកូដ QR នេះដើម្បីឆ្លើយ"
+        }
+    },
+    "NewEpisode": "វគ្គថ្មី។",
+    "NewClip": "ធ្វើឃ្លីបថ្មី។",
+    "NewClipTitlePlaceholder": "បញ្ចូលចំណងជើងឈុត",
+    "NewClipDescriptionPlaceholder": "បញ្ចូលការពិពណ៌នាឈុត",
+    "switchVisualization": "ប្តូរការមើលឃើញ",
+    "joinLiveShow": "ចូលរួមកម្មវិធីផ្សាយផ្ទាល់",
+    "showTwitchLiveStream": "បង្ហាញការផ្សាយបន្តផ្ទាល់ Twitch",
+    "showVoiceChat": "បង្ហាញការជជែកជាសំឡេង",
+    "LiveShow": "ការផ្សាយបន្តផ្ទាល់",
+    "AreYouSureKick": "តើអ្នកប្រាកដថាចង់ចាប់ផ្តើមអ្នកប្រើប្រាស់នេះទេ?",
+    "Save": "រក្សាទុក",
+    "ViewFullEpisode": "មើលភាគពេញ",
+    "CreditsEarned": "ឥណទានទទួលបាន",
+    "VideoTitle": "ចំណងជើងវីដេអូ ឬ URL",
+    "AreYouSureDeleteEpisode": "តើអ្នកប្រាកដថាចង់លុបវគ្គនេះទេ?",
+    "Yes": "បាទ",
+    "No": "ទេ",
+    "RealTimeCall": "ការហៅតាមពេលវេលាពិត",
+    "JoinWebRTC": "សន្និសីទទូរគមនាគមន៍",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "សន្និសីទទូរគមនាគមន៍",
+            "description": "សន្និសីទវីដេអូ \/ អូឌីយ៉ូតាមអ៊ីនធឺណិត"
+        },
+        "Media\/calls": {
+            "displayType": "ការហៅទូរស័ព្ទ",
+            "description": "ប្រភេទសម្រាប់ប្រព័ន្ធផ្សព្វផ្សាយ\/WebRTC",
+            "MaxRelationsExceeded": "លើសពីការហៅចូលអតិបរមា"
+        },
+        "Media\/clip": {
+            "displayType": "ឃ្លីប",
+            "description": "ឃ្លីបប្រព័ន្ធផ្សព្វផ្សាយ"
+        }
+    },
+    "feeds": {
+        "Title": "កាមេរ៉ា",
+        "filterByTitle": "ស្វែងរកព័ត៌មានតាមចំណងជើង",
+        "RequestFeedAccess": "ស្នើសុំការចូលប្រើព័ត៌មាន",
+        "New": "+ មតិព័ត៌មានថ្មី។",
+        "filterFeeds": "តម្រងមតិព័ត៌មាន",
+        "NewFeed": "មតិព័ត៌មានថ្មី។",
+        "NoneYet": "មិន​ទាន់​មាន​មតិ​ដែល​បាន​បង្កើត​នៅ​ឡើយ​ទេ។",
+        "AreYouSure": "តើអ្នកប្រាកដទេ?",
+        "FilterByDate": "ត្រងតាមកាលបរិច្ឆេទ",
+        "newFeeds": "អ្នកមានព័ត៌មានថ្មី {{1}}",
+        "Description": "{{1}} មតិព័ត៌មាន",
+        "Keywords": "{{1}} មតិព័ត៌មាន"
+    },
+    "feed": {
+        "HostedBy": "ធ្វើជាម្ចាស់ផ្ទះដោយ {{name}}",
+        "Name": "ឈ្មោះ",
+        "Conversation": "ការសន្ទនា",
+        "CloseFeed": {
+            "button": "បិទមតិព័ត៌មាន",
+            "Cancel": "តើអ្នកប្រាកដថាចង់បិទព័ត៌មាននេះទេ?",
+            "Participant": "មានអ្នកចូលរួម 1 នាក់នៅក្នុងមតិព័ត៌មាននេះ។",
+            "Participants": "មានអ្នកចូលរួម {{count}} នាក់នៅក្នុងមតិព័ត៌មាននេះ។"
+        },
+        "Calendar": "ប្រតិទិន",
+        "TitleOfFeed": "ចំណងជើងព័ត៌មាន៖",
+        "EmptyList": "បញ្ជីទទេ",
+        "EmptyVideos": "មិនទាន់មានឃ្លីបទេ។",
+        "AccessReason": "សូមបញ្ជាក់មូលហេតុ",
+        "Proceed": "បន្ត",
+        "FeedAlreadyClosed": "មតិព័ត៌មាននេះបានបិទរួចហើយ",
+        "RtmpLinkNote": "ចុចដើម្បីចម្លងតំណនេះទៅក្ដារតម្បៀតខ្ទាស់",
+        "SelectClip": "ជ្រើសរើសកាលបរិច្ឆេទដែលអ្នកចង់ឃើញ",
+        "Request": "ស្នើសុំ"
+    },
+    "newFeed": {
+        "Title": "មតិព័ត៌មានថ្មី។",
+        "locationTitle": "កំណត់ទីតាំងរបស់អ្នក។",
+        "SetLocation": "កំណត់ទីតាំងរបស់ខ្ញុំ",
+        "Starting": "ចាប់ផ្តើម",
+        "Day": "ថ្ងៃ",
+        "Create": "បង្កើត",
+        "Continue": "បន្ត",
+        "FeedTitle": "ចំណងជើងចំណី",
+        "SetTitle": "សូមកំណត់ចំណងជើងព័ត៌មាន"
+    },
+    "notifications": {
+        "JoinedWebRTC": "បានចូលរួមការហៅទូរសព្ទរបស់អ្នក។",
+        "SubjectJoinedYourCall": "{{subject}} បានចូលរួមការហៅទូរសព្ទរបស់អ្នក។"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "អ្នកមិនមានសិទ្ធិចូលរួមការផ្សាយនេះទេ។",
+        "streamTitle": "{{1}} បានចាប់ផ្តើមសន្និសីទទូរគមនាគមន៍",
+        "allow": {
+            "dialogTitle": "ការភ្ជាប់",
+            "microphoneBtn": "បើកមីក្រូហ្វូន",
+            "cameraBtn": "បើកកាមេរ៉ា",
+            "cameraAndMicrophoneBtn": "បើកកាមេរ៉ា និងមីក្រូហ្វូន"
+        },
+        "preparing": {
+            "dialogTitle": "បើក\/បិទកាមេរ៉ា ឬមីក្រូ មុនពេលអ្នកចូលរួម",
+            "micIsOff": "មីក្រូហ្វូនត្រូវបានបិទ",
+            "micIsOn": "មីក្រូហ្វូនត្រូវបានបើក",
+            "cameraIsOff": "កាមេរ៉ាបិទ",
+            "cameraIsOn": "កាមេរ៉ាបើក",
+            "screenSharingIsOn": "ការចែករំលែកអេក្រង់ត្រូវបានបើក",
+            "screenSharingIsOff": "ចែករំលែកអេក្រង់",
+            "joinNow": "ចូលរួមការហៅទូរសព្ទ"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "សេចក្តីណែនាំ",
+            "permissionDenied": "ការអនុញ្ញាតសម្រាប់ {{kind}} ត្រូវបានបដិសេធ។ ដើម្បីប្រើវា សូមអនុវត្តតាមជំហានទាំងនេះ៖",
+            "point1": "ចូលទៅកាន់ &quot;ការកំណត់&quot; -&gt; &quot;កម្រិតខ្ពស់&quot; -&gt; &quot;ភាពឯកជន និងសុវត្ថិភាព&quot; -&gt; &quot;ការកំណត់គេហទំព័រ&quot; -&gt; &quot;កាមេរ៉ា&quot; ឬ &quot;ការកំណត់គេហទំព័រ&quot; -&gt; &quot;មីក្រូហ្វូន&quot;",
+            "point2": "យក {{hostname}} ចេញពីបញ្ជី &quot;Block&quot;"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "សេចក្តីណែនាំ",
+            "permissionDenied": "ការអនុញ្ញាតសម្រាប់ {{kind}} ត្រូវបានបដិសេធ។ សូមផ្ទុកទំព័រនេះឡើងវិញ ហើយបញ្ជាក់ការចូលប្រើ {{kind}} ដើម្បីចូលរួមសន្និសីទ។"
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "សេចក្តីណែនាំ",
+            "permissionDenied": "ការអនុញ្ញាតសម្រាប់ {{kind}} ត្រូវបានបដិសេធ។ ដើម្បីប្រើវា សូមអនុវត្តតាមជំហានទាំងនេះ៖",
+            "point1": "ចូលទៅកាន់ការកំណត់ Android របស់អ្នក។",
+            "point2": "បើក &quot;កម្មវិធី និងការជូនដំណឹង&quot;",
+            "point3": "ស្វែងរក &quot; {{communityName}} &quot; ហើយបើកវា។",
+            "point4": "ចុចលើការអនុញ្ញាត",
+            "point5": "បើក {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "សេចក្តីណែនាំ",
+            "permissionDenied": "ការអនុញ្ញាតសម្រាប់ {{kind}} ត្រូវបានបដិសេធ។ ដើម្បីប្រើវា សូមអនុវត្តតាមជំហានទាំងនេះ៖",
+            "point1": "ចូលទៅកាន់ការកំណត់ iOS របស់អ្នក។",
+            "point2": "បើក &quot;ភាពឯកជន&quot;",
+            "point3": "ស្វែងរក {{kind}} ហើយបើកវា។",
+            "point4": "ស្វែងរក &quot; {{communityName}} &quot; ហើយបើក"
+        },
+        "fbLive": {
+            "dialogTitle": "ការផ្សាយបន្តផ្ទាល់តាមហ្វេសប៊ុកបានចាប់ផ្តើម"
+        },
+        "notices": {
+            "youJoinedRoom": "អ្នកបានចូលរួមបន្ទប់",
+            "joining": "ចូលរួម៖ {{userName}}",
+            "sbLeftRoom": "{{userName}} បានចាកចេញពីបន្ទប់",
+            "switchingRoom": "ប្តូរបន្ទប់...",
+            "forceDisconnecting": "អ្នកនឹងត្រូវបានផ្តាច់ក្នុងរយៈពេល 5 វិនាទី",
+            "forceDisconnectingImmediately": "អ្នកត្រូវបានផ្តាច់ទំនាក់ទំនងដោយម៉ាស៊ីន",
+            "youLeftRoom": "អ្នកបានចាកចេញពីបន្ទប់",
+            "codeCopied": "អ្នកបានចាកចេញពីបន្ទប់",
+            "sbBeganFbLive": "{{userName}} បាន​ចាប់​ផ្ដើម​ផ្សាយ​ការ​ហៅ​ទូរសព្ទ​នេះ​ក្នុង​ Facebook",
+            "sbStoppedFbLive": "{{userName}} ឈប់​ផ្សាយ​ការ​ហៅ​ទូរសព្ទ​នេះ​នៅ​ក្នុង Facebook",
+            "youBeganFbLive": "អ្នកបានចាប់ផ្តើមចាក់ផ្សាយការហៅទូរសព្ទនេះនៅក្នុង Facebook",
+            "youStoppedFbLive": "អ្នក​បាន​ឈប់​ផ្សាយ​ការ​ហៅ​ទូរសព្ទ​នេះ​នៅ​ក្នុង Facebook",
+            "youStartedLive": "អ្នកបានចាប់ផ្តើមចាក់ផ្សាយការហៅទូរសព្ទនេះទៅ RTMP ផ្ទាល់ខ្លួន",
+            "youStoppedLive": "អ្នកបានឈប់ចាក់ផ្សាយការហៅទូរសព្ទនេះទៅ RTMP ផ្ទាល់ខ្លួន",
+            "sbStartedLiveStreaming": "{{userName}} បានចាប់ផ្តើមផ្សាយបន្តផ្ទាល់",
+            "sbStoppedLiveStreaming": "{{userName}} បានបញ្ចប់ការផ្សាយបន្តផ្ទាល់",
+            "liveStopped": "មាន​បញ្ហា​ពេល​ផ្ញើ​វីដេអូ​ទៅ​ចំណុច​បញ្ចប់​បាន​កើត​ឡើង",
+            "youBeganVideoRecording": "អ្នក​បាន​ចាប់​ផ្ដើម​ថត​សន្និសីទ​នេះ។",
+            "youStoppedVideoRecording": "អ្នកបានឈប់ថតសន្និសីទនេះ។",
+            "linkCopiedToCb": "តំណត្រូវបានចម្លងទៅក្ដារតម្បៀតខ្ទាស់",
+            "codeCopiedToCb": "លេខកូដត្រូវបានចម្លងទៅក្ដារតម្បៀតខ្ទាស់",
+            "userHasNoVideo": "អ្នកចូលរួមមិនមានវីដេអូទេ។",
+            "openInBrowserAlert": "បើកតំណនៅក្នុងកម្មវិធីរុករក Safari ដើម្បីចូលរួមសន្និសីទ។",
+            "allowedVideoLimit": "មានតែវីដេអូ {{limit}} ត្រូវបានអនុញ្ញាតនៅក្នុងបន្ទប់នេះ។",
+            "allowedAudioLimit": "មានតែមីក្រូហ្វូន {{limit}} ប៉ុណ្ណោះដែលត្រូវបានអនុញ្ញាតនៅក្នុងបន្ទប់នេះ។",
+            "processingRecording": "កំពុងដំណើរការថត..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "ការកំណត់វីដេអូ",
+            "webCamera": "កាមេរ៉ាបណ្ដាញ",
+            "screenSharing": "ការចែករំលែកអេក្រង់",
+            "shareAnotherScreen": "ចែករំលែកអេក្រង់ផ្សេងទៀត។",
+            "turnOffCameras": "បិទកាមេរ៉ា",
+            "turnOffVideo": "បិទការចែករំលែកកាមេរ៉ា\/អេក្រង់",
+            "turnOffAudioInput": "បិទមីក្រូហ្វូន",
+            "turnOffScreenSharing": "បិទការចែករំលែកអេក្រង់",
+            "cameraIsTurnedOff": "កាមេរ៉ាត្រូវបានបិទ",
+            "micIsTurnedOff": "មីក្រូហ្វូនត្រូវបានបិទ",
+            "startFBLive": "ចាប់ផ្តើម Facebook Livestream",
+            "stopFBLive": "បញ្ឈប់ការផ្សាយបន្តផ្ទាល់ Facebook",
+            "startRecording": "ចាប់ផ្តើមថត",
+            "stopRecording": "បញ្ឈប់ការថត",
+            "start": "ចាប់ផ្តើម",
+            "startClodRecording": "ចាប់ផ្តើមការថតលើពពក",
+            "startLocRecording": "ចាប់ផ្តើមការថតក្នុងស្រុក",
+            "stopClodRecording": "បញ្ឈប់ការថតលើពពក",
+            "stopLocRecording": "បញ្ឈប់ការថតក្នុងស្រុក",
+            "stop": "ឈប់",
+            "share": "ចែករំលែក",
+            "recordingInProgress": "ការថតកំពុងដំណើរការ...",
+            "fbLiveTitle": "ចំណងជើងនៃការផ្សាយបន្តផ្ទាល់",
+            "fbLiveDescription": "ពណ៌នាការផ្សាយបន្តផ្ទាល់របស់អ្នក។ តើវានិយាយអំពីអ្វី?",
+            "fbOnlyMeLiveAccess": "មានតែខ្ញុំ",
+            "fbFriendsAccess": "មិត្តភក្តិ",
+            "fbPublicAccess": "សាធារណៈ",
+            "publishOnTimeline": "ផ្សព្វផ្សាយនៅលើបន្ទាត់ពេលវេលា",
+            "publishToGroup": "ផ្សព្វផ្សាយទៅក្រុម",
+            "fbStartLive": "បន្តផ្ទាល់",
+            "fbStopLive": "បញ្ចប់ការផ្សាយបន្តផ្ទាល់",
+            "streamingSettings": "ការកំណត់",
+            "manageStream": "គ្រប់គ្រងការផ្សាយបន្តផ្ទាល់",
+            "fbEmbedCode": "បង្កប់",
+            "copy": "ចម្លង",
+            "streamToRTMP": "ស្ទ្រីមទៅ RTMP ផ្ទាល់ខ្លួន",
+            "startBroadcasting": "ចាប់ផ្តើមចាក់ផ្សាយ",
+            "broadcastingInProgress": "ការផ្សាយកំពុងដំណើរការ"
+        },
+        "audioSettings": {
+            "dialogTitle": "ការកំណត់សំឡេង",
+            "speakers": "វាគ្មិន",
+            "microphone": "មីក្រូហ្វូន"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "គ្រប់គ្រងការផ្សាយ"
+        },
+        "participantsPopup": {
+            "dialogTitle": "ការកំណត់អ្នកចូលរួម",
+            "disconnect": "ផ្តាច់",
+            "floatingScreens": "អេក្រង់អណ្តែត",
+            "tiledScreens": "អេក្រង់ក្រឡាក្បឿង",
+            "loudestExceptMe": "ខ្លាំងបំផុតលើកលែងតែខ្ញុំ",
+            "maximizeLoudest": "ពង្រីកសំឡេងខ្លាំងបំផុត។",
+            "staticMaximized": "អតិបរមាឋិតិវន្ត",
+            "fullScreen": "ពេញអេក្រង់",
+            "manual": "សៀវភៅដៃ",
+            "turnOffCamera": "លាក់វីដេអូ",
+            "turnOffAudio": "បិទសំឡេង",
+            "turnOffScreenSharing": "លាក់ការចែករំលែកអេក្រង់",
+            "turnOnCamera": "បង្ហាញវីដេអូ",
+            "turnOnAudio": "បើកសំឡេង",
+            "turnOnScreenSharing": "បង្ហាញការចែករំលែកអេក្រង់"
+        },
+        "streamingSettings": {
+            "title": "ការផ្សាយបន្តផ្ទាល់"
+        },
+        "preview": {
+            "Meeting": "សន្និសីទទូរគមនាគមន៍",
+            "MeetingEnded": "សន្និសីទទូរគមនាគមន៍បានបញ្ចប់"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "ស្នើសុំនិយាយ",
+            "msg": "បច្ចុប្បន្ន​មាន​មនុស្ស {{count}} ​នាក់​និយាយ​នៅ​ក្នុង​ការ​ប្រជុំ។ តើអ្នកចង់ជំនួសពួកគេមួយបន្ទាប់ពីអនុញ្ញាតឱ្យពួកគេ {{seconds}} វិនាទីដើម្បីបញ្ចប់ការនិយាយទេ?"
+        }
+    }
+}

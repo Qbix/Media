@@ -1,0 +1,256 @@
+{
+    "Shows": "Mga pasundayag",
+    "Clips": "Mga clip",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Mga Clip sa Media",
+        "Episodes": "Mga yugto"
+    },
+    "presentation": {
+        "PutTogether": "Magpresenta ka? Mahimo nimong gamiton kini nga luna aron mag-upload og mga materyales alang sa imong presentasyon. Gamita ang Plus button.",
+        "Alert": "Sa pagsugod sa mga panghitabo, kini nga panid magsugod sa pagpakita sa ilang katugbang nga mga presentasyon",
+        "ClickHereForFullscreen": "Ang mga presentasyon makita dinhi. Pag-klik dinhi aron moadto sa full-screen.",
+        "question": {
+            "ScanThisQRCode": "I-scan kini nga QR code aron makatubag"
+        }
+    },
+    "NewEpisode": "Bag-ong Episode",
+    "NewClip": "Paghimo og Bag-ong Clip",
+    "NewClipTitlePlaceholder": "Pagsulod sa Titulo sa Clip",
+    "NewClipDescriptionPlaceholder": "Pagsulod sa Deskripsyon sa Clip",
+    "switchVisualization": "Pagbalhin sa visualization",
+    "joinLiveShow": "Apil sa Live Show",
+    "showTwitchLiveStream": "Ipakita ang Twitch Live Stream",
+    "showVoiceChat": "Ipakita ang Voice Chat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Sigurado ka ba nga gusto nimong sugdan kini nga tiggamit?",
+    "Save": "Tipigi",
+    "ViewFullEpisode": "Tan-awa ang Full Episode",
+    "CreditsEarned": "Mga kredito nga nakuha",
+    "VideoTitle": "Titulo sa Video o URL",
+    "AreYouSureDeleteEpisode": "Sigurado ka ba nga gusto nimong papason kini nga yugto?",
+    "Yes": "Oo",
+    "No": "Dili",
+    "RealTimeCall": "Tinuod nga Oras nga Tawag",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "usa ka online nga video\/audio nga komperensya"
+        },
+        "Media\/calls": {
+            "displayType": "Mga tawag",
+            "description": "kategorya para sa Media\/WebRTC",
+            "MaxRelationsExceeded": "Milapas ang max nga tawag"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "media clip"
+        }
+    },
+    "feeds": {
+        "Title": "Mga kamera",
+        "filterByTitle": "Pangitag mga feed pinaagi sa titulo",
+        "RequestFeedAccess": "Paghangyo og access sa feed",
+        "New": "+ Bag-ong Feed",
+        "filterFeeds": "Filter feeds",
+        "NewFeed": "Bag-ong Feed",
+        "NoneYet": "Wala pay naporma nga mga feed.",
+        "AreYouSure": "Sigurado ka?",
+        "FilterByDate": "Pagsala Pinaagi sa Petsa",
+        "newFeeds": "Ikaw adunay {{1}} ka bag-ong mga feed",
+        "Description": "{{1}} nga mga feed",
+        "Keywords": "{{1}} nga mga feed"
+    },
+    "feed": {
+        "HostedBy": "Gi-host ni {{name}}",
+        "Name": "Ngalan",
+        "Conversation": "Pag-istoryahanay",
+        "CloseFeed": {
+            "button": "Close Feed",
+            "Cancel": "Sigurado ka nga gusto nimong isira kini nga feed?",
+            "Participant": "Adunay 1 ka partisipante niini nga feed",
+            "Participants": "Adunay {{count}} ka partisipante niini nga feed"
+        },
+        "Calendar": "Kalendaryo",
+        "TitleOfFeed": "Titulo sa feed:",
+        "EmptyList": "Walay sulod nga listahan",
+        "EmptyVideos": "Wala pay clips",
+        "AccessReason": "palihug isulti ang hinungdan",
+        "Proceed": "Padayon",
+        "FeedAlreadyClosed": "Kini nga feed nagsira na",
+        "RtmpLinkNote": "Pag-klik aron kopyahon kini nga link sa clipboard",
+        "SelectClip": "Pilia ang petsa nga gusto nimong makita",
+        "Request": "Pangayo"
+    },
+    "newFeed": {
+        "Title": "Bag-ong Feed",
+        "locationTitle": "Ibutang ang Imong Lokasyon",
+        "SetLocation": "Ibutang ang Akong Lokasyon",
+        "Starting": "Nagsugod",
+        "Day": "Adlaw",
+        "Create": "Paghimo",
+        "Continue": "Padayon",
+        "FeedTitle": "Titulo sa feed",
+        "SetTitle": "Palihug ibutang ang titulo sa feed"
+    },
+    "notifications": {
+        "JoinedWebRTC": "miapil sa imong tawag",
+        "SubjectJoinedYourCall": "{{subject}} miapil sa imong tawag"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Wala kay permiso sa pag-apil ani nga stream.",
+        "streamTitle": "{{1}} nagsugod ug Teleconference",
+        "allow": {
+            "dialogTitle": "Pagdugtong",
+            "microphoneBtn": "I-enable ang Mikropono",
+            "cameraBtn": "I-enable ang Camera",
+            "cameraAndMicrophoneBtn": "I-enable ang Camera ug Microphone"
+        },
+        "preparing": {
+            "dialogTitle": "I-on\/off ang camera o mikropono sa dili ka pa moapil",
+            "micIsOff": "Gipalong ang mic",
+            "micIsOn": "Naka-on ang mic",
+            "cameraIsOff": "Gipalong ang camera",
+            "cameraIsOn": "Naka-on ang camera",
+            "screenSharingIsOn": "Ang pagpakigbahin sa screen gi-on",
+            "screenSharingIsOff": "Ipakigbahin ang screen",
+            "joinNow": "Apil sa Tawag"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Mga instruksyon",
+            "permissionDenied": "Ang pagtugot alang sa {{kind}} gibalibaran. Aron magamit kini palihug sunda kini nga mga lakang:",
+            "point1": "Lakaw ngadto sa &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy and security&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Camera&quot; o &quot;Site Settings&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Kuhaa {{hostname}} gikan sa lista sa &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Mga instruksyon",
+            "permissionDenied": "Ang pagtugot alang sa {{kind}} gibalibaran. Palihug i-reload kini nga panid ug kumpirmahi ang pag-access sa {{kind}} aron makaapil sa komperensya."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Mga instruksyon",
+            "permissionDenied": "Ang pagtugot alang sa {{kind}} gibalibaran. Aron magamit kini palihug sunda kini nga mga lakang:",
+            "point1": "Adto sa imong Android Settings",
+            "point2": "Ablihi ang &quot;Apps &amp; notifications&quot;",
+            "point3": "Pangitaa ang &quot; {{communityName}} &quot; ug ablihi kini",
+            "point4": "Pag-tap sa Permissions",
+            "point5": "I-enable {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Mga instruksyon",
+            "permissionDenied": "Ang pagtugot alang sa {{kind}} gibalibaran. Aron magamit kini palihug sunda kini nga mga lakang:",
+            "point1": "Adto sa imong iOS Settings",
+            "point2": "Ablihi ang &quot;Privacy&quot;",
+            "point3": "Pangitaa {{kind}} ug ablihi kini",
+            "point4": "Pangitaa ang &quot; {{communityName}} &quot; ug i-enable"
+        },
+        "fbLive": {
+            "dialogTitle": "Nagsugod ang live streaming sa Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "Miapil ka sa kwarto",
+            "joining": "Apil: {{userName}}",
+            "sbLeftRoom": "{{userName}} mibiya sa kwarto",
+            "switchingRoom": "Pagbalhin kwarto...",
+            "forceDisconnecting": "Ma-disconnect ka sulod sa 5 segundos",
+            "forceDisconnectingImmediately": "Gi-disconnect ka sa usa ka host",
+            "youLeftRoom": "Mibiya ka sa kwarto",
+            "codeCopied": "Mibiya ka sa kwarto",
+            "sbBeganFbLive": "{{userName}} nagsugod sa pagsibya niini nga tawag sa Facebook",
+            "sbStoppedFbLive": "{{userName}} mihunong sa pagsibya niini nga tawag sa Facebook",
+            "youBeganFbLive": "Nagsugod ka sa pagsibya niini nga tawag sa Facebook",
+            "youStoppedFbLive": "Mihunong ka sa pagsibya niini nga tawag sa Facebook",
+            "youStartedLive": "Gisugdan nimo ang pagsibya niini nga tawag sa naandan nga RTMP",
+            "youStoppedLive": "Mihunong ka sa pagsibya niini nga tawag sa custom nga RTMP",
+            "sbStartedLiveStreaming": "{{userName}} nagsugod nga live",
+            "sbStoppedLiveStreaming": "{{userName}} natapos nga live",
+            "liveStopped": "Nahitabo ang sayup samtang nagpadala og video sa endpoint",
+            "youBeganVideoRecording": "Nagsugod ka sa pagrekord niini nga komperensya",
+            "youStoppedVideoRecording": "Mihunong ka sa pagrekord niini nga komperensya",
+            "linkCopiedToCb": "Ang link gikopya sa clipboard",
+            "codeCopiedToCb": "Ang code gikopya sa clipboard",
+            "userHasNoVideo": "Ang partisipante walay video",
+            "openInBrowserAlert": "Ablihi ang link sa Safari browser aron makaapil sa komperensya.",
+            "allowedVideoLimit": "{{limit}} ra nga video ang gitugotan sa kini nga kwarto",
+            "allowedAudioLimit": "{{limit}} ka mikropono lamang ang gitugotan niini nga lawak",
+            "processingRecording": "Giproseso ang pagrekord..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Mga Setting sa Video",
+            "webCamera": "Web Camera",
+            "screenSharing": "Pagpakigbahin sa Screen",
+            "shareAnotherScreen": "Ipakigbahin ang laing screen",
+            "turnOffCameras": "I-off ang camera",
+            "turnOffVideo": "I-off ang pagpaambit sa camera\/screen",
+            "turnOffAudioInput": "Ihilum ang mikropono",
+            "turnOffScreenSharing": "I-off ang pagpakigbahin sa screen",
+            "cameraIsTurnedOff": "Gipalong ang camera",
+            "micIsTurnedOff": "Gipalong ang mikropono",
+            "startFBLive": "Pagsugod sa Facebook Livestream",
+            "stopFBLive": "Hunong ang Facebook Livestream",
+            "startRecording": "Pagsugod sa Pagrekord",
+            "stopRecording": "Hunonga ang Pagrekord",
+            "start": "Pagsugod",
+            "startClodRecording": "Pagsugod sa Cloud Recording",
+            "startLocRecording": "Pagsugod sa Lokal nga Pagrekord",
+            "stopClodRecording": "Hunonga ang Cloud Recording",
+            "stopLocRecording": "Hunonga ang Lokal nga Pagrekord",
+            "stop": "Hunong",
+            "share": "Ipaambit",
+            "recordingInProgress": "Nagpadayon ang pagrekord...",
+            "fbLiveTitle": "Titulo sa Livestream",
+            "fbLiveDescription": "Ihulagway ang imong Livestream. Mahitungod sa unsa kini?",
+            "fbOnlyMeLiveAccess": "Ako Lang",
+            "fbFriendsAccess": "Mga higala",
+            "fbPublicAccess": "Publiko",
+            "publishOnTimeline": "Imantala sa timeline",
+            "publishToGroup": "Imantala sa grupo",
+            "fbStartLive": "Mag Live",
+            "fbStopLive": "Tapuson ang Livestream",
+            "streamingSettings": "Mga setting",
+            "manageStream": "Pagdumala sa Livestream",
+            "fbEmbedCode": "I-embed",
+            "copy": "Kopyaha",
+            "streamToRTMP": "Pag-stream sa naandan nga RTMP",
+            "startBroadcasting": "Pagsugod sa pagsibya",
+            "broadcastingInProgress": "Nagpadayon ang pagsibya"
+        },
+        "audioSettings": {
+            "dialogTitle": "Mga Setting sa Audio",
+            "speakers": "Mga mamumulong",
+            "microphone": "Mikropono"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Pagdumala sa Broadcast"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Mga Setting sa Partisipante",
+            "disconnect": "Pagdiskonekta",
+            "floatingScreens": "Naglutaw nga mga Screen",
+            "tiledScreens": "Tiled nga mga Screen",
+            "loudestExceptMe": "Labing Kusog Gawas Kanako",
+            "maximizeLoudest": "I-maximize ang Labing Kusog",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Bug-os nga Screen",
+            "manual": "Manwal",
+            "turnOffCamera": "Tagoa ang video",
+            "turnOffAudio": "I-mute ang audio",
+            "turnOffScreenSharing": "Tagoa ang pagpakigbahin sa screen",
+            "turnOnCamera": "Ipakita ang video",
+            "turnOnAudio": "I-unmute ang audio",
+            "turnOnScreenSharing": "Ipakita ang pagpakigbahin sa screen"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Natapos ang teleconference"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Paghangyo sa Pagsulti",
+            "msg": "Sa pagkakaron adunay {{count}} ka tawo ang namulong sa miting. Gusto ba nimong ilisan ang usa niini pagkahuman gitugotan sila {{seconds}} segundos nga makahuman sa pagsulti?"
+        }
+    }
+}

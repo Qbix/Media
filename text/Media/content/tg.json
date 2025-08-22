@@ -1,0 +1,256 @@
+{
+    "Shows": "Намоишхо",
+    "Clips": "Клипҳо",
+    "Video": "Видео",
+    "Audio": "Аудио",
+    "categories": {
+        "Clips": "Клипҳои ВАО",
+        "Episodes": "Эпизодҳо"
+    },
+    "presentation": {
+        "PutTogether": "Шумо муаррифӣ хоҳед кард? Шумо метавонед ин ҷойро барои бор кардани маводҳо барои муаррифии худ истифода баред. Тугмаи Plus-ро истифода баред.",
+        "Alert": "Вақте ки рӯйдодҳо оғоз мешаванд, ин саҳифа ба намоиши презентатсияҳои мувофиқи худ оғоз мекунад",
+        "ClickHereForFullscreen": "Презентатсияҳо дар ин ҷо пайдо мешаванд. Барои дидани пурраи экран ин ҷо клик кунед.",
+        "question": {
+            "ScanThisQRCode": "Барои ҷавоб додан ин рамзи QR-ро скан кунед"
+        }
+    },
+    "NewEpisode": "Эпизоди нав",
+    "NewClip": "Клипи нав созед",
+    "NewClipTitlePlaceholder": "Сарлавҳаи клипро ворид кунед",
+    "NewClipDescriptionPlaceholder": "Тавсифи клипро ворид кунед",
+    "switchVisualization": "Гузариш визуализатсия",
+    "joinLiveShow": "Ба Намоиши Зиндагӣ ҳамроҳ шавед",
+    "showTwitchLiveStream": "Намоиши ҷараёни мустақими Twitch",
+    "showVoiceChat": "Намоиши Чати овозӣ",
+    "LiveShow": "Намоиши зинда",
+    "AreYouSureKick": "Шумо мутмаин ҳастед, ки мехоҳед ин корбарро хориҷ кунед?",
+    "Save": "Захира кунед",
+    "ViewFullEpisode": "Намоиши пурраи эпизод",
+    "CreditsEarned": "Қарзҳои ба даст овардашуда",
+    "VideoTitle": "Сарлавҳаи видео ё URL",
+    "AreYouSureDeleteEpisode": "Шумо мутмаин ҳастед, ки мехоҳед ин эпизодро нест кунед?",
+    "Yes": "Бале",
+    "No": "Не",
+    "RealTimeCall": "Занг дар вақти воқеӣ",
+    "JoinWebRTC": "Телеконференция",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Телеконференция",
+            "description": "конфронси онлайни видео\/аудио"
+        },
+        "Media\/calls": {
+            "displayType": "Зангҳо",
+            "description": "категория барои Media\/WebRTC",
+            "MaxRelationsExceeded": "Зангҳои максималӣ зиёд шуданд"
+        },
+        "Media\/clip": {
+            "displayType": "Клип",
+            "description": "клипи ВАО"
+        }
+    },
+    "feeds": {
+        "Title": "Камераҳо",
+        "filterByTitle": "Наворҳоро аз рӯи унвон пайдо кунед",
+        "RequestFeedAccess": "Дастрасӣ ба каналро дархост кунед",
+        "New": "+ Навори нав",
+        "filterFeeds": "Наворҳои филтр",
+        "NewFeed": "Навори нав",
+        "NoneYet": "То ҳол ягон канал ташкил нашудааст.",
+        "AreYouSure": "Шумо мутмаъин ҳастед?",
+        "FilterByDate": "Филтр аз рӯи сана",
+        "newFeeds": "Шумо {{1}} навори нав доред",
+        "Description": "{{1}} канал",
+        "Keywords": "{{1}} канал"
+    },
+    "feed": {
+        "HostedBy": "Аз ҷониби {{name}} баргузор мешавад",
+        "Name": "Ном",
+        "Conversation": "Сухбат",
+        "CloseFeed": {
+            "button": "Либосро пӯшед",
+            "Cancel": "Шумо мутмаин ҳастед, ки мехоҳед ин наворро пӯшед?",
+            "Participant": "Дар ин навор 1 иштирокчӣ ҳаст",
+            "Participants": "Дар ин навор {{count}} нафар иштирок мекунанд"
+        },
+        "Calendar": "Тақвим",
+        "TitleOfFeed": "Сарлавҳаи канал:",
+        "EmptyList": "Рӯйхати холӣ",
+        "EmptyVideos": "Ҳанӯз ягон клип нест",
+        "AccessReason": "илтимос сабабашро баён кунед",
+        "Proceed": "Давом диҳед",
+        "FeedAlreadyClosed": "Ин канал аллакай баста шудааст",
+        "RtmpLinkNote": "Барои нусхабардории ин пайванд ба буфер клик кунед",
+        "SelectClip": "Санаеро, ки дидан мехоҳед, интихоб кунед",
+        "Request": "Дархост"
+    },
+    "newFeed": {
+        "Title": "Навори нав",
+        "locationTitle": "Ҷойгиршавии худро таъин кунед",
+        "SetLocation": "Ҷойгиршавии манро таъин кунед",
+        "Starting": "Оғоз",
+        "Day": "рӯз",
+        "Create": "Эҷод кунед",
+        "Continue": "Давом додан",
+        "FeedTitle": "Унвони канал",
+        "SetTitle": "Лутфан унвони каналро таъин кунед"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ба занги шумо ҳамроҳ шуд",
+        "SubjectJoinedYourCall": "{{subject}} ба занги шумо ҳамроҳ шуд"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Шумо барои ҳамроҳ шудан ба ин ҷараён иҷозат надоред.",
+        "streamTitle": "{{1}} телеконференсияро оғоз кард",
+        "allow": {
+            "dialogTitle": "Пайвастшавӣ",
+            "microphoneBtn": "Микрофонро фаъол созед",
+            "cameraBtn": "Камераро фаъол созед",
+            "cameraAndMicrophoneBtn": "Камера ва микрофонро фаъол созед"
+        },
+        "preparing": {
+            "dialogTitle": "Пеш аз ҳамроҳ шудан камера ё микрофонро фаъол \/ хомӯш кунед",
+            "micIsOff": "Микрофон хомӯш аст",
+            "micIsOn": "Микрофон фаъол аст",
+            "cameraIsOff": "Камера хомӯш аст",
+            "cameraIsOn": "Камера фаъол аст",
+            "screenSharingIsOn": "Мубодилаи экран фаъол аст",
+            "screenSharingIsOff": "Экрани мубодила",
+            "joinNow": "Ба занг ҳамроҳ шавед"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Дастурҳо",
+            "permissionDenied": "Иҷозат барои {{kind}} рад карда шуд. Барои истифодаи он, лутфан ин қадамҳоро иҷро кунед:",
+            "point1": "Ба &quot;Танзимот&quot; -&gt; &quot;Мукаммал&quot; -&gt; &quot;Махфият ва амният&quot; -&gt; &quot;Танзимоти сайт&quot; -&gt; &quot;Камера&quot; ё &quot;Танзимоти сайт&quot; -&gt; &quot;Микрофон&quot; гузаред.",
+            "point2": "{{hostname}} аз рӯйхати &quot;Блок&quot; хориҷ кунед"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Дастурҳо",
+            "permissionDenied": "Иҷозат барои {{kind}} рад карда шуд. Лутфан ин саҳифаро аз нав бор кунед ва дастрасӣ ба {{kind}} тасдиқ кунед, то ба конфронс ҳамроҳ шавед."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Дастурҳо",
+            "permissionDenied": "Иҷозат барои {{kind}} рад карда шуд. Барои истифодаи он, лутфан ин қадамҳоро иҷро кунед:",
+            "point1": "Ба Танзимоти Android-и худ равед",
+            "point2": "Кушодани &quot;Барномаҳо ва огоҳиҳо&quot;",
+            "point3": "&quot; {{communityName}} &quot; -ро ёбед ва онро кушоед",
+            "point4": "Ба Иҷозатҳо клик кунед",
+            "point5": "{{kind}} ро фаъол созед"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Дастурҳо",
+            "permissionDenied": "Иҷозат барои {{kind}} рад карда шуд. Барои истифода бурдани он, лутфан ин қадамҳоро иҷро кунед:",
+            "point1": "Ба Танзимоти iOS-и худ равед",
+            "point2": "Кушодани &quot;Махфият&quot;",
+            "point3": "{{kind}} ёбед ва онро кушоед",
+            "point4": "&quot; {{communityName}} &quot; -ро ёбед ва фаъол созед"
+        },
+        "fbLive": {
+            "dialogTitle": "Ҷараёни мустақими Facebook оғоз шуд"
+        },
+        "notices": {
+            "youJoinedRoom": "Шумо ба ҳуҷра ҳамроҳ шудед",
+            "joining": "Ҳамроҳшавӣ: {{userName}}",
+            "sbLeftRoom": "{{userName}} аз ҳуҷра баромад",
+            "switchingRoom": "Ҳуҷраи ивазкунӣ ...",
+            "forceDisconnecting": "Шумо дар давоми 5 сония ҷудо карда мешавед",
+            "forceDisconnectingImmediately": "Шумо аз ҷониби мизбон ҷудо карда шудед",
+            "youLeftRoom": "Шумо аз ҳуҷра баромадед",
+            "codeCopied": "Шумо аз ҳуҷра баромадед",
+            "sbBeganFbLive": "{{userName}} пахши ин зангро дар Фейсбук оғоз кард",
+            "sbStoppedFbLive": "{{userName}} пахши ин зангро дар Фейсбук қатъ кард",
+            "youBeganFbLive": "Шумо пахши ин зангро дар Фейсбук оғоз кардед",
+            "youStoppedFbLive": "Шумо пахши ин зангро дар Facebook қатъ кардед",
+            "youStartedLive": "Шумо пахши ин зангро ба RTMP фармоишӣ оғоз кардед",
+            "youStoppedLive": "Шумо пахши ин зангро ба RTMP фармоишӣ қатъ кардед",
+            "sbStartedLiveStreaming": "{{userName}} зинда оғоз кард",
+            "sbStoppedLiveStreaming": "{{userName}} зинда ба охир расид",
+            "liveStopped": "Ҳангоми фиристодани видео ба нуқтаи ниҳоӣ хатогӣ рух дод",
+            "youBeganVideoRecording": "Шумо сабти ин конфронсро оғоз кардед",
+            "youStoppedVideoRecording": "Шумо сабти ин конфронсро қатъ кардед",
+            "linkCopiedToCb": "Пайванд ба буфер нусхабардорӣ карда шуд",
+            "codeCopiedToCb": "Рамз ба буфер нусхабардорӣ карда шуд",
+            "userHasNoVideo": "Иштирокчӣ видео надорад",
+            "openInBrowserAlert": "Барои ҳамроҳ шудан ба конфронс истинодро дар браузери Safari кушоед.",
+            "allowedVideoLimit": "Дар ин ҳуҷра танҳо {{limit}} видео иҷозат дода шудааст",
+            "allowedAudioLimit": "Дар ин ҳуҷра танҳо {{limit}} микрофон иҷозат дода шудааст",
+            "processingRecording": "Коркарди сабт..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Танзимоти видео",
+            "webCamera": "Веб камера",
+            "screenSharing": "Мубодилаи экран",
+            "shareAnotherScreen": "Экрани дигарро мубодила кунед",
+            "turnOffCameras": "Камераро хомӯш кунед",
+            "turnOffVideo": "Камера \/ мубодилаи экранро хомӯш кунед",
+            "turnOffAudioInput": "Микрофонро хомӯш кунед",
+            "turnOffScreenSharing": "Мубодилаи экранро хомӯш кунед",
+            "cameraIsTurnedOff": "Камера хомӯш аст",
+            "micIsTurnedOff": "Микрофон хомӯш аст",
+            "startFBLive": "Facebook Livestream-ро оғоз кунед",
+            "stopFBLive": "Livestream Facebook-ро қатъ кунед",
+            "startRecording": "Сабтро оғоз кунед",
+            "stopRecording": "Сабтро қатъ кунед",
+            "start": "Оғоз",
+            "startClodRecording": "Сабти абрро оғоз кунед",
+            "startLocRecording": "Сабти маҳаллиро оғоз кунед",
+            "stopClodRecording": "Сабти абрро қатъ кунед",
+            "stopLocRecording": "Сабти маҳаллиро қатъ кунед",
+            "stop": "Ист",
+            "share": "Мубодила",
+            "recordingInProgress": "Сабт идома дорад...",
+            "fbLiveTitle": "Сарлавҳаи Livestream",
+            "fbLiveDescription": "Ҷараёни Live-и худро тавсиф кунед. Гап дар бораи чй меравад?",
+            "fbOnlyMeLiveAccess": "Фақат Ман",
+            "fbFriendsAccess": "дустон",
+            "fbPublicAccess": "оммавй",
+            "publishOnTimeline": "Дар ҷадвали вақт интишор кунед",
+            "publishToGroup": "Ба гурӯҳ нашр кунед",
+            "fbStartLive": "Ба Live гузаред",
+            "fbStopLive": "Анҷом додани ҷараёни мустақим",
+            "streamingSettings": "Танзимотҳо",
+            "manageStream": "Идоракунии Livestream",
+            "fbEmbedCode": "Ҷойгир кардан",
+            "copy": "Нусхабардорӣ",
+            "streamToRTMP": "Ҷараён ба RTMP фармоишӣ",
+            "startBroadcasting": "Пахшро оғоз кунед",
+            "broadcastingInProgress": "Пахш давом дорад"
+        },
+        "audioSettings": {
+            "dialogTitle": "Танзимоти аудио",
+            "speakers": "Маърузачиён",
+            "microphone": "Микрофон"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Идоракунии пахш"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Танзимоти иштирокчӣ",
+            "disconnect": "Қатъ кунед",
+            "floatingScreens": "Экранҳои шинокунанда",
+            "tiledScreens": "Экранҳои сафолӣ",
+            "loudestExceptMe": "Баландтарин Ба ҷуз ман",
+            "maximizeLoudest": "Баландтарин",
+            "staticMaximized": "Статикӣ ҳадди аксар",
+            "fullScreen": "Тамомсафҳа",
+            "manual": "Дастӣ",
+            "turnOffCamera": "Пинҳон кардани видео",
+            "turnOffAudio": "Хомӯш кардани аудио",
+            "turnOffScreenSharing": "Пинҳон кардани мубодилаи экран",
+            "turnOnCamera": "Намоиши видео",
+            "turnOnAudio": "Овози аудиоро кушоед",
+            "turnOnScreenSharing": "Намоиши мубодилаи экран"
+        },
+        "streamingSettings": {
+            "title": "Ҷараёни мустақим"
+        },
+        "preview": {
+            "Meeting": "Телеконференция",
+            "MeetingEnded": "Телеконференция ба охир расид"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Дархост барои суханронӣ",
+            "msg": "Холо дар мачлис {{count}} кас ба сухан баромада. Оё шумо мехоҳед, ки яке аз онҳоро пас аз {{seconds}} сония барои ба итмом расонидани сухан иваз кунед?"
+        }
+    }
+}

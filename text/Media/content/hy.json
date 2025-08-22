@@ -1,0 +1,256 @@
+{
+    "Shows": "Ցույց է տալիս",
+    "Clips": "Տեսահոլովակներ",
+    "Video": "Տեսանյութ",
+    "Audio": "Աուդիո",
+    "categories": {
+        "Clips": "Մեդիա հոլովակներ",
+        "Episodes": "Դրվագներ"
+    },
+    "presentation": {
+        "PutTogether": "Կներկայացնե՞ք։ Դուք կարող եք օգտագործել այս տարածքը՝ ձեր ներկայացման համար միասին նյութեր վերբեռնելու համար: Օգտագործեք Plus կոճակը:",
+        "Alert": "Երբ միջոցառումները սկսվեն, այս էջը կսկսի ցուցադրել դրանց համապատասխան ներկայացումները",
+        "ClickHereForFullscreen": "Ներկայացումները կհայտնվեն այստեղ: Սեղմեք այստեղ՝ լիաէկրան անցնելու համար:",
+        "question": {
+            "ScanThisQRCode": "Պատասխանելու համար սկանավորեք այս QR կոդը"
+        }
+    },
+    "NewEpisode": "Նոր դրվագ",
+    "NewClip": "Ստեղծեք նոր հոլովակ",
+    "NewClipTitlePlaceholder": "Մուտքագրեք հոլովակի վերնագիրը",
+    "NewClipDescriptionPlaceholder": "Մուտքագրեք հոլովակի նկարագրությունը",
+    "switchVisualization": "Անջատիչի վիզուալիզացիա",
+    "joinLiveShow": "Միացե՛ք Live Show-ին",
+    "showTwitchLiveStream": "Ցույց տալ Twitch Live Stream-ը",
+    "showVoiceChat": "Ցույց տալ ձայնային զրույցը",
+    "LiveShow": "Ուղիղ շոու",
+    "AreYouSureKick": "Վստա՞հ եք, որ ցանկանում եք հեռացնել այս օգտվողին:",
+    "Save": "Պահպանել",
+    "ViewFullEpisode": "Դիտել ամբողջական դրվագը",
+    "CreditsEarned": "Վաստակած վարկեր",
+    "VideoTitle": "Տեսանյութի վերնագիր կամ URL",
+    "AreYouSureDeleteEpisode": "Իսկապե՞ս ուզում եք ջնջել այս դրվագը:",
+    "Yes": "Այո՛",
+    "No": "Ոչ",
+    "RealTimeCall": "Իրական ժամանակի զանգ",
+    "JoinWebRTC": "Հեռակոնֆերանս",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Հեռակոնֆերանս",
+            "description": "առցանց վիդեո\/աուդիո կոնֆերանս"
+        },
+        "Media\/calls": {
+            "displayType": "Զանգեր",
+            "description": "կատեգորիա Media\/WebRTC-ի համար",
+            "MaxRelationsExceeded": "Զանգերի առավելագույն քանակը գերազանցվել է"
+        },
+        "Media\/clip": {
+            "displayType": "Տեսահոլովակ",
+            "description": "մեդիա հոլովակ"
+        }
+    },
+    "feeds": {
+        "Title": "Տեսախցիկներ",
+        "filterByTitle": "Գտեք հոսքերը ըստ վերնագրի",
+        "RequestFeedAccess": "Պահանջել թարմացվող բովանդակություն",
+        "New": "+ Նոր հոսք",
+        "filterFeeds": "Զտել հոսքերը",
+        "NewFeed": "Նոր հոսք",
+        "NoneYet": "Դեռևս ոչ մի հոսք չի ձևավորվել:",
+        "AreYouSure": "Վստա՞հ ես։",
+        "FilterByDate": "Զտել ըստ ամսաթվի",
+        "newFeeds": "Դուք ունեք {{1}} նոր հոսքեր",
+        "Description": "{{1}} հոսքեր",
+        "Keywords": "{{1}} հոսքեր"
+    },
+    "feed": {
+        "HostedBy": "Հյուրընկալվում է {{name}} ի կողմից",
+        "Name": "Անուն",
+        "Conversation": "Զրույց",
+        "CloseFeed": {
+            "button": "Փակել Feed-ը",
+            "Cancel": "Իսկապե՞ս ուզում եք փակել այս հոսքը:",
+            "Participant": "Այս հոսքում կա 1 մասնակից",
+            "Participants": "Այս հոսքում կա {{count}} մասնակից"
+        },
+        "Calendar": "Օրացույց",
+        "TitleOfFeed": "Կետի անվանումը.",
+        "EmptyList": "Դատարկ ցուցակ",
+        "EmptyVideos": "Դեռևս հոլովակներ չկան",
+        "AccessReason": "խնդրում եմ նշել պատճառը",
+        "Proceed": "Շարունակել",
+        "FeedAlreadyClosed": "Այս հոսքն արդեն փակվել է",
+        "RtmpLinkNote": "Սեղմեք՝ այս հղումը clipboard-ում պատճենելու համար",
+        "SelectClip": "Ընտրեք ամսաթիվը, որը ցանկանում եք տեսնել",
+        "Request": "Հայց"
+    },
+    "newFeed": {
+        "Title": "Նոր հոսք",
+        "locationTitle": "Սահմանեք ձեր գտնվելու վայրը",
+        "SetLocation": "Սահմանել իմ գտնվելու վայրը",
+        "Starting": "Սկսած",
+        "Day": "Օր",
+        "Create": "Ստեղծել",
+        "Continue": "Շարունակեք",
+        "FeedTitle": "Feed վերնագիր",
+        "SetTitle": "Խնդրում ենք սահմանել հոսքի անվանումը"
+    },
+    "notifications": {
+        "JoinedWebRTC": "միացել է ձեր զանգին",
+        "SubjectJoinedYourCall": "{{subject}} միացավ ձեր զանգին"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Դուք այս հոսքին միանալու թույլտվություն չունեք:",
+        "streamTitle": "{{1}} սկսեց հեռուստակոնֆերանս",
+        "allow": {
+            "dialogTitle": "Միացում",
+            "microphoneBtn": "Միացնել խոսափողը",
+            "cameraBtn": "Միացնել տեսախցիկը",
+            "cameraAndMicrophoneBtn": "Միացնել տեսախցիկը և խոսափողը"
+        },
+        "preparing": {
+            "dialogTitle": "Նախքան միանալը միացրեք\/անջատեք տեսախցիկը կամ խոսափողը",
+            "micIsOff": "Խոսափողն անջատված է",
+            "micIsOn": "Խոսափողը միացված է",
+            "cameraIsOff": "Տեսախցիկը անջատված է",
+            "cameraIsOn": "Տեսախցիկը միացված է",
+            "screenSharingIsOn": "Էկրանի համօգտագործումը միացված է",
+            "screenSharingIsOff": "Համօգտագործել էկրանը",
+            "joinNow": "Միացե՛ք Զանգին"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Հրահանգներ",
+            "permissionDenied": "{{kind}} ի թույլտվությունը մերժվել է: Այն օգտագործելու համար խնդրում ենք հետևել հետևյալ քայլերին.",
+            "point1": "Գնացեք «Կարգավորումներ» -&gt; «Ընդլայնված» -&gt; «Գաղտնիություն և անվտանգություն» -&gt; «Կայքի կարգավորումներ» -&gt; «Տեսախցիկ» կամ «Կայքի կարգավորումներ» -&gt; «Խոսափող»",
+            "point2": "Հեռացրեք {{hostname}} «Արգելափակման» ցանկից"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Հրահանգներ",
+            "permissionDenied": "{{kind}} ի թույլտվությունը մերժվել է: Խնդրում ենք վերաբեռնել այս էջը և հաստատել մուտքը {{kind}} ՝ համաժողովին միանալու համար:"
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Հրահանգներ",
+            "permissionDenied": "{{kind}} ի թույլտվությունը մերժվել է: Այն օգտագործելու համար խնդրում ենք հետևել հետևյալ քայլերին.",
+            "point1": "Գնացեք ձեր Android-ի կարգավորումներ",
+            "point2": "Բացեք «Հավելվածներ և ծանուցումներ»",
+            "point3": "Գտեք « {{communityName}} » և բացեք այն",
+            "point4": "Կտտացրեք Թույլտվությունները",
+            "point5": "Միացնել {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Հրահանգներ",
+            "permissionDenied": "{{kind}} ի թույլտվությունը մերժվել է: Այն օգտագործելու համար խնդրում ենք հետևել հետևյալ քայլերին.",
+            "point1": "Գնացեք ձեր iOS-ի կարգավորումներ",
+            "point2": "Բացեք «Գաղտնիություն»",
+            "point3": "Գտեք {{kind}} և բացեք այն",
+            "point4": "Գտեք « {{communityName}} » և միացրեք"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook-ի ուղիղ հեռարձակումը մեկնարկել է"
+        },
+        "notices": {
+            "youJoinedRoom": "Դուք միացաք սենյակին",
+            "joining": "Միացում՝ {{userName}}",
+            "sbLeftRoom": "{{userName}} դուրս եկավ սենյակից",
+            "switchingRoom": "Փոխանակման սենյակ...",
+            "forceDisconnecting": "Դուք կանջատվեք 5 վայրկյանի ընթացքում",
+            "forceDisconnectingImmediately": "Դուք անջատվել եք տանտիրոջ կողմից",
+            "youLeftRoom": "Դու դուրս եկար սենյակից",
+            "codeCopied": "Դու դուրս եկար սենյակից",
+            "sbBeganFbLive": "{{userName}} սկսեց հեռարձակել այս զանգը Facebook-ում",
+            "sbStoppedFbLive": "{{userName}} դադարեցրել է այս զանգի հեռարձակումը Facebook-ում",
+            "youBeganFbLive": "Դուք սկսեցիք հեռարձակել այս զանգը Facebook-ում",
+            "youStoppedFbLive": "Դուք դադարեցրել եք այս զանգի հեռարձակումը Facebook-ում",
+            "youStartedLive": "Դուք սկսեցիք հեռարձակել այս զանգը հատուկ RTMP-ով",
+            "youStoppedLive": "Դուք դադարեցրել եք այս զանգի հեռարձակումը հատուկ RTMP-ին",
+            "sbStartedLiveStreaming": "{{userName}} սկսեց ուղիղ եթերում",
+            "sbStoppedLiveStreaming": "{{userName}} ավարտվեց ուղիղ եթերում",
+            "liveStopped": "Սխալ է տեղի ունեցել տեսանյութը վերջնական կետ ուղարկելիս",
+            "youBeganVideoRecording": "Դուք սկսեցիք ձայնագրել այս համաժողովը",
+            "youStoppedVideoRecording": "Դուք դադարեցրել եք այս համաժողովի ձայնագրումը",
+            "linkCopiedToCb": "Հղումը պատճենվեց սեղմատախտակին",
+            "codeCopiedToCb": "Կոդը պատճենվեց clipboard-ում",
+            "userHasNoVideo": "Մասնակիցը չունի տեսանյութ",
+            "openInBrowserAlert": "Բացեք հղումը Safari բրաուզերում՝ համաժողովին միանալու համար:",
+            "allowedVideoLimit": "Այս սենյակում թույլատրվում է ընդամենը {{limit}} տեսանյութ",
+            "allowedAudioLimit": "Այս սենյակում թույլատրվում է ընդամենը {{limit}} խոսափող",
+            "processingRecording": "Ձայնագրությունը մշակվում է..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Տեսանյութի կարգավորումներ",
+            "webCamera": "Վեբ տեսախցիկ",
+            "screenSharing": "Էկրանի փոխանակում",
+            "shareAnotherScreen": "Կիսվեք մեկ այլ էկրանով",
+            "turnOffCameras": "Անջատեք տեսախցիկը",
+            "turnOffVideo": "Անջատեք տեսախցիկի\/էկրանի համօգտագործումը",
+            "turnOffAudioInput": "Անջատել խոսափողը",
+            "turnOffScreenSharing": "Անջատեք էկրանի համօգտագործումը",
+            "cameraIsTurnedOff": "Տեսախցիկը անջատված է",
+            "micIsTurnedOff": "Խոսափողն անջատված է",
+            "startFBLive": "Սկսեք Facebook Livestream-ը",
+            "stopFBLive": "Դադարեցրեք Facebook Livestream-ը",
+            "startRecording": "Սկսեք ձայնագրումը",
+            "stopRecording": "Դադարեցնել ձայնագրումը",
+            "start": "Սկսել",
+            "startClodRecording": "Սկսեք Cloud Recording-ը",
+            "startLocRecording": "Սկսեք տեղական ձայնագրումը",
+            "stopClodRecording": "Դադարեցրեք ամպի ձայնագրումը",
+            "stopLocRecording": "Դադարեցրեք տեղական ձայնագրումը",
+            "stop": "Դադարեցրեք",
+            "share": "Կիսվել",
+            "recordingInProgress": "Ձայնագրումն ընթացքի մեջ է...",
+            "fbLiveTitle": "Livestream-ի անվանումը",
+            "fbLiveDescription": "Նկարագրեք ձեր Livestream-ը: Ինչի՞ մասին է խոսքը։",
+            "fbOnlyMeLiveAccess": "Միայն Ես",
+            "fbFriendsAccess": "Ընկերներ",
+            "fbPublicAccess": "Հանրային",
+            "publishOnTimeline": "Հրապարակել ժամանակացույցում",
+            "publishToGroup": "Հրապարակել խմբում",
+            "fbStartLive": "Անցեք ուղիղ եթերում",
+            "fbStopLive": "Ավարտել Livestream-ը",
+            "streamingSettings": "Կարգավորումներ",
+            "manageStream": "Կառավարեք Livestream-ը",
+            "fbEmbedCode": "Տեղադրել",
+            "copy": "Պատճենել",
+            "streamToRTMP": "Հոսում դեպի հատուկ RTMP",
+            "startBroadcasting": "Սկսեք հեռարձակումը",
+            "broadcastingInProgress": "Հեռարձակումն ընթացքի մեջ է"
+        },
+        "audioSettings": {
+            "dialogTitle": "Աուդիո կարգավորումներ",
+            "speakers": "Բարձրախոսներ",
+            "microphone": "Միկրոֆոն"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Կառավարեք հեռարձակումը"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Մասնակիցների կարգավորումներ",
+            "disconnect": "Անջատել",
+            "floatingScreens": "Լողացող էկրաններ",
+            "tiledScreens": "Սալիկապատ էկրաններ",
+            "loudestExceptMe": "Ինձնից բացի ամենաաղմկոտ",
+            "maximizeLoudest": "Առավելագույնի հասցնել ամենաբարձրաձայնը",
+            "staticMaximized": "Ստատիկ առավելագույնի հասցված",
+            "fullScreen": "Ամբողջ էկրանով",
+            "manual": "Ձեռնարկ",
+            "turnOffCamera": "Թաքցնել տեսանյութը",
+            "turnOffAudio": "Անջատել ձայնը",
+            "turnOffScreenSharing": "Թաքցնել էկրանի համօգտագործումը",
+            "turnOnCamera": "Ցույց տալ տեսանյութը",
+            "turnOnAudio": "Միացնել ձայնը",
+            "turnOnScreenSharing": "Ցույց տալ էկրանի համօգտագործումը"
+        },
+        "streamingSettings": {
+            "title": "Ուղիղ հեռարձակում"
+        },
+        "preview": {
+            "Meeting": "Հեռակոնֆերանս",
+            "MeetingEnded": "Հեռախոսազրույցն ավարտվեց"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Խոսելու խնդրանք",
+            "msg": "Հանդիպմանը ներկա պահին ելույթ է ունենում {{count}} մարդ։ Ցանկանու՞մ եք փոխարինել դրանցից մեկին {{seconds}} վայրկյան տալուց հետո, որպեսզի ավարտեն ելույթը:"
+        }
+    }
+}

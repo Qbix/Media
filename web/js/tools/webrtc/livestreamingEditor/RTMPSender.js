@@ -48,7 +48,6 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         log('startStreaming connect');
 
         var _options = tool.webrtcSignalingLib.getOptions();
-        var secure = _options.nodeServer.indexOf('https://') == 0;
         var streamingInfo = {
             socket: null,
             chunksSkipped: 0,
@@ -77,7 +76,6 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
             },
             transports: ['websocket'],
             'force new connection': true,
-            secure: secure,
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 5000,

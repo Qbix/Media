@@ -1,0 +1,256 @@
+{
+    "Shows": "Shows",
+    "Clips": "Clips",
+    "Video": "Vhidhiyo",
+    "Audio": "Vadivelu Comedy Audio",
+    "categories": {
+        "Clips": "Vadivelu Comedy Media Clips",
+        "Episodes": "Zvikamu"
+    },
+    "presentation": {
+        "PutTogether": "Uchange uchipa? Iwe unogona kushandisa nzvimbo iyi kurodha pamwe chete zvinyorwa zvemharidzo yako. Shandisa bhatani reKuwedzera.",
+        "Alert": "Sezvo zviitiko zvinotanga, peji ino ichatanga kuratidza yavo inoenderana mharidzo",
+        "ClickHereForFullscreen": "Mharidzo dzichaonekwa pano. Dzvanya apa kuti uende yakazara-skrini.",
+        "question": {
+            "ScanThisQRCode": "Ska kodhi iyi yeQR kuti upindure"
+        }
+    },
+    "NewEpisode": "Chikamu Chitsva",
+    "NewClip": "Gadzira Clip Itsva",
+    "NewClipTitlePlaceholder": "Pinda Clip Title",
+    "NewClipDescriptionPlaceholder": "Pinda Clip Tsanangudzo",
+    "switchVisualization": "Chinja kuona",
+    "joinLiveShow": "Join Live Show",
+    "showTwitchLiveStream": "Ratidza Twitch Live Stream",
+    "showVoiceChat": "Ratidza Voice Chat",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Une chokwadi chekuti unoda kutanga mushandisi uyu?",
+    "Save": "Sevha",
+    "ViewFullEpisode": "Ona Chikamu Chakazara",
+    "CreditsEarned": "Zvikwereti zvakawanikwa",
+    "VideoTitle": "Vhidhiyo Musoro kana URL",
+    "AreYouSureDeleteEpisode": "Une chokwadi chekuti unoda kudzima chikamu ichi?",
+    "Yes": "Ehe",
+    "No": "Aihwa",
+    "RealTimeCall": "Real Time Call",
+    "JoinWebRTC": "Teleconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Teleconference",
+            "description": "musangano wepamhepo vhidhiyo\/odhiyo"
+        },
+        "Media\/calls": {
+            "displayType": "Anofona",
+            "description": "chikamu cheMedia\/WebRTC",
+            "MaxRelationsExceeded": "Kufona kwadarika kwakadarika"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "media clip"
+        }
+    },
+    "feeds": {
+        "Title": "Makamera",
+        "filterByTitle": "Tsvaga mafeed nemusoro",
+        "RequestFeedAccess": "Kumbira kuwana feed",
+        "New": "+ Kudya Kutsva",
+        "filterFeeds": "Sefa feeds",
+        "NewFeed": "New Feed",
+        "NoneYet": "Hapana mafeed agadzirwa parizvino.",
+        "AreYouSure": "Une chokwadi here?",
+        "FilterByDate": "Sefa Nezuva",
+        "newFeeds": "Une {{1}} mafeed matsva",
+        "Description": "{{1}} zvokudya",
+        "Keywords": "{{1}} zvokudya"
+    },
+    "feed": {
+        "HostedBy": "Yakagarwa {{name}}",
+        "Name": "Zita",
+        "Conversation": "Kukurukurirana",
+        "CloseFeed": {
+            "button": "Close Feed",
+            "Cancel": "Une chokwadi chekuti unoda kuvhara chikafu ichi?",
+            "Participant": "Pane munhu mumwe chete mune iyi feed",
+            "Participants": "Kune {{count}} vatori vechikamu mune ichi chikafu"
+        },
+        "Calendar": "Calendar",
+        "TitleOfFeed": "Zita rekudya:",
+        "EmptyList": "Empty list",
+        "EmptyVideos": "Hapasati pave nezvikamu",
+        "AccessReason": "ndapota taura chikonzero",
+        "Proceed": "Proceed",
+        "FeedAlreadyClosed": "Kudya uku kwakatovharwa",
+        "RtmpLinkNote": "Dzvanya kuti ukope iyi link kune clipboard",
+        "SelectClip": "Sarudza zuva raunoda kuona",
+        "Request": "Chikumbiro"
+    },
+    "newFeed": {
+        "Title": "New Feed",
+        "locationTitle": "Seta Nzvimbo Yako",
+        "SetLocation": "Seta Nzvimbo Yangu",
+        "Starting": "Kutanga",
+        "Day": "Zuva",
+        "Create": "Create",
+        "Continue": "Enderera mberi",
+        "FeedTitle": "Feed title",
+        "SetTitle": "Ndokumbirawo musete zita rekudya"
+    },
+    "notifications": {
+        "JoinedWebRTC": "akabatana kufona kwako",
+        "SubjectJoinedYourCall": "{{subject}} akabatana nekufona kwako"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Hauna mvumo yekupinda murukova urwu.",
+        "streamTitle": "{{1}} yakatanga Teleconference",
+        "allow": {
+            "dialogTitle": "Kubatanidza",
+            "microphoneBtn": "Vhura maikorofoni",
+            "cameraBtn": "Vhura Kamera",
+            "cameraAndMicrophoneBtn": "Gonesa Kamera uye Maikorofoni"
+        },
+        "preparing": {
+            "dialogTitle": "Batidza\/dzima kamera kana maikorofoni usati wajoina",
+            "micIsOff": "Mic yadzimwa",
+            "micIsOn": "Mic yabatidzwa",
+            "cameraIsOff": "Kamera yakadzimwa",
+            "cameraIsOn": "Kamera yakabatidzwa",
+            "screenSharingIsOn": "Screensharing iripo",
+            "screenSharingIsOff": "Govera chidzitiro",
+            "joinNow": "Join the Call"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Mirayiridzo",
+            "permissionDenied": "Mvumo {{kind}} yarambwa. Kuti uishandise, tevera matanho aya:",
+            "point1": "Enda ku &quot;Settings&quot; -&gt; &quot;Advanced&quot; -&gt; &quot;Privacy uye chengetedzo&quot; -&gt; &quot;Site Settings&quot; -&gt; &quot;Kamera&quot; kana &quot;Site Settings&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Bvisa {{hostname}} kubva ku &quot;Block&quot; runyorwa"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Mirayiridzo",
+            "permissionDenied": "Mvumo {{kind}} yarambwa. Ndokumbirawo rodha peji ino uye simbisa kupinda {{kind}} kuti ubatanidze musangano."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Mirayiridzo",
+            "permissionDenied": "Mvumo {{kind}} yarambwa. Kuti uishandise, tevera matanho aya:",
+            "point1": "Enda kune yako Android Settings",
+            "point2": "Vhura &quot;Maapuro &amp; zviziviso&quot;",
+            "point3": "Tsvaga &quot; {{communityName}} &quot; woivhura",
+            "point4": "Tinya paMvumo",
+            "point5": "Gonesa {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Mirayiridzo",
+            "permissionDenied": "Mvumo {{kind}} yarambwa. Kuti uishandise, tevera matanho aya:",
+            "point1": "Enda kune yako iOS Settings",
+            "point2": "Vhura &quot;Privacy&quot;",
+            "point3": "Tsvaga {{kind}} uye uvhure",
+            "point4": "Tsvaga &quot; {{communityName}} &quot; uye shandisa"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming yakatanga"
+        },
+        "notices": {
+            "youJoinedRoom": "Wakapinda mumba",
+            "joining": "Kubatanidzwa: {{userName}}",
+            "sbLeftRoom": "{{userName}} vakabuda mumba",
+            "switchingRoom": "Imba yekugezera...",
+            "forceDisconnecting": "Iwe uchabviswa mukati memasekonzi mashanu",
+            "forceDisconnectingImmediately": "Iwe wakabviswa nemubati",
+            "youLeftRoom": "Wabuda mumba",
+            "codeCopied": "Wabuda mumba",
+            "sbBeganFbLive": "{{userName}} vakatanga kutepfenyura runhare urwu paFacebook",
+            "sbStoppedFbLive": "{{userName}} vakamira kutepfenyura iyi runhare paFacebook",
+            "youBeganFbLive": "Wakatanga kutepfenyura iyi runhare paFacebook",
+            "youStoppedFbLive": "Warega kutepfenyura runhare urwu paFacebook",
+            "youStartedLive": "Wakatanga kutepfenyura iyi kufona kune tsika RTMP",
+            "youStoppedLive": "Warega kutepfenyura iyi kufona kune tsika RTMP",
+            "sbStartedLiveStreaming": "{{userName}} vakatanga kurarama",
+            "sbStoppedLiveStreaming": "{{userName}} yakapera live",
+            "liveStopped": "Pakaitika dambudziko pakutumira vhidhiyo kumagumo",
+            "youBeganVideoRecording": "Matanga kurekodha musangano uyu",
+            "youStoppedVideoRecording": "Warega kurekodha musangano uyu",
+            "linkCopiedToCb": "Link yakopwa kuclipboard",
+            "codeCopiedToCb": "Kodhi yakakopwa ku clipboard",
+            "userHasNoVideo": "Mutori wechikamu haana vhidhiyo",
+            "openInBrowserAlert": "Vhura chinongedzo muSafari browser kuti ubatanidze musangano.",
+            "allowedVideoLimit": "Vhidhiyo {{limit}} chete inotenderwa muimba ino",
+            "allowedAudioLimit": "Maikorofoni {{limit}} chete inotenderwa muimba ino",
+            "processingRecording": "Kugadziridza kurekodha..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Vhidhiyo Settings",
+            "webCamera": "Web Camera",
+            "screenSharing": "Kugovera Screen",
+            "shareAnotherScreen": "Govera imwe skrini",
+            "turnOffCameras": "Dzima kamera",
+            "turnOffVideo": "Dzima kamera\/screen kugoverana",
+            "turnOffAudioInput": "Nyarara maikorofoni",
+            "turnOffScreenSharing": "Dzima kugovana skrini",
+            "cameraIsTurnedOff": "Kamera yakadzimwa",
+            "micIsTurnedOff": "Maikorofoni yakadzimwa",
+            "startFBLive": "Tanga Facebook Livestream",
+            "stopFBLive": "Misa Facebook Livestream",
+            "startRecording": "Tanga Kurekodha",
+            "stopRecording": "Stop Recording",
+            "start": "Tanga",
+            "startClodRecording": "Tanga Cloud Recording",
+            "startLocRecording": "Tanga Kurekodha Kwemunharaunda",
+            "stopClodRecording": "Misa Cloud Recording",
+            "stopLocRecording": "Misa Kurekodha Kwemunharaunda",
+            "stop": "Mira",
+            "share": "Share",
+            "recordingInProgress": "Kurekodha kuri kuenderera mberi...",
+            "fbLiveTitle": "Zita reLivestream",
+            "fbLiveDescription": "Rondedzera yako Livestream. Zviri pamusoro pei?",
+            "fbOnlyMeLiveAccess": "Ini chete",
+            "fbFriendsAccess": "Shamwari",
+            "fbPublicAccess": "Veruzhinji",
+            "publishOnTimeline": "Shambadzira panguva yakatarwa",
+            "publishToGroup": "Shambadzira kuboka",
+            "fbStartLive": "Go Live",
+            "fbStopLive": "Pedzisa Livestream",
+            "streamingSettings": "Settings",
+            "manageStream": "Manage Livestream",
+            "fbEmbedCode": "Embed",
+            "copy": "Copy",
+            "streamToRTMP": "Dzvanya kune tsika RTMP",
+            "startBroadcasting": "Tanga kutepfenyura",
+            "broadcastingInProgress": "Kutepfenyura kuri kuitika"
+        },
+        "audioSettings": {
+            "dialogTitle": "Audio Settings",
+            "speakers": "Vatauri",
+            "microphone": "Maikorofoni"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Manage Broadcast"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Mutori wechikamu Settings",
+            "disconnect": "Dimbura",
+            "floatingScreens": "Anoyangarara Masikirini",
+            "tiledScreens": "Tiled Screens",
+            "loudestExceptMe": "Loudest Kunze Kwangu",
+            "maximizeLoudest": "Maximize Loudest",
+            "staticMaximized": "Static Yakakura",
+            "fullScreen": "Full Screen",
+            "manual": "Manual",
+            "turnOffCamera": "Viga vhidhiyo",
+            "turnOffAudio": "Nyarara inzwi",
+            "turnOffScreenSharing": "Viga kugovera skrini",
+            "turnOnCamera": "Ratidza vhidhiyo",
+            "turnOnAudio": "Bvisa inzwi",
+            "turnOnScreenSharing": "Ratidza kugovera skrini"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Teleconference",
+            "MeetingEnded": "Teleconference yapera"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Kumbira Kutaura",
+            "msg": "Pari zvino pane vanhu {{count}} vari kutaura mumusangano uyu. Unoda kutsiva imwe yadzo mushure mekuvatendera masekonzi {{seconds}} kuti vapedze kutaura?"
+        }
+    }
+}

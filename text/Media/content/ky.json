@@ -1,0 +1,256 @@
+{
+    "Shows": "Шоулар",
+    "Clips": "Клиптер",
+    "Video": "Video",
+    "Audio": "Аудио",
+    "categories": {
+        "Clips": "Медиа клиптер",
+        "Episodes": "Эпизоддор"
+    },
+    "presentation": {
+        "PutTogether": "Сиз тартуулайсызбы? Сиз бул мейкиндикти презентацияңыз үчүн материалдарды чогуу жүктөө үчүн колдоно аласыз. Плюс баскычын колдонуңуз.",
+        "Alert": "Окуялар башталганда, бул барак аларга тиешелүү презентацияларды көрсөтө баштайт",
+        "ClickHereForFullscreen": "Презентациялар бул жерде пайда болот. Толук экранга өтүү үчүн бул жерди басыңыз.",
+        "question": {
+            "ScanThisQRCode": "Жооп берүү үчүн бул QR кодун сканерлеңиз"
+        }
+    },
+    "NewEpisode": "Жаңы эпизод",
+    "NewClip": "Жаңы клип тартыңыз",
+    "NewClipTitlePlaceholder": "Клиптин аталышын киргизиңиз",
+    "NewClipDescriptionPlaceholder": "Клиптин сүрөттөмөсүн киргизиңиз",
+    "switchVisualization": "Визуализацияны которуштуруу",
+    "joinLiveShow": "Түз шоуга кошулуңуз",
+    "showTwitchLiveStream": "Twitch түз агымын көрсөтүү",
+    "showVoiceChat": "Үн чатты көрсөтүү",
+    "LiveShow": "Түз шоу",
+    "AreYouSureKick": "Бул колдонуучуну чын эле өчүргүңүз келеби?",
+    "Save": "Сактоо",
+    "ViewFullEpisode": "Толук эпизодду көрүү",
+    "CreditsEarned": "Кредиттер алынган",
+    "VideoTitle": "Видеонун аталышы же URL",
+    "AreYouSureDeleteEpisode": "Бул эпизодду чын эле жок кылгыңыз келеби?",
+    "Yes": "Ооба",
+    "No": "Жок",
+    "RealTimeCall": "Чыныгы убакыт чалуу",
+    "JoinWebRTC": "Телеконференция",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Телеконференция",
+            "description": "онлайн видео\/аудио конференция"
+        },
+        "Media\/calls": {
+            "displayType": "Чалуулар",
+            "description": "Media\/WebRTC категориясы",
+            "MaxRelationsExceeded": "Чалуулардын саны ашты"
+        },
+        "Media\/clip": {
+            "displayType": "Клип",
+            "description": "медиа клип"
+        }
+    },
+    "feeds": {
+        "Title": "Камералар",
+        "filterByTitle": "Каналдарды аталышы боюнча табыңыз",
+        "RequestFeedAccess": "Түрмөккө кирүүнү сураныңыз",
+        "New": "+ Жаңы түрмөк",
+        "filterFeeds": "Түрмөктөрдү чыпкалоо",
+        "NewFeed": "Жаңы түрмөк",
+        "NoneYet": "Азырынча түрмөктөр түзүлө элек.",
+        "AreYouSure": "Ишенесиңби?",
+        "FilterByDate": "Датасы боюнча чыпкалоо",
+        "newFeeds": "Сизде {{1}} жаңы түрмөк бар",
+        "Description": "{{1}} канал",
+        "Keywords": "{{1}} канал"
+    },
+    "feed": {
+        "HostedBy": "{{name}} тарабынан уюштурулган",
+        "Name": "аты",
+        "Conversation": "Сүйлөшүү",
+        "CloseFeed": {
+            "button": "Түрмөктү жабуу",
+            "Cancel": "Бул түрмөктү чын эле жапкыңыз келеби?",
+            "Participant": "Бул түрмөктө 1 катышуучу бар",
+            "Participants": "Бул каналда {{count}} катышуучу бар"
+        },
+        "Calendar": "Календар",
+        "TitleOfFeed": "Түрмөктүн аталышы:",
+        "EmptyList": "Бош тизме",
+        "EmptyVideos": "Азырынча клиптер жок",
+        "AccessReason": "себебин айт",
+        "Proceed": "Улантуу",
+        "FeedAlreadyClosed": "Бул түрмөк мурунтан эле жабылган",
+        "RtmpLinkNote": "Бул шилтемени алмашуу буферине көчүрүү үчүн басыңыз",
+        "SelectClip": "Көргүңүз келген күндү тандаңыз",
+        "Request": "Сураныч"
+    },
+    "newFeed": {
+        "Title": "Жаңы түрмөк",
+        "locationTitle": "Жайгашкан жериңизди орнотуңуз",
+        "SetLocation": "Менин жайгашкан жеримди коюу",
+        "Starting": "Баштоо",
+        "Day": "күн",
+        "Create": "Түзүү",
+        "Continue": "Улантуу",
+        "FeedTitle": "Түрмөктүн аталышы",
+        "SetTitle": "Түрмөктүн аталышын коюңуз"
+    },
+    "notifications": {
+        "JoinedWebRTC": "чалууңузга кошулду",
+        "SubjectJoinedYourCall": "{{subject}} чалууңузга кошулду"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Бул агымга кошулууга уруксатыңыз жок.",
+        "streamTitle": "{{1}} телеконференция баштады",
+        "allow": {
+            "dialogTitle": "Туташуу",
+            "microphoneBtn": "Микрофонду иштетүү",
+            "cameraBtn": "Камераны иштетүү",
+            "cameraAndMicrophoneBtn": "Камераны жана микрофонду иштетүү"
+        },
+        "preparing": {
+            "dialogTitle": "Кошулуудан мурун камераны же микрофонду күйгүзүңүз\/өчүңүз",
+            "micIsOff": "Микрофон өчүк",
+            "micIsOn": "Микрофон күйүк",
+            "cameraIsOff": "Камера өчүк",
+            "cameraIsOn": "Камера күйүк",
+            "screenSharingIsOn": "Экранды бөлүшүү күйүк",
+            "screenSharingIsOff": "Экранды бөлүшүү",
+            "joinNow": "Чалууга кошулуңуз"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "{{kind}} үчүн уруксат четке кагылды. Аны колдонуу үчүн төмөнкү кадамдарды аткарыңыз:",
+            "point1": "&quot;Орнотуулар&quot; -&gt; &quot;Өркүндөтүлгөн&quot; -&gt; &quot;Купуялык жана коопсуздук&quot; -&gt; &quot;Сайттын жөндөөлөрү&quot; -&gt; &quot;Камера&quot; же &quot;Сайттын жөндөөлөрү&quot; -&gt; &quot;Микрофон&quot; бөлүмүнө өтүңүз.",
+            "point2": "&quot;Бөгөттөө&quot; тизмесинен {{hostname}} алып салуу"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "{{kind}} үчүн уруксат четке кагылды. Сураныч, бул баракты кайра жүктөп, конференцияга кошулуу үчүн {{kind}} мүмкүнчүлүгүн ырастаңыз."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "{{kind}} үчүн уруксат четке кагылды. Аны колдонуу үчүн төмөнкү кадамдарды аткарыңыз:",
+            "point1": "Android Орнотууларыңызга өтүңүз",
+            "point2": "&quot;Колдонмолор жана эскертмелерди&quot; ачуу",
+            "point3": "&quot; {{communityName}} &quot; табыңыз жана аны ачыңыз",
+            "point4": "Уруксаттарды басыңыз",
+            "point5": "{{kind}} иштетүү"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "{{kind}} үчүн уруксат четке кагылды. Аны колдонуу үчүн төмөнкү кадамдарды аткарыңыз:",
+            "point1": "iOS Орнотууларыңызга өтүңүз",
+            "point2": "&quot;Купуялыкты&quot; ачуу",
+            "point3": "{{kind}} таап, аны ачыңыз",
+            "point4": "&quot; {{communityName}} &quot; таап, иштетиңиз"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook түз берүүсү башталды"
+        },
+        "notices": {
+            "youJoinedRoom": "Сиз бөлмөгө кошулдуңуз",
+            "joining": "Кошулуу: {{userName}}",
+            "sbLeftRoom": "{{userName}} бөлмөдөн чыгып кетти",
+            "switchingRoom": "Бөлмөнү алмаштыруу...",
+            "forceDisconnecting": "Сиз 5 секунданын ичинде ажыратыласыз",
+            "forceDisconnectingImmediately": "Сиз хост тарабынан ажыратылды",
+            "youLeftRoom": "Сен бөлмөдөн чыгып кеттиң",
+            "codeCopied": "Сен бөлмөдөн чыгып кеттиң",
+            "sbBeganFbLive": "{{userName}} бул чакырыкты Фейсбукта тарата баштады",
+            "sbStoppedFbLive": "{{userName}} бул чакырууну Фейсбукта көрсөтүүнү токтотту",
+            "youBeganFbLive": "Сиз бул чакырууну Facebook аркылуу тарата баштадыңыз",
+            "youStoppedFbLive": "Сиз бул чалууларды Фейсбукта таратууну токтоттуңуз",
+            "youStartedLive": "Сиз бул чалууну ыңгайлаштырылган RTMPге таркатып баштадыңыз",
+            "youStoppedLive": "Сиз бул чалууну ыңгайлаштырылган RTMPге таратууну токтоттуңуз",
+            "sbStartedLiveStreaming": "{{userName}} түз эфирде баштады",
+            "sbStoppedLiveStreaming": "{{userName}} түз эфирде аяктады",
+            "liveStopped": "Видеону акыркы чекитке жөнөтүүдө ката кетти",
+            "youBeganVideoRecording": "Сиз бул конференцияны жаздыра баштадыңыз",
+            "youStoppedVideoRecording": "Бул конференцияны жаздырууну токтоттуңуз",
+            "linkCopiedToCb": "Шилтеме алмашуу буферине көчүрүлдү",
+            "codeCopiedToCb": "Код алмашуу буферине көчүрүлдү",
+            "userHasNoVideo": "Катышуучунун видеосу жок",
+            "openInBrowserAlert": "Конференцияга кошулуу үчүн шилтемени Safari браузеринен ачыңыз.",
+            "allowedVideoLimit": "Бул бөлмөдө {{limit}} гана видеого уруксат берилген",
+            "allowedAudioLimit": "Бул бөлмөдө {{limit}} микрофонго гана уруксат берилген",
+            "processingRecording": "Жаздыруу иштетилүүдө..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Видео жөндөөлөрү",
+            "webCamera": "Веб камера",
+            "screenSharing": "Экранды бөлүшүү",
+            "shareAnotherScreen": "Башка экранды бөлүшүү",
+            "turnOffCameras": "Камераны өчүрүңүз",
+            "turnOffVideo": "Камераны\/экранды бөлүшүүнү өчүрүңүз",
+            "turnOffAudioInput": "Микрофондун үнүн өчүрүү",
+            "turnOffScreenSharing": "Экранды бөлүшүүнү өчүрүү",
+            "cameraIsTurnedOff": "Камера өчүк",
+            "micIsTurnedOff": "Микрофон өчүк",
+            "startFBLive": "Facebook түз агымын баштаңыз",
+            "stopFBLive": "Facebook түз агымын токтотуу",
+            "startRecording": "Жаздырууну баштоо",
+            "stopRecording": "Жаздырууну токтотуу",
+            "start": "Баштоо",
+            "startClodRecording": "Булуттагы жаздырууну баштаңыз",
+            "startLocRecording": "Жергиликтүү жаздырууну баштаңыз",
+            "stopClodRecording": "Булуттагы жазууну токтотуу",
+            "stopLocRecording": "Жергиликтүү жаздырууну токтотуу",
+            "stop": "Токто",
+            "share": "Бөлүшүү",
+            "recordingInProgress": "Жаздыруу жүрүп жатат...",
+            "fbLiveTitle": "Түз агымдын аталышы",
+            "fbLiveDescription": "Түз агымыңызды сүрөттөп бериңиз. Бул эмне жөнүндө?",
+            "fbOnlyMeLiveAccess": "Мен гана",
+            "fbFriendsAccess": "Достор",
+            "fbPublicAccess": "Коомдук",
+            "publishOnTimeline": "Убакыт тилкесинде жарыялоо",
+            "publishToGroup": "Топко жарыялоо",
+            "fbStartLive": "Түз эфирге өтүңүз",
+            "fbStopLive": "Түз агымды бүтүрүү",
+            "streamingSettings": "Орнотуулар",
+            "manageStream": "Түз агымды башкаруу",
+            "fbEmbedCode": "Embed",
+            "copy": "Көчүрүү",
+            "streamToRTMP": "Ыңгайлаштырылган RTMPге агым",
+            "startBroadcasting": "Берүүнү баштоо",
+            "broadcastingInProgress": "Уктуруу жүрүп жатат"
+        },
+        "audioSettings": {
+            "dialogTitle": "Аудио жөндөөлөрү",
+            "speakers": "Баяндамачылар",
+            "microphone": "Микрофон"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Берүүнү башкаруу"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Катышуучунун жөндөөлөрү",
+            "disconnect": "Ажыратуу",
+            "floatingScreens": "Калкыма экрандар",
+            "tiledScreens": "Төшөлгөн экрандар",
+            "loudestExceptMe": "Менден башка эң катуу",
+            "maximizeLoudest": "Эң катуураак",
+            "staticMaximized": "Статикалык максималдуу",
+            "fullScreen": "Толук экран",
+            "manual": "Manual",
+            "turnOffCamera": "Видеону жашыруу",
+            "turnOffAudio": "Аудионун үнүн өчүрүү",
+            "turnOffScreenSharing": "Экранды бөлүшүүнү жашыруу",
+            "turnOnCamera": "Видеону көрсөтүү",
+            "turnOnAudio": "Аудионун үнүн ачуу",
+            "turnOnScreenSharing": "Экранды бөлүшүүнү көрсөтүү"
+        },
+        "streamingSettings": {
+            "title": "Түз агым"
+        },
+        "preview": {
+            "Meeting": "Телеконференция",
+            "MeetingEnded": "Телеконференция аяктады"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Сүйлөө өтүнүчү",
+            "msg": "Учурда жыйында {{count}} адам чыгып сүйлөп жатат. Сүйлөп бүтүшүнө {{seconds}} секунд убакыт бергенден кийин алардын бирин алмаштыргыңыз келеби?"
+        }
+    }
+}

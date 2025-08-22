@@ -1,0 +1,256 @@
+{
+    "Shows": "Shows",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Media klips",
+        "Episodes": "Episodes"
+    },
+    "presentation": {
+        "PutTogether": "Sille jo presintearje? Jo kinne dizze romte brûke om materialen foar jo presintaasje tegearre te uploaden. Brûk de Plus knop.",
+        "Alert": "As eveneminten begjinne, sil dizze side har korrespondearjende presintaasjes sjen litte",
+        "ClickHereForFullscreen": "Presintaasjes sille hjir ferskine. Klik hjir om folslein skerm te gean.",
+        "question": {
+            "ScanThisQRCode": "Scan dizze QR-koade om te antwurdzjen"
+        }
+    },
+    "NewEpisode": "Nije ôflevering",
+    "NewClip": "Meitsje in nije klip",
+    "NewClipTitlePlaceholder": "Fier kliptitel yn",
+    "NewClipDescriptionPlaceholder": "Fier Clip Beskriuwing yn",
+    "switchVisualization": "Wikselje fisualisaasje",
+    "joinLiveShow": "Doch mei oan Live Show",
+    "showTwitchLiveStream": "Lit Twitch Live Stream sjen",
+    "showVoiceChat": "Lit Voice Chat sjen",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Binne jo wis dat jo dizze brûker útskeakelje wolle?",
+    "Save": "Rêde",
+    "ViewFullEpisode": "Sjoch folsleine ôflevering",
+    "CreditsEarned": "Credits fertsjinne",
+    "VideoTitle": "Videotitel of URL",
+    "AreYouSureDeleteEpisode": "Binne jo wis dat jo dizze ôflevering fuortsmite wolle?",
+    "Yes": "Ja",
+    "No": "Nee",
+    "RealTimeCall": "Real Time Call",
+    "JoinWebRTC": "Telekonferinsje",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferinsje",
+            "description": "in online fideo \/ audio konferinsje"
+        },
+        "Media\/calls": {
+            "displayType": "Oproppen",
+            "description": "kategory foar Media \/ WebRTC",
+            "MaxRelationsExceeded": "Maksimum oproppen oertroffen"
+        },
+        "Media\/clip": {
+            "displayType": "Klip",
+            "description": "media klip"
+        }
+    },
+    "feeds": {
+        "Title": "Kameras",
+        "filterByTitle": "Fyn feeds op titel",
+        "RequestFeedAccess": "Fersyk feed tagong",
+        "New": "+ Nije feed",
+        "filterFeeds": "Filter feeds",
+        "NewFeed": "Nije feed",
+        "NoneYet": "Gjin feeds foarme noch.",
+        "AreYouSure": "Bisto wis?",
+        "FilterByDate": "Filter op datum",
+        "newFeeds": "Jo hawwe {{1}} nije feeds",
+        "Description": "{{1}} feeds",
+        "Keywords": "{{1}} feeds"
+    },
+    "feed": {
+        "HostedBy": "Hosted by {{name}}",
+        "Name": "Namme",
+        "Conversation": "Petear",
+        "CloseFeed": {
+            "button": "Feed slute",
+            "Cancel": "Binne jo wis dat jo dizze feed slute wolle?",
+            "Participant": "Der is 1 dielnimmer oan dizze feed",
+            "Participants": "D&#39;r binne {{count}} dielnimmers oan dizze feed"
+        },
+        "Calendar": "Kalinder",
+        "TitleOfFeed": "Titel fan feed:",
+        "EmptyList": "Lege list",
+        "EmptyVideos": "Noch gjin klips",
+        "AccessReason": "jou asjebleaft de reden",
+        "Proceed": "Trochgean",
+        "FeedAlreadyClosed": "Dizze feed is al sluten",
+        "RtmpLinkNote": "Klikje om dizze keppeling nei it klamboerd te kopiearjen",
+        "SelectClip": "Selektearje de datum dy&#39;t jo sjen wolle",
+        "Request": "Fersyk"
+    },
+    "newFeed": {
+        "Title": "Nije feed",
+        "locationTitle": "Stel jo lokaasje yn",
+        "SetLocation": "Myn lokaasje ynstelle",
+        "Starting": "Starting",
+        "Day": "Dei",
+        "Create": "Meitsje",
+        "Continue": "Trochgean",
+        "FeedTitle": "Feed titel",
+        "SetTitle": "Stel asjebleaft feedtitel yn"
+    },
+    "notifications": {
+        "JoinedWebRTC": "die mei oan jo oprop",
+        "SubjectJoinedYourCall": "{{subject}} die mei oan jo oprop"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Jo hawwe gjin tastimming om mei te dwaan oan dizze stream.",
+        "streamTitle": "{{1}} begûn in Teleconference",
+        "allow": {
+            "dialogTitle": "Ferbine",
+            "microphoneBtn": "Mikrofoan ynskeakelje",
+            "cameraBtn": "Kamera ynskeakelje",
+            "cameraAndMicrophoneBtn": "Kamera en mikrofoan ynskeakelje"
+        },
+        "preparing": {
+            "dialogTitle": "Skeakelje kamera of mikrofoan oan\/út foardat jo meidwaan",
+            "micIsOff": "Mic is út",
+            "micIsOn": "Mic is oan",
+            "cameraIsOff": "Kamera is út",
+            "cameraIsOn": "Kamera stiet oan",
+            "screenSharingIsOn": "Skermdieling is oan",
+            "screenSharingIsOff": "Diele skerm",
+            "joinNow": "Doch mei oan de oprop"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Ynstruksjes",
+            "permissionDenied": "Tastimming foar {{kind}} wegere. Om it te brûken, folgje dizze stappen:",
+            "point1": "Gean nei &quot;Ynstellings&quot; -&gt; &quot;Avansearre&quot; -&gt; &quot;Privacy en feiligens&quot; -&gt; &quot;Sideynstellingen&quot; -&gt; &quot;Kamera&quot; of &quot;Sideynstellingen&quot; -&gt; &quot;Mikrofoan&quot;",
+            "point2": "Fuortsmite {{hostname}} út &quot;Blokkearje&quot; list"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Ynstruksjes",
+            "permissionDenied": "Tastimming foar {{kind}} wegere. Laad dizze side opnij en befêstigje tagong ta {{kind}} om mei te dwaan oan &#39;e konferinsje."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Ynstruksjes",
+            "permissionDenied": "Tastimming foar {{kind}} wegere. Om it te brûken, folgje dizze stappen:",
+            "point1": "Gean nei jo Android-ynstellingen",
+            "point2": "Iepenje &quot;Apps en notifikaasjes&quot;",
+            "point3": "Fyn &quot; {{communityName}} &quot; en iepenje it",
+            "point4": "Tap op Fergunningen",
+            "point5": "{{kind}} ynskeakelje"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Ynstruksjes",
+            "permissionDenied": "Tastimming foar {{kind}} wegere. Om it te brûken, folgje dizze stappen:",
+            "point1": "Gean nei jo iOS-ynstellingen",
+            "point2": "Iepenje &quot;Privacy&quot;",
+            "point3": "Fyn {{kind}} en iepenje it",
+            "point4": "Fyn &quot; {{communityName}} &quot; en ynskeakelje"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook live streaming begon"
+        },
+        "notices": {
+            "youJoinedRoom": "Do bist by de keamer",
+            "joining": "Oantal: {{userName}}",
+            "sbLeftRoom": "{{userName}} ferlieten de keamer",
+            "switchingRoom": "Keamer wikselje...",
+            "forceDisconnecting": "Jo sille wurde loskeppele binnen 5 sekonden",
+            "forceDisconnectingImmediately": "Jo binne loskeppele troch in host",
+            "youLeftRoom": "Jo hawwe de keamer ferlitten",
+            "codeCopied": "Jo hawwe de keamer ferlitten",
+            "sbBeganFbLive": "{{userName}} begon dizze oprop út te stjoeren op Facebook",
+            "sbStoppedFbLive": "{{userName}} stoppe mei it útstjoeren fan dizze oprop yn Facebook",
+            "youBeganFbLive": "Jo begon dizze oprop út te stjoeren op Facebook",
+            "youStoppedFbLive": "Jo binne stoppe mei it útstjoeren fan dizze oprop op Facebook",
+            "youStartedLive": "Jo begon dizze oprop út te stjoeren nei oanpaste RTMP",
+            "youStoppedLive": "Jo binne stoppe mei it útstjoeren fan dizze oprop nei oanpaste RTMP",
+            "sbStartedLiveStreaming": "{{userName}} begûn live",
+            "sbStoppedLiveStreaming": "{{userName}} einige live",
+            "liveStopped": "Der barde flater by it ferstjoeren fan fideo nei einpunt",
+            "youBeganVideoRecording": "Jo binne begûn mei it opnimmen fan dizze konferinsje",
+            "youStoppedVideoRecording": "Jo binne stoppe mei it opnimmen fan dizze konferinsje",
+            "linkCopiedToCb": "Link kopiearre nei klamboerd",
+            "codeCopiedToCb": "Koade kopiearre nei klamboerd",
+            "userHasNoVideo": "Dielnimmer hat gjin fideo",
+            "openInBrowserAlert": "Iepenje keppeling yn Safari-blêder om mei te dwaan oan &#39;e konferinsje.",
+            "allowedVideoLimit": "Allinnich {{limit}} fideo tastien yn dizze keamer",
+            "allowedAudioLimit": "Allinich {{limit}} mikrofoans tastien yn dizze keamer",
+            "processingRecording": "De opname wurdt ferwurke..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Video Ynstellings",
+            "webCamera": "Web kamera",
+            "screenSharing": "Screen Sharing",
+            "shareAnotherScreen": "Diel in oar skerm",
+            "turnOffCameras": "Kamera útsette",
+            "turnOffVideo": "Skeakelje kamera \/ skerm dielen út",
+            "turnOffAudioInput": "Dempe mikrofoan",
+            "turnOffScreenSharing": "Skeakelje skerm dielen út",
+            "cameraIsTurnedOff": "Kamera is útskeakele",
+            "micIsTurnedOff": "Mikrofoan is útskeakele",
+            "startFBLive": "Start Facebook Livestream",
+            "stopFBLive": "Stopje Facebook Livestream",
+            "startRecording": "Begjin opname",
+            "stopRecording": "Stopje opname",
+            "start": "Start",
+            "startClodRecording": "Begjinne Cloud Recording",
+            "startLocRecording": "Begjin lokale opname",
+            "stopClodRecording": "Stopje Cloud Recording",
+            "stopLocRecording": "Stopje lokale opname",
+            "stop": "Ophâlde",
+            "share": "Diele",
+            "recordingInProgress": "Opname is dwaande...",
+            "fbLiveTitle": "Titel fan Livestream",
+            "fbLiveDescription": "Beskriuw jo Livestream. Wêr giet it oer?",
+            "fbOnlyMeLiveAccess": "Allinnich ik",
+            "fbFriendsAccess": "Freonen",
+            "fbPublicAccess": "Iepenbier",
+            "publishOnTimeline": "Publisearje op tiidline",
+            "publishToGroup": "Publisearje nei groep",
+            "fbStartLive": "Gean Live",
+            "fbStopLive": "Ein Livestream",
+            "streamingSettings": "Ynstellings",
+            "manageStream": "Livestream beheare",
+            "fbEmbedCode": "Ynbêde",
+            "copy": "Kopy",
+            "streamToRTMP": "Stream nei oanpaste RTMP",
+            "startBroadcasting": "Begjin útstjoeren",
+            "broadcastingInProgress": "De útstjoering is oan &#39;e gong"
+        },
+        "audioSettings": {
+            "dialogTitle": "Audio ynstellings",
+            "speakers": "Sprekkers",
+            "microphone": "Mikrofoan"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Beheare útstjoering"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Participant Ynstellings",
+            "disconnect": "Ferbine",
+            "floatingScreens": "Floating Screens",
+            "tiledScreens": "Betegele skermen",
+            "loudestExceptMe": "Lûdst útsein my",
+            "maximizeLoudest": "Maximize Loudest",
+            "staticMaximized": "Statyske maksimalisearre",
+            "fullScreen": "Folslein skerm",
+            "manual": "Hantlieding",
+            "turnOffCamera": "Fideo ferbergje",
+            "turnOffAudio": "Dempe audio",
+            "turnOffScreenSharing": "Skermdieling ferbergje",
+            "turnOnCamera": "Fideo sjen litte",
+            "turnOnAudio": "Audio útskeakelje",
+            "turnOnScreenSharing": "Skermdieling sjen litte"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferinsje",
+            "MeetingEnded": "Telekonferinsje einige"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Fersyk om te sprekken",
+            "msg": "D&#39;r binne op it stuit {{count}} minsken dy&#39;t yn &#39;e gearkomste prate. Wolle jo ien fan har ferfange nei&#39;t jo se {{seconds}} sekonden hawwe tastien om te praten?"
+        }
+    }
+}

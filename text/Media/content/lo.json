@@ -1,0 +1,256 @@
+{
+    "Shows": "ການສະແດງ",
+    "Clips": "ຄລິບ",
+    "Video": "ວິດີໂອ",
+    "Audio": "ສຽງ",
+    "categories": {
+        "Clips": "ຄລິບສື່ມວນຊົນ",
+        "Episodes": "ຕອນ"
+    },
+    "presentation": {
+        "PutTogether": "ເຈົ້າຈະນໍາສະເຫນີບໍ? ທ່ານສາມາດນໍາໃຊ້ພື້ນທີ່ນີ້ເພື່ອອັບໂຫລດເອກະສານຮ່ວມກັນສໍາລັບການນໍາສະເຫນີຂອງທ່ານ. ໃຊ້ປຸ່ມບວກ.",
+        "Alert": "ເມື່ອເຫດການເລີ່ມຕົ້ນ, ຫນ້ານີ້ຈະເລີ່ມສະແດງການນໍາສະເຫນີທີ່ສອດຄ້ອງກັນຂອງພວກເຂົາ",
+        "ClickHereForFullscreen": "ການນຳສະເໜີຈະປາກົດຢູ່ບ່ອນນີ້. ຄລິກທີ່ນີ້ເພື່ອໄປແບບເຕັມຈໍ.",
+        "question": {
+            "ScanThisQRCode": "ສະແກນລະຫັດ QR ນີ້ເພື່ອຕອບ"
+        }
+    },
+    "NewEpisode": "ຕອນໃໝ່",
+    "NewClip": "ສ້າງຄລິບໃໝ່",
+    "NewClipTitlePlaceholder": "ໃສ່ຊື່ຄລິບ",
+    "NewClipDescriptionPlaceholder": "ໃສ່ຄຳອະທິບາຍຄລິບ",
+    "switchVisualization": "ສະຫຼັບການສະແດງພາບ",
+    "joinLiveShow": "ເຂົ້າຮ່ວມການສະແດງສົດ",
+    "showTwitchLiveStream": "ສະແດງ Twitch Live Stream",
+    "showVoiceChat": "ສະແດງ Voice Chat",
+    "LiveShow": "ການສະແດງສົດ",
+    "AreYouSureKick": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການເປີດຕົວຜູ້ໃຊ້ນີ້?",
+    "Save": "ບັນທຶກ",
+    "ViewFullEpisode": "ເບິ່ງຕອນເຕັມ",
+    "CreditsEarned": "ໄດ້ຮັບສິນເຊື່ອ",
+    "VideoTitle": "ຊື່ວິດີໂອ ຫຼື URL",
+    "AreYouSureDeleteEpisode": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບຕອນນີ້ອອກ?",
+    "Yes": "ແມ່ນແລ້ວ",
+    "No": "ບໍ່",
+    "RealTimeCall": "ໂທໃນເວລາຈິງ",
+    "JoinWebRTC": "ກອງປະຊຸມໂທລະຄົມ",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "ກອງປະຊຸມໂທລະຄົມ",
+            "description": "ກອງ​ປະ​ຊຸມ​ວິ​ດີ​ໂອ \/ ສຽງ​ອອນ​ໄລ​ນ​໌​"
+        },
+        "Media\/calls": {
+            "displayType": "ໂທ",
+            "description": "ໝວດໝູ່ສຳລັບສື່\/WebRTC",
+            "MaxRelationsExceeded": "ເກີນການໂທສູງສຸດ"
+        },
+        "Media\/clip": {
+            "displayType": "ຄລິບ",
+            "description": "ຄລິບສື່ມວນຊົນ"
+        }
+    },
+    "feeds": {
+        "Title": "ກ້ອງຖ່າຍຮູບ",
+        "filterByTitle": "ຊອກຫາຟີດຕາມຫົວຂໍ້",
+        "RequestFeedAccess": "ຮ້ອງຂໍການເຂົ້າເຖິງອາຫານ",
+        "New": "+ ອາຫານໃໝ່",
+        "filterFeeds": "ການກັ່ນຕອງຟີດ",
+        "NewFeed": "ອາຫານໃໝ່",
+        "NoneYet": "ຍັງບໍ່ມີຟີດທີ່ສ້າງຂຶ້ນເທື່ອ.",
+        "AreYouSure": "ເຈົ້າແນ່ໃຈບໍ?",
+        "FilterByDate": "ກັ່ນຕອງຕາມວັນທີ",
+        "newFeeds": "ທ່ານມີ {{1}} ຟີດໃຫມ່",
+        "Description": "{{1}} ຟີດ",
+        "Keywords": "{{1}} ຟີດ"
+    },
+    "feed": {
+        "HostedBy": "ເປັນເຈົ້າພາບໂດຍ {{name}}",
+        "Name": "ຊື່",
+        "Conversation": "ການສົນທະນາ",
+        "CloseFeed": {
+            "button": "ປິດຟີດ",
+            "Cancel": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການປິດຟີດນີ້?",
+            "Participant": "ມີ 1 ຜູ້ເຂົ້າຮ່ວມໃນຟີດນີ້",
+            "Participants": "ມີຜູ້ເຂົ້າຮ່ວມ {{count}} ຄົນໃນຟີດນີ້"
+        },
+        "Calendar": "ປະຕິທິນ",
+        "TitleOfFeed": "ຊື່ອາຫານ:",
+        "EmptyList": "ບັນຊີລາຍຊື່ເປົ່າ",
+        "EmptyVideos": "ບໍ່ມີຄລິບເທື່ອ",
+        "AccessReason": "ກະລຸນາບອກເຫດຜົນ",
+        "Proceed": "ດໍາເນີນການ",
+        "FeedAlreadyClosed": "ຟີດນີ້ປິດແລ້ວ",
+        "RtmpLinkNote": "ຄລິກເພື່ອສຳເນົາລິ້ງນີ້ໃສ່ຄລິບບອດ",
+        "SelectClip": "ເລືອກວັນທີທີ່ທ່ານຕ້ອງການເບິ່ງ",
+        "Request": "ຮ້ອງຂໍ"
+    },
+    "newFeed": {
+        "Title": "ອາຫານໃໝ່",
+        "locationTitle": "ກໍານົດສະຖານທີ່ຂອງທ່ານ",
+        "SetLocation": "ຕັ້ງສະຖານທີ່ຂອງຂ້ອຍ",
+        "Starting": "ເລີ່ມ",
+        "Day": "ມື້",
+        "Create": "ສ້າງ",
+        "Continue": "ສືບຕໍ່",
+        "FeedTitle": "ຊື່ອາຫານ",
+        "SetTitle": "ກະລຸນາຕັ້ງຊື່ອາຫານ"
+    },
+    "notifications": {
+        "JoinedWebRTC": "ເຂົ້າຮ່ວມການໂທຂອງທ່ານ",
+        "SubjectJoinedYourCall": "{{subject}} ເຂົ້າຮ່ວມການໂທຂອງທ່ານ"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "ທ່ານບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ເຂົ້າຮ່ວມການຖ່າຍທອດນີ້.",
+        "streamTitle": "{{1}} ໄດ້ເລີ່ມຕົ້ນກອງປະຊຸມໂທລະຄົມ",
+        "allow": {
+            "dialogTitle": "ກຳລັງເຊື່ອມຕໍ່",
+            "microphoneBtn": "ເປີດໃຊ້ໄມໂຄຣໂຟນ",
+            "cameraBtn": "ເປີດໃຊ້ກ້ອງຖ່າຍຮູບ",
+            "cameraAndMicrophoneBtn": "ເປີດໃຊ້ກ້ອງຖ່າຍຮູບ ແລະໄມໂຄຣໂຟນ"
+        },
+        "preparing": {
+            "dialogTitle": "ເປີດ\/ປິດກ້ອງ ຫຼືໄມກ່ອນທີ່ທ່ານຈະເຂົ້າຮ່ວມ",
+            "micIsOff": "ໄມປິດຢູ່",
+            "micIsOn": "ໄມເປີດຢູ່",
+            "cameraIsOff": "ກ້ອງປິດຢູ່",
+            "cameraIsOn": "ກ້ອງເປີດຢູ່",
+            "screenSharingIsOn": "ການແບ່ງປັນໜ້າຈໍເປີດຢູ່",
+            "screenSharingIsOff": "ແບ່ງ​ປັນ​ຫນ້າ​ຈໍ​",
+            "joinNow": "ເຂົ້າຮ່ວມການໂທ"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "ຄໍາແນະນໍາ",
+            "permissionDenied": "ການອະນຸຍາດສໍາລັບ {{kind}} ປະຕິເສດ. ເພື່ອໃຊ້ມັນກະລຸນາປະຕິບັດຕາມຂັ້ນຕອນເຫຼົ່ານີ້:",
+            "point1": "ໄປທີ່ &quot;ການຕັ້ງຄ່າ&quot; -&gt; &quot;ຂັ້ນສູງ&quot; -&gt; &quot;ຄວາມເປັນສ່ວນຕົວແລະຄວາມປອດໄພ&quot; -&gt; &quot;ການຕັ້ງຄ່າເວັບໄຊທ໌&quot; -&gt; &quot;ກ້ອງຖ່າຍຮູບ&quot; ຫຼື &quot;ການຕັ້ງຄ່າເວັບໄຊທ໌&quot; -&gt; &quot;ໄມໂຄຣໂຟນ&quot;",
+            "point2": "ເອົາ {{hostname}} ອອກຈາກບັນຊີລາຍຊື່ &quot;Block&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "ຄໍາແນະນໍາ",
+            "permissionDenied": "ການອະນຸຍາດສໍາລັບ {{kind}} ປະຕິເສດ. ກະລຸນາໂຫຼດໜ້ານີ້ຄືນໃໝ່ ແລະຢືນຢັນການເຂົ້າເຖິງ {{kind}} ເພື່ອເຂົ້າຮ່ວມກອງປະຊຸມ."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "ຄໍາແນະນໍາ",
+            "permissionDenied": "ການອະນຸຍາດສໍາລັບ {{kind}} ປະຕິເສດ. ເພື່ອໃຊ້ມັນກະລຸນາປະຕິບັດຕາມຂັ້ນຕອນເຫຼົ່ານີ້:",
+            "point1": "ໄປທີ່ການຕັ້ງຄ່າ Android ຂອງທ່ານ",
+            "point2": "ເປີດ &quot;ແອັບ ແລະ ການແຈ້ງເຕືອນ&quot;",
+            "point3": "ຊອກຫາ &quot; {{communityName}} &quot; ແລະເປີດມັນ",
+            "point4": "ແຕະທີ່ການອະນຸຍາດ",
+            "point5": "ເປີດໃຊ້ {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "ຄໍາແນະນໍາ",
+            "permissionDenied": "ການອະນຸຍາດສໍາລັບ {{kind}} ປະຕິເສດ. ເພື່ອໃຊ້ມັນກະລຸນາປະຕິບັດຕາມຂັ້ນຕອນເຫຼົ່ານີ້:",
+            "point1": "ໄປທີ່ການຕັ້ງຄ່າ iOS ຂອງທ່ານ",
+            "point2": "ເປີດ &quot;ຄວາມເປັນສ່ວນຕົວ&quot;",
+            "point3": "ຊອກຫາ {{kind}} ແລະເປີດມັນ",
+            "point4": "ຊອກຫາ &quot; {{communityName}} &quot; ແລະເປີດໃຊ້"
+        },
+        "fbLive": {
+            "dialogTitle": "ການຖ່າຍທອດສົດ Facebook ເລີ່ມແລ້ວ"
+        },
+        "notices": {
+            "youJoinedRoom": "ທ່ານໄດ້ເຂົ້າຮ່ວມຫ້ອງ",
+            "joining": "ເຂົ້າ​ຮ່ວມ: {{userName}}",
+            "sbLeftRoom": "{{userName}} ອອກຈາກຫ້ອງ",
+            "switchingRoom": "ສະຫຼັບຫ້ອງ...",
+            "forceDisconnecting": "ເຈົ້າຈະຖືກຕັດການເຊື່ອມຕໍ່ພາຍໃນ 5 ວິນາທີ",
+            "forceDisconnectingImmediately": "ເຈົ້າຖືກຕັດການເຊື່ອມຕໍ່ໂດຍເຈົ້າພາບ",
+            "youLeftRoom": "ເຈົ້າອອກຈາກຫ້ອງ",
+            "codeCopied": "ເຈົ້າອອກຈາກຫ້ອງ",
+            "sbBeganFbLive": "{{userName}} ເລີ່ມອອກອາກາດການໂທນີ້ໃນເຟສບຸກ",
+            "sbStoppedFbLive": "{{userName}} ຢຸດການອອກອາກາດການໂທນີ້ໃນເຟສບຸກ",
+            "youBeganFbLive": "ເຈົ້າເລີ່ມອອກອາກາດການໂທນີ້ໃນເຟສບຸກ",
+            "youStoppedFbLive": "ທ່ານໄດ້ຢຸດການອອກອາກາດການໂທນີ້ໃນ Facebook",
+            "youStartedLive": "ທ່ານເລີ່ມອອກອາກາດການໂທນີ້ໄປຫາ RTMP ແບບກຳນົດເອງ",
+            "youStoppedLive": "ທ່ານໄດ້ຢຸດການອອກອາກາດການໂທນີ້ໄປຫາ RTMP ແບບກຳນົດເອງ",
+            "sbStartedLiveStreaming": "{{userName}} ເລີ່ມສົດ",
+            "sbStoppedLiveStreaming": "{{userName}} ສິ້ນສຸດການຖ່າຍທອດສົດ",
+            "liveStopped": "ເກີດຄວາມຜິດພາດໃນລະຫວ່າງການສົ່ງວິດີໂອໄປຫາຈຸດສິ້ນສຸດ",
+            "youBeganVideoRecording": "ເຈົ້າເລີ່ມບັນທຶກກອງປະຊຸມນີ້",
+            "youStoppedVideoRecording": "ທ່ານຢຸດການບັນທຶກກອງປະຊຸມນີ້",
+            "linkCopiedToCb": "ສຳເນົາລິ້ງໃສ່ຄລິບບອດແລ້ວ",
+            "codeCopiedToCb": "ສຳເນົາລະຫັດໃສ່ຄລິບບອດແລ້ວ",
+            "userHasNoVideo": "ຜູ້ເຂົ້າຮ່ວມບໍ່ມີວິດີໂອ",
+            "openInBrowserAlert": "ເປີດລິ້ງໃນຕົວທ່ອງເວັບ Safari ເພື່ອເຂົ້າຮ່ວມກອງປະຊຸມ.",
+            "allowedVideoLimit": "ພຽງແຕ່ {{limit}} ວິດີໂອອະນຸຍາດໃຫ້ຢູ່ໃນຫ້ອງນີ້",
+            "allowedAudioLimit": "ມີໄມໂຄຣໂຟນ {{limit}} ໜ່ວຍເທົ່ານັ້ນທີ່ອະນຸຍາດໃຫ້ຢູ່ໃນຫ້ອງນີ້",
+            "processingRecording": "ກຳລັງປະມວນຜົນການບັນທຶກ..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "ການຕັ້ງຄ່າວິດີໂອ",
+            "webCamera": "ກ້ອງເວັບ",
+            "screenSharing": "ການແບ່ງປັນໜ້າຈໍ",
+            "shareAnotherScreen": "ແບ່ງປັນໜ້າຈໍອື່ນ",
+            "turnOffCameras": "ປິດກ້ອງຖ່າຍຮູບ",
+            "turnOffVideo": "ປິດການແບ່ງປັນກ້ອງຖ່າຍຮູບ\/ໜ້າຈໍ",
+            "turnOffAudioInput": "ປິດສຽງໄມໂຄຣໂຟນ",
+            "turnOffScreenSharing": "ປິດການແບ່ງປັນໜ້າຈໍ",
+            "cameraIsTurnedOff": "ກ້ອງຖ່າຍຮູບຖືກປິດ",
+            "micIsTurnedOff": "ໄມໂຄຣໂຟນຖືກປິດໄວ້",
+            "startFBLive": "ເລີ່ມ Facebook Livestream",
+            "stopFBLive": "ຢຸດການຖ່າຍທອດສົດ Facebook",
+            "startRecording": "ເລີ່ມການບັນທຶກ",
+            "stopRecording": "ຢຸດການບັນທຶກ",
+            "start": "ເລີ່ມ",
+            "startClodRecording": "ເລີ່ມການບັນທຶກຄລາວ",
+            "startLocRecording": "ເລີ່ມການບັນທຶກທ້ອງຖິ່ນ",
+            "stopClodRecording": "ຢຸດການບັນທຶກຄລາວ",
+            "stopLocRecording": "ຢຸດການບັນທຶກທ້ອງຖິ່ນ",
+            "stop": "ຢຸດ",
+            "share": "ແບ່ງປັນ",
+            "recordingInProgress": "ກຳລັງດຳເນີນການບັນທຶກ...",
+            "fbLiveTitle": "ຊື່ການຖ່າຍທອດສົດ",
+            "fbLiveDescription": "ອະທິບາຍການຖ່າຍທອດສົດຂອງທ່ານ. ມັນກ່ຽວກັບຫຍັງ?",
+            "fbOnlyMeLiveAccess": "ພຽງແຕ່ຂ້ອຍ",
+            "fbFriendsAccess": "ເພື່ອນ",
+            "fbPublicAccess": "ສາທາລະນະ",
+            "publishOnTimeline": "ເຜີຍແຜ່ໃນທາມລາຍ",
+            "publishToGroup": "ເຜີຍແຜ່ໃສ່ກຸ່ມ",
+            "fbStartLive": "ໄປສົດ",
+            "fbStopLive": "ສິ້ນສຸດການຖ່າຍທອດສົດ",
+            "streamingSettings": "ການຕັ້ງຄ່າ",
+            "manageStream": "ຈັດການການຖ່າຍທອດສົດ",
+            "fbEmbedCode": "ຝັງ",
+            "copy": "ສຳເນົາ",
+            "streamToRTMP": "ຖ່າຍທອດໄປຫາ RTMP ແບບກຳນົດເອງ",
+            "startBroadcasting": "ເລີ່ມອອກອາກາດ",
+            "broadcastingInProgress": "ກຳລັງອອກອາກາດຢູ່"
+        },
+        "audioSettings": {
+            "dialogTitle": "ການຕັ້ງຄ່າສຽງ",
+            "speakers": "ລໍາໂພງ",
+            "microphone": "ໄມໂຄຣໂຟນ"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "ຈັດການການອອກອາກາດ"
+        },
+        "participantsPopup": {
+            "dialogTitle": "ການຕັ້ງຄ່າຜູ້ເຂົ້າຮ່ວມ",
+            "disconnect": "ຕັດການເຊື່ອມຕໍ່",
+            "floatingScreens": "ໜ້າຈໍເລື່ອນ",
+            "tiledScreens": "ໜ້າຈໍກະເບື້ອງ",
+            "loudestExceptMe": "ດັງທີ່ສຸດຍົກເວັ້ນຂ້ອຍ",
+            "maximizeLoudest": "ຂະຫຍາຍສຽງສູງສຸດ",
+            "staticMaximized": "ສູງສຸດຄົງທີ່",
+            "fullScreen": "ເຕັມຈໍ",
+            "manual": "ຄູ່ມື",
+            "turnOffCamera": "ເຊື່ອງວິດີໂອ",
+            "turnOffAudio": "ປິດສຽງ",
+            "turnOffScreenSharing": "ເຊື່ອງການແບ່ງປັນໜ້າຈໍ",
+            "turnOnCamera": "ສະແດງວິດີໂອ",
+            "turnOnAudio": "ເປີດສຽງ",
+            "turnOnScreenSharing": "ສະແດງການແບ່ງປັນໜ້າຈໍ"
+        },
+        "streamingSettings": {
+            "title": "ຖ່າຍທອດສົດ"
+        },
+        "preview": {
+            "Meeting": "ກອງປະຊຸມໂທລະຄົມ",
+            "MeetingEnded": "ການ​ປະ​ຊຸມ​ທາງ​ໂທລະ​ຄົມ​ສິ້ນ​ສຸດ​ລົງ​"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "ຮ້ອງຂໍໃຫ້ເວົ້າ",
+            "msg": "ປະຈຸບັນມີ {{count}} ຄົນເວົ້າຢູ່ໃນກອງປະຊຸມ. ທ່ານຕ້ອງການປ່ຽນແທນອັນໃດອັນໜຶ່ງຫຼັງຈາກປ່ອຍໃຫ້ພວກເຂົາເວົ້າໄດ້ {{seconds}} ວິນາທີບໍ່?"
+        }
+    }
+}

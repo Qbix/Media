@@ -1,0 +1,256 @@
+{
+    "Shows": "Whakaaturanga",
+    "Clips": "Topenga",
+    "Video": "Ataata",
+    "Audio": "Ororongo",
+    "categories": {
+        "Clips": "Topenga Media",
+        "Episodes": "Wāhanga"
+    },
+    "presentation": {
+        "PutTogether": "Ka whakaatu koe? Ka taea e koe te whakamahi i tenei waahi ki te tuku tahi i nga rauemi mo to whakaaturanga. Whakamahia te paatene Tāpiri.",
+        "Alert": "Ka timata nga huihuinga, ka timata tenei wharangi ki te whakaatu i o raatau whakaaturanga",
+        "ClickHereForFullscreen": "Ka puta nga whakaaturanga ki konei. Pāwhiri ki konei kia haere mata-katoa.",
+        "question": {
+            "ScanThisQRCode": "Matawai tenei waehere QR hei whakautu"
+        }
+    },
+    "NewEpisode": "Wāhanga Hou",
+    "NewClip": "Hangaia he Topenga Hou",
+    "NewClipTitlePlaceholder": "Whakauruhia te Taitara Topenga",
+    "NewClipDescriptionPlaceholder": "Whakauruhia te Topenga Whakaahuatanga",
+    "switchVisualization": "Whakawhiti tirohanga",
+    "joinLiveShow": "Hono Live Show",
+    "showTwitchLiveStream": "Whakaatu Twitch Live Stream",
+    "showVoiceChat": "Whakaatu Reo Korero",
+    "LiveShow": "Whakaaturanga Ora",
+    "AreYouSureKick": "Kei te tino hiahia koe ki te whakakore i tenei kaiwhakamahi?",
+    "Save": "Tiaki",
+    "ViewFullEpisode": "Tirohia te Whanga katoa",
+    "CreditsEarned": "Nga whiwhinga i whiwhi",
+    "VideoTitle": "Taitara Ataata, URL ranei",
+    "AreYouSureDeleteEpisode": "Kei te tino hiahia koe ki te muku i tenei wahanga?",
+    "Yes": "Ae",
+    "No": "Kao",
+    "RealTimeCall": "Waea Tuturu Waea",
+    "JoinWebRTC": "Whakawhitiwhiti",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Whakawhitiwhiti",
+            "description": "he hui ataata\/orooro ipurangi"
+        },
+        "Media\/calls": {
+            "displayType": "Waea",
+            "description": "kāwai mō Media\/WebRTC",
+            "MaxRelationsExceeded": "Kua hipa ake nga waea"
+        },
+        "Media\/clip": {
+            "displayType": "Topenga",
+            "description": "topenga pāpāho"
+        }
+    },
+    "feeds": {
+        "Title": "Nga kamera",
+        "filterByTitle": "Kimihia ngā whāngai mā te taitara",
+        "RequestFeedAccess": "Tonoa te uru kai",
+        "New": "+ Whāngai Hou",
+        "filterFeeds": "Tātari whāngai",
+        "NewFeed": "Whāngai Hou",
+        "NoneYet": "Karekau ano he whangai.",
+        "AreYouSure": "Kei te tino mohio koe?",
+        "FilterByDate": "Tātari Ma te Rā",
+        "newFeeds": "E {{1}} nga whangai hou",
+        "Description": "{{1}} whāngai",
+        "Keywords": "{{1}} whāngai"
+    },
+    "feed": {
+        "HostedBy": "I whakahaerehia e {{name}}",
+        "Name": "Ingoa",
+        "Conversation": "Kōrerorero",
+        "CloseFeed": {
+            "button": "Katia Whāngai",
+            "Cancel": "Kei te tino hiahia koe ki te kati i tenei whangai?",
+            "Participant": "Kotahi te kaiuru ki tenei whangai",
+            "Participants": "E {{count}} nga kaiuru ki tenei whangai"
+        },
+        "Calendar": "Maramataka",
+        "TitleOfFeed": "Taitara whāngai:",
+        "EmptyList": "Rarangi putua",
+        "EmptyVideos": "Kaore ano he topenga",
+        "AccessReason": "tuhia koa te take",
+        "Proceed": "Haere tonu",
+        "FeedAlreadyClosed": "Kua kati kē tēnei whāngai",
+        "RtmpLinkNote": "Pāwhiri ki te tārua i tēnei hono ki te papatopenga",
+        "SelectClip": "Tīpakohia te rā e hiahia ana koe kia kite",
+        "Request": "Tono"
+    },
+    "newFeed": {
+        "Title": "Whāngai Hou",
+        "locationTitle": "Tautuhia to Tauwāhi",
+        "SetLocation": "Tautuhi Taku Tauwāhi",
+        "Starting": "Ka timata",
+        "Day": "Ra",
+        "Create": "Waihanga",
+        "Continue": "Haere tonu",
+        "FeedTitle": "taitara whangai",
+        "SetTitle": "Whakaritea koa te taitara whangai"
+    },
+    "notifications": {
+        "JoinedWebRTC": "i uru atu ki to waea",
+        "SubjectJoinedYourCall": "I uru mai a {{subject}} ki to waea"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Karekau he whakaaetanga kia uru mai ki tenei roma.",
+        "streamTitle": "{{1}} i timata te Waea Waea",
+        "allow": {
+            "dialogTitle": "Te hono",
+            "microphoneBtn": "Whakahohe Waorooro",
+            "cameraBtn": "Whakahohehia te kamera",
+            "cameraAndMicrophoneBtn": "Whakahohehia te kamera me te hopuoro"
+        },
+        "preparing": {
+            "dialogTitle": "Whakawetohia te kaamera, te hopuoro ranei i mua i to urunga",
+            "micIsOff": "Kua weto te hopuoro",
+            "micIsOn": "Kei te Mic",
+            "cameraIsOff": "Kua weto te kamera",
+            "cameraIsOn": "Kei te kaa te kamera",
+            "screenSharingIsOn": "Kei te tiritiri mata",
+            "screenSharingIsOff": "Tiri mata",
+            "joinNow": "Hono ki te Waea"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Tohutohu",
+            "permissionDenied": "Karekau te whakaaetanga mo {{kind}} . Hei whakamahi me whai i enei mahi:",
+            "point1": "Haere ki &quot;Tautuhinga&quot; -&gt; &quot;Arā Atu Anō&quot; -&gt; &quot;Tūmataiti me te haumarutanga&quot; -&gt; &quot;Tautuhinga Pae&quot; -&gt; &quot;Kamera&quot; ranei &quot;Tautuhinga Pae&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Tangohia {{hostname}} mai i te rarangi &quot;Poraka&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Tohutohu",
+            "permissionDenied": "Kare te whakaaetanga mo {{kind}} . Tena utaina ano tenei wharangi me te whakaū i te uru ki {{kind}} ki te uru atu ki te huihuinga."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Tohutohu",
+            "permissionDenied": "Kare te whakaaetanga mo {{kind}} . Hei whakamahi me whai i enei mahi:",
+            "point1": "Haere ki o Tautuhinga Android",
+            "point2": "Whakatuwheratia &quot;Nga tono me nga whakamohiotanga&quot;",
+            "point3": "Kimihia &quot; {{communityName}} &quot; ka whakatuwheratia",
+            "point4": "Patohia nga Whakaaetanga",
+            "point5": "Whakahohe {{kind}}"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Tohutohu",
+            "permissionDenied": "Karekau te whakaaetanga mo {{kind}} . Hei whakamahi me whai i enei mahi:",
+            "point1": "Haere ki o Tautuhinga iOS",
+            "point2": "Tuwhera &quot;Tūmataiti&quot;",
+            "point3": "Kimihia {{kind}} ka whakatuwheratia",
+            "point4": "Kimihia &quot; {{communityName}} &quot; ka taea"
+        },
+        "fbLive": {
+            "dialogTitle": "I timata te roma ora Facebook"
+        },
+        "notices": {
+            "youJoinedRoom": "I uru koe ki te ruma",
+            "joining": "Te whakauru: {{userName}}",
+            "sbLeftRoom": "I wehe {{userName}} i te ruma",
+            "switchingRoom": "Huri rūma...",
+            "forceDisconnecting": "Ka momotuhia koe i roto i te 5 hēkona",
+            "forceDisconnectingImmediately": "I momotuhia koe e tetahi kaihautu",
+            "youLeftRoom": "I wehe koe i te ruma",
+            "codeCopied": "I wehe koe i te ruma",
+            "sbBeganFbLive": "I timata {{userName}} ki te whakapaoho i tenei waea ki Pukamata",
+            "sbStoppedFbLive": "I whakamutua {{userName}} te whakapaoho i tenei waea ki Pukamata",
+            "youBeganFbLive": "I timata koe ki te whakapaoho i tenei waea ki Pukamata",
+            "youStoppedFbLive": "I whakamutua e koe te whakapaoho i tenei waea ki Pukamata",
+            "youStartedLive": "I timata koe ki te panui i tenei waea ki te RTMP ritenga",
+            "youStoppedLive": "I mutu to paoho i tenei waea ki te RTMP ritenga",
+            "sbStartedLiveStreaming": "{{userName}} i timata ora",
+            "sbStoppedLiveStreaming": "{{userName}} i mutu ora",
+            "liveStopped": "I puta he hapa i te tuku ataata ki te pito mutunga",
+            "youBeganVideoRecording": "I timata koe ki te tuhi i tenei huihuinga",
+            "youStoppedVideoRecording": "I mutu to rekoata i tenei huihuinga",
+            "linkCopiedToCb": "Kua tāruatia te hono ki te papatopenga",
+            "codeCopiedToCb": "Kua tāruahia te waehere ki te papatopenga",
+            "userHasNoVideo": "Karekau he ataata a te kaiuru",
+            "openInBrowserAlert": "Whakatuwherahia te hono ki te kaitirotiro Safari kia uru atu ki te huihuinga.",
+            "allowedVideoLimit": "{{limit}} noa te ataata e whakaaetia ana ki tenei ruma",
+            "allowedAudioLimit": "{{limit}} noa nga hopuoro e whakaaetia ana ki tenei ruma",
+            "processingRecording": "Tukatuka ana i te hopu..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Tautuhinga Ataata",
+            "webCamera": "Kāmera Tukutuku",
+            "screenSharing": "Tiri Mata",
+            "shareAnotherScreen": "Tiria tetahi atu mata",
+            "turnOffCameras": "Whakawetohia te kamera",
+            "turnOffVideo": "Whakawetohia te tiritiri kamera\/mata",
+            "turnOffAudioInput": "Wahangu hopuoro",
+            "turnOffScreenSharing": "Whakawetohia te tiri mata",
+            "cameraIsTurnedOff": "Kua weto te kamera",
+            "micIsTurnedOff": "Kua wetohia te hopuoro",
+            "startFBLive": "Tīmatahia Facebook Livestream",
+            "stopFBLive": "Kati Facebook Livestream",
+            "startRecording": "Tīmatahia te tuhi",
+            "stopRecording": "Kati te tuhi",
+            "start": "Tīmata",
+            "startClodRecording": "Tīmatahia te Puka Kapua",
+            "startLocRecording": "Tīmatahia te Rekoata Paetata",
+            "stopClodRecording": "Kati te Kapua Hopu",
+            "stopLocRecording": "Kati te Rekoata Paetata",
+            "stop": "Kati",
+            "share": "Tiria",
+            "recordingInProgress": "Kei te mahi rekoata...",
+            "fbLiveTitle": "Taitara o Livestream",
+            "fbLiveDescription": "Whakaahuahia to Livestream. He aha te korero?",
+            "fbOnlyMeLiveAccess": "Ko ahau anake",
+            "fbFriendsAccess": "E hoa ma",
+            "fbPublicAccess": "Tūmatanui",
+            "publishOnTimeline": "Whakaputahia ki te raarangi waahi",
+            "publishToGroup": "Whakaputa ki te roopu",
+            "fbStartLive": "Haere Ora",
+            "fbStopLive": "Whakamutua Livestream",
+            "streamingSettings": "Tautuhinga",
+            "manageStream": "Whakahaere Livestream",
+            "fbEmbedCode": "Whakamau",
+            "copy": "Tārua",
+            "streamToRTMP": "Rere ki RTMP ritenga",
+            "startBroadcasting": "Tīmata te pāhotanga",
+            "broadcastingInProgress": "Kei te haere tonu te panui"
+        },
+        "audioSettings": {
+            "dialogTitle": "Tautuhinga Ororongo",
+            "speakers": "Kaikōrero",
+            "microphone": "hopuoro"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Whakahaere Paoho"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Tautuhinga Kaiuru",
+            "disconnect": "Momotu",
+            "floatingScreens": "Ngā Mata Mānu",
+            "tiledScreens": "Mata Tapa",
+            "loudestExceptMe": "Tino Kaha Haunga Au",
+            "maximizeLoudest": "Whakamōrahi Nui rawa",
+            "staticMaximized": "Whakanuia Pateko",
+            "fullScreen": "Mata Katoa",
+            "manual": "ā-ringa",
+            "turnOffCamera": "Huna ataata",
+            "turnOffAudio": "Wahangu ororongo",
+            "turnOffScreenSharing": "Huna te tiri mata",
+            "turnOnCamera": "Whakaatuhia te ataata",
+            "turnOnAudio": "Whakakorea te ororongo",
+            "turnOnScreenSharing": "Whakaatuhia te tiri mata"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Whakawhitiwhiti Waea",
+            "MeetingEnded": "Ka mutu te huihuinga waea"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Tono ki te Korero",
+            "msg": "I tenei wa e {{count}} nga tangata e korero ana i te hui. Kei te pirangi koe ki te whakakapi i tetahi i muri i te tuku kia {{seconds}} hēkona kia mutu tana korero?"
+        }
+    }
+}

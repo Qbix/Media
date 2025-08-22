@@ -1,0 +1,256 @@
+{
+    "Shows": "Awọn ifihan",
+    "Clips": "Awọn agekuru",
+    "Video": "Fidio",
+    "Audio": "Ohun",
+    "categories": {
+        "Clips": "Awọn agekuru Media",
+        "Episodes": "Awọn iṣẹlẹ"
+    },
+    "presentation": {
+        "PutTogether": "Ṣe iwọ yoo ṣe afihan? O le lo aaye yii lati gbe awọn ohun elo papọ fun igbejade rẹ. Lo bọtini Plus.",
+        "Alert": "Bi awọn iṣẹlẹ ṣe bẹrẹ, oju-iwe yii yoo bẹrẹ lati ṣafihan awọn igbejade ti o baamu wọn",
+        "ClickHereForFullscreen": "Awọn ifarahan yoo han nibi. Tẹ ibi lati lọ si iboju kikun.",
+        "question": {
+            "ScanThisQRCode": "Ṣayẹwo koodu QR yii lati dahun"
+        }
+    },
+    "NewEpisode": "Isele Tuntun",
+    "NewClip": "Ṣe Agekuru Tuntun",
+    "NewClipTitlePlaceholder": "Tẹ Akọle Agekuru",
+    "NewClipDescriptionPlaceholder": "Tẹ Agekuru Apejuwe",
+    "switchVisualization": "Yipada iworan",
+    "joinLiveShow": "Darapọ mọ Live Show",
+    "showTwitchLiveStream": "Show Twitch Live san",
+    "showVoiceChat": "Ṣe afihan Ifọrọranṣẹ",
+    "LiveShow": "Ifihan Live",
+    "AreYouSureKick": "Ṣe o da ọ loju pe o fẹ tapa olumulo yii bi?",
+    "Save": "Fipamọ",
+    "ViewFullEpisode": "Wo Full Episode",
+    "CreditsEarned": "Awọn kirediti mina",
+    "VideoTitle": "Akọle fidio tabi URL",
+    "AreYouSureDeleteEpisode": "Ṣe o da ọ loju pe o fẹ pa iṣẹlẹ yii rẹ bi?",
+    "Yes": "Bẹẹni",
+    "No": "Rara",
+    "RealTimeCall": "Real Time Ipe",
+    "JoinWebRTC": "Tẹliconference",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Tẹliconference",
+            "description": "ohun online fidio \/ iwe alapejọ"
+        },
+        "Media\/calls": {
+            "displayType": "Awọn ipe",
+            "description": "ẹka fun Media\/WebRTC",
+            "MaxRelationsExceeded": "Awọn ipe ti o pọju ti kọja"
+        },
+        "Media\/clip": {
+            "displayType": "Agekuru",
+            "description": "agekuru media"
+        }
+    },
+    "feeds": {
+        "Title": "Awọn kamẹra",
+        "filterByTitle": "Wa awọn kikọ sii nipasẹ akọle",
+        "RequestFeedAccess": "Beere wiwọle kikọ sii",
+        "New": "+ Ifunni Tuntun",
+        "filterFeeds": "Àlẹmọ awọn kikọ sii",
+        "NewFeed": "Ifunni Tuntun",
+        "NoneYet": "Ko si awọn kikọ sii ti a ṣẹda sibẹsibẹ.",
+        "AreYouSure": "Ṣe o da ọ loju?",
+        "FilterByDate": "Àlẹmọ Nipa Ọjọ",
+        "newFeeds": "O ni {{1}} kikọ sii titun",
+        "Description": "{{1}} kikọ sii",
+        "Keywords": "{{1}} kikọ sii"
+    },
+    "feed": {
+        "HostedBy": "Ti gbalejo nipasẹ {{name}}",
+        "Name": "Oruko",
+        "Conversation": "Ifọrọwanilẹnuwo",
+        "CloseFeed": {
+            "button": "Ifunni pipade",
+            "Cancel": "Ṣe o da ọ loju pe o fẹ pa kikọ sii yii pa?",
+            "Participant": "Olukopa 1 wa ninu ifunni yii",
+            "Participants": "Awọn olukopa {{count}} wa ninu kikọ sii yii"
+        },
+        "Calendar": "Kalẹnda",
+        "TitleOfFeed": "Akọle ti ifunni:",
+        "EmptyList": "Atokọ ofo",
+        "EmptyVideos": "Ko si awọn agekuru sibẹsibẹ",
+        "AccessReason": "jọwọ sọ idi",
+        "Proceed": "Tesiwaju",
+        "FeedAlreadyClosed": "Yi kikọ sii tẹlẹ ni pipade",
+        "RtmpLinkNote": "Tẹ lati daakọ ọna asopọ yii si agekuru agekuru",
+        "SelectClip": "Yan ọjọ ti o fẹ lati ri",
+        "Request": "Ibere"
+    },
+    "newFeed": {
+        "Title": "Ifunni Tuntun",
+        "locationTitle": "Ṣeto Ipo Rẹ",
+        "SetLocation": "Ṣeto Ipo Mi",
+        "Starting": "Bibẹrẹ",
+        "Day": "Ojo",
+        "Create": "Ṣẹda",
+        "Continue": "Tesiwaju",
+        "FeedTitle": "Akọle kikọ sii",
+        "SetTitle": "Jọwọ ṣeto akọle kikọ sii"
+    },
+    "notifications": {
+        "JoinedWebRTC": "darapo ipe rẹ",
+        "SubjectJoinedYourCall": "{{subject}} darapo mo ipe rẹ"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "O ko ni igbanilaaye lati darapọ mọ ṣiṣan yii.",
+        "streamTitle": "{{1}} bẹrẹ Teleconference kan",
+        "allow": {
+            "dialogTitle": "Nsopọ",
+            "microphoneBtn": "Mu Gbohungbohun ṣiṣẹ",
+            "cameraBtn": "Mu Kamẹra ṣiṣẹ",
+            "cameraAndMicrophoneBtn": "Mu Kamẹra ati Gbohungbohun ṣiṣẹ"
+        },
+        "preparing": {
+            "dialogTitle": "Tan kamẹra tabi gbohungbohun tan\/paa ṣaaju ki o to darapọ mọ",
+            "micIsOff": "Gbohungbohun wa ni pipa",
+            "micIsOn": "Gbohungbohun wa ni titan",
+            "cameraIsOff": "Kamẹra wa ni pipa",
+            "cameraIsOn": "Kamẹra wa ni titan",
+            "screenSharingIsOn": "Pipin iboju wa ni titan",
+            "screenSharingIsOff": "Pin iboju",
+            "joinNow": "Darapọ mọ Ipe naa"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Awọn ilana",
+            "permissionDenied": "Igbanilaaye fun {{kind}} sẹ. Lati lo o jọwọ tẹle awọn igbesẹ wọnyi:",
+            "point1": "Lọ si &quot;Eto&quot; -&gt; &quot;To ti ni ilọsiwaju&quot; -&gt; &quot;Asiri ati aabo&quot; -&gt; &quot;Eto Aye&quot; -&gt; &quot;Kamẹra&quot; tabi &quot;Eto Aye&quot; -&gt; &quot;Microphone&quot;",
+            "point2": "Yọ {{hostname}} kuro ni akojọ &quot;Dina&quot;."
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Awọn ilana",
+            "permissionDenied": "Igbanilaaye fun {{kind}} sẹ. Jọwọ tun gbee si oju-iwe yii ki o jẹrisi iraye si {{kind}} lati darapọ mọ apejọ naa."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Awọn ilana",
+            "permissionDenied": "Igbanilaaye fun {{kind}} kọ. Lati lo o jọwọ tẹle awọn igbesẹ wọnyi:",
+            "point1": "Lọ si awọn Eto Android rẹ",
+            "point2": "Ṣii &quot;Awọn ohun elo &amp; awọn iwifunni&quot;",
+            "point3": "Wa &quot; {{communityName}} &quot; ki o si ṣi i",
+            "point4": "Tẹ Awọn igbanilaaye",
+            "point5": "Mu {{kind}} ṣiṣẹ"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Awọn ilana",
+            "permissionDenied": "Igbanilaaye fun {{kind}} sẹ. Lati lo o jọwọ tẹle awọn igbesẹ wọnyi:",
+            "point1": "Lọ si rẹ iOS Eto",
+            "point2": "Ṣii &quot;Asiri&quot;",
+            "point3": "Wa {{kind}} ki o ṣii",
+            "point4": "Wa &quot; {{communityName}} &quot; ati mu ṣiṣẹ"
+        },
+        "fbLive": {
+            "dialogTitle": "Facebook ifiwe sisanwọle bẹrẹ"
+        },
+        "notices": {
+            "youJoinedRoom": "O darapọ mọ yara naa",
+            "joining": "Darapọ mọ: {{userName}}",
+            "sbLeftRoom": "{{userName}} kuro ni yara naa",
+            "switchingRoom": "Yara iyipada...",
+            "forceDisconnecting": "Iwọ yoo ge asopọ laarin iṣẹju-aaya 5",
+            "forceDisconnectingImmediately": "O ti ge asopọ nipasẹ agbalejo kan",
+            "youLeftRoom": "O kuro ni yara naa",
+            "codeCopied": "O kuro ni yara naa",
+            "sbBeganFbLive": "{{userName}} bẹrẹ igbohunsafefe ipe yii ni Facebook",
+            "sbStoppedFbLive": "{{userName}} duro igbohunsafefe ipe yii ni Facebook",
+            "youBeganFbLive": "O bẹrẹ ikede ipe yii ni Facebook",
+            "youStoppedFbLive": "O dẹkun ikede ikede ipe yii ni Facebook",
+            "youStartedLive": "O bẹrẹ ikede ipe yii si RTMP aṣa",
+            "youStoppedLive": "O dẹkun ikede ikede ipe yii si RTMP aṣa",
+            "sbStartedLiveStreaming": "{{userName}} bẹrẹ ifiwe",
+            "sbStoppedLiveStreaming": "{{userName}} pari laaye",
+            "liveStopped": "Aṣiṣe nigba fifiranṣẹ fidio si aaye ipari ṣẹlẹ",
+            "youBeganVideoRecording": "O bẹrẹ gbigbasilẹ apejọ yii",
+            "youStoppedVideoRecording": "O dẹkun gbigbasilẹ apejọ yii duro",
+            "linkCopiedToCb": "Ọna asopọ daakọ si agekuru agekuru",
+            "codeCopiedToCb": "Ti daakọ koodu si agekuru agekuru",
+            "userHasNoVideo": "Olukopa ko ni fidio",
+            "openInBrowserAlert": "Ṣii ọna asopọ ni aṣawakiri Safari lati darapọ mọ apejọ naa.",
+            "allowedVideoLimit": "Nikan {{limit}} fidio laaye ninu yara yi",
+            "allowedAudioLimit": "Awọn gbohungbohun {{limit}} nikan gba laaye ninu yara yii",
+            "processingRecording": "Nṣiṣẹ gbigbasilẹ..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Awọn Eto Fidio",
+            "webCamera": "Kamẹra wẹẹbu",
+            "screenSharing": "Pipin iboju",
+            "shareAnotherScreen": "Pin iboju miiran",
+            "turnOffCameras": "Pa kamẹra",
+            "turnOffVideo": "Pa kamẹra\/pinpin iboju",
+            "turnOffAudioInput": "Pa gbohungbohun dakẹ",
+            "turnOffScreenSharing": "Pa pinpin iboju",
+            "cameraIsTurnedOff": "Kamẹra ti wa ni pipa",
+            "micIsTurnedOff": "Gbohungbohun ti wa ni pipa",
+            "startFBLive": "Bẹrẹ Facebook Livestream",
+            "stopFBLive": "Duro Facebook Livestream",
+            "startRecording": "Bẹrẹ Gbigbasilẹ",
+            "stopRecording": "Duro Gbigbasilẹ",
+            "start": "Bẹrẹ",
+            "startClodRecording": "Bẹrẹ Gbigbasilẹ awọsanma",
+            "startLocRecording": "Bẹrẹ Gbigbasilẹ Agbegbe",
+            "stopClodRecording": "Duro Awọsanma Gbigbasilẹ",
+            "stopLocRecording": "Duro Gbigbasilẹ Agbegbe",
+            "stop": "Duro",
+            "share": "Pin",
+            "recordingInProgress": "Gbigbasilẹ ti nlọ lọwọ...",
+            "fbLiveTitle": "Akọle ti Livestream",
+            "fbLiveDescription": "Ṣe apejuwe Livestream rẹ. Kini o jẹ nipa?",
+            "fbOnlyMeLiveAccess": "Emi nikan",
+            "fbFriendsAccess": "Awọn ọrẹ",
+            "fbPublicAccess": "Gbangba",
+            "publishOnTimeline": "Ṣe atẹjade lori aago",
+            "publishToGroup": "Ṣe atẹjade si ẹgbẹ",
+            "fbStartLive": "Lọ Live",
+            "fbStopLive": "Ipari Livestream",
+            "streamingSettings": "Eto",
+            "manageStream": "Ṣakoso Livestream",
+            "fbEmbedCode": "Fi sii",
+            "copy": "Daakọ",
+            "streamToRTMP": "Ṣiṣan si RTMP aṣa",
+            "startBroadcasting": "Bẹrẹ igbohunsafefe",
+            "broadcastingInProgress": "Igbohunsafefe ti wa ni ilọsiwaju"
+        },
+        "audioSettings": {
+            "dialogTitle": "Awọn Eto ohun",
+            "speakers": "Awọn agbọrọsọ",
+            "microphone": "Gbohungbohun"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Ṣakoso awọn Broadcast"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Awọn Eto alabaṣe",
+            "disconnect": "Ge asopọ",
+            "floatingScreens": "Awọn iboju Lilefoofo",
+            "tiledScreens": "Awọn iboju Tiled",
+            "loudestExceptMe": "Npariwo ju ayafi Emi",
+            "maximizeLoudest": "Npariwo ga julọ",
+            "staticMaximized": "Aimi Ti o pọju",
+            "fullScreen": "Gbogbo sikirini",
+            "manual": "Afowoyi",
+            "turnOffCamera": "Fi fidio pamọ",
+            "turnOffAudio": "Pa ohun afetigbọ",
+            "turnOffScreenSharing": "Tọju pinpin iboju",
+            "turnOnCamera": "Fi fidio han",
+            "turnOnAudio": "Mu ohun afetigbọ kuro",
+            "turnOnScreenSharing": "Ṣe afihan pinpin iboju"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Tẹliconference",
+            "MeetingEnded": "Teleconference ti pari"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Ibere lati Sọ",
+            "msg": "Lọwọlọwọ awọn eniyan {{count}} ti n sọrọ ni ipade. Ṣe o fẹ lati rọpo ọkan ninu wọn lẹhin gbigba wọn laaye ni iṣẹju-aaya {{seconds}} lati pari sisọ?"
+        }
+    }
+}

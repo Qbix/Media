@@ -1,0 +1,256 @@
+{
+    "Shows": "Nîşan dide",
+    "Clips": "Clips",
+    "Video": "Video",
+    "Audio": "Audio",
+    "categories": {
+        "Clips": "Clips Media",
+        "Episodes": "Episodes"
+    },
+    "presentation": {
+        "PutTogether": "Ma hûn ê pêşkêş bikin? Hûn dikarin vê cîhê bikar bînin da ku ji bo pêşkêşkirina xwe materyalan bi hev re bar bikin. Bişkojka Plus bikar bînin.",
+        "Alert": "Gava ku bûyer dest pê dikin, ev rûpel dê dest pê bike ku pêşandanên wan ên têkildar nîşan bide",
+        "ClickHereForFullscreen": "Pêşniyar dê li vir xuya bibin. Li vir bikirtînin da ku hûn tev-screen biçin.",
+        "question": {
+            "ScanThisQRCode": "Vê koda QR-ê bişopînin da ku bersiv bidin"
+        }
+    },
+    "NewEpisode": "Episode Nû",
+    "NewClip": "Klîbeke Nû çêkin",
+    "NewClipTitlePlaceholder": "Sernavê Klîpê binivîse",
+    "NewClipDescriptionPlaceholder": "Têkeve Danasîna Klîpê",
+    "switchVisualization": "Visualîzasyonê biguherînin",
+    "joinLiveShow": "Tevlî Pêşandana Zindî bibin",
+    "showTwitchLiveStream": "Twitch Live Stream nîşan bide",
+    "showVoiceChat": "Chat Deng nîşan bide",
+    "LiveShow": "Live Show",
+    "AreYouSureKick": "Ma hûn pê bawer in ku hûn dixwazin vê bikarhênerê bişopînin?",
+    "Save": "Rizgarkirin",
+    "ViewFullEpisode": "View Full Episode",
+    "CreditsEarned": "Krediyên hatine bidestxistin",
+    "VideoTitle": "Sernav an URL-a vîdyoyê",
+    "AreYouSureDeleteEpisode": "Ma tu bi rastî dixwazî vê beşê jê bibî?",
+    "Yes": "Erê",
+    "No": "Na",
+    "RealTimeCall": "Call Time Real",
+    "JoinWebRTC": "Telekonferansê",
+    "types": {
+        "Media\/WebRTC": {
+            "displayType": "Telekonferansê",
+            "description": "konferansek vîdyoyî \/ dengî ya serhêl"
+        },
+        "Media\/calls": {
+            "displayType": "Gazî dike",
+            "description": "kategoriya ji bo Media \/ WebRTC",
+            "MaxRelationsExceeded": "Bangên Max zêde bûn"
+        },
+        "Media\/clip": {
+            "displayType": "Clip",
+            "description": "klîba medyayê"
+        }
+    },
+    "feeds": {
+        "Title": "Cameras",
+        "filterByTitle": "Li gorî sernavê feedan bibînin",
+        "RequestFeedAccess": "Daxwaza gihîştina xwarinê",
+        "New": "+ Xwarina Nû",
+        "filterFeeds": "Feydeyên Parzûnê",
+        "NewFeed": "Xwarina Nû",
+        "NoneYet": "Hîn ti feed çênebûye.",
+        "AreYouSure": "Piştrastin?",
+        "FilterByDate": "Parzûna Bi Dîrokê",
+        "newFeeds": "Te {{1}} nûçeyên nû hene",
+        "Description": "{{1}} feed",
+        "Keywords": "{{1}} feed"
+    },
+    "feed": {
+        "HostedBy": "Ji hêla {{name}} ve hatî mêvandar kirin",
+        "Name": "Nav",
+        "Conversation": "Kêfî",
+        "CloseFeed": {
+            "button": "Girtina Feed",
+            "Cancel": "Ma hûn pê bawer in ku hûn dixwazin vê pêvekê bigirin?",
+            "Participant": "Di vê feedê de 1 beşdar hene",
+            "Participants": "{{count}} beşdarên vê feed hene"
+        },
+        "Calendar": "Salname",
+        "TitleOfFeed": "Sernavê xwarinê:",
+        "EmptyList": "Lîsteya vala",
+        "EmptyVideos": "Hîn klîb tune",
+        "AccessReason": "ji kerema xwe sedemê diyar bikin",
+        "Proceed": "Pêşçûn",
+        "FeedAlreadyClosed": "Ev feed jixwe girtî",
+        "RtmpLinkNote": "Bikirtînin da ku vê lînkê li clipboardê kopî bikin",
+        "SelectClip": "Dîroka ku hûn dixwazin bibînin hilbijêrin",
+        "Request": "Tika"
+    },
+    "newFeed": {
+        "Title": "Xwarina Nû",
+        "locationTitle": "Cihê xwe bicîh bikin",
+        "SetLocation": "Cihê Min Set",
+        "Starting": "Destpêkirin",
+        "Day": "Roj",
+        "Create": "Xûliqandin",
+        "Continue": "Berdewamkirin",
+        "FeedTitle": "Sernavê xwarinê",
+        "SetTitle": "Ji kerema xwe sernavê xwarinê bicîh bikin"
+    },
+    "notifications": {
+        "JoinedWebRTC": "tevlî banga te bû",
+        "SubjectJoinedYourCall": "{{subject}} tevlî banga we bû"
+    },
+    "webrtc": {
+        "notAllowedToJoinCall": "Destûra te ya tevlêbûna vê herikînê nîne.",
+        "streamTitle": "{{1}} dest bi Telekonferansê kir",
+        "allow": {
+            "dialogTitle": "Girêdan",
+            "microphoneBtn": "Mîkrofon çalak bike",
+            "cameraBtn": "Kamera çalak bike",
+            "cameraAndMicrophoneBtn": "Kamera û Mîkrofon çalak bike"
+        },
+        "preparing": {
+            "dialogTitle": "Berî ku hûn tevlê bibin kamera an mîkrofê çalak\/çalak bikin",
+            "micIsOff": "Mîkrof negirtî ye",
+            "micIsOn": "Mîkrof li ser e",
+            "cameraIsOff": "Kamera ye",
+            "cameraIsOn": "Kamera ye",
+            "screenSharingIsOn": "Parvekirina ekranê ye",
+            "screenSharingIsOff": "Parvekirina ekranê",
+            "joinNow": "Tevlî Bangê bibin"
+        },
+        "webInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Destûra {{kind}} red kir. Ji bo karanîna wê ji kerema xwe van gavan bişopînin:",
+            "point1": "Herin &quot;Mîheng&quot; -&gt; &quot;Pêşketî&quot; -&gt; &quot;Nepenî û ewlehî&quot; -&gt; &quot;Mîhengên Malperê&quot; -&gt; &quot;Kamera&quot; an &quot;Mîhengên Malperê&quot; -&gt; &quot;Mîkrofon&quot;",
+            "point2": "{{hostname}} ji navnîşa &quot;Block&quot; derxînin"
+        },
+        "webIosInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Destûra {{kind}} red kir. Ji kerema xwe vê rûpelê nû bar bike û gihîştina {{kind}} piştrast bike ku beşdarî konferansê bibe."
+        },
+        "androidInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Destûra {{kind}} red kir. Ji bo karanîna wê ji kerema xwe van gavan bişopînin:",
+            "point1": "Herin Mîhengên Android-ya xwe",
+            "point2": "&quot;Apps &amp; notifications&quot; vekin",
+            "point3": "&quot; {{communityName}} &quot; bibînin û vekin",
+            "point4": "Li ser Destûran bikirtînin",
+            "point5": "{{kind}} çalak bike"
+        },
+        "iosInstructionsDialog": {
+            "dialogTitle": "Instructions",
+            "permissionDenied": "Destûra {{kind}} red kir. Ji bo karanîna wê ji kerema xwe van gavan bişopînin:",
+            "point1": "Herin Mîhengên iOS-ê xwe",
+            "point2": "&quot;Nepenî&quot; vekin",
+            "point3": "{{kind}} bibînin û vekin",
+            "point4": "&quot; {{communityName}} &quot; bibînin û çalak bikin"
+        },
+        "fbLive": {
+            "dialogTitle": "Weşana zindî ya Facebookê dest pê kir"
+        },
+        "notices": {
+            "youJoinedRoom": "Hûn tevlî odeyê bûn",
+            "joining": "Tevlîbûn: {{userName}}",
+            "sbLeftRoom": "{{userName}} ji odeyê derketin",
+            "switchingRoom": "Odeya guherînê...",
+            "forceDisconnecting": "Hûn ê di nav 5 çirkeyan de qut bibin",
+            "forceDisconnectingImmediately": "Hûn ji hêla mêvandar ve hatin qut kirin",
+            "youLeftRoom": "Tu ji odeyê derketî",
+            "codeCopied": "Tu ji odeyê derketî",
+            "sbBeganFbLive": "{{userName}} dest bi weşana vê bangê li Facebookê kir",
+            "sbStoppedFbLive": "{{userName}} weşana vê bangê li Facebookê rawestand",
+            "youBeganFbLive": "We dest bi weşana vê bangê li Facebookê kir",
+            "youStoppedFbLive": "We weşana vê bangê li Facebookê rawestand",
+            "youStartedLive": "We dest bi weşana vê bangê ji RTMP-ya xwerû re kir",
+            "youStoppedLive": "We weşana vê bangê ji RTMP-ya xwerû re rawestand",
+            "sbStartedLiveStreaming": "{{userName}} zindî dest pê kir",
+            "sbStoppedLiveStreaming": "{{userName}} zindî qediya",
+            "liveStopped": "Di dema şandina vîdyoyê de ji xala dawî re çewtî derket",
+            "youBeganVideoRecording": "We dest bi tomarkirina vê konferansê kir",
+            "youStoppedVideoRecording": "We qeydkirina vê konferansê rawestand",
+            "linkCopiedToCb": "Girêdan li clipboard hate kopî kirin",
+            "codeCopiedToCb": "Kod li clipboard hate kopî kirin",
+            "userHasNoVideo": "Vîdyoyek beşdar tune",
+            "openInBrowserAlert": "Zencîreya di geroka Safari de vekin da ku beşdarî konferansê bibin.",
+            "allowedVideoLimit": "Di vê odeyê de tenê {{limit}} vîdyo destûr tê dayîn",
+            "allowedAudioLimit": "Tenê {{limit}} mîkrofon di vê odeyê de destûr didin",
+            "processingRecording": "Pêvajoya tomarkirinê..."
+        },
+        "settingsPopup": {
+            "dialogTitle": "Mîhengên Vîdyoyê",
+            "webCamera": "Kamera Webê",
+            "screenSharing": "Parvekirina Screen",
+            "shareAnotherScreen": "Ekranek din parve bikin",
+            "turnOffCameras": "Kamera vemirînin",
+            "turnOffVideo": "Kamera\/parvekirina ekranê vekin",
+            "turnOffAudioInput": "Mîkrofonê qut bike",
+            "turnOffScreenSharing": "Parvekirina ekranê vekin",
+            "cameraIsTurnedOff": "Kamera tê girtin",
+            "micIsTurnedOff": "Mîkrofon tê girtin",
+            "startFBLive": "Facebook Livestream dest pê bikin",
+            "stopFBLive": "Weşana Zindî ya Facebookê Rawestînin",
+            "startRecording": "Dest bi Tomarkirinê bikin",
+            "stopRecording": "Rawestandina Tomarkirinê",
+            "start": "Destpêkirin",
+            "startClodRecording": "Tomarkirina Cloud dest pê bikin",
+            "startLocRecording": "Tomarkirina Herêmî dest pê bikin",
+            "stopClodRecording": "Rawestandina Tomarkirina Cloud",
+            "stopLocRecording": "Rawestandina Tomarkirina Herêmî",
+            "stop": "Rawestan",
+            "share": "Par",
+            "recordingInProgress": "Tomarkirin berdewam e...",
+            "fbLiveTitle": "Sernavê Livestream",
+            "fbLiveDescription": "Weşana Zindî ya xwe diyar bikin. Li ser çi ye?",
+            "fbOnlyMeLiveAccess": "Tenê Me",
+            "fbFriendsAccess": "Friends",
+            "fbPublicAccess": "Alenî",
+            "publishOnTimeline": "Li ser demjimêrê biweşînin",
+            "publishToGroup": "Ji bo komê biweşînin",
+            "fbStartLive": "Biçe Zindî",
+            "fbStopLive": "Weşana Zindî biqede",
+            "streamingSettings": "Settings",
+            "manageStream": "Livestreamê bi rê ve bibin",
+            "fbEmbedCode": "Embed",
+            "copy": "Kopî",
+            "streamToRTMP": "Stream bo RTMP-ya xwerû",
+            "startBroadcasting": "Dest bi weşanê bike",
+            "broadcastingInProgress": "Weşan dewam dike"
+        },
+        "audioSettings": {
+            "dialogTitle": "Settings Audio",
+            "speakers": "Speakers",
+            "microphone": "Mîkrofon"
+        },
+        "broadcastPopup": {
+            "dialogTitle": "Birêvebirina Weşanê"
+        },
+        "participantsPopup": {
+            "dialogTitle": "Mîhengên Beşdar",
+            "disconnect": "Hevqetandin",
+            "floatingScreens": "Screens Floating",
+            "tiledScreens": "Screens Tiled",
+            "loudestExceptMe": "Ji bilî min dengtirîn",
+            "maximizeLoudest": "Bi dengek herî zêde bikin",
+            "staticMaximized": "Static Maximized",
+            "fullScreen": "Full Screen",
+            "manual": "Destî",
+            "turnOffCamera": "Vîdyoyê veşêre",
+            "turnOffAudio": "Dengê qut bike",
+            "turnOffScreenSharing": "Parvekirina ekranê veşêre",
+            "turnOnCamera": "Vîdyoyê nîşan bide",
+            "turnOnAudio": "Dengê veke",
+            "turnOnScreenSharing": "Parvekirina ekranê nîşan bide"
+        },
+        "streamingSettings": {
+            "title": "Livestream"
+        },
+        "preview": {
+            "Meeting": "Telekonferansê",
+            "MeetingEnded": "Telekonferans bi dawî bû"
+        },
+        "requestSpeakDialog": {
+            "dialogTitle": "Daxwaza axaftinê",
+            "msg": "Niha {{count}} kes di civînê de axivîne. Ma hûn dixwazin yek ji wan biguhezînin piştî ku hûn {{seconds}} saniye destûr bidin ku axaftinê biqedînin?"
+        }
+    }
+}
