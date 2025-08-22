@@ -232,7 +232,6 @@ function WebcastServer(socket) {
     var broadcastNamespace = io.of(nspName);
 
     broadcastNamespace.on('connection', function (socket) {
-        console.log('broadcast: made sockets connection', socket.id);
         var roomId;
         var broadcastRoom;
         var localParticipant;
@@ -327,17 +326,32 @@ function WebcastServer(socket) {
                         }
         
                         stream.setAttribute('p2pRoom', socket.roomId);
+                        stream.setAttribute('endTime', '');
                         stream.save();
+                        console.warn('Media/livestream/start')
 
-                        stream.post(socket.livestreamStreamData.publisherId, {
-                            type: 'Media/livestream/start',
-                        }, function (err) {
-                            if (err) {
+                        let otherLives = stream.getAttribute('lives');
+                        if(!otherLives || (Array.isArray(otherLives) && otherLives.length == 0)) {
+                            Q.plugins.Media.WebRTC.postLivestreamStartMessage(stream, socket.livestreamStreamData.publisherId).then(function () {
+                                findReceiver(localParticipant);
+                            }).catch(function (err) {
+                                console.error(err)
                                 log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
-                                return;
-                            }
+                            });
+
+                            /* stream.post(socket.livestreamStreamData.publisherId, {
+                                type: 'Media/livestream/start',
+                            }, function (err) {
+                                if (err) {
+                                    return;
+                                }
+                                findReceiver(localParticipant);
+                            }); */
+                        } else {
                             findReceiver(localParticipant);
-                        });
+                        }
+
+                       
                     });
                 } else {
                     findReceiver(localParticipant);
@@ -591,16 +605,22 @@ function WebcastServer(socket) {
                         }
         
                         stream.setAttribute('p2pRoom', '');
-                        stream.save();
+                        let otherLives = stream.getAttribute('lives');
+                        //do not send Media/livestream/stop message when rtmp lives are active
+                        if(!otherLives || (Array.isArray(otherLives) && otherLives.length == 0)) {
+                            stream.setAttribute('endTime', +Date.now());
 
-                        stream.post(socket.livestreamStreamData.publisherId, {
-                            type: 'Media/livestream/stop',
-                        }, function (err) {
-                            if (err) {
-                                log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
-                                return;
-                            }
-                        });
+                            stream.post(socket.livestreamStreamData.publisherId, {
+                                type: 'Media/livestream/stop',
+                            }, function (err) {
+                                if (err) {
+                                    log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
+                                    return;
+                                }
+                            });
+                        }
+                        stream.save();
+                        
                     });
                 
                 }

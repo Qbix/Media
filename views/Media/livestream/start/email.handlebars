@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Live Stream Started</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f6f6f6; font-family:Arial, sans-serif;">
+  <table align="center" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff; margin: 0 auto; border-collapse:collapse;">
+    <!-- Logo -->
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        <a href="{{baseUrl}}" style="text-decoration:none; display:block;"><img src="{{ instructions.logoInfo.src }}" alt="Logo" height="42" style="display:block;"></a>
+      </td>
+    </tr>
+
+    <!-- Notification Text -->
+    <tr>
+      <td style="padding: 20px; text-align: center;">
+        <h2 style="margin: 0; font-size: 22px; color: #333;">🎥 {{ instructions.streamTitle }} just started!</h2>
+      </td>
+    </tr>
+
+    <!-- Avatar and Username -->
+    <tr>
+      <td align="center" style="padding: 10px;">
+        <img src="{{ instructions.avatarInfo.src }}" alt="User Avatar" width="80" height="80" style="border-radius: 50%; display:block; margin-bottom:10px;">
+        <p style="margin: 0; font-size: 16px; color: #555;">@{{ instructions.avatarInfo.displayName }} is live now</p>
+      </td>
+    </tr>
+
+    <!-- Join Button -->
+    <tr>
+      <td align="center" style="padding: 20px;">
+        <a href="{{ instructions.joinUrl }}" target="_blank" style="background-color:#007BFF; color:#ffffff; padding: 12px 24px; text-decoration:none; border-radius:5px; display:inline-block; font-size:16px;">
+          Join Audience
+        </a>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="padding: 20px; text-align: center; font-size: 12px; color: #888;">
+        <a href="{{baseUrl}}/Streams/participating" style="color:#888; text-decoration:underline;">{{notifications.ManageEmailSubscriptions}}</a>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

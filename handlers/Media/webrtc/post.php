@@ -47,6 +47,7 @@ function Media_webrtc_post($params = array())
     $permissions = Q::ifset($params, 'permissions', ['mic', 'camera', 'screen']);
     $closeManually = Q::ifset($params, 'closeManually', null);
 	$useRelatedTo = filter_var(Q::ifset($params, 'useRelatedTo', false), FILTER_VALIDATE_BOOLEAN);
+	$meetingParams = Q::ifset($params, 'meetingParams', null);
 
     $nodeh = Q_Config::expect('Q', 'nodeInternal', 'host');
 	$nodep = Q_Config::expect('Q', 'nodeInternal', 'port');
@@ -73,7 +74,7 @@ function Media_webrtc_post($params = array())
     
             return Q_Response::setSlot('data', ['cmd'=> $cmd, 'publisherId' => $publisherId, 'streamName' => $streamName]);
         } else if($cmd == 'closeIfOffline') {
-            //this slot is used to close inactive stream when a host loades list of waiting rooms (we should close waiting rooms of users thar are inactive)
+            //this slot is used to close inactive stream when a host loades list of waiting rooms (we should close waiting rooms of users that are inactive)
 
             $userIsOnline = filter_var(Q::ifset($params, 'userIsOnline', false), FILTER_VALIDATE_BOOLEAN);
             $webrtcStream = Streams_Stream::fetch(null, $publisherId, $streamName);
@@ -132,37 +133,7 @@ function Media_webrtc_post($params = array())
         $waitingRoomStreamName = Q::ifset($params, 'waitingRoomStreamName', null);
         $userIdToAdmit = Q::ifset($params, 'userIdToAdmit', null);
 
-        $webrtcStream = Streams_Stream::fetch($loggedInUserId, $publisherId, $streamName);
-        if(!$webrtcStream->testAdminLevel('manage')) {
-            throw new Users_Exception_NotAuthorized();
-        }
-
-        if($userIdToAdmit == $publisherId) {
-            throw new Exception("Admin's permissions/access cannot be changed");
-        }
-
-        $access = new Streams_Access();
-        $access->publisherId = $publisherId;
-        $access->streamName = $streamName;
-        $access->ofUserId = $userIdToAdmit;
-        $access->retrieve();
-        $access->readLevel = Streams::$READ_LEVEL['max'];
-        $access->save();
-
-        $waitingRoomStream = Streams_Stream::fetch($userIdToAdmit, $userIdToAdmit, $waitingRoomStreamName);
-
-        //print_r($waitingRoomStream);die;
-        if (!is_null($waitingRoomStream)) {
-            $waitingRoomStream->setAttribute('status', 'accepted');    
-            //$waitingRoomStream->close($userIdToAdmit);
-            $waitingRoomStream->changed();
-            //$waitingRoomStream->save();
-
-            $waitingRoomStream->post($userIdToAdmit, array(
-                'type' => 'Media/webrtc/admit',
-                'instructions' => ['msg' => 'You will be joined to the room now']
-            ));
-        }
+        Media_WebRTC::admitUserToRoom($publisherId, $streamName, $waitingRoomStreamName, $userIdToAdmit);
     
         return Q_Response::setSlot("admitUserToRoom", 'done');
     } else if(Q_Request::slotName('cancelAccessToRoom')) {
@@ -170,22 +141,7 @@ function Media_webrtc_post($params = array())
         $publisherId = Q::ifset($params, 'publisherId', null);
         $userId = Q::ifset($params, 'userId', null);
 
-        $webrtcStream = Streams_Stream::fetch($loggedInUserId, $publisherId, $streamName);
-        if(!$webrtcStream->testAdminLevel('manage')) {
-            throw new Users_Exception_NotAuthorized();
-        }
-
-        if($userId == $publisherId) {
-            throw new Exception("Admin's permissions/access cannot be changed");
-        }
-
-        $access = new Streams_Access();
-        $access->publisherId = $publisherId;
-        $access->streamName = $streamName;
-        $access->ofUserId = $userId;
-        $access->retrieve();
-        $access->readLevel = Streams::$READ_LEVEL['none'];
-        $access->save();
+        Media_WebRTC::cancelAccessToRoom($publisherId, $streamName, $userId);
     
         return Q_Response::setSlot("cancelAccessToRoom", 'done');
     } else if(Q_Request::slotName('closeWaitingRoom')) {
@@ -194,24 +150,8 @@ function Media_webrtc_post($params = array())
         $waitingRoomStreamName = Q::ifset($params, 'waitingRoomStreamName', null);
         $waitingRoomUserId = Q::ifset($params, 'waitingRoomUserId', null);
 
-        $webrtcStream = Streams_Stream::fetch($loggedInUserId, $publisherId, $streamName);
-        if(!$webrtcStream->testAdminLevel('manage') && $loggedInUserId != $waitingRoomUserId) {
-            throw new Users_Exception_Authorized();
-        }
+        Media_WebRTC::closeWaitingRoom($publisherId, $streamName, $waitingRoomStreamName, $waitingRoomUserId);
 
-        $waitingRoomStream = Streams_Stream::fetch($waitingRoomUserId, $waitingRoomUserId, $waitingRoomStreamName);
-
-        if (!is_null($waitingRoomStream)) {
-            $waitingRoomStream->setAttribute('status', 'closed');            
-            $waitingRoomStream->post($waitingRoomUserId, array(
-                'type' => 'Media/webrtc/close',
-                'instructions' => ['msg' => 'Your waiting room was closed.']
-            ));
-            $waitingRoomStream->changed();
-            $waitingRoomStream->save();
-            $waitingRoomStream->close($waitingRoomUserId);
-        }
-    
         return Q_Response::setSlot("closeWaitingRoom", 'done');
     } else if(Q_Request::slotName('addOrRemoveGlobalPermission')) {
         $streamName = Q::ifset($params, 'streamName', null);
@@ -269,58 +209,6 @@ function Media_webrtc_post($params = array())
         }
     
         return Q_Response::setSlot("addOrRemoveGlobalPermission", $newAccess);
-    } else if(Q_Request::slotName('setOrRemoveGeneralAccess')) {
-        $streamName = Q::ifset($params, 'streamName', null);
-        $publisherId = Q::ifset($params, 'publisherId', null);
-        $userIdToAdmit = Q::ifset($params, 'userIdToAdmit', null);
-        $actionToDo = Q::ifset($params, 'actionToDo', null);
-        $relatedStreamName = Q::ifset($params, 'relatedStreamName', null);
-        $relatedStreamPublisherId = Q::ifset($params, 'relatedStreamPublisherId', null);
-
-        $possibleActions = ['makeStreamPublic', 'makeStreamPrivate', 'addInheritFromStream', 'removeInheritFromStream'];
-        if(is_null($actionToDo) || array_search($actionToDo, $possibleActions) === false) {
-            throw new Exception("actionToDo field is wrong or empty");
-        }
-
-        $webrtcStream = Streams_Stream::fetch($loggedInUserId, $publisherId, $streamName);
-        if(!$webrtcStream->testAdminLevel('manage')) {
-            throw new Users_Exception_NotAuthorized();
-        }
-
-        if($userIdToAdmit == $publisherId) {
-            throw new Exception("Admin's permissions/access cannot be changed");
-        }
-
-        if($actionToDo == 'makeStreamPublic') {
-            $webrtcStream->readLevel = 40;
-        } else if ($actionToDo == 'makeStreamPrivate') {
-            $webrtcStream->readLevel = 0;
-        } else if ($actionToDo == 'addInheritFromStream') {
-            $addInheritFrom = [$relatedStreamPublisherId, $relatedStreamName];
-            $inheritFromString = json_encode([$addInheritFrom]);
-            if(isset($webrtcStream->inheritAccess) && is_array($webrtcStream->inheritAccess)) {
-                $existingInherit = $webrtcStream->inheritAccess;
-                array_push($existingInherit, $addInheritFrom);
-                $inheritFromString = json_encode($existingInherit);
-            }
-            $webrtcStream->inheritAccess = $inheritFromString;
-        } else if ($actionToDo == 'removeInheritFromStream') {
-            if(isset($webrtcStream->inheritAccess) && is_array($webrtcStream->inheritAccess)) {
-                $existingInherit = $webrtcStream->inheritAccess;
-                $index = findSubarrayIndex($existingInherit, $relatedStreamPublisherId, $relatedStreamName);
-                if($index !== -1) {
-                    array_splice($existingInherit, $index, 1);
-                }
-                $inheritFromString = json_encode($existingInherit);
-            }
-            $webrtcStream->inheritAccess = $inheritFromString;
-        }
-
-        $webrtcStream->changed();
-        $webrtcStream->save();
-    
-        return Q_Response::setSlot("setOrRemoveGeneralAccess", 'done');
-
     } else if(Q_Request::slotName('addOrRemovePersonalPermission')) {
         $streamName = Q::ifset($params, 'streamName', null);
         $publisherId = Q::ifset($params, 'publisherId', null);
@@ -676,189 +564,335 @@ function Media_webrtc_post($params = array())
 
         //Media_WebRTC::mergeRecordings($publisherId, $roomId);
         return;
-    }
+    } else if(Q_Request::slotName('scheduleOrUpdateRoomStream')) {
+        $response = [];
 
-    $webrtc = new Media_WebRTC_Node();
+        $streamName = Q::ifset($params, 'streamName', null);
+        $publisherId = Q::ifset($params, 'publisherId', null);
+        $meetingParams = Q::ifset($params, 'meetingParams', null);
 
-    if($useTwilioTurn) {
-        try {
-            $turnCredentials = $webrtc->getTwilioTurnCredentials();
-            $turnServers = array_merge($turnServers, $turnCredentials);
-        } catch (Exception $e) {
+        //update existing room stream
+        if (!is_null($streamName) && !is_null($publisherId)) {
+            $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $publisherId, $streamName);
+
+            if (is_null($webrtcStream)) {
+                throw new Exception("Stream not found");
+            }
+            if(!$webrtcStream->testAdminLevel('manage')) {
+                throw new Users_Exception_NotAuthorized();
+            }
+
+        } else {
+            //create (schedule) new room stream
+
+            if(is_null($meetingParams)) {
+                throw new Q_Exception_RequiredField(array('field' => 'meetingParams'));
+            }
+
+            $accessLevels = $meetingParams['accessType'] == 'trusted' ? ['readLevel' => 0, 'writeLevel' => 0, 'adminLevel' => 0] : ['readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20];
+            $webrtcStream = Media_WebRTC::getOrCreateRoomStream(Users::loggedInUser(true)->id, null, false, $accessLevels, null);
         }
-    }
 
-    $response = array(
-        'socketServer' => $socketServer,
-        'turnCredentials' => $turnServers,
-        'debug' => $debug,
-        'options' => array(
-            'livestreaming' => $livestreamingConfig,
-            'limits' => $globalLimitsConfig
-        )
-    );
+        $webrtcStream->setAttribute('scheduledStartTime', $meetingParams['startTimeTs']);
+        $webrtcStream->setAttribute('scheduledEndTime', $meetingParams['endTimeTs']);
+        $webrtcStream->setAttribute('timeZoneString', $meetingParams['timeZoneString']);
+        $webrtcStream->setAttribute('accessType', $meetingParams['accessType']);
+        $webrtcStream->setAttribute('scheduleLivestream', $meetingParams['scheduleLivestream']);
+        if(!empty($meetingParams['topic'])) {
+            $webrtcStream->title = $meetingParams['topic'];
+        }
 
-    $webrtcStream = null;
-    if(!is_null($inviteToken) && !is_null($invitingUserId)){
+        if($meetingParams['accessType'] == 'trusted') {
+            $webrtcStream->adminLevel = 0;
+            $webrtcStream->writeLevel = 0;
+            $webrtcStream->readLevel = 0;
+        } else if($meetingParams['accessType'] == 'open') {
+            $webrtcStream->readLevel = Streams::$READ_LEVEL['max'];
+            $webrtcStream->writeLevel = Streams::$WRITE_LEVEL['relate'];
+            $webrtcStream->adminLevel = Streams::$ADMIN_LEVEL['invite'];
+        }
 
-        $webrtcStream = $webrtc->getRoomStreamByInviteToken($inviteToken, $resumeClosed);
-        if (!$webrtcStream) {
-            throw new Exception("Room does not exist");
-        };
-        if ($webrtcStream->testReadLevel("max")) {
-            if ($resumeClosed) {
-                $webrtcStream->closedTime = null;
-                $webrtcStream->changed();
-    
-                $endTime = $webrtcStream->getAttribute('endTime');
-                $startTime = $webrtcStream->getAttribute('startTime');
-                if ($startTime == null || ($endTime != null && round(microtime(true) * 1000) > $endTime)) {
-                    $startTime = round(microtime(true) * 1000);
-                    $webrtcStream->setAttribute('startTime', $startTime);
-                    $webrtcStream->clearAttribute('endTime');
-                    $webrtcStream->save();
+        $webrtcStream->changed();
+        $webrtcStream->save();
+
+        $invites = Streams_Invite::select()->where(
+            array(
+                'streamName' => $streamName,
+                'publisherId' => $publisherId,
+                'invitingUserId' => Users::loggedInUser(true)->id,
+                'userId !=' => ''
+            ))->fetchDbRows();
+
+        $usersToInvite = $meetingParams['invitedAttendeesIds'] ? $meetingParams['invitedAttendeesIds'] : [];
+
+        //remove invites for users who were removed from "attendees" AND remove redundant (duplicate) invites just in case
+        $groupedByUserId = [];
+        foreach ($invites as $item) {
+            $groupedByUserId[$item->fields['userId']][] = $item;
+        }
+        $mostRecentTimes = [];
+        foreach ($groupedByUserId as $id => $items) {
+            usort($items, function ($a, $b) {
+                return strtotime($b->fields['insertedTime']) - strtotime($a->fields['insertedTime']);
+            });
+            $mostRecentTimes[$id] = $items[0]->fields['insertedTime'];
+        }
+
+        $invitesToRemove = array_filter($invites, function ($item) use ($mostRecentTimes, $usersToInvite) {
+            return $item->fields['insertedTime'] !== $mostRecentTimes[$item->fields['userId']] || array_search($item->fields['userId'], $usersToInvite) === false;
+        });
+
+        foreach ($invitesToRemove as $item) {
+            $item->remove();
+            $access = new Streams_Access();
+            $access->publisherId = $publisherId;
+            $access->streamName = $streamName;
+            $access->ofUserId = $item->fields['userId'];
+            if($access->retrieve()) {
+                $access->remove();
+            }
+            if(!empty($item->fields['userId'])) {
+                Media_WebRTC::cancelAccessToRoom($publisherId, $streamName, $item->fields['userId']);
+            }
+        }
+
+        //skip existing invites and invites and send invites only to users who was not previously invited
+        $newInvites = array_filter($usersToInvite, function ($userId) use ($invites) {
+            foreach ($invites as $invite) {
+                if ($invite->fields['userId'] == $userId) {
+                    return false;
                 }
             }
-        } else {
-            $waitingRoomStream = $webrtc->getRoomStreamRelatedTo($webrtcStream->fields["publisherId"], $webrtcStream->fields["name"], $loggedInUserId, null, 'Media/webrtc/waitingRoom', true);
+            return true;
+        });
 
-            //print_r($waitingRoomStream);die;
-            if(is_null($waitingRoomStream)) {
-                $waitingRoomStream = $webrtc->createWaitingRoomStream();
-                $newStream = true;
+        if (count($newInvites) !== 0) {
+            $uri = Q_Uri::url("Media/meeting");
+            $webrtcStream->invite(['userId' => $newInvites], ['appUrl' => $uri, 'readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20]);
+        }
+
+        if(filter_var($meetingParams['scheduleLivestream'], FILTER_VALIDATE_BOOLEAN) === true) {
+            
+            $response['livestreamStream'] = Media_Livestream::createOrUpdateLivestreamStream($publisherId, $streamName, !is_null($meetingParams['startTimeTs']) && !empty($meetingParams['startTimeTs']) ? $meetingParams['startTimeTs'] / 1000 : null);
+        }
+
+        $response['webrtcStream'] = $webrtcStream;
+
+        Q_Response::setSlot("scheduleOrUpdateRoomStream", $response);
+
+    } else if(Q_Request::slotName('room')) {
+
+        if($useTwilioTurn) {
+            try {
+                $turnCredentials = Media_WebRTC::getTwilioTurnCredentials();
+                $turnServers = array_merge($turnServers, $turnCredentials);
+            } catch (Exception $e) {
             }
-            
-            $waitingRoomStream->setAttribute('socketId', $socketId);
-            $waitingRoomStream->setAttribute('status', 'waiting');
-            $waitingRoomStream->join(['subscribed' => true]);
-            $waitingRoomStream->subscribe(['userId' => $webrtcStream->fields['publisherId']]);
-            if ($newStream) {
-                $waitingRoomStream->relateTo((object)array(
-                    "publisherId" => $webrtcStream->fields["publisherId"],
-                    "name" => $webrtcStream->fields["name"]
-                ), 'Media/webrtc/waitingRoom', $webrtcStream->fields["publisherId"], array(
-                    "inheritAccess" => false, //true doesn't work for some reason so I call the code below
-                    "weight" => time()
-                ));
-            } 
-
-            $addInheritFrom = [$webrtcStream->fields["publisherId"], $webrtcStream->fields["name"]];
-            $inheritFromString = json_encode([$addInheritFrom]);
-            if(isset($waitingRoomStream->inheritAccess) && is_array($waitingRoomStream->inheritAccess)) {
-                $existingInherit = $waitingRoomStream->inheritAccess;
-                array_push($existingInherit, $addInheritFrom);
-                $inheritFromString = json_encode($existingInherit);
-            }
-            $waitingRoomStream->inheritAccess = $inheritFromString;
-
-            $waitingRoomStream->changed();
-            $waitingRoomStream->save();
-            
-            $response['waitingRoomStream'] = $waitingRoomStream;
-
-            $webrtcStream->post($webrtcStream->fields['publisherId'], array(
-                'type' => 'Media/webrtc/waitingRooom',
-            ));
-
-            //if user closes tab with waiting room, we should close waiting room stream
-            Q_Utils::sendToNode(array(
-                "Q/method" => "Users/addEventListener",
-                "socketId" => $socketId,
-                "userId" => $loggedInUserId,
-                "eventName" => 'disconnect',
-                "handlerToExecute" => 'Media/webrtc',
-                "data" => array(
-                    "cmd" => 'closeStream',
-                    "publisherId" => $waitingRoomStream->fields['publisherId'],
-                    "streamName" => $waitingRoomStream->fields['name']
-                ),
-            ));
-
-            return Q_Response::setSlot("room", $response);  
-            
-        }      
-    } else if($useRelatedTo && !empty($relate)) {
-        $webrtcStream = $webrtc->getRoomStreamRelatedTo($relate["publisherId"], $relate["streamName"], null, null, $relate["relationType"], $resumeClosed);
+        }
     
-        if(is_null($webrtcStream)) {
-            $webrtcStream = $webrtc->getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel], $permissions);
-        }
+        $response = array(
+            'socketServer' => $socketServer,
+            'turnCredentials' => $turnServers,
+            'debug' => $debug,
+            'options' => array(
+                'livestreaming' => $livestreamingConfig,
+                'limits' => $globalLimitsConfig
+            )
+        );
+    
+        $webrtcStream = null;
+        if(!is_null($inviteToken) && !is_null($invitingUserId)){
+    
+            $invite = Streams_Invite::fromToken($inviteToken, true);
+            if (!$invite) {
+                throw new Exception("Invalid invite");
+            };
 
-    } else {
-        $webrtcStream = $webrtc->getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel], $permissions);
+            if(!empty($invite->fields['userId']) && Users::loggedInUser(true)->id != $invite->fields['userId']) {
+                throw new Exception("This invite is for anotehr user");
+            }
+
+            $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $invite->publisherId, $invite->streamName, true);
+            if (!$webrtcStream) {
+                throw new Exception("Room does not exist");
+            };
+    
+            if(empty($invite->fields['userId'])){
+                $invites = Streams_Invite::forStream($webrtcStream->publisherId, $webrtcStream->name, Users::loggedInUser(false)->id);
+                if(count($invites) !== 0) {
+                    $invite = reset($invites); 
+                }
+            }
+
+            if(!empty($invite->fields['userId'])) {
+                $invite->accept(array(
+                    'access' => true,
+                    'subscribe' => true
+                ));
+            }
+    
+            $accessType = $webrtcStream->getAttribute('accessType');
+
+            
+
+            $testAccess = $webrtcStream->testReadLevel("max");
+            
+            if ($webrtcStream->testReadLevel("max")) {
+                if ($resumeClosed) {
+                    $webrtcStream->closedTime = null;
+                    $webrtcStream->changed();
+        
+                    $endTime = $webrtcStream->getAttribute('endTime');
+                    $startTime = $webrtcStream->getAttribute('startTime');
+                    if ($startTime == null || ($endTime != null && round(microtime(true) * 1000) > $endTime)) {
+                        $startTime = round(microtime(true) * 1000);
+                        $webrtcStream->setAttribute('startTime', $startTime);
+                        $webrtcStream->clearAttribute('endTime');
+                        $webrtcStream->save();
+                    }
+                }
+            } else {
+                $waitingRoomStream = Media_WebRTC::getRoomStreamRelatedTo($webrtcStream->fields["publisherId"], $webrtcStream->fields["name"], $loggedInUserId, null, 'Media/webrtc/waitingRoom', true);
+    
+                //print_r($waitingRoomStream);die;
+                $newStream = false;
+                if(is_null($waitingRoomStream)) {
+                    $waitingRoomStream = Media_WebRTC::createWaitingRoomStream();
+                    $newStream = true;
+                }
+                
+                $waitingRoomStream->setAttribute('socketId', $socketId);
+                $waitingRoomStream->setAttribute('status', 'waiting');
+                $waitingRoomStream->join(['subscribed' => true]);
+                $waitingRoomStream->subscribe(['userId' => $webrtcStream->fields['publisherId']]);
+                if ($newStream) {
+                    $waitingRoomStream->relateTo((object)array(
+                        "publisherId" => $webrtcStream->fields["publisherId"],
+                        "name" => $webrtcStream->fields["name"]
+                    ), 'Media/webrtc/waitingRoom', $webrtcStream->fields["publisherId"], array(
+                        "inheritAccess" => false, //true doesn't work for some reason so I call the code below
+                        "weight" => time()
+                    ));
+                } 
+    
+                $addInheritFrom = [$webrtcStream->fields["publisherId"], $webrtcStream->fields["name"]];
+                $inheritFromString = json_encode([$addInheritFrom]);
+                if(isset($waitingRoomStream->inheritAccess) && is_array($waitingRoomStream->inheritAccess)) {
+                    $existingInherit = $waitingRoomStream->inheritAccess;
+                    array_push($existingInherit, $addInheritFrom);
+                    $inheritFromString = json_encode($existingInherit);
+                }
+                $waitingRoomStream->inheritAccess = $inheritFromString;
+    
+                $waitingRoomStream->changed();
+                $waitingRoomStream->save();
+                
+                $response['waitingRoomStream'] = $waitingRoomStream;
+    
+                $webrtcStream->post($webrtcStream->fields['publisherId'], array(
+                    'type' => 'Media/webrtc/waitingRooom',
+                ));
+    
+                //if user closes tab with waiting room, we should close waiting room stream
+                Q_Utils::sendToNode(array(
+                    "Q/method" => "Users/addEventListener",
+                    "socketId" => $socketId,
+                    "userId" => $loggedInUserId,
+                    "eventName" => 'disconnect',
+                    "handlerToExecute" => 'Media/webrtc',
+                    "data" => array(
+                        "cmd" => 'closeStream',
+                        "publisherId" => $waitingRoomStream->fields['publisherId'],
+                        "streamName" => $waitingRoomStream->fields['name']
+                    ),
+                ));
+    
+                return Q_Response::setSlot("room", $response);  
+                
+            }      
+        } else if($useRelatedTo && !empty($relate)) {
+            $webrtcStream = Media_WebRTC::getRoomStreamRelatedTo($relate["publisherId"], $relate["streamName"], null, null, $relate["relationType"], $resumeClosed);
+        
+            if(is_null($webrtcStream)) {
+                $webrtcStream = Media_WebRTC::getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel], $permissions);
+            }
+    
+        } else {
+            $webrtcStream = Media_WebRTC::getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel], $permissions);
+        }
+    
+        if (!$webrtcStream->testReadLevel("max")) {
+            throw new Exception('Access denied');
+        }
+    
+        $response['stream'] = $webrtcStream;
+        $response['roomId'] = $webrtcStream->name;
+    
+        $specificLimitsConfig = $webrtcStream->getAttribute('limits', null);
+    
+        if(!is_null($specificLimitsConfig)) {
+            if(isset($specificLimitsConfig['video'])) {
+                $response['options']['limits']['video'] = $specificLimitsConfig['video'];
+            }
+            if(isset($specificLimitsConfig['audio'])) {
+                $response['options']['limits']['audio'] = $specificLimitsConfig['audio'];
+            }
+            if(isset($specificLimitsConfig['minimalTimeOfUsingSlot'])) {
+                $response['options']['limits']['minimalTimeOfUsingSlot'] = $specificLimitsConfig['minimalTimeOfUsingSlot'];
+            }
+            if(isset($specificLimitsConfig['timeBeforeForceUserToDisconnect'])) {
+                $response['options']['limits']['timeBeforeForceUserToDisconnect'] = $specificLimitsConfig['timeBeforeForceUserToDisconnect'];
+            }
+        }
+    
+        // check maxCalls
+        if (!empty($relate["publisherId"]) && !empty($relate["streamName"]) && !empty($relate["relationType"])) {
+            // if calls unavailable, throws exception
+            Streams::checkAvailableRelations($publisherId, $relate["publisherId"], $relate["streamName"], $relate["relationType"], array(
+                "postMessage" => false,
+                "throw" => true,
+                "singleRelation" => true
+            ));
+        }
+    
+        if ($publisherId == $loggedInUserId || $response['stream']->testWriteLevel('edit')) {
+            if ($content) {
+                $response['stream']->content = $content;
+                $response['stream']->changed();
+            }
+        }
+    
+        if (!empty($relate["publisherId"]) && !empty($relate["streamName"]) && !empty($relate["relationType"])) {
+            $response['stream']->relateTo((object)array(
+                "publisherId" => $relate["publisherId"],
+                "name" => $relate["streamName"]
+            ), $relate["relationType"], $response['stream']->publisherId, array(
+                "inheritAccess" => filter_var($relate["inheritAccess"], FILTER_VALIDATE_BOOLEAN),
+                "weight" => time()
+            ));
+        }
+    
+        if ($resumeClosed !== null) {
+            $response['stream']->setAttribute("resumeClosed", $resumeClosed);
+        }
+    
+        if ($closeManually !== null) {
+            $response['stream']->setAttribute("closeManually", $closeManually);
+        }
+    
+        if ($callDescription !== null) {
+            $response['stream']->content = $callDescription;
+        }
+    
+        $meAsParticipant = $response['stream']->participant();
+        if (!$meAsParticipant || $meAsParticipant->fields['state'] != 'participating') {
+            $response['stream']->join();
+        }   
+    
+        $response['stream']->save();
+    
+        Q_Response::setSlot("room", $response);
     }
-
-    if (!$webrtcStream->testReadLevel("max")) {
-        throw new Exception('Access denied');
-    }
-
-    $response['stream'] = $webrtcStream;
-    $response['roomId'] = $webrtcStream->name;
-
-    $specificLimitsConfig = $webrtcStream->getAttribute('limits', null);
-
-    if(!is_null($specificLimitsConfig)) {
-        if(isset($specificLimitsConfig['video'])) {
-            $response['options']['limits']['video'] = $specificLimitsConfig['video'];
-        }
-        if(isset($specificLimitsConfig['audio'])) {
-            $response['options']['limits']['audio'] = $specificLimitsConfig['audio'];
-        }
-        if(isset($specificLimitsConfig['minimalTimeOfUsingSlot'])) {
-            $response['options']['limits']['minimalTimeOfUsingSlot'] = $specificLimitsConfig['minimalTimeOfUsingSlot'];
-        }
-        if(isset($specificLimitsConfig['timeBeforeForceUserToDisconnect'])) {
-            $response['options']['limits']['timeBeforeForceUserToDisconnect'] = $specificLimitsConfig['timeBeforeForceUserToDisconnect'];
-        }
-    }
-
-    // check maxCalls
-	if (!empty($relate["publisherId"]) && !empty($relate["streamName"]) && !empty($relate["relationType"])) {
-		// if calls unavailable, throws exception
-		Streams::checkAvailableRelations($publisherId, $relate["publisherId"], $relate["streamName"], $relate["relationType"], array(
-			"postMessage" => false,
-			"throw" => true,
-			"singleRelation" => true
-		));
-	}
-
-	if ($publisherId == $loggedInUserId || $response['stream']->testWriteLevel('edit')) {
-		if ($content) {
-            $response['stream']->content = $content;
-            $response['stream']->changed();
-		}
-	}
-
-	if (!empty($relate["publisherId"]) && !empty($relate["streamName"]) && !empty($relate["relationType"])) {
-        $response['stream']->relateTo((object)array(
-			"publisherId" => $relate["publisherId"],
-			"name" => $relate["streamName"]
-		), $relate["relationType"], $response['stream']->publisherId, array(
-			"inheritAccess" => filter_var($relate["inheritAccess"], FILTER_VALIDATE_BOOLEAN),
-			"weight" => time()
-		));
-	}
-
-	if ($resumeClosed !== null) {
-        $response['stream']->setAttribute("resumeClosed", $resumeClosed);
-	}
-
-	if ($closeManually !== null) {
-        $response['stream']->setAttribute("closeManually", $closeManually);
-	}
-
-	if ($callDescription !== null) {
-        $response['stream']->content = $callDescription;
-	}
-
-    $meAsParticipant = $response['stream']->participant();
-    if (!$meAsParticipant || $meAsParticipant->fields['state'] != 'participating') {
-        $response['stream']->join();
-    }   
-
-    $response['stream']->save();
-
-	Q_Response::setSlot("room", $response);
 }
 
 

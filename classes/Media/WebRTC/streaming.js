@@ -20,7 +20,6 @@ module.exports = function (io) {
     } */
 
     webrtcNamespace.on('connection', function (socket) {
-        if (_debug) console.log('streaming: made sockets connection', socket.id);
         var streamingDataStream = new PassThrough();
         //const pipeWriteStream = fs.createWriteStream(pipePath);
         var streamingUser = null;
@@ -28,14 +27,11 @@ module.exports = function (io) {
 
         if (!socket.handshake.query.rtmp) return;
         var livestreamStreamData = socket.handshake.query.livestreamStream ? JSON.parse(socket.handshake.query.livestreamStream) : null;
-        console.log('livestreamStreamData', livestreamStreamData)
         var streamingStartTime = socket.handshake.query.streamingStartTime;
         let reconnectedUser = _streamingUsers.get(livestreamStreamData.publisherId + '_' + livestreamStreamData.streamName + '_' + streamingStartTime);
-        console.log('livestreamStreamData 2', livestreamStreamData.publisherId + '_' + livestreamStreamData.streamName + '_' + streamingStartTime)
 
         if(reconnectedUser && !reconnectedUser.ended) {
             //restore livestream if user was disconnected for a few seconds. However, Facebook stops live stream automatically after 10 seconds when there are no chunks 
-            console.log('livestreamStreamData 3', reconnectedUser)
             reconnectedUser.socket = socket;
             if(reconnectedUser.ffmpegCloseTimeout) clearTimeout(reconnectedUser.ffmpegCloseTimeout);
             handleSocketEvents(reconnectedUser);
@@ -54,11 +50,8 @@ module.exports = function (io) {
             handleSocketEvents(streamingUser);
         }
 
-        if (_debug) console.log('made sockets connection (LIVE STREAMING)', socket.id);
         var usersInfo = JSON.parse(socket.handshake.query.localInfo);
         var rtmpUrlsData = socket.handshake.query.rtmp ? JSON.parse(socket.handshake.query.rtmp) : [];
-        if (_debug) console.log('made sockets connection (LIVE STREAMING) DATA1', socket.handshake.query.rtmp);
-        if (_debug) console.log('made sockets connection (LIVE STREAMING) DATA2', rtmpUrlsData);
         var platform = socket.handshake.query.platform;
         var isAndroid = usersInfo.platform == 'android' ? true : false      
 
@@ -87,7 +80,6 @@ module.exports = function (io) {
                     let rtmpUrlInfo = rtmpUrlsData[i];
                     rtmpUrlInfo.platform = determinePlatformUserStreamingTo(rtmpUrlInfo.linkToLive || rtmpUrlInfo.rtmpUrl);
                     delete rtmpUrlInfo.rtmpUrl;
-                    console.log('rtmpUrlInfo.shareId', rtmpUrlInfo);
                     if(rtmpUrlInfo.type == 'youtube') {
                         lives.push({
                             type: 'youtube',
@@ -107,19 +99,33 @@ module.exports = function (io) {
                     }
 
                     stream.setAttribute('lives', lives);
+                    stream.setAttribute('endTime', '');
                     stream.save();
 
-                    stream.post(livestreamStream.publisherId, {
-                        type: 'Media/livestream/start',
-                    }, function (err) {
-                        if (err) {
-                            console.log('Something went wrong when posting to stream with next publisherId and streamName', livestreamStream.publisherId, livestreamStream.streamName)
-                            return;
-                        }
+                    //do not post Media/livestream/start mesage if p2p broadcast is active
+                    let p2pRoom = stream.getAttribute('p2pRoom');
+                    if(!p2pRoom || p2pRoom == '') {
+                        stream.post(livestreamStream.publisherId, {
+                            type: 'Media/livestream/start',
+                            instructions: {
+                                name: ''
+                            }
+                        }, function (err) {
+                            if (err) {
+                                console.log('Something went wrong when posting to stream with next publisherId and streamName', livestreamStream.publisherId, livestreamStream.streamName)
+                                return;
+                            }
+                            if (parseInt(i) == rtmpUrlsData.length - 1) {
+                                initFFMpegProcess(streamingUser);
+                            }
+                        });
+                    } else {
                         if (parseInt(i) == rtmpUrlsData.length - 1) {
                             initFFMpegProcess(streamingUser);
                         }
-                    });
+                    }
+
+                   
                 }
             });
         }
@@ -132,16 +138,24 @@ module.exports = function (io) {
                 }
 
                 stream.setAttribute('lives', []);
+                let p2pRoom = stream.getAttribute('p2pRoom');
+                //do not send Media/livestream/stop message when p2p broadcast is still active
+                if(!p2pRoom || p2pRoom == '') {
+                    stream.setAttribute('endTime', +Date.now());
+
+                    stream.post(livestreamStream.publisherId, {
+                        type: 'Media/livestream/stop',
+                    }, function (err) {
+                        if (err) {
+                            console.log('Something went wrong when posting to stream with next publisherId and streamName', livestreamStream.publisherId, livestreamStream.streamName)
+                            return;
+                        }
+                    });
+                }
+                
                 stream.save()
 
-                stream.post(livestreamStream.publisherId, {
-                    type: 'Media/livestream/stop',
-                }, function (err) {
-                    if (err) {
-                        console.log('Something went wrong when posting to stream with next publisherId and streamName', livestreamStream.publisherId, livestreamStream.streamName)
-                        return;
-                    }
-                });
+                
             });
         }
 
@@ -155,7 +169,6 @@ module.exports = function (io) {
         }
 
         function initFFMpegProcess(streamingUser) {
-            if (_debug) console.log('initFFMpegProcess START', streamingUser, usersInfo);
             var m264BrowserSupport = false
             for (let c in usersInfo.supportedVideoMimeTypes) {
                 let mimeType = usersInfo.supportedVideoMimeTypes[c];
@@ -183,13 +196,9 @@ module.exports = function (io) {
                     }
                 }
             }
-            if (_debug) console.log('m264BrowserSupport ' + m264BrowserSupport);
-            if (_debug) console.log('mp4IsSupported ' + mp4IsSupported, format, encoder);
-            if (_debug) console.log('usersInfo.supportedVideoMimeTypes ', recorderType, usersInfo.supportedVideoMimeTypes);
 
             function createFfmpegProcess() {
                 if (!streamingUser.passThrough) {
-                    console.log('createFfmpegProcess create PassThrough')
                     streamingUser.passThrough = new PassThrough();
                 }
                 var params = ['-re'];
@@ -267,11 +276,6 @@ module.exports = function (io) {
                     }
                 }
                 
-                
-                
-                
-
-                console.log('ffmpeg params ', params)
                 ffmpeg = child_process.spawn('ffmpeg', params, { detached: true });
                 streamingUser.ffmpegProcess = ffmpeg;
 
@@ -310,12 +314,7 @@ module.exports = function (io) {
             createFfmpegProcess();
 
             streamingUser.passThrough.on('data', function (data) {
-                //console.log(socket.id + 'VIDEO DATA0', data);
-
                 if (streamingUser.ffmpegProcess != null) {
-
-                    //console.log(socket.id + 'VIDEO DATA1');
-
                     streamingUser.ffmpegProcess.stdin.write(data);
                 } else {
                     createFfmpegProcess();
@@ -340,9 +339,7 @@ module.exports = function (io) {
             let chunksNum = 0;
             // When data comes in from the WebSocket, write it to FFmpeg's STDIN.
             streamingUser.socket.on('Media/webrtc/videoData', function (data) {
-                //console.log(socket.id + ' VIDEODATA', data);
                 if (!streamingUser.passThrough) {
-                    //console.log('createFfmpegProcess create PassThrough')
                     streamingUser.passThrough = new PassThrough();
                 }
                 streamingUser.passThrough.push(data);

@@ -133,7 +133,6 @@
 
                 });
                 webrtcSignalingLib.event.on('screensharingStarted', function (e) {
-                    console.log('screensharingStarted START')
                     if(e.participant && e.participant.isLocal) {
                         tool.updateCamerasList({eventName: 'screensharingStarted'});
                     }

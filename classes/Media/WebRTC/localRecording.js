@@ -18,8 +18,6 @@ module.exports = function (socket, io) {
     function processChunk(data, infoData, chunkNum, end, callback) {
         var parallelRecordings = infoData.parallelRecordings;
         var extension = infoData.extension;
-        if (_debug) console.log('LOCAL MEDIA:', socket.id);
-        if (_debug) console.log('LOCAL MEDIA: chunkNum', chunkNum, _chunksNum);
 
         if (parallelRecordings.length != 0) {
             for (let i in parallelRecordings) {
@@ -31,7 +29,6 @@ module.exports = function (socket, io) {
         function writeToStream() {
             if (!end) {
                 _localMediaStream.write(data, function () {
-                    if (_debug) console.log('LOCAL MEDIA: write to stream finished', _localMediaStream.bytesWritten);
                     _chunksNum = chunkNum;
                     socket.webrtcParticipant.recording.latestChunkTime = Date.now();
 
@@ -45,7 +42,6 @@ module.exports = function (socket, io) {
                 });
             } else {
                 _localMediaStream.end(data, function () {
-                    if (_debug) console.log('LOCAL MEDIA: write to stream finished (END)', _localMediaStream.bytesWritten);
                     socket.webrtcParticipant.recording.stopTime = Date.now();
                     _chunksNum = chunkNum;
 
@@ -69,7 +65,7 @@ module.exports = function (socket, io) {
             });
 
             chunkStream.on('error', (e) => {
-                console.log('ERRRORRR', e)
+                console.log('ERROR', e)
             });
             chunkStream.on('error', () => {
                 console.log('CLOSED')
@@ -82,22 +78,15 @@ module.exports = function (socket, io) {
 
             });
         }
-        if (_debug) console.log('LOCAL MEDIA end ', end);
-        if (_debug) console.log('LOCAL MEDIA parallelRecordings', parallelRecordings);
 
         if (_localMediaStream != null) {
-            if (_debug) console.log('LOCAL MEDIA: write to stream');
-
             writeToStream();
         } else {
-            if (_debug) console.log('LOCAL MEDIA: create stream');
-
             var streamName = 'Media/webrtc/' + socket.roomId;
             Q.plugins.Streams.fetchOne(socket.userPlatformId, socket.roomPublisherId, streamName, function (err, stream) {
                 if (err || !stream) {
                     return;
                 }
-                if (_debug) console.log('LOCAL MEDIA: got webrtc stream ' + stream.getAttribute('startTime'));
 
                 var localRecordDir = appDir + 'files/' + appName + '/uploads/Media/webrtc_rec/' + socket.roomId + '/' + stream.getAttribute('startTime') + '/' + socket.userPlatformId + '/' + socket.startTime;
                 if (!fs.existsSync(localRecordDir)) {
@@ -108,7 +97,7 @@ module.exports = function (socket, io) {
                 let filePath = localRecordDir + '/audio.' + extension;
                 _localMediaStream = fs.createWriteStream(filePath);
                 _localMediaStream.on('error', (e) => {
-                    console.log('ERRRORRR', e)
+                    console.log('ERROR', e)
                 });
                 _localMediaStream.on('error', () => {
                     console.log('CLOSED')
@@ -134,7 +123,6 @@ module.exports = function (socket, io) {
     socket.on('Media/webrtc/localMedia', processChunk);
 
     function processRecordings() {
-        console.log('processRecordings');
         if (!socket.webrtcRoom) return;
         var recordings = (socket.webrtcRoom.participants.map(function (p) {
             p.recording.participant = p;
@@ -142,14 +130,12 @@ module.exports = function (socket, io) {
         })).filter(function (r) {
             return r.path != null ? true : false;
         })
-        console.log('processRecordings: recordings', recordings)
 
         if (recordings.length == 0) return;
 
         var startRecording = recordings.reduce(function (prev, current) {
             return current.startTime < prev.startTime ? current : prev
         });
-        console.log('processRecordings: startRecording', startRecording)
 
         recordings.sort(function (a, b) {
             if (a.stopTime - a.startTime > b.stopTime - b.startTime) {
@@ -226,10 +212,6 @@ module.exports = function (socket, io) {
             console.log('processRecordings: offsetFromFirstRec', offsetFromFirstRec);
         }*/
 
-        console.log('processRecordings: startRecording', startRecording);
-        console.log('inputs.length', inputs.length);
-        console.log('recordings.length', recordings.length);
-
         var localRecordDir = appDir + 'files/' + appName + '/uploads/Media/webrtc_rec/' + socket.roomId + '/' + socket.roomStartTime;
 
         inputs.unshift('-y');
@@ -246,7 +228,6 @@ module.exports = function (socket, io) {
             //'-acodec', 'libmp3lame',
             //'-f', 'mp3',
             localRecordDir + '/audio.wav');
-        console.log('inputs', inputs);
         return;
         ffmpeg = child_process.spawn('ffmpeg', inputs);
         ffmpeg.on('close', (code, signal) => {
@@ -263,7 +244,6 @@ module.exports = function (socket, io) {
 
     socket.on('disconnect', function () {
         if (socket.webrtcParticipant && socket.webrtcParticipant.id == socket.id) {
-            console.log('disconnect socket.webrtcParticipant.id != socket.id', socket.webrtcParticipant.id, socket.id)
             socket.webrtcParticipant.online = false;
             if (socket.webrtcParticipant.recording.stopTime == null) {
                 socket.webrtcParticipant.recording.stopTime = socket.webrtcParticipant.recording.latestChunkTime;

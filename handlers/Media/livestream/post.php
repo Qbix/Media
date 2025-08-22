@@ -18,98 +18,104 @@ function Media_livestream_post($params = array())
 {
 	$params = array_merge($_REQUEST, $params);
 	$loggedInUserId = Users::loggedInUser(true)->id;
-	$publisherId = Q::ifset($params, 'publisherId', $loggedInUserId);
-	$streamName = Q::ifset($params, 'streamName', null);
-
-	
 
 	$response = [];
 
 	if (Q_Request::slotName('createLivestreamStream')) {
-		$webrtcStream = Streams_Stream::fetch($publisherId, $publisherId, $streamName);
-
-		if (!$webrtcStream) {
-			throw new Q_Exception("Please pass WebRTC stream's name and publisher id as params for this request.");
-		}
-
-		//get livestream stream that was created by the person who opened livestream editor in webrtc chat room
-		$livestreamStreamRelation = Streams_RelatedTo::select()->where(array(
-			"toPublisherId" => $publisherId,
-			"toStreamName" => $streamName,
-			"type" => "Media/webrtc/livestream"
-		))->orderBy("weight", false)->limit(1)->fetchDbRow();
-
-
-		if (is_null($livestreamStreamRelation) || empty($livestreamStreamRelation)) {
-			//if there is no livestream stream found, create it and relate it to webrtc stream of room
-			$livestreamStream = Streams::create($loggedInUserId, $loggedInUserId, 'Media/webrtc/livestream', ['readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20]);
-			$livestreamStream->subscribe();
-			$livestreamStream->join(['subscribed' => true]);
-
-			$livestreamStream->relateTo((object)array(
-				"publisherId" => $publisherId,
-				"name" => $streamName
-			), "Media/webrtc/livestream", $loggedInUserId, array(
-				"inheritAccess" => false,
-				"weight" => time()
-			));
-		} else {
-			$livestreamStream = Streams_Stream::fetch($loggedInUserId, $livestreamStreamRelation->fromPublisherId, $livestreamStreamRelation->fromStreamName);
-		}
-
-		if (is_null($livestreamStream)) {
-			throw new Q_Exception("Something went wrong when fetching livestream stream");
-		}
-
-		$response['livestreamStream'] = $livestreamStream;
+		$publisherId = Q::ifset($params, 'publisherId', $loggedInUserId);
+		$streamName = Q::ifset($params, 'streamName', null);
+		$response['livestreamStream'] = Media_Livestream::createOrUpdateLivestreamStream($publisherId, $streamName, null);
 
 		Q_Response::setSlot("createLivestreamStream", $response);
+	} else if (Q_Request::slotName('updateReminders')) {
+		$publisherId = Q::ifset($params, 'publisherId', null);
+		$streamName = Q::ifset($params, 'streamName', null);
+		$action = Q::ifset($params, 'action', null);
+		$reminderTime = Q::ifset($params, 'reminderTime', null);
+
+		if(!$publisherId || !$streamName || !$action || !$reminderTime) {
+			throw new Exception("publisherId, streamName and action should be specified");
+		}
+
+		$response['reminders'] = Media_Livestream::updateReminders($publisherId, $streamName, $reminderTime, $action);
+
+		Q_Response::setSlot("updateReminders", $response);
+	} else if (Q_Request::slotName('setReminderOnLivestreamStart')) {
+		$publisherId = Q::ifset($params, 'publisherId', null);
+		$streamName = Q::ifset($params, 'streamName', null);
+		$action = Q::ifset($params, 'action', 'unset');
+
+		if(!$publisherId || !$streamName || !$action) {
+			throw new Exception("publisherId, streamName and action should be specified");
+		}
+
+		$livestreamStream = Streams_Stream::fetch($publisherId, $publisherId, $streamName);
+
+		if($action === 'set') {
+			$livestreamStream->subscribe();
+		} else {
+			$livestreamStream->unsubscribe();
+		}
+
+		$response['success'] = true;
+		Q_Response::setSlot("setReminderOnLivestreamStart", $response);
 	} else if (Q_Request::slotName('createOrUpdateChannel')) {
 		$liveStreamPublisherId = Q::ifset($params, 'liveStreamPublisherId', $loggedInUserId);
 		$liveStreamName = Q::ifset($params, 'liveStreamName', null);
 		$destinationObjectJson = Q::ifset($params, 'destinationObject', null);
 		$remove = Q::ifset($params, 'remove', false);
-
-		$livestreamStream = Streams_Stream::fetch($loggedInUserId, $liveStreamPublisherId, $liveStreamName);
 		
-		if (is_null($livestreamStream) || is_null($destinationObjectJson)) {
-			throw new Q_Exception("Something went wrong when fetching livestream stream");
-		}
-
-		$destinationObject = json_decode($destinationObjectJson, true);
-
-		if(!isset($destinationObject['destId'])) {
-			throw new Q_Exception("destId is missing");
-		}
-
-		$destinationStream = Streams_Stream::fetch($loggedInUserId, $liveStreamPublisherId, 'Media/livestream/dest/' . $destinationObject['destId']);
-		
-		if($remove && !is_null($destinationStream)) {			
-            $destinationStream->close($loggedInUserId);
-		} else {
-			if (is_null($destinationStream)) {
-				$destinationStream = Streams::create($loggedInUserId, $loggedInUserId, 'Media/livestream/dest', ['name' => 'Media/livestream/dest/' . $destinationObject['destId']]);
-				$destinationStream->subscribe();
-				$destinationStream->join(['subscribed' => true]);
-		
-				$destinationStream->relateTo((object)array(
-					"publisherId" => $liveStreamPublisherId,
-					"name" => $liveStreamName
-				), "Media/livestream/dest", $loggedInUserId, array(
-					"inheritAccess" => false,
-					"weight" => time()
-				));
-			}
-	
-			$destinationStream->closedTime = null;
-			$destinationStream->content = $destinationObjectJson;
-			$destinationStream->changed();
-	
-		}
-		
-		$response['destinationStream'] = $destinationStream;
+		$response['destinationStream'] = Media_Livestream::createOrUpdateChannel($liveStreamPublisherId, $liveStreamName, $destinationObjectJson, $remove);
 
 		Q_Response::setSlot("createOrUpdateChannel", $response);
 		
-	}
+	} else if(Q_Request::slotName('joinLivestreamAsListener')) {
+        if (!$loggedInUserId) {
+            throw new Users_Exception_NotAuthorized();
+        }
+        $streamName = Q::ifset($params, 'streamName', null);
+        $publisherId = Q::ifset($params, 'publisherId', null);
+        $usersSocketId = Q::ifset($params, 'socketId', null);
+      
+        if(!$streamName || !$publisherId || !$usersSocketId) {
+            throw new Exception('streamName, publisherId, usersSocketId are required');
+        }
+
+		$streamToJoin = Streams_Stream::fetch(null, $publisherId, $streamName);
+		$streamToJoin->join(['extra' => json_encode(['listener' => 'yes'])]);
+
+        Q_Utils::sendToNode(array(
+			"Q/method" => "Users/addEventListener",
+			"socketId" => $usersSocketId,
+			"userId" => $loggedInUserId,
+			"eventName" => 'disconnect',
+			"handlerToExecute" => 'Media/livestream',
+			"data" => array(
+				"cmd" => 'leaveStream',
+				"publisherId" => $publisherId,
+				"streamName" => $streamName
+			),
+		));
+
+		return Q_Response::setSlot("joinLivestreamAsListener", $response);  
+    } else if(Q_Request::slotName('data')) {
+        //this is requests which were sent by node.js when some event was fired (client.on('disconnect'), for example)
+        $cmd = Q::ifset($params, 'cmd', null);
+        $streamName = Q::ifset($params, 'streamName', null);
+        $publisherId = Q::ifset($params, 'publisherId', $loggedInUserId);
+
+        if($cmd == 'leaveStream') {
+            //this slot is used to handle disconnection of user (closing the tab) in livestream widget tool
+            $streamToLeave = Streams_Stream::fetch(null, $publisherId, $streamName);
+    
+            if(!is_null($streamToLeave)) {
+				$streamToLeave->leave();
+
+               /*  $listeningParticipant = $streamToLeave->getParticipant();
+				$listeningParticipant->settExtra('listener', 'no'); */
+            }
+    
+            return Q_Response::setSlot('data', ['cmd'=> $cmd, 'publisherId' => $publisherId, 'streamName' => $streamName]);
+        }
+    }
 }
