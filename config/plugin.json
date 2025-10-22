@@ -82,7 +82,11 @@
 			}
 		},
 		"onInsert": {
-			"roles": ["Media/admins", "Users/hosts", "Users/screeners"]
+			"roles": {
+				"Media/admins": ["Media admins", "labels/Media/admins"],
+				"Users/hosts": ["Hosts", "labels/Users/hosts"],
+				"Users/screeners": ["Screeners", "labels/Users/screeners"]
+			}
 		},
 		"roles": {
 			"Users/owners": {
