@@ -55,7 +55,7 @@
 		},
 		"web": {
 			"contentSecurityPolicy": {
-				"script": ["https://www.youtube.com", "https://cdnjs.cloudflare.com"]
+				"script": ["https://www.youtube.com", "https://cdnjs.cloudflare.com", "'https://accounts.google.com/gsi/client"]
 			}
 		},
 		"images": {
