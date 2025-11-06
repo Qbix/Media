@@ -99,7 +99,6 @@ WebRTC.listen = function () {
      * @return {*} 
      */
     Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage =  function (messageType, options) {
-        console.log('postLivestreamStartOrStopMessage', options.streamToPostTo)
         let streamToPostTo = options.streamToPostTo, asUserId = options.asUserId, cookie = options.cookie;
         return new Promise(function (resolve, reject) {
             Q.plugins.Media.WebRTC.getCommunityAvatarInfo(asUserId).then(function (communityLogo) {
