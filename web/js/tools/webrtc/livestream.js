@@ -2575,7 +2575,7 @@
             sendReaction: function (reaction) {
                 var tool = this;
                 if(!tool.sendReactionFunc) {
-                    tool.sendReactionFunc = Q.throttle(function () {
+                    tool.sendReactionFunc = Q.throttle(function (reaction) {
                         Q.Streams.Stream.ephemeral(tool.state.publisherId, tool.state.streamName, {
                             type: "Media/livestream/reaction",
                             reaction
@@ -2583,7 +2583,7 @@
                     }, 10000)
                 }
 
-                tool.sendReactionFunc();
+                tool.sendReactionFunc(reaction);
             },
             updateUIOnResize: function (width, height) {
                 var tool = this;
