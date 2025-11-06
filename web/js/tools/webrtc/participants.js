@@ -280,7 +280,7 @@
                 function showSetingsTool() {
                     Q.Dialogs.push({
                         title: 'Teleconference settings',
-                        className: 'manage_webrtc_permissions',
+                        className: 'Media_manage_webrtc_permissions',
                         content: tool.settingsTool.settingsUI,
                         apply: true,
                         onActivate: function (dialog) {
