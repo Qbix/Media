@@ -25,10 +25,14 @@ Q.page("Media/livestream", function () {
             streamName: streamName,
             webrtcPublisherId: Q.Media.livestream.roomPublisherId,
             webrtcStreamName: Q.Media.livestream.roomStreamName,
+            mode: 'full',
         }),
         {},
         function () {
-
+            let tool = this;
+            /* document.addEventListener('click', function () {
+                tool.remove();
+            }); */
         }
     );
    

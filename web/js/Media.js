@@ -326,6 +326,66 @@
 		});
 	}, "Media.chat.webrtc");
 
+	Media.closeAllLivestreamTools = function (except) {
+		return new Promise(function (resolve, reject) {
+			let existingLivestreamTools = Q.Tool.byName('Media/webrtc/livestream');
+			
+			//Just in case. Probably this should never happen when there are multiple livestream tools opened on one page
+			//custom removeTool() method is used (instead of Q.Tool.remove())as it returns promise that resolves when animation of clising the tool ended
+			const removals = Object.values(existingLivestreamTools).map(function (tool) {
+				let skip = except.find(function(streamInfo) {
+					return streamInfo.publisherId == tool.state.publisherId && streamInfo.streamName == tool.state.streamName;
+				})
+				if(!skip) return tool.removeTool()
+			});
+
+			console.log('removals', removals)
+			if (removals.length != 0) {
+				Promise.all(removals).then(function () {
+					resolve();
+				})
+			} else {
+				resolve();
+			}
+		});
+	}
+	
+	Media.openLivestreamTool = function (publisherId, streamName) {
+		return new Promise(function (resolve, reject) {
+			let existingLivestreamTools = Q.Tool.byName('Media/webrtc/livestream');
+			let tools = Object.values(existingLivestreamTools)
+			let alreadyActive = tools.find(function (tool) {
+				return publisherId == tool.state.publisherId && streamName == tool.state.streamName;
+			})
+
+			if(alreadyActive) {
+				console.warn('Tool for this livestream already exists');
+				resolve();
+				return;
+			}
+
+			Q.Media.closeAllLivestreamTools([{ publisherId: publisherId, streamName:streamName }]).then(function () {
+				var pageEl = document.getElementById('page');
+				var livestreamElement = document.createElement('DIV');
+				livestreamElement.style.display = 'none'; //should be none to prevent unwanted showing of body.s scrollbar for a split second when tool is in activating process
+				livestreamElement.style.width = '100%';
+				livestreamElement.style.height = 'inherit';
+				pageEl.appendChild(livestreamElement);
+
+				Q.activate(
+					Q.Tool.setUpElement(livestreamElement, 'Media/webrtc/livestream', {
+						publisherId: publisherId,
+						streamName: streamName,
+					}),
+					{},
+					function () {
+						resolve();
+					}
+				);
+			});
+		});
+	}
+
 	Q.page('', function () {
 		var fsc = Q.first(document.getElementsByClassName('Media_fullscreen_capable'));
 		if (fsc instanceof Element) {

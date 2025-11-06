@@ -29,7 +29,8 @@
         var tool = this;
         
         tool.livestreamStream = null;
-        tool.webrtcStream = null; //internal use only: use getWebRTCStream method to get webrtcStream
+        tool.webrtcStream = null;
+        tool.eventStream = null;
         tool.activeLivestreamings = [];
         tool.allLivestreamings = [];
         tool.videoContainerEl = null;
@@ -47,7 +48,6 @@
         tool.compactAfterWidget = null;
 
         Q.addStylesheet('{{Media}}/css/tools/livestream.css?ts=' + performance.now(), function () {
-            console.log('tool.state.publisherId, tool.state.streamName', tool.state.publisherId, tool.state.streamName)
             Q.Streams.get(tool.state.publisherId, tool.state.streamName, function (err, stream, extra) {
                 if(!this || !this.fields) {
                     console.error('Error while getting stream', err);
@@ -55,14 +55,16 @@
                 }
                 tool.livestreamStream = this;
                 tool.livestreamStreamParticipants = extra.participants;
-                console.log('onRefresh', tool.livestreamStream);
-                console.log('tool.livestreamStreamParticipants', extra, tool.livestreamStreamParticipants);
-
                 
                 //tool.livestreamStream.observe();
-                tool.livestreamStream.relatedFrom('Media/webrtc/livestream', {}, function (stream) {
-                    console.log('relatedFrom', tool.webrtcStream, this, stream)
-                    tool.webrtcStream = this.relatedStreams[Object.keys(this.relatedStreams)[0]];
+                tool.livestreamStream.relatedFrom('Media/webrtc/livestream', {}, function () {
+                    for(let i in this.relatedStreams) {
+                        let relatedStream = this.relatedStreams[i];
+                        if(relatedStream.fields.type == 'Media/webrtc') {
+                            tool.webrtcStream = relatedStream;
+                            break;
+                        }
+                    }
 
                     if(!tool.webrtcStream) {
                         return;
@@ -74,16 +76,31 @@
                         tool.updateWidgetStateOnStreamUpdate();
                     });
                 })
+                tool.livestreamStream.relatedFrom('Calendars/event/livestream', {}, function () {
+                   for(let i in this.relatedStreams) {
+                        let relatedStream = this.relatedStreams[i];
+                        if(relatedStream.fields.type == 'Calendars/event') {
+                            tool.eventStream = relatedStream;
+                            break;
+                        }
+                    }
+
+                    if(!tool.eventStream) return;
+
+                    tool.state.onEventStreamRefresh = Q.Streams.Stream.onRefresh(tool.eventStream.fields.publisherId, tool.eventStream.fields.name);
+                    tool.state.onEventStreamRefresh.set(function (param1, param2, param3, param4) {
+                        tool.eventStream = this;
+                        Q.handle(tool.state.onEventUpdate, tool);
+                    });
+                    Q.handle(tool.state.onEventUpdate, tool);
+
+                })
 
                 tool.state.onLivestreamStreamRefresh = Q.Streams.Stream.onRefresh(tool.state.publisherId, tool.state.streamName);
                 tool.state.onLivestreamStreamRefresh.set(function(param1, param2, param3, param4) {
                     tool.livestreamStream = this;
                     tool.syncLivestreamsList();
-                    console.log('onRefresh START', param1, param2, param3, param4);
-                    console.log('tool.livestreamStreamParticipants', tool.livestreamStreamParticipants);
-
                     Q.handle(tool.state.onLivestreamUpdate, tool);
-                    console.log('onRefresh', this);
                 });
 
                 tool.declareStreamEventHandlers();
@@ -95,10 +112,6 @@
                 //tool.createFull();
                 //return;
                 tool.updateWidgetStateOnStreamUpdate();
-
-                tool.state.onLivestreamUpdate.add(function () {
-                    console.log('onLivestreamUpdate TRIGGERED')
-                })
 
                 tool.state.onLivestreamUpdate.add(function () {
                     tool.updateInvitedList();
@@ -123,7 +136,10 @@
             showAsWidget: true,
             invitedSpeakers: [],
             layout: null, //wide||vertical
+            startMode: 'compact', //compact||full
+            mode: 'full', //compact||full
             wide_minChatWidth: 320,
+            onEventUpdate: new Q.Event(),
             onLivestreamUpdate: new Q.Event(),
             onRefresh: new Q.Event(),
             onUpdate: new Q.Event(),
@@ -132,6 +148,7 @@
             onLivestreaStreamRefresh: new Q.Event(),
             onInvitedUsersListUpdate: new Q.Event(),
             onLiveIsPlaying: new Q.Event(),
+            onEventStreamRefresh: null,
             onLivestreamStreamRefresh: null,
             onWebRTCStreamRefresh: null
         },
@@ -168,26 +185,39 @@
                     if(livestreamingObject.broadcastClient != null) {
                         livestreamingObject.broadcastClient.disconnect();
                     }
+
+                    if (livestreamingObject.mediaElement && livestreamingObject.mediaElement.parentElement) {
+                        livestreamingObject.mediaElement.parentElement.removeChild(livestreamingObject.mediaElement)
+                    }
                 }
             },
-            remove: function () {
+            removeTool: function (removedByQbixMethod) {
                 let tool = this;
-                tool.removeAllEventHandlers();
-                tool.stopPlayer();
+                return new Promise(function (resolve, reject) {
+                    tool.removeAllEventHandlers();
+                    tool.stopPlayer();
 
-                if(tool.currentWidgetUI) {
-                    let widgetElement = tool.currentWidgetUI.widgetEl.querySelector('.media-livestream-widget');
-                    if(widgetElement) {
+                    if (tool.currentWidgetUI) {
+                        let widgetElement = tool.currentWidgetUI.widgetEl.querySelector('.media-livestream-widget');
+
+                        let debouncer; //in case when transitionend is triggered multiple times 
+                        widgetElement.addEventListener('transitionend', function () {
+                            if(debouncer) clearTimeout(debouncer);
+                            debouncer = setTimeout(function () {
+                                if (!removedByQbixMethod) {
+                                    Q.Tool.remove(tool.id);
+                                }
+                                if (tool.element.parentElement) tool.element.parentElement.removeChild(tool.element);
+                                resolve();
+                            }, 300);
+                            
+                        });
+
+                        widgetElement.classList.add('media-livestream-widget-removed');
 
                     }
-                    widgetElement.addEventListener('transitionend', function () {
-                        if(tool.element.parentElement) tool.element.parentElement.removeChild(tool.element);
-                    });
-
-                    widgetElement.classList.add('media-livestream-widget-removed');
-
-                }
-                tool.livestreamStream.leave();
+                    tool.livestreamStream.leave();
+                });
             },
             getWebRTCStream: function () {
                 //promise returns webrtc stream (if it was loaded, permissions are ok etc) or null otherwise
@@ -228,7 +258,6 @@
                 var tool = this;
                 return new Promise(function (resolve, reject) {
                     tool.livestreamStream.refresh(function (err, param1, extra) {
-                        console.log('refreshLivestreamStream', this, err);
                         if(err != null) {
                             reject(err);
                         }
@@ -247,7 +276,6 @@
             },
             declareStreamEventHandlers: function() {
                 var tool = this;
-                console.log('declareStreamEventHandlers');
                 window.livestreamStream = tool.livestreamStream;
                 tool.livestreamStream.onMessage("Streams/changed").set(function (message) {
                     console.log('declareStreamEventHandlers: Streams/changed', message);
@@ -287,14 +315,11 @@
                 });
 
                 tool.state.onUpdate.add(function (e, e2, e3) {
-                    console.log('onUpdate', e, e2, e3);
                     if(!tool.videoContainerTabsConEl) return;
                     if(tool.activeLivestreamings.length == 0 && e.prevNumOfLives != 0) {
-                        console.log('onUpdate 1');
                         tool.videoContainerEl.innerHTML = '<div class="media-livestream-nolives">No livestreams for now</div>';
                     } else if((e.prevNumOfLives == 0 || e.prevNumOfLives == -1) && tool.activeLivestreamings.length != 0) {
-                        console.log('onUpdate 2', tool.videoTabsTool.tabs);
-                        tool.activeLivestreamings[0].tabObject.tabElement.click();
+                        if(tool.activeLivestreamings[0].tabObject) tool.activeLivestreamings[0].tabObject.tabElement.click();
                     }
 
                     if(tool.activeLivestreamings.length <= 1) {
@@ -330,7 +355,6 @@
             joinLivestreamAsListener: function () {
                 var tool = this;
                 var socketConnection = Q.Socket.get();
-                console.log('joinLivestreamAsListener', socketConnection)
                 if(!socketConnection) return;
                 return new Promise(function (resolve, reject) {
                     Q.req("Media/livestream", ["joinLivestreamAsListener"], function (err, response) {
@@ -424,38 +448,34 @@
 
                 let scheduledStartTime = parseInt(tool.livestreamStream.getAttribute('scheduledStartTime'));
                 let meetingEnded = tool.livestreamStream.getAttribute('endTime');
-                console.log('updateWidgetStateOnStreamUpdate 0', scheduledStartTime, Date.now(), meetingEnded);
-                console.trace();
-                if (tool.activeLivestreamings.length != 0) {
-                    console.log('updateWidgetStateOnStreamUpdate 1');
-                    //show "during" state event if scheduledStartTime has not come but there are activeLivestreamings
-                    tool.switchWidgetState('during');
+                if(tool.state.mode == 'full'){
+                    tool.switchWidgetState('full');
                 } else {
-                    tool.switchWidgetState('before');
-                    /* if (scheduledStartTime && scheduledStartTime > Date.now()) {
-                        console.log('updateWidgetStateOnStreamUpdate 2');
-                        tool.switchWidgetState('before');
-                        setTimeout(function () {
-                            tool.switchWidgetState('during');
-                        }, scheduledStartTime - Date.now())
-
-                    } else if (!meetingEnded) {
-                        console.log('updateWidgetStateOnStreamUpdate 3');
+                    if (tool.activeLivestreamings.length != 0) {
+                        //show "during" state event if scheduledStartTime has not come but there are activeLivestreamings
                         tool.switchWidgetState('during');
                     } else {
-                        console.log('updateWidgetStateOnStreamUpdate 4');
-                        tool.switchWidgetState('after');
-                    } */
+                        tool.switchWidgetState('before');
+                        /* if (scheduledStartTime && scheduledStartTime > Date.now()) {
+                            tool.switchWidgetState('before');
+                            setTimeout(function () {
+                                tool.switchWidgetState('during');
+                            }, scheduledStartTime - Date.now())
+    
+                        } else if (!meetingEnded) {
+                            tool.switchWidgetState('during');
+                        } else {
+                            tool.switchWidgetState('after');
+                        } */
+                    }
                 }
+                
             },
             switchWidgetState: function(stateName) {
                 var tool = this;
-                console.log('switchWidgetState START', stateName)
-
                 if(tool.widgetState == stateName) {
                     return;
                 }
-                console.log('switchWidgetState proceed')
                 tool.widgetState = stateName;
                 tool.element.innerHTML = '';
                 if(stateName == 'before') {
@@ -507,6 +527,24 @@
                     tool.element.appendChild(tool.compactAfterWidget.widgetEl);
 
                     toggleToolClass('media-livestream-after');       
+                } else if(stateName == 'full') {
+                    //we don't need "after" state for now
+                    if(!tool.fullWidget) {
+                        tool.fullWidget = tool.createFull();
+                    }
+
+                    /* if(tool.currentWidgetUI && tool.currentWidgetUI.isMinimized()) {
+                        tool.compactAfterWidget.minimizeWidget(true);
+                    } else {
+                        tool.compactAfterWidget.maximizeWidget(true);
+                    } */
+
+                    tool.videoTabsTool.syncVideoTabsList.apply(tool);
+                        
+                    tool.currentWidgetUI = tool.fullWidget;
+                    tool.element.appendChild(tool.fullWidget.widgetEl);
+
+                    toggleToolClass('media-livestream-full');       
                 }
 
                 function toggleToolClass(className) {
@@ -610,7 +648,6 @@
                 let tool = this;
                 tool.getInvitedPeople(tool.webrtcStream).then(function (invitedUsers) {
                     tool.state.invitedSpeakers = invitedUsers;
-                    console.log('updateInvitedList', invitedUsers)
                     //tool.invitedUsers = invitedUsers;
                     
                     for(let i in invitedUsers) {
@@ -626,7 +663,6 @@
                         let userObject = invitedUsers[i].fields;
                         tool.invitedUsers.push(userObject);
                     }
-                    console.log('invitedUsers update BEFORE', tool.invitedUsers);
 
                     for(let i = tool.invitedUsers.length - 1; i >= 0; i--) {
                         let exist = false;
@@ -640,7 +676,6 @@
                             tool.invitedUsers.splice(i, 1);
                         }
                     }
-                    console.log('invitedUsers update AFTER', tool.invitedUsers);
                     
                     Q.handle(tool.state.onInvitedUsersListUpdate, tool);
                 });
@@ -676,27 +711,45 @@
                 offlineText.innerHTML = 'Stream is offline';
                 widgetContainer.appendChild(offlineText);
 
-                /* let countdown = document.createElement('DIV');
+                let countdown = document.createElement('DIV');
                 countdown.className = 'media-livestream-countdown';
                 widgetContainer.appendChild(countdown);
-                let countdownTool = document.createElement('DIV');
-                countdownTool.className = 'media-livestream-countdown-tool';
-                countdown.appendChild(countdownTool);
+                let countdownTitle = document.createElement('DIV');
+                countdownTitle.className = 'media-livestream-countdown-title';
+                countdownTitle.innerHTML = 'Event start time:&nbsp';
+                countdown.appendChild(countdownTitle);
+                let countdownToolContainer = document.createElement('DIV');
+                countdownToolContainer.className = 'media-livestream-countdown-container';
+                countdown.appendChild(countdownToolContainer);
+                
 
-                Q.activate(
-                    Q.Tool.setUpElement(
-                        countdownTool,
-                        "Q/timestamp",
-                        {
-                            time: parseInt(tool.livestreamStream.getAttribute('scheduledStartTime')),
-                            capitalized: true,
-                            relative: true
-                        }
-                    ),
-                    function () {
-                       
+                if(tool.eventStream) showCountdown();
+                tool.state.onEventUpdate.add(showCountdown);
+
+                function showCountdown() {
+                    if(tool.countdownTool) {
+                        tool.countdownTool.remove();
+                        if(tool.countdownTool.element.parentElement) tool.countdownTool.element.parentElement.removeChild(tool.countdownTool.element);
                     }
-                ); */
+                    countdownToolContainer.innerHTML = '';
+                    let countdownTool = document.createElement('DIV');
+                    countdownTool.className = 'media-livestream-countdown-tool';
+                    countdownToolContainer.appendChild(countdownTool);
+                    Q.activate(
+                        Q.Tool.setUpElement(
+                            countdownTool,
+                            "Q/timestamp",
+                            {
+                                time: parseInt(tool.eventStream.getAttribute('startTime')),
+                                capitalized: true,
+                                relative: true
+                            }
+                        ),
+                        function () {
+                            tool.countdownTool = this;
+                        }
+                    );
+                }
 
                 let metingParticipants = document.createElement('DIV');
                 metingParticipants.className = 'media-livestream-meeting-users';
@@ -711,7 +764,6 @@
                 reminderButtonCon.className = 'media-livestream-reminder';
                 widgetContainer.appendChild(reminderButtonCon);
                 let reminderButton = document.createElement('BUTTON');
-                reminderButton.className = 'Q_button';
                 reminderButtonCon.appendChild(reminderButton);
 
                 updateNotifyStatus();
@@ -731,15 +783,8 @@
                 function updateInvitedList() {
                     for(let i in tool.invitedUsers) {
                         let userObject = tool.invitedUsers[i];
-                        if(userObject.userId == '' || userObject.userId == null) continue;
-                        let alreadyExists = false;
-                        for(let p in tool.invitedUsers) {
-                            if(tool.invitedUsers[p].userId == userObject.userId) {
-                                alreadyExists = true;
-                                break;
-                            }
-                        }
-                        if(alreadyExists) continue;
+                        if(userObject.userId == '' || userObject.userId == null || userObject.avatarContainerEl != null) continue;
+                        
                         let isHost = userObject.userId == tool.state.publisherId;
                         let userItem = userObject.avatarContainerEl = document.createElement('DIV');
                         userItem.className = 'media-livestream-meeting-user';
@@ -756,7 +801,6 @@
                         userRole.className = 'media-livestream-meeting-user-role';
                         userRole.innerHTML = isHost ? 'Host' : 'Speaker';
                         userItem.appendChild(userRole);
-                        console.log('userObject.userId', userObject.userId)
                         Q.activate(
                             Q.Tool.setUpElement(
                                 userAvatar,
@@ -789,10 +833,12 @@
                 }
 
                 function updateNotifyStatus() {
-                    console.log('tool.livestreamStream.participant.subscribed', tool.livestreamStream, tool.livestreamStream.participant.subscribed)
                     if(tool.livestreamStream.participant && tool.livestreamStream.participant.subscribed == 'yes') {
+                        reminderButton.classList.add('media-livestream-reminder-on');
                         reminderButton.innerHTML = 'Notification On';
                     } else {
+                        reminderButton.classList.remove('media-livestream-reminder-on');
+
                         reminderButton.innerHTML = 'Notify Me';
                     }
                 }
@@ -803,8 +849,6 @@
                         let usersReminders = tool.livestreamStream.participant.getExtra('reminders');
                         if(usersReminders != null) existingReminders = usersReminders;
                     }
-
-                    console.log('existingReminders', existingReminders)
 
                     let remindersContainer = document.createElement('DIV');
                     remindersContainer.className = 'media-livestream-widget-reminders';
@@ -1019,7 +1063,6 @@
 
 
                 function updateListOfLives() {
-                    console.log('updateListOfLives START', _activePlayerLive, tool.activeLivestreamings.length)
                     currentlyStreamingToList.innerHTML = '';
                     //_activePlayerLive
 
@@ -1065,10 +1108,8 @@
                     }
 
                     if(tool.activeLivestreamings.length <= 1) {
-                        console.log('updateListOfLives none', currentlyStreamingTo)
                         currentlyStreamingTo.style.display = 'none';
                     } else {
-                        console.log('updateListOfLives visible')
                         currentlyStreamingTo.style.display = '';
                     }
                 }
@@ -1095,7 +1136,7 @@
                         showBlanks: false,
                         showSummary: false,
                         ordering: [tool.state.publisherId, ...tool.invitedUsers.map(function (o) {
-                            return o.fields.userId;
+                            return o.userId;
                         })],
                         filter: function (userId, element) {
                             /* console.log('participants filter', userId, element)
@@ -1124,7 +1165,6 @@
                     function () {
                         _participantsTool = this;
                         tool.state.onInvitedUsersListUpdate.add(function () {
-                            console.log('refresh participants')
                             _participantsTool.state.ordering = [tool.state.publisherId, ...tool.invitedUsers.map(function (o) {
                                 return o.userId;
                             })];
@@ -1143,7 +1183,6 @@
 
                     for (const avatarElement of avatarsContainer.children) {
                         var avatartTool = Q.Tool.from(avatarElement, 'Users/avatar');
-                        console.log('avatartTool', avatartTool, avatarElement);
                         if(!avatartTool) return;
                         let userId = avatartTool.state.userId;
 
@@ -1161,7 +1200,6 @@
                                 userRole = 'Host';
                             } else {
                                 let invitedUsers = tool.invitedUsers;
-                                console.log('tool.invitedUsers', tool.invitedUsers)
                                 for(let i in invitedUsers) {
                                     if(userId == invitedUsers[i].userId) {
                                         userRole = 'Speaker';
@@ -1293,7 +1331,6 @@
                 //parentContainer.appendChild(widgetContainer0);
 
                 updateRealTimeInfo();
-                console.log('showInfoAboutLives START')
 
                 tool.state.onLivestreamUpdate.add(updateRealTimeInfo)
                 tool.state.onLivestreamUpdate.add(showInfoAboutLives);
@@ -1441,7 +1478,6 @@
                 }
 
                 function showInfoAboutLives() {
-                    console.log('showInfoAboutLives START', tool.activeLivestreamings)
                     for(let i = tool.activeLivestreamings.length - 1; i >= 0; i--) {
                         let livestreamData = tool.activeLivestreamings[i];
                         /* if(livestreamData.platform == 'Peer2Peer') {
@@ -1454,7 +1490,6 @@
                                 break;
                             }
                         }
-                        console.log('syncVideoitemsList itemExists', itemExists);
 
                         if(itemExists !== false) {
                             continue;
@@ -1481,7 +1516,6 @@
 
                     function addListItemToStreamingToList(livestreamData) {
                         window.addListItemToStreamingToList = function() {
-                            console.log('addListItemToStreamingToList', livestreamData)
                             addListItemToStreamingToList(livestreamData);
                         };
                         
@@ -1565,7 +1599,6 @@
 
                     }
 
-                    console.log('_listOfLives', _listOfLives, _listOfLives.length, _joinButton)
                     if(_listOfLives.length === 0) {
                         //currentlyStreamingTo.style.display = 'none';
                         onNoActiveLivestreams();
@@ -1577,8 +1610,6 @@
                 }
 
                 function onNoActiveLivestreams() {
-                    console.log('onNoActiveLivestreams', _listOfLives.length)
-
                     if(_joinButton) {
                         _joinButton.dataset.touchlabel = 'Live stream is inactive';
                         _joinButton.setAttribute('disabled', true);
@@ -1589,7 +1620,6 @@
                 }
 
                 function onLivestreamStarted() {
-                    console.log('onLivestreamStarted', _listOfLives.length)
                     //currentlyStreamingTo.style.display = '';
                     
                     if(_joinButton) {
@@ -1674,6 +1704,7 @@
                 let _streamsListPopup = null;
 
                 parentContainer = tool.element;
+                //parentContainer.style.display = 'none';
 
                 let _minimizedWidget = createMinimized();
 
@@ -1777,9 +1808,7 @@
                 widgetContainer.appendChild(metingParticipants);
 
 
-                tool.getParticipatedPeople(tool.webrtcStream).then(function (participatedUsers) {
-                    console.log('participatedUsers', participatedUsers)
-                    
+                tool.getParticipatedPeople(tool.webrtcStream).then(function (participatedUsers) {                    
                     for(let i in participatedUsers) {
                         let alreadyExists = false;
                         for(let p in tool.participatedUsers) {
@@ -1807,7 +1836,6 @@
                         userRole.className = 'media-livestream-meeting-user-role';
                         userRole.innerHTML = isHost ? 'Host' : 'Speaker';
                         userItem.appendChild(userRole);
-                        console.log('participatedUsers[i].fields.userId', participatedUsers[i].fields.userId)
                         Q.activate(
                             Q.Tool.setUpElement(
                                 userAvatar,
@@ -2030,7 +2058,6 @@
                                 break;
                             }
                         }
-                        console.log('syncVideoitemsList itemExists', itemExists);
 
                         if(itemExists !== false) {
                             continue;
@@ -2141,7 +2168,6 @@
 
                     }
 
-                    console.log('_listOfLives', _listOfLives, _joinButton)
                     if(_listOfLives.length === 0) {
                         currentlyStreamingTo.style.display = 'none';
                         onNoActiveLivestreams();
@@ -2216,8 +2242,8 @@
                 };
             },
             createFull: function () {
+
                 var tool = this;
-                tool.element.classList.add('media-livestream-full');
 
                 var resizeDetectorEl = tool.horizontalResizeDetector = document.createElement('DIV');
                 resizeDetectorEl.className = 'media-livestream-resize-detector';
@@ -2227,7 +2253,6 @@
                         const width = entry.contentRect.width;
                         const height = entry.contentRect.height;
                         let newHeight = width / 16 * 9;
-                        console.log('newHeight', newHeight)
                         //livestreamVideoInner.style.height = newHeight > 480 ? newHeight : 480 + 'px';
                         tool.updateUIOnResize(width, height);
                     }
@@ -2237,7 +2262,6 @@
 
                 var toolContainer = document.createElement('DIV');
                 toolContainer.className = 'media-livestream-container';
-                tool.element.appendChild(toolContainer);
 
                 var primaryColumn = document.createElement('DIV');
                 primaryColumn.className = 'media-livestream-primary-column';
@@ -2284,17 +2308,20 @@
                 webrtcParticipantsTool.className = 'media-livestream-participants-tool';
                 toolContainerInner.appendChild(webrtcParticipantsTool);
 
-                Q.activate(
-                    Q.Tool.setUpElement(webrtcParticipantsTool, 'Streams/participants', {
-                        publisherId: tool.state.webrtcPublisherId,
-                        streamName: tool.state.webrtcStreamName,
-                        invite: false,
-                        showBlanks: true,
-                        showSummary: false
-                    }),
-                    {},
-                    function () { }
-                );
+                if (tool.state.webrtcPublisherId && tool.state.webrtcStreamName) {
+                    Q.activate(
+                        Q.Tool.setUpElement(webrtcParticipantsTool, 'Streams/participants', {
+                            publisherId: tool.state.webrtcPublisherId,
+                            streamName: tool.state.webrtcStreamName,
+                            invite: false,
+                            showBlanks: true,
+                            showSummary: false
+                        }),
+                        {},
+                        function () { }
+                    );
+                }
+
 
                 var secondColumn = document.createElement('DIV');
                 secondColumn.className = 'media-livestream-side-column';
@@ -2405,15 +2432,13 @@
                     function () {
                         let chatTool = this;
                         setTimeout(function () {
-                            console.log('chatWebrtcTool', chatTool)
                             let placeholder = chatTool.element.querySelector('.Q_placeholder');
-                            placeholder.innerHTML = 'Ask a question';
+                            if(placeholder) placeholder.innerHTML = 'Ask a question';
 
                         }, 500);
                         Q.Tool.onActivate('Media/webrtc/chat').add(function (arg1, arg2) {
                             let chatWebrtcTool = this;
                             if (chatTool.element == chatWebrtcTool.element || chatTool.element.contains(chatWebrtcTool.element)) {
-                                console.log('chatWebrtcTool', chatWebrtcTool)
                                 if (tool.webrtcStream && tool.webrtcStream.testWriteLevel('contribute')) {
                                     chatWebrtcTool.startWebRTC = function () {
                                         tool.goOnStage();
@@ -2421,7 +2446,7 @@
 
                                     setTimeout(function () {
                                         let callButton = chatWebrtcTool.element.querySelector('.Streams_chat_call');
-                                        console.log('callButton', callButton)
+                                        callButton.classList.add('media-livestream-chat-call');
                                         if (callButton) {
                                             const encodedSVG = encodeURIComponent(_icons.join)
                                                 .replace(/'/g, "%27")
@@ -2436,7 +2461,6 @@
                                 } else {
                                     setTimeout(function () {
                                         let callButton = chatWebrtcTool.element.querySelector('.Streams_chat_call');
-                                        console.log('callButton', callButton)
                                         if (callButton) {
                                             tool.state.onLivestreamUpdate.add(function () {
                                                 if(tool.activeLivestreamings.length === 0) {
@@ -2485,6 +2509,10 @@
                 Q.handle(tool.state.onUpdate, tool, [{
                     prevNumOfLives: -1
                 }]);
+
+                return {
+                    widgetEl: toolContainer
+                };
             },
             goOnStage: function () {
                 let tool = this;
@@ -2570,7 +2598,6 @@
                     if(tool.state.layout != 'wide') renderWideLayout();
                 }
 
-                console.log('webrtcUsersRect.bottom > window.innerHeight', webrtcUsersRect.bottom, window.innerHeight)
                 //if(webrtcUsersRect.bottom > window.innerHeight) {
                     let newHeight = videoRect.height - (videoRect.bottom - window.innerHeight) - webrtcUsersRect.height;
                     let newWidth = newHeight / 9 * 16;
@@ -2616,7 +2643,6 @@
                 }
             },
             syncLivestreamsList: function () {
-                console.log('syncLivestreamsList START');
                 var tool = this;
                
                 if(!tool.livestreamStream) {
@@ -2624,7 +2650,6 @@
                 }
                 
                 let livestreams = tool.livestreamStream.getAttribute('lives');
-                console.log('syncLivestreamsList', livestreams);
 
                 for (let i in livestreams) {
                     let livestreamItem = livestreams[i];
@@ -2721,8 +2746,6 @@
                     }
                 }
                 Q.handle(tool.state.onActiveLivestreamingsUpdated, tool);
-
-                console.log('tool.activeLivestreamings', tool.activeLivestreamings)
             },
             updateIframeSize: function () {
 
@@ -2852,7 +2875,6 @@
                                 console.error(msg);
                                 return;
                             }
-                            console.log('webcast: turnServers', response.slots);
     
                             var turnCredentials = response.slots.turnServers;
                             
@@ -2871,14 +2893,23 @@
                                 });
         
                                 broadcastClient.init(function () {    
-                                    var mediaElement = broadcastClient.mediaControls.getMediaElement(asAudio);
+                                    //var mediaElement = broadcastClient.mediaControls.getMediaElement(asAudio);
+                                    var mediaElement = livestreamData.mediaElement = document.createElement(asAudio ? 'AUDIO' : 'VIDEO');
+                                    mediaElement.muted = false;
+                                    mediaElement.controls = true;
+                                    mediaElement.autoplay = true;
+                                    mediaElement.playsInline = true;
+                                    mediaElement.setAttribute('webkit-playsinline', true);
                                     if(!asAudio) {
+                                        mediaElement.muted = true;
                                         mediaElement.style.width = '100%';
                                         mediaElement.style.height = '100%';
                                         mediaElement.style.maxWidth = '100%';
                                         mediaElement.style.maxHeight = '100%';
                                     }
                                     broadcastCon.appendChild(mediaElement);
+                                    var mediaStream = broadcastClient.mediaControls.getMediaStream();
+                                    mediaElement.srcObject = mediaStream;
         
                                     localParticipantId.innerHTML = 'My ID: ' + (broadcastClient.localParticipant().sid).replace('/broadcast#', '');
                                 });
@@ -2889,7 +2920,6 @@
                                 })
         
                                 function onTrackAdded(track) {
-                                    console.log('onTrackAdded');
                                     levelCounter.innerHTML = 'Webcast level: ' + track.participant.distanceToRoot;
                                     iFollowId.innerHTML = 'I follow: ' + track.participant.sid.replace('/broadcast#', '');
                                     iFollowIdColor.style.backgroundColor = track.participant.color;
@@ -2915,9 +2945,8 @@
             videoTabsTool: {
                 tabs: [],
                 syncVideoTabsList: function () {
-                    console.log('syncVideoTabsList');
                     var tool = this;
-                    if(tool.state.showAsWidget) return;
+                    if(tool.state.mode != 'full') return;
 
                     for(let i in tool.activeLivestreamings) {
                         let livestreamData = tool.activeLivestreamings[i];
@@ -2929,7 +2958,6 @@
                                 break;
                             }
                         }
-                        console.log('syncVideoTabsList tabExists', tabExists);
 
                         if(tabExists !== false) {
                             if(!tool.videoContainerTabsEl.contains(tabExists.tabElement)) {
@@ -3007,7 +3035,6 @@
                         let tab = tool.videoTabsTool.tabs[i];
 
                         if(tab.livestreamData && tab.livestreamData.broadcastClient != null) {
-                            console.log('broadcastClient.predisconnect', tab.livestreamData.broadcastClient.id);
                             tab.livestreamData.broadcastClient.disconnect();
                             tab.livestreamData.broadcastClient = null;
                         }
@@ -3018,7 +3045,12 @@
                     tool.videoContainerEl.appendChild(tabContent);
                     tool.updateUIOnResize();
                 }
-            }           
+            },
+            Q: {
+                beforeRemove: function () {
+                    this.removeTool(true);
+                }
+            }       
         }
 
     );

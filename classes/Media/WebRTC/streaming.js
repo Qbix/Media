@@ -105,7 +105,20 @@ module.exports = function (io) {
                     //do not post Media/livestream/start mesage if p2p broadcast is active
                     let p2pRoom = stream.getAttribute('p2pRoom');
                     if(!p2pRoom || p2pRoom == '') {
-                        stream.post(livestreamStream.publisherId, {
+                        Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage('Media/livestream/start', {
+                                streamToPostTo: stream, 
+                                asUserId: livestreamStream.publisherId, 
+                                cookie: socket.handshake.headers.cookie
+                            }).then(function () {
+                            if (parseInt(i) == rtmpUrlsData.length - 1) {
+                                initFFMpegProcess(streamingUser);
+                            }
+                        }).catch(function (err) {
+                            console.error(err)
+                            console.log('Something went wrong when posting to stream with next publisherId and streamName', livestreamStream.publisherId, livestreamStream.streamName)
+                        });
+
+                        /* stream.post(livestreamStream.publisherId, {
                             type: 'Media/livestream/start',
                             instructions: {
                                 name: ''
@@ -118,7 +131,7 @@ module.exports = function (io) {
                             if (parseInt(i) == rtmpUrlsData.length - 1) {
                                 initFFMpegProcess(streamingUser);
                             }
-                        });
+                        }); */
                     } else {
                         if (parseInt(i) == rtmpUrlsData.length - 1) {
                             initFFMpegProcess(streamingUser);
@@ -141,7 +154,20 @@ module.exports = function (io) {
                 let p2pRoom = stream.getAttribute('p2pRoom');
                 //do not send Media/livestream/stop message when p2p broadcast is still active
                 if(!p2pRoom || p2pRoom == '') {
-                    stream.setAttribute('endTime', +Date.now());
+                    Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage('Media/livestream/stop', {
+                        streamToPostTo: stream,
+                        asUserId: livestreamStream.publisherId,
+                        cookie: socket.handshake.headers.cookie
+                    }).then(function () {
+                        if (parseInt(i) == rtmpUrlsData.length - 1) {
+                            initFFMpegProcess(streamingUser);
+                        }
+                    }).catch(function (err) {
+                        console.error(err)
+                        console.log('Something went wrong when posting to stream with next publisherId and streamName', livestreamStream.publisherId, livestreamStream.streamName)
+                    });
+
+                    /* stream.setAttribute('endTime', +Date.now());
 
                     stream.post(livestreamStream.publisherId, {
                         type: 'Media/livestream/stop',
@@ -150,10 +176,10 @@ module.exports = function (io) {
                             console.log('Something went wrong when posting to stream with next publisherId and streamName', livestreamStream.publisherId, livestreamStream.streamName)
                             return;
                         }
-                    });
+                    }); */
                 }
                 
-                stream.save()
+                //stream.save()
 
                 
             });
