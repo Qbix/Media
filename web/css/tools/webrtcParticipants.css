@@ -396,6 +396,8 @@
     width: 19px;
 }
 .Media_webrtc_participants-btns-con .Media_webrtc_participants-btn-icon svg {
+    width: 24px;
+    height: 24px;
     max-width: 24px;
     max-height: 24px;
 }
@@ -403,6 +405,9 @@
     fill: #ffffff;
 }
 
+.Media_manage_webrtc_permissions .Q_dialog_slot {
+    overflow: auto;
+}
 
 .Media_webrtc_participants-manage-dialog {
     width: 470px;

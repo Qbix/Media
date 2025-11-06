@@ -1405,14 +1405,18 @@
                 };
                 this.fillAudioScreenWithAvatarOrVideo = function () {
                     if(this.videoTrackEl && this.hasLiveTracks('video', true)) {
-                        this.audioScreen.avatarImgCon.innerHTML = '';
-                        this.audioScreen.avatarImgCon.appendChild(this.videoTrackEl);
+                        if (!this.audioScreen.avatarImgCon.contains(this.videoTrackEl)) {
+                            this.audioScreen.avatarImgCon.innerHTML = '';
+                            this.audioScreen.avatarImgCon.appendChild(this.videoTrackEl);
+                        }
                         if(options.useCanvasForVideo) {
                             this.audioScreen.avatarImgCon.appendChild(this.videoCanvasEl);
                         }
                     } else if (this.audioScreen.avatarImg != null){
-                        this.audioScreen.avatarImgCon.innerHTML = '';
-                        this.audioScreen.avatarImgCon.appendChild(this.audioScreen.avatarImg);
+                        if (!this.audioScreen.avatarImgCon.contains(this.videoTrackEl)) {
+                            this.audioScreen.avatarImgCon.innerHTML = '';
+                            this.audioScreen.avatarImgCon.appendChild(this.audioScreen.avatarImg);
+                        }
                     }
                 }
                 this.fillVideoScreenWithAvatarOrVideo = function () {
@@ -1420,8 +1424,10 @@
                     if(this.videoTrackEl && this.hasLiveTracks('video', true)) {
                         log('fillVideoScreenWithAvatarOrVideo if1');
 
-                        this.videoScreen.videoCon.innerHTML = '';
-                        this.videoScreen.videoCon.appendChild(this.videoTrackEl);
+                        if (!this.videoScreen.videoCon.contains(this.videoTrackEl)) {
+                            this.videoScreen.videoCon.innerHTML = '';
+                            this.videoScreen.videoCon.appendChild(this.videoTrackEl);
+                        }
                         /* this.videoTrackEl.style.position = 'absolute';
                         this.videoTrackEl.style.top = '-99999999px'; */
                         //this.videoTrackEl.play();
