@@ -221,11 +221,7 @@ module.exports = function(socket, io, expressApp) {
                         socketClient.disconnect();
                     }
                 }
-
-                
             });
-
-
         });
     });
 

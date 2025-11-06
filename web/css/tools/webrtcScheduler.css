@@ -1,0 +1,326 @@
+.webrtc-scheduler-widget {
+    padding: 10px;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-config {
+    margin-top: 10px;
+}
+.webrtc-scheduler-config.webrtc-scheduler-livestream {
+  margin-top: 20px
+}
+.webrtc-scheduler-config.webrtc-scheduler-livestream .webrtc-scheduler-field-label {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.webrtc-scheduler-config.webrtc-scheduler-livestream .Q_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.webrtc-scheduler-livestream-share {
+  margin-left: 20px;
+}
+.webrtc-scheduler-config.webrtc-scheduler-livestream .webrtc-scheduler-livestream-share-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+}
+.webrtc-scheduler-config.webrtc-scheduler-livestream .webrtc-scheduler-livestream-share-icon svg {
+  height: 22px;
+  width: 22px;
+}
+.webrtc-scheduler-config.webrtc-scheduler-livestream .webrtc-scheduler-livestream-share-icon svg path {
+  stroke: #ffffff !important;
+}
+
+.webrtc-scheduler-widget input[type="text"] {
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    height: 40px;
+    display: block;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-date-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-date-input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+.webrtc-scheduler-widget .webrtc-scheduler-datetime-date {
+    position: relative;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-attendees-roles {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-attendees-roles tr {
+    border-bottom: 1px solid rgba(139, 139, 139, 0.6);
+}
+.webrtc-scheduler-widget .webrtc-scheduler-attendees-roles th, td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-attendees-roles-item .webrtc-scheduler-attendees-roles-avatar img {
+    max-width: 24px;
+    max-height: 24px;
+    margin-right: 5px;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-attendees-buttons {
+    display: flex;
+    justify-content: center;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-attendees-roles-item-remove svg {
+    max-width: 24px;
+    max-height: 24px;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-config.webrtc-scheduler-accessType .webrtc-scheduler-field-label {
+    display: flex;
+    align-items: start;
+    margin-top: 10px;
+}
+.webrtc-scheduler-widget .webrtc-scheduler-config.webrtc-scheduler-accessType .webrtc-scheduler-accessType-text {
+    font-weight: bold;
+}
+
+.media-time-picker {
+    display: flex;
+}
+.media-time-picker-hours {
+    max-width: 170px;
+    height: 258px;
+    max-height: 258px;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+}
+.media-time-picker-hours .media-time-picker-list-item {
+  padding: 5px 20px 5px 10px;
+  cursor: pointer;
+}
+.media-time-picker-hours .media-time-picker-list-item:hover {
+    background-color: rgba(0, 145, 255, 0.444);
+}
+.webrtc-scheduler-datetime-input {
+  display: flex;
+  justify-content: space-between;
+}
+.Q_mobile .webrtc-scheduler-datetime-input {
+  flex-direction: column;
+}
+
+.media-time-picker .media-time-picker-year,
+.media-time-picker .media-time-picker-time {
+    position: relative;
+}
+.media-time-picker .media-time-picker-year input[type="text"] {
+  width: 130px;
+  text-align: center;
+}
+
+.media-time-picker .media-time-picker-time {
+  margin-left: 10px;
+}
+.media-time-picker .media-time-picker-time input[type="text"] {
+  width: 80px;
+  text-align: center;
+}
+.webrtc-scheduler-datetime-todate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Q_mobile .webrtc-scheduler-datetime-todate {
+  justify-content: flex-start;
+}
+
+.media-time-picker-invalid {
+    color:rgb(120, 2, 2);
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding:5px;
+}
+
+.webrtc-scheduler-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+.webrtc-scheduler-buttons .webrtc-scheduler-result {
+  display: flex;
+  align-items: center;
+    flex: 1;
+}
+.webrtc-scheduler-buttons .webrtc-scheduler-result .webrtc-scheduler-result-suucess {
+    color: green;
+}
+.webrtc-scheduler-buttons .webrtc-scheduler-result .webrtc-scheduler-result-error {
+    color: rgb(128, 0, 0);
+}
+.webrtc-scheduler-buttons .webrtc-scheduler-button-cancel {
+    margin-right: 10px;
+}
+
+/* WebKit Scrollbar */
+.media-time-picker div::-webkit-scrollbar {
+    width: 6px;
+}
+
+.media-time-picker div::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.media-time-picker div::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.media-time-picker div::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
+
+
+
+
+/* Main Calendar Container */
+.webrtc-popup-dialog.media-calendar-popup {
+    background-color: transparent;
+}
+.webrtc-popup-dialog.media-calendar-popup .webrtc-popup-dialog-body{
+   background-color: transparent;
+}
+.media-calendar {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Calendar Header */
+  .media-calendar-header {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    background-color: #ffffff;
+    color: #333333;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    user-select: none;
+  }
+  
+  .media-calendar-header .media-calendar-controls {
+    display: flex;
+    width:66px;
+    justify-content: space-evenly;
+  }
+
+  .media-calendar-header .media-calendar-current {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 10px;
+  }
+
+  .media-calendar-header .media-calendar-prev,
+  .media-calendar-header .media-calendar-next {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .media-calendar-header .media-calendar-prev:hover,
+  .media-calendar-header .media-calendar-next:hover {
+    background-color: #e9e8e8;
+  }
+  
+  .media-calendar-header .media-calendar-prev svg,
+  .media-calendar-header .media-calendar-next svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Days of the Week */
+  .media-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background-color: #ffffff;
+    padding: 5px;
+  }
+  
+  /* Days Header (e.g., Sun, Mon) */
+  .media-calendar-days-header {
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+    padding: 5px 0;
+    background-color: #ffffff;
+  }
+  
+  /* Empty Days (leading spaces) */
+  .media-calendar-days-empty {
+    background-color: #fff;
+    height: 40px;
+  }
+  
+  /* Days of the Month */
+  .media-calendar-days-day {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  /* Hover Effect for Days */
+  .media-calendar-days-day:hover {
+    background-color: #e9e8e8;
+  }
+  
+  /* Selected Day */
+  .media-calendar-days-day.media-calendar-selected {
+    background-color: #28a745;
+    color: white;
+  }
+  .media-calendar-days-day.media-calendar-now{
+    background-color: #286aa7;
+    color: white;
+  }
+  
+  .media-calendar-days-today {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  }

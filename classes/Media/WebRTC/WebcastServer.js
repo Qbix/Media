@@ -232,7 +232,6 @@ function WebcastServer(socket) {
     var broadcastNamespace = io.of(nspName);
 
     broadcastNamespace.on('connection', function (socket) {
-        console.log('broadcast: made sockets connection', socket.id);
         var roomId;
         var broadcastRoom;
         var localParticipant;
@@ -327,17 +326,37 @@ function WebcastServer(socket) {
                         }
         
                         stream.setAttribute('p2pRoom', socket.roomId);
+                        stream.setAttribute('endTime', '');
                         stream.save();
+                        console.warn('Media/livestream/start')
 
-                        stream.post(socket.livestreamStreamData.publisherId, {
-                            type: 'Media/livestream/start',
-                        }, function (err) {
-                            if (err) {
+                        let otherLives = stream.getAttribute('lives');
+                        if(!otherLives || (Array.isArray(otherLives) && otherLives.length == 0)) {
+
+                            Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage('Media/livestream/start', {
+                                streamToPostTo: stream, 
+                                asUserId: socket.livestreamStreamData.publisherId, 
+                                cookie: socket.handshake.headers.cookie
+                            }).then(function () {
+                                findReceiver(localParticipant);
+                            }).catch(function (err) {
+                                console.error(err)
                                 log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
-                                return;
-                            }
+                            });
+
+                            /* stream.post(socket.livestreamStreamData.publisherId, {
+                                type: 'Media/livestream/start',
+                            }, function (err) {
+                                if (err) {
+                                    return;
+                                }
+                                findReceiver(localParticipant);
+                            }); */
+                        } else {
                             findReceiver(localParticipant);
-                        });
+                        }
+
+                       
                     });
                 } else {
                     findReceiver(localParticipant);
@@ -345,6 +364,7 @@ function WebcastServer(socket) {
                
 
             } else if (localParticipant.role == 'receiver') {
+                log('RECEIVER CONNECTING ...', localParticipant.id);
                 findDonor(localParticipant);
             }   
         });
@@ -363,6 +383,7 @@ function WebcastServer(socket) {
                     broadcastRoom.participants[p].donors.push(donorParticipant);
 
                     broadcastNamespace.to(donorParticipant.id).emit('Media/broadcast/participantConnected', {
+                        broadcastRole: 'receiver',
                         sid: broadcastRoom.participants[p].id,
                         info: broadcastRoom.participants[p].info,
                         fromSid: broadcastRoom.participants[p].id
@@ -393,6 +414,7 @@ function WebcastServer(socket) {
                     //log('askPermissionToConnect answer', answer);
                     //if(answer === true) {
                     broadcastNamespace.to(roomParticipant.id).emit('Media/broadcast/participantConnected', {
+                        broadcastRole: 'receiver',
                         username: receiverParticipant.username,
                         sid: receiverParticipant.id,
                         info: receiverParticipant.info,
@@ -578,6 +600,8 @@ function WebcastServer(socket) {
                 }
 
                 if(socket.livestreamStreamData != null) {
+                    log('Media/livestream/stop');
+
                     //post Media/livestream/stop message to livestream stream
                     Q.plugins.Streams.fetchOne(socket.livestreamStreamData.publisherId, socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName, function (err, stream) {
                         if (err || !stream) {
@@ -586,16 +610,32 @@ function WebcastServer(socket) {
                         }
         
                         stream.setAttribute('p2pRoom', '');
-                        stream.save();
-
-                        stream.post(socket.livestreamStreamData.publisherId, {
-                            type: 'Media/livestream/stop',
-                        }, function (err) {
-                            if (err) {
+                        let otherLives = stream.getAttribute('lives');
+                        //do not send Media/livestream/stop message when rtmp lives are active
+                        if(!otherLives || (Array.isArray(otherLives) && otherLives.length == 0)) {
+                            Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage('Media/livestream/stop', {
+                                streamToPostTo: stream, 
+                                asUserId: socket.livestreamStreamData.publisherId, 
+                                cookie: socket.handshake.headers.cookie
+                            }).then(function () {
+                                findReceiver(localParticipant);
+                            }).catch(function (err) {
+                                console.error(err)
                                 log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
-                                return;
-                            }
-                        });
+                            });
+
+                            /* stream.setAttribute('endTime', +Date.now());
+                            stream.post(socket.livestreamStreamData.publisherId, {
+                                type: 'Media/livestream/stop',
+                            }, function (err) {
+                                if (err) {
+                                    log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
+                                    return;
+                                }
+                            }); */
+                        }
+                        //stream.save();
+                        
                     });
                 
                 }

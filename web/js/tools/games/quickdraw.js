@@ -16,7 +16,6 @@
         {
             init: function () {
                 var tool = this;
-                console.log('Games/quickdraw: INIT');
                 tool.loadStyles().then(function () {
                     tool.getGameStream().then(function (stream) {
                         tool.gameStream = stream;
@@ -38,7 +37,6 @@
                 });
             },
             getGameStream: function () {
-                console.log('getGameStream');
                 var tool = this;
                 return new Promise(function (resolve, reject) {
                     Q.Streams.get(tool.state.publisherId, tool.state.streamName, function (err, stream) {

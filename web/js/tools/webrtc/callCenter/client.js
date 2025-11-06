@@ -114,10 +114,8 @@
             requestCall: function (onClose) {
                 var tool = this;
                 Q.Socket.onConnect().addOnce(function () {
-                    console.log('requestCall');      
                     var socket = Q.Socket.get();        
                     Q.prompt(null, function(topic) {
-
                         Q.req("Media/callCenter", ["room"], function (err, response) {
                             var msg = Q.firstErrorMessage(err, response && response.errors);
     
@@ -126,12 +124,8 @@
                             }
                             tool.state.isActive = true;
                             Q.handle(tool.state.onStatusChange, null, [tool.state.isActive]);
-    
-                            console.log('requestCall: created waiting room', response.slots.room);
-    
-                            Q.Streams.get(response.slots.room.stream.fields.publisherId, response.slots.room.stream.fields.name, function (err, stream) {
-                                console.log('requestCall: created waiting room: stream', stream);
-    
+        
+                            Q.Streams.get(response.slots.room.stream.fields.publisherId, response.slots.room.stream.fields.name, function (err, stream) {    
                                 tool.myWaitingRoomStream = stream;
                                 tool.declareStreamEventHandlers();
                                 tool.showWaitingLoader(tool.texts.callCreatedTitle, tool.texts.callCreated);
@@ -278,7 +272,6 @@
 				});
             },
             onAcceptedHandler: function (message) {
-                console.log('onAcceptedHandler', message);
                 var tool = this;
                 tool.hideWaitingLoader();
                 if(tool.currentActiveWebRTCRoom && tool.currentActiveWebRTCRoom.isActive()) {
@@ -311,7 +304,6 @@
 
             },
             onCallEndedHandler: function (message) {
-                console.log('onCallEndedHandler', message);
                 var tool = this;
                 tool.hideWaitingLoader();
                 let notificationText, notificationTitle;
@@ -375,7 +367,6 @@
                         onWebRTCRoomCreated: function () {
                             let signalingLibInstance = tool.currentActiveWebRTCRoom.getWebrtcSignalingLib();
                             signalingLibInstance.event.on('beforeDisconnect', function (e) {
-                                console.log('beforeDisconnect', e)
                                 if (!e.roomIsSwitching && e.byLocalUser) {
                                     tool.cancelCallRequest();
                                 }

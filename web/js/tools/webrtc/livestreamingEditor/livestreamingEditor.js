@@ -151,12 +151,9 @@
                 if(tool.streamEventsDeclared) return;
                 tool.streamEventsDeclared = true;
                 tool.livestreamStream.onEphemeral('Media/livestream/reaction').set(function (ephemeral) {
-                    console.log('ephemeral', ephemeral)
                     if (ephemeral) {
                         if(!tool.livestreamingEditor) return;
-                        console.log('tool.livestreamingEditor', tool.livestreamingEditor)
                         let activeScene = tool.livestreamingEditor.scenesInterface.getActive();
-                        console.log('tool.livestreamingEditor', activeScene)
 
                         if(activeScene) activeScene.reactionsSource.addReaction(ephemeral.reaction);
                     }
@@ -187,7 +184,6 @@
                 });
 
                 function renderMp4RecordingStats(e) {
-                    console.log('renderMp4RecordingStats START')
                     let statsContainer = document.querySelector('.live-editor-dialog-header-stats');
                     statsContainer.innerHTML = '';
                     var statFPS = document.createElement('DIV');
@@ -425,7 +421,7 @@
                                     "Media/webrtc/popupDialog",
                                     {
                                         content: recordingFormats,
-                                        triggerOn: 'click',
+                                        triggerOn: 'lmb',
                                         className: 'live-editor-rec-server-dropdown',
                                         parent: recordingCon
                                     }
@@ -768,6 +764,10 @@
                                 if (!broadcastingCon.classList.contains('Q_working')) broadcastingCon.classList.add('Q_working');
 
                                 _broadcastClient.disconnect(null, true);
+
+                                if (!tool.RTMPSender.isStreaming() && !tool.RTMPSender.isRecording()) {
+                                    tool.canvasComposer.stopCaptureCanvas();
+                                }
 
                                 if (broadcastingCon.classList.contains('Q_working')) broadcastingCon.classList.remove('Q_working');
                                 activeBroadcastingSection.style.display = 'none';
@@ -1607,12 +1607,6 @@
                         customSelect.customSelectControlsEl.appendChild(scenesColumnControlAddBtn);
                         customSelect.syncOptionsList = function () {
                             log('syncOptionsList START');
-                            /*try {
-                                var err = (new Error);
-                                log(err.stack);
-                            } catch (e) {
-            
-                            }*/
                             let originalSelect = customSelect.originalSelect;
                             let optionsNumber = originalSelect.options.length;
                             for(let e = customSelect.optionsList.length - 1; e >= 0; e--) {
@@ -2461,7 +2455,6 @@
                                 this.show = function () {
                                     for(let s in listItemInstance.participantSources) {
                                         if(listItemInstance.participantSources[s].sourceInstance.screenSharing) continue;
-                                        console.log('ParticipantsList sources show', listItemInstance.participantSources[s].sourceInstance)
                                         tool.canvasComposer.videoComposer.showSource(listItemInstance.participantSources[s].sourceInstance);
                                         listItemInstance.switchVisibilityIcon(true);
                                         break;
@@ -2483,20 +2476,13 @@
                                     }
                                 };
                                 this.toggleVisibility = function () {
-                                    console.log('ParticipantsList sources toggleVisibility listItemInstance.participantSources', listItemInstance.participantSources)
-
                                     for (let s in listItemInstance.participantSources) {
-                                        console.log('ParticipantsList sources toggleVisibility', listItemInstance.participantSources[s].sourceInstance)
-
                                         if (listItemInstance.participantSources[s].sourceInstance.screenSharing) continue;
                                         let sourceInstance = listItemInstance.participantSources[s].sourceInstance;
 
                                         if (sourceInstance.active == true) {
-                                            console.log('ParticipantsList sources toggleVisibility hide')
-
                                             listItemInstance.hide();
                                         } else {
-                                            console.log('ParticipantsList sources toggleVisibility show')
                                             listItemInstance.show();
                                         }
                                         break;
@@ -2865,7 +2851,6 @@
                                     numberOfScreensharings++;
                                     
                                     if(sourceExists) continue;
-                                    console.log('participantSources add 1');
 
                                     let screensharingSourceCon = document.createElement('DIV');
                                     screensharingSourceCon.className = 'live-editor-participants-list-source';
@@ -2906,7 +2891,6 @@
                                     
                                     if(sourceExists) continue;
 
-                                    console.log('participantSources add 2');
                                     let listInstance = new AdditionalListItem(webrtcSources[i]);
                                     item.participantSources.push(listInstance);
                                 }
@@ -3133,12 +3117,6 @@
                         log('visual: syncList _sourcesList', _sourcesList.length);
                         log('visual: syncList sources', sources.length);
                         log('visual: syncList _id', _id);
-                        try {
-                            var err = (new Error);
-                            log(err.stack);
-                        } catch (e) {
-        
-                        }
                         for (let i = _sourcesList.length - 1; i >= 0; i--) {
                             log('visual: syncList _sourcesList', _sourcesList[i]);
                             if(_sourcesList[i] == null) continue;
@@ -4480,14 +4458,7 @@
                         var listSelect = _layoutsListSelect = document.createElement('SELECT');
                         listSelect.className = 'live-editor-layouts-list-select';
                         listContainer.appendChild(listSelect);
-                        listSelect.addEventListener('change', function (e) {
-                            console.log('createLayoutListDropDown: selectLayout e.target', e, e.target.value)
-                            try {
-                                        var err = (new Error);
-                                        log(err.stack);
-                                    } catch (e) {
-
-                                    }
+                        listSelect.addEventListener('change', function (e) {                            
                             if(e instanceof Event) {
                                 selectLayout(e.target.value);
                                 _autoSwitchToScreensharingLayoutAndBack = false;
@@ -6850,7 +6821,6 @@
                             removeBgLabel.appendChild(document.createTextNode("Automatic background removal"));
 
                             removeBgCheckbox.addEventListener('change', function () {
-                                console.log('_selectedSource', _selectedSource)
                                 if(removeBgCheckbox.checked) {
                                     webrtcVideoFilters.addLocalBackgroundFilter('virtualBg', _selectedSource);
                                 } else {
@@ -6953,7 +6923,6 @@
                                 value: webrtcVideoFilters.getParamValue('chromaKey', 'similarity', source),
                                 createNumberInput: true,
                                 oninput: function (val) {
-                                    console.log('valueChanged')
                                     webrtcVideoFilters.updateParamValue('chromaKey', 'similarity', val, source);
                                 }
                             });
@@ -7022,7 +6991,6 @@
                         }
 
                         function createNativeSlider(options) {
-                            console.log('createNativeSlider', options)
                             let rangeInput = document.createElement('INPUT');
                             rangeInput.className = options.className ? options.className : '';
                             rangeInput.type = 'range';
@@ -7129,7 +7097,6 @@
 
                         function addLocalBackgroundFilter(filterName, source, params = {}) {
                             let participant =  source.sourceInstance.participant;
-                            console.log('addLocalChromaKeyFilter START')
                             if(participant.livestreamFilters == null) {
                                 participant.livestreamFilters = [];
                             }
@@ -7141,7 +7108,6 @@
                             }
 
                             return new Promise(function (resolve, reject) {
-                                console.log('addFilterOnLocalSide')
                                 let filterInfoObject = {
                                     id: Date.now().toString(36) + Math.random().toString(36).replace(/\./g, ""),
                                     name: filterName,
@@ -7154,7 +7120,6 @@
                         }
 
                         function removeLocalBackgroundFilter(filterName, source) {
-                            console.log('addLocalChromaKeyFilter START')
                             let participant =  source.sourceInstance.participant;
                             //there can be only one per video virtualBg filter
                             for (let i in participant.livestreamFilters) {
@@ -7202,7 +7167,6 @@
                                         });
 
                                         let filterInstance = trackToFilter.livestreamVideoProcessor.appliedFilters[filterInfoObject.id];
-                                        console.log('filterInstance aaa', filterInstance)
                                         filterInfoObject.keyColor = filterInstance.keyColor;
                                         filterInfoObject.similarity = filterInstance.similarity;
                                         filterInfoObject.smoothless = filterInstance.smoothless;
@@ -7217,10 +7181,8 @@
                         }
 
                         function stopFilterVideoOfParticipantLocally(filterToRemoveInfo, participant) {
-                            console.log('stopFilterVideoOfParticipantLocally START', filterToRemoveInfo);
                             for (let i = participant.livestreamFilters.length - 1; i >= 0; i--) {
                                 if (participant.livestreamFilters[i] == filterToRemoveInfo) {
-                                    console.log('participant.livestreamFilters[i]', participant.livestreamFilters[i])
                                     participant.livestreamFilters.splice(i, 1)[0];
                                 }
                             }
@@ -7231,14 +7193,12 @@
                                 let trackToRemoveFilterFrom = participant.tracks[t];
                                 if(trackToRemoveFilterFrom.livestreamVideoProcessor.appliedFilters[filterToRemoveInfo.id]) {
                                     let appliedFilter = trackToRemoveFilterFrom.livestreamVideoProcessor.appliedFilters[filterToRemoveInfo.id];
-                                    console.log('filterInfoObject', appliedFilter);
                                     appliedFilter.videoTrackProcessor.removeFilter(appliedFilter);
                 
                                     delete trackToRemoveFilterFrom.livestreamVideoProcessor.appliedFilters[filterToRemoveInfo.id];
                 
                                     //if there are no filters to apply and send to "participant", then stop media processor instance that processes video
                                     if(participant.livestreamFilters.length == 0) {
-                                        console.log('trackToRemoveFilterFrom.videoProcessors[participant.sid]', trackToRemoveFilterFrom.livestreamVideoProcessor)
                                         trackToRemoveFilterFrom.livestreamVideoProcessor.videoProcessorTrack.stop();
                                         delete trackToRemoveFilterFrom.livestreamVideoProcessor;
                                     }
@@ -8946,13 +8906,6 @@
                                 optionElementCon.className = 'live-editor-custom-select-option';
                                 optionElementCon.dataset.selectValue = originalSelect.options[j].value;
                                 optionElementCon.addEventListener("click", function(e) {
-                                    try {
-                                        var err = (new Error);
-                                        log(err.stack);
-                                    } catch (e) {
-
-                                    }
-                                    console.log('e.currentTarget', e.currentTarget.innerHTML, originalSelect.options[j].value)
                                     selectInstance.selectOption(e.currentTarget);
                                 });
                                 selectInstance.customSelectListEl.appendChild(optionElementCon);
@@ -9763,13 +9716,13 @@
                         document.body.appendChild(streamingCanvas);
                     }
 
-                    if (!tool.RTMPSender.isStreaming() && !tool.RTMPSender.isRecording()) {
+                    if (!tool.RTMPSender.isStreaming() && !tool.RTMPSender.isRecording() && !tool.state.p2pBroadcastIsActive) {
                         //tool.canvasComposer.videoComposer.stop();
                         tool.canvasComposer.stopCaptureCanvas(true); //if there is no active streaming or recording, then turn canvas rendering off to save CPU resources
                     }
                     
                     document.documentElement.classList.remove('Media_webrtc_live');
-                    tool.webrtcUserInterface.screenRendering.renderMinimizedScreensGrid();
+                    tool.webrtcUserInterface.screenRendering.switchScreensMode('minimizedStatic');
 
                     if (tool.livestreamStream) {
                         tool.livestreamStream.release(tool);
@@ -9939,7 +9892,7 @@
                             document.documentElement.classList.add('Media_webrtc_live');
                         }
                         
-                        tool.webrtcUserInterface.screenRendering.renderMinimizedScreensGrid();
+                        tool.webrtcUserInterface.screenRendering.switchScreensMode('minimizedStatic');
                     });
                 }
 
@@ -10005,40 +9958,13 @@
                     if (tool.livestreamingEditor != null) {
                         resolve(tool.livestreamingEditor);
                     } else {
-                        Q.Streams.related(webrtcStream.fields.publisherId, webrtcStream.fields.name, "Media/webrtc/livestream", true, function (err) {
-                            if (err) {
-                                console.error(err)
-                                return;
-                            }
-                            if(Object.keys(this.relatedStreams).length) {
-                                for (var key in this.relatedStreams) {
-                                    if (this.relatedStreams.hasOwnProperty(key)) {
-                                        tool.livestreamStream = this.relatedStreams[key];
-                                        if(tool.livestreamStream) tool.declareStreamEvents();
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (!tool.livestreamStream) {
-                                tool.getOrCreateLivestreamStream().then(function () {
-                                    if (tool.livestreamStream) tool.declareStreamEvents();
-                                    tool.getApiCredentials().then(function (credentials) {
-                                        tool.livestreamingEditor = tool.create();
-                                        resolve(tool.livestreamingEditor);
-                                    });
-                                });
-                            } else {
-                                if (tool.livestreamStream) tool.declareStreamEvents();
-                                tool.getApiCredentials().then(function (credentials) {
-                                    tool.livestreamingEditor = tool.create();
-                                    resolve(tool.livestreamingEditor);
-                                });
-                            }
-
-                        });
-
-                        
+                        tool.getOrCreateLivestreamStream().then(function () {
+                            if (tool.livestreamStream) tool.declareStreamEvents();
+                            tool.getApiCredentials().then(function (credentials) {
+                                tool.livestreamingEditor = tool.create();
+                                resolve(tool.livestreamingEditor);
+                            });
+                        });                        
                     }
                   });
                 

@@ -1,7 +1,4 @@
 Q.page("Media/meeting", function () {
-    //return;
-    console.log('Media/meeting')
-
     var url = new URL(location.href);
     var roomId = url.searchParams.get("room");
     var inviteToken = url.searchParams.get("Q.Streams.token");
@@ -19,13 +16,6 @@ Q.page("Media/meeting", function () {
     }
 
 	function startConference() {
-        console.log('startConference START')
-        try {
-            var err = (new Error);
-            console.log(err.stack);
-        } catch (e) {
-
-        }
         var WebConference = Q.Media.WebRTC({
             element: document.body,
             roomId:roomId,
@@ -39,10 +29,10 @@ Q.page("Media/meeting", function () {
             startWith: {video: false, audio: true},
             audioOnlyMode: false,
             onWebRTCRoomCreated: function() {
-                console.log('onWebRTCRoomCreated', this);
+
             },
             onWebrtcControlsCreated: function() {
-                console.log('onWebrtcControlsCreated', this);
+
             },
             beforeSwitch: function () {
                 return new Promise((resolve, reject) => {
@@ -60,11 +50,13 @@ Q.page("Media/meeting", function () {
 
     if (!Q.Users.loggedInUser) {
         var currentUrl = window.location.href;
-		Q.Users.login({
-            successUrl: currentUrl
-		});
+        if(inviteToken == null) {
+            Q.Users.login({
+                successUrl: currentUrl
+            });
+        }
+		
 		Q.Users.onComplete.setOnce(function () {
-            console.log('onComplete')
 			Q.handle(currentUrl);
         });
     } else {
@@ -72,7 +64,7 @@ Q.page("Media/meeting", function () {
     }
 
     if(url.searchParams.get("dev")) {
-        let settingsContainer = document.createElement('DIV');
+        /* let settingsContainer = document.createElement('DIV');
         settingsContainer.style.position = 'fixed';
         settingsContainer.style.top = '100px';
         settingsContainer.style.left = '50px';
@@ -80,9 +72,9 @@ Q.page("Media/meeting", function () {
         settingsContainer.style.height = '300px';
         settingsContainer.style.zIndex = '999999999';
         settingsContainer.style.background = 'white';
-        document.body.appendChild(settingsContainer);
+        document.body.appendChild(settingsContainer); */
 
-        Q.activate(
+        /* Q.activate(
             Q.Tool.setUpElement(
                 settingsContainer,
                 "Media/webrtc/recordings",
@@ -93,9 +85,27 @@ Q.page("Media/meeting", function () {
             ),
             {},
             function () {
-               //tool.recordingsTool = this;
+                //tool.recordingsTool = this;
             }
-        );
+        ); */
+        
+
+
+        setTimeout(function () {
+            Q.Dialogs.push({
+                title: 'Teleconference scheduler',
+                className: '',
+                content: Q.Tool.setUpElement('div', 'Media/webrtc/scheduler', Q.extend({}, {}, {
+                    publisherId: Q.Users.loggedInUserId(),
+                    streamName: 'Media/webrtc/' + roomId
+                    //streamName: 'Media/webrtc/Qizbzcxoe'
+                })),
+                onActivate: function () {
+    
+                }
+            });
+        }, 2000);
+        
         /* Q.activate(
             Q.Tool.setUpElement('DIV', 'Media/webrtc/settings', {
                 publisherId: Q.Users.loggedInUserId(),

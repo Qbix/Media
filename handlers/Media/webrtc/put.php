@@ -8,25 +8,7 @@ function Media_webrtc_put($params = array()) {
     $streamName = Q::ifset($params, 'streamName', null);
     $participantSid = Q::ifset($params, 'participantSid', null);
 
-    if(Q_Request::slotName('updateParticipantSid')) {
-		Q_Response::setSlot('updateParticipantSid', true);
-		if ($publisherId && $streamName) {
-			$stream = Streams_Stream::fetch($loggedUserId, $publisherId, $streamName);
-			$meAsParticipant = $stream->participant();
-			if ($meAsParticipant) {
-				$meAsParticipant->setExtra('participantSid', $participantSid);
-				$meAsParticipant->save();
-			}
-		}
-	} else if(Q_Request::slotName('endRoom')) {
-		$publisherId = Q::ifset($params, 'publisherId', null);
-		$roomId = Q::ifset($params, 'roomId', null);
-
-		$webrtc = new Media_WebRTC_Node();
-		$result = $webrtc->endRoom($publisherId, $roomId);
-
-		Q_Response::setSlot("endRoom", $result);
-	} else if(Q_Request::slotName('updateLog')) {
+    if(Q_Request::slotName('updateLog')) {
         $publisherId = Q::ifset($params, 'publisherId', null);
         $roomId = Q::ifset($params, 'roomId', null);
         $participant = Q::ifset($params, 'participant', null);

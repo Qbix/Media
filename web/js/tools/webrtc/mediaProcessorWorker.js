@@ -1,5 +1,4 @@
 import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js").then(function (module) {
-    console.log('vision_bundle', module)
     let taskVision = module;
     self.createImageSegmenter = async (canvas) => {
         const audio = await taskVision.FilesetResolver.forVisionTasks(
@@ -211,8 +210,6 @@ void main(void) {
 
     init(type, canvas) {
         const rendererInstance = this;
-
-        console.log('WebGLRenderer const');
         this.canvas = canvas;
         this.lastWidth = 0;
         //this.allSourceFilters = [];
@@ -343,7 +340,6 @@ void main(void) {
 
     async draw(frame, callback, closecb) {
         this.latestDrawTime = performance.now();
-        //console.log('draw START')
         if (this.#isProcessing) {
             this.#taskQueue.push([frame, callback]);
             console.log('draw add to queue')
@@ -419,9 +415,7 @@ void main(void) {
         if (error !== gl.NO_ERROR) {
             console.error('WebGL error:', error);
         }
-        //console.log('this.allSourceFilters', this.allSourceFilters.length)
         for (let b in this.allSourceFilters) {
-            //console.log('for START')
             if (this.allSourceFilters[b].active === false || this.allSourceFilters[b].visibility === false) {
                 continue
             }
@@ -429,18 +423,14 @@ void main(void) {
             filtersApplied = true;
             let filter = this.allSourceFilters[b];
             if (filter.name == 'virtualBg') {
-                //console.warn('for bg START', frame.timestamp)
                 let virtualBgFilter = filter;
 
                 if (!virtualBgFilter.selfieSegmentation) continue;
-                //console.log('for START', virtualBgFilter.processing)
                 /* if(virtualBgFilter.processing === true) {
                     //console.log('continue')
                     continue;
                 } */
                 virtualBgFilter.processing = true;
-                //console.log('for continue', virtualBgFilter.processing)
-
 
                 //gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -516,7 +506,6 @@ void main(void) {
                         self.segmentationTime = performance.now() - startTime;
                         self.lastSegmentationTime = performance.now();
 
-                        // console.log('draw segmentation end')
                         //const maskImage = await virtualBgFilter.toImageBitmap(results.confidenceMasks[0])
                         useProgram(rendererInstance.#virtualBgProgram, rendererInstance.#virtualBgProgramPositionLocation, rendererInstance.#virtualBgProgramTexcoordLocation);
 
@@ -608,7 +597,6 @@ void main(void) {
                         }
                         gl.blendFunc(gl.SRC_ALPHA, gl.ZERO);
                         gl.drawArrays(gl.TRIANGLES, 0, 6);
-                        //console.log('BG SEGMENT DONE', frame.timestamp)
                         resolve();
                     });
                     //}, 1000)
@@ -710,7 +698,6 @@ void main(void) {
 
         frame.close();
         if (callback) callback(filtersApplied);
-        //console.log('draw END')
         this.#isProcessing = false;
         if (this.#taskQueue.length != 0) {
             let queueDraw = this.#taskQueue.shift();
@@ -727,7 +714,6 @@ var processor = (function () {
     let tracksFilters = {};
 
     function addFiltersToTrack(data) {
-        console.log('worker: addFiltersToTrack START', data)
         if (!tracks[data.trackId]) {
             return;
         }
@@ -769,8 +755,6 @@ var processor = (function () {
     function updateFilterParam(e) {
         for (let i = tracksFilters[e.trackId].length - 1; i >= 0; i--) {
             if (tracksFilters[e.trackId][i].id == e.id) {
-                console.log('updateFilterParam', e, tracksFilters[e.trackId][i])
-
                 if(e.paramName == 'replaceWithColor') {
                     tracksFilters[e.trackId][i].replaceWithColor = e.value != 'transparent' ? hexToRgba(e.value) : new Uint8Array([0, 0, 0, 0]);
                 } else {
@@ -799,16 +783,8 @@ var processor = (function () {
       }
 
     function removeFiltersFromTrack(e) {
-        console.log('removeFiltersFromTrack', e)
-        console.log('removeFiltersFromTrack2', tracksFilters)
-        console.log('removeFiltersFromTrack3', tracksFilters[e.trackId])
-
         for (let i = tracksFilters[e.trackId].length - 1; i >= 0; i--) {
-            console.log('removeFiltersFromTrack3 for', tracksFilters[e.trackId])
-
             if (tracksFilters[e.trackId][i].id == e.filterId) {
-                console.log('removeFiltersFromSource remove', tracksFilters[e.trackId])
-
                 tracksFilters[e.trackId].splice(i, 1);
             }
         }
@@ -843,7 +819,6 @@ var processor = (function () {
             async transform(videoFrame, controller) {
                 if (!videoFrame) return;
                 if(trackObject.stopped) {
-                    console.log('worker: stopped 1')
                     videoFrame.close();
                     controller.terminate();
                     return;
@@ -854,7 +829,6 @@ var processor = (function () {
                 trackObject.renderer.draw(videoFrame, async function (filtersApplied) {
                     const newFrame = new VideoFrame(trackObject.canvas, { timestamp: videoFrame.timestamp });
                     if(trackObject.stopped) {
-                        console.log('worker: stopped 2')
                         videoFrame.close();
                         controller.terminate();
                         return;
@@ -872,7 +846,6 @@ var processor = (function () {
     }
 
     function removeTrack(data) {
-        console.log('worker: removeTrack')
         tracks[data.trackId].stopped = true;
         tracks[data.trackId].renderer
         tracks[data.trackId] = null;

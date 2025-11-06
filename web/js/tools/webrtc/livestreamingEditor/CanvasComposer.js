@@ -7,7 +7,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
     var _canvasMediStream = null;
     var _mediaRecorder = null;
     var _mediaRecorders = [];
-    var _fps = 30;
+    var _fps = 60;
     var _videoTrackIsMuted = false;
     var _dataListeners = [];
     var _eventDispatcher = new EventSystem();
@@ -312,6 +312,8 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         var _size = {width:1920, height: 1080};
         var _inputCtx = null;
         var _isActive = null;
+        var _isRendering = false;
+        var _frameQueue = [];
         var _canvasRenderInterval = null;
 
         function createCanvas() {
@@ -326,7 +328,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             videoCanvas.width = _size.width;
             videoCanvas.height = _size.height;
 
-            _inputCtx = videoCanvas.getContext('2d', { alpha: false, desynchronized: true });
+            _inputCtx = videoCanvas.getContext('2d', { alpha: false, desynchronized: false });
 
             _canvas = videoCanvas;
 
@@ -745,7 +747,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
             // Particle constructor function
             function Particle(x, y, type) {
-                console.log('Particle type', type)
                 this.type = type;
                 this.x = x;
                 this.y = y;
@@ -758,7 +759,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 this.frequency = 0.05; // Frequency of the zigzag
         
                 this.img = instance.reactionsImages[this.type];  // emoji img
-                console.log('Particle',  this.amplitude, this.frequency,  this.speedY)
                 this.randomise(true);
             }
 
@@ -1059,7 +1059,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         }
 
         function addSource(newSource, scene, successCallback, failureCallback) {
-            console.log('addSource: start', newSource)
             var scene = scene || _activeScene;
 
             if( newSource instanceof RectObjectSource || newSource instanceof StrokeRectObjectSource || newSource instanceof TextObjectSource) {
@@ -1818,11 +1817,9 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             } else {
                 webrtcGroupSource.activePresenterSources = [];
                 //if it's not any of screensharing layouts, remove screensharing videos from layout
-                console.log('remove screensharing')
                 for(let k = allWebRTCSources.length - 1; k >= 0; k--){    
                     if(allWebRTCSources[k].screenSharing) {
                         allWebRTCSources.splice(k, 1);
-                        console.log('remove screensharing 1')
                     }
                 }
             }
@@ -1848,8 +1845,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         for(let k in allWebRTCSources){
                             if(allWebRTCSources[k] == loudest)  {
                                 loudestSource = allWebRTCSources.splice(k, 1)[0];
-                                console.log('floatingScreenSharing: loudestSource', loudestSource);
-
                                 allWebRTCSources.splice(0, 0, loudestSource);
                                 break;
                             } 
@@ -1864,7 +1859,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     } 
                 }
             }
-            console.log('floatingScreenSharing: loudestSource allWebRTCSources', allWebRTCSources[0], allWebRTCSources[1], allWebRTCSources[2]);
 
             //log('updateWebRTCCanvasLayout: webrtcGroupSource.currentLayoutMode', webrtcGroupSource.currentLayoutMode)
             //log('updateWebRTCCanvasLayout: screensharing added', allWebRTCSources.map(o=>o.name), allWebRTCSources)
@@ -1901,13 +1895,11 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 }
                 allWebRTCSources = screensharingPlusAudio;
             } else if(layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
-                //console.log('allWebRTCSources floatingScreenSharing', allWebRTCSources)
                 allWebRTCSources = allWebRTCSources.splice(0, 3);
             }
 
             //if filtered video should be rendered on canvas, then replace current (not filtered) with filtered videos
             for(let y in allWebRTCSources) {
-                console.log('allWebRTCSources[y]', allWebRTCSources[y])
                 if(!allWebRTCSources[y].track || allWebRTCSources[y].track.kind != 'video') continue;
                 if(!allWebRTCSources[y].track.livestreamVideoProcessor || Object.keys(allWebRTCSources[y].track.livestreamVideoProcessor.appliedFilters).length == 0) continue;
 
@@ -1920,8 +1912,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 let trackInstance = allWebRTCSources[y].track;
                 let source = allWebRTCSources[y];
                 mediaProcessorInfo.videoProcessorTrack.eventDispatcher.on('stop', function () {
-                    console.log('videoProcessorTrack STOP', source, mediaProcessorInfo, trackInstance.trackEl)
-
                     source.htmlVideoEl = trackInstance.trackEl;
                     source.htmlVideoEl.play();
                 })
@@ -1969,7 +1959,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             //log('updateWebRTCCanvasLayout: rects new', JSON.stringify(layoutRects));
 
             layoutRects = [...layoutRects];
-            console.log('updateWebRTCCanvasLayout: layout original', layoutRects[0], layoutRects[1], layoutRects[2]);
 
             let reservedForPresenter = [];
             let activeVideosOfUserWhoShares = videoTracksOfUserWhoShares.filter(function (o) {
@@ -2000,8 +1989,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             webrtcGroupSource.sources = allWebRTCSources;
             activeWebRTCSources.reverse();
             log('distributeRectsForOtherStreams for BEFORE', activeWebRTCSources.length);
-            console.log('updateWebRTCCanvasLayout: layout result2', layoutRects[0], layoutRects[1], layoutRects[2]);
-            console.log('updateWebRTCCanvasLayout: layout reservedForPresenter', reservedForPresenter[0], reservedForPresenter[1], reservedForPresenter[2]);
 
             //assign layout rects to all sources that are supposed to be rendered on canvas
             //for(let r = 0; r < allWebRTCSources.length; r++){
@@ -2053,8 +2040,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 let startPositionRect = {y:rectToUpdate.y, x:rectToUpdate.x, width:rectToUpdate.width,height:rectToUpdate.height};
                 moveit(rectToUpdate, newRectOfStream, startPositionRect, getTransitionTime(), starttime, activeWebRTCSources[r], parseInt(r) == 0 ? notPendingAnymore : null);
             }
-            console.log('updateWebRTCCanvasLayout: result1', activeWebRTCSources[0], activeWebRTCSources[1], activeWebRTCSources[2]);
-            console.log('updateWebRTCCanvasLayout: result1.1', webrtcGroupSource.sources[0], webrtcGroupSource.sources[1], webrtcGroupSource.sources[2]);
 
             //if(screensharingLayout) {
                 //webrtcGroupSource.sources.reverse();
@@ -2075,18 +2060,13 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     return indexA - indexB;
                  });
             //}
-            console.log('updateWebRTCCanvasLayout: result2', allWebRTCSources[0], allWebRTCSources[1], allWebRTCSources[2]);
-            console.log('updateWebRTCCanvasLayout: result2.1', webrtcGroupSource.sources[0], webrtcGroupSource.sources[1], webrtcGroupSource.sources[2]);
 
             log('updateWebRTCCanvasLayout reversed', webrtcGroupSource.sources);
 
             //if layout is floatingScreenSharing, then screensharing video should be above camera videos 
             //(this is exceptions as usually screen sharing video is full-screen and below other video)
             if(webrtcGroupSource.currentLayout == 'floatingScreenSharing' && allWebRTCSources.length >= 2) {
-                console.log('floatingScreenSharing: result', allWebRTCSources[0], allWebRTCSources[1], allWebRTCSources[2]);
-
                 webrtcGroupSource.sources.splice(0, 0, allWebRTCSources.splice(1, 1)[0]);
-                console.log('floatingScreenSharing: result', allWebRTCSources[0], allWebRTCSources[1], allWebRTCSources[2]);
             }
             _activeScene.eventDispatcher.dispatch('webrtcLayoutUpdated');
             
@@ -2219,7 +2199,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             if (rects.length != 0) {
 
                 let closestRect = rects.reduce(function (prev, current, index) {
-                    //console.log('reduce', prev, current)
                     return (distance(current.rect.left + (current.rect.width / 2), current.rect.top + (current.rect.height / 2), rect.left + (rect.width / 2), rect.top + (rect.height / 2)) < distance(prev.rect.left + (prev.rect.width / 2), prev.rect.top + (prev.rect.height / 2), rect.left + (rect.width / 2), rect.top + (rect.height / 2))) ? current : prev;
                 })
 
@@ -2236,7 +2215,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         }
 
         function moveit(rectToUpdate, distRect, startPositionRect, duration, starttime, streamData, callback){
-            //console.log('moveit START', distRect);
             var cb = function () {
                 var timestamp = performance.now();
                 var runtime = timestamp - starttime
@@ -2301,12 +2279,14 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         }
 
         var _fpsData = 0;
-        /* setInterval(function () {
-            console.log('fps', _fpsData)
-            _fpsData = 0;
-        }, 1000) */
+    
         function drawVideosOnCanvas() {
             if(!_isActive) return;
+            if (_isRendering) {
+                console.log('skip frame')
+                return;
+            }
+            _isRendering = true;
 
             _inputCtx.clearRect(0, 0, _size.width, _size.height);
 
@@ -2321,26 +2301,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     drawVideo(streamData);
                 }
             }
-
-            /*for(let i = _activeScene.sources.length - 1; i >= 0; i--) {
-                if(_activeScene.sources[i].active == false ||_activeScene.sources[i].sourceType == 'group') continue;
-
-                let streamData = _activeScene.sources[i];
-
-                if(streamData.sourceType == 'webrtc' && streamData.kind == 'video') {
-                    drawSingleVideoOnCanvas(streamData.htmlVideoEl, streamData, _size.width, _size.height, streamData.htmlVideoEl.videoWidth, streamData.htmlVideoEl.videoHeight);
-                    streamData.eventDispatcher.dispatch('userRendered')
-
-                } else if(streamData.sourceType == 'webrtc' && streamData.kind == 'audio') {
-                    drawSingleAudioOnCanvas(streamData);
-                    streamData.eventDispatcher.dispatch('userRendered')
-
-                } else if(streamData.sourceType == 'image') {
-                    drawImage(streamData);
-                } else if(streamData.sourceType == 'video' || streamData.sourceType == 'videoInput') {
-                    drawVideo(streamData);
-                } 
-            }*/
 
             for(let i = _activeScene.visualSources.length - 1; i >= 0; i--) {
             //for(let i = 0; i < _activeScene.visualSources.length; i++) {
@@ -2444,12 +2404,18 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 }
             }
             
-            _fpsData++;
+            //_fpsData++;
 
+            _isRendering = false;
             //requestAnimationFrame(function() {
             //    drawVideosOnCanvas();
             //});
         }
+
+        /* setInterval(function() {
+            console.log('_fpsData', _fpsData)
+            _fpsData = 0;
+        }, 1000) */
 
         function drawImage(imageSource) {
             var imageInstanse = imageSource.imageInstance || imageSource.canvas;
@@ -2480,6 +2446,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             if(imageSource.opacity) {
                 _inputCtx.globalAlpha = imageSource.opacity;
             }
+
             _inputCtx.drawImage(imageInstanse,
                 x, y,
                 outWidth, outHeight);
@@ -3456,10 +3423,8 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 function getCurrentLayoutRects() {
                     var actualLayoutRects = [];
                     
-                    console.log('getCurrentLayoutRects START', _layoutManagerContext.currentRects.length, _layoutManagerContext.basicGridRects.length)
                     if (_layoutManagerContext.basicGridRects.length >= _layoutManagerContext.currentRects.length) {
                     //if (screens.length >= _layoutManagerContext.currentRects.length) {
-                        console.log('getCurrentLayoutRects 1')
                         for (let i in _layoutManagerContext.currentRects) {
                             //if (_screens[i].sourceType != 'webrtc') continue;
                             //let rect = _layoutManagerContext.currentRects[i].getBoundingClientRect();
@@ -3471,9 +3436,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                             });
                         }
                     } else {
-                        console.log('getCurrentLayoutRects 2')
                         for (let i in _webrtcGroupSource.sources) {
-                            console.log('_webrtcGroupSource.sources[i].active', _webrtcGroupSource.sources[i].active)
                             if (_webrtcGroupSource.sources[i].sourceType != 'webrtc' || !_webrtcGroupSource.sources[i].active) continue;
                             actualLayoutRects.push({
                                 key: i,
@@ -3499,7 +3462,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     if (rects.length != 0) {
     
                         let closestRect = rects.reduce(function (prev, current, index) {
-                            //console.log('reduce', prev, current)
                             return (distance(current.rect.left + (current.rect.width / 2), current.rect.top + (current.rect.height / 2), rect.left + (rect.width / 2), rect.top + (rect.height / 2)) < distance(prev.rect.left + (prev.rect.width / 2), prev.rect.top + (prev.rect.height / 2), rect.left + (rect.width / 2), rect.top + (rect.height / 2))) ? current : prev;
                         })
     
@@ -3557,10 +3519,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         return o.rect;
                     });
 
-                    console.log('actualLayoutRects res', results)
                     return results;
-
-
                 }
 
                 function tiledStreamingLayout(container, count) {
@@ -3618,7 +3577,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         }
                     }
         
-                    console.log('tiledStreamingLayout _layoutManagerContext.currentRects', _layoutManagerContext.currentRects.length)
                     return _layoutManagerContext.currentRects;
         
                     function build() {
@@ -3665,9 +3623,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         }
         
                         rectHeight = (size.parentHeight - (innerMargin * (rowsNum - 1)) - (outerVerticalMargin * 2)) / rowsNum;
-        
-                        console.log('simpleGrid: rowsNum', rowsNum);
-        
+                
                         var isNextNewLast = false;
                         var rowItemCounter = 1;
                         var i;
@@ -3978,7 +3934,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
                     let screensharingWidth = size.parentWidth / 100 * 47;
                     let screensharingHeight = screensharingWidth /16 * 9;
-                    console.log('screensharingWidth', screensharingWidth, screensharingHeight)
                     let screensharingX = size.x + size.parentWidth - screensharingWidth - (size.parentWidth / 100 * 0.7);
                     let screensharingY = (size.y + (size.parentHeight / 2)) - (screensharingHeight / 2);
                     let screensharingRect = new DOMRect(screensharingX, screensharingY, screensharingWidth, screensharingHeight);
@@ -4049,7 +4004,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         }
                     }
 
-                    console.log('_layoutManagerContext.currentRects', _layoutManagerContext.currentRects)
                     return _layoutManagerContext.currentRects;
 
                     function build() {
@@ -4572,8 +4526,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     log('addSource audio: webrtc: tracks', newAudio.mediaStream.getTracks().length)
 
                     var connectAudio = function () {
-                        console.log('connectAudio2',  newAudio.mediaStream.getAudioTracks())
-
                         const source = audioContext.createMediaStreamSource(newAudio.mediaStream);
                         source.connect(newAudio.gainNode);
                         _webrtcAudioConnectedToDest[audioTracks[0].mediaStreamTrack.id] = newAudio;
@@ -4815,17 +4767,13 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 var webrtcSignalingLib = tool.webrtcSignalingLib;
 
                 function updateAudioSources(e, eventName) {
-                    var track = e.track || e.tracks[0];
-                    log('audioComposer: updateAudioSources', e, track.kind, eventName);
-                    if(e.track) log('audioComposer: updateAudioSources: track.kind',track.kind);
                     let participant = eventName == 'audioTrackLoaded' || eventName == 'trackAdded' || 'trackUnmuted' ? e.participant : e;
-                    log('audioComposer: updateAudioSources participant', participant);
 
                     if(!participant) {
                         return;
                     }
 
-                    if(eventName == 'trackUnmuted' && track.kind != 'audio') {
+                    if(eventName == 'trackUnmuted') {
                         return;
                     }
 
@@ -4836,8 +4784,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     });
 
                     if(audioTracks.length == 0) {
-                        log('audioComposer: updateAudioSources audioTracks.length == 0');
-
                         return;
                     }
                     let participantsAudioSourse = addSource({
@@ -5105,7 +5051,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         //codecs = getSupportedStreamingCodec();
 
         if(!codecs) {
-            console.log('codecs', codecs)
             throw new Error('No supported codecs found.');
         } 
 
@@ -5120,7 +5065,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         }
 
         mediaRecorder.addEventListener('dataavailable', function (e) {
-            //console.log('dataavailable', e.data.size);
             ondataavailable(e.data);
         });
 

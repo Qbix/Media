@@ -88,6 +88,13 @@
 				"Users/screeners": ["Screeners", "labels/Users/screeners"]
 			}
 		},
+		"notifications": {
+			"notices": { /* track message type to show notification as Q.Notice */
+				"Livestream/reminder": {
+					"timeout": 10
+				}
+			}
+		},
 		"roles": {
 			"Users/owners": {
 				"canGrant": ["Media/admins"],
@@ -223,6 +230,14 @@
 				"url": "{{baseUrl}}/livestream/{{publisherId}}/{{name}}",
 				"ephemerals": {
 					"Media/livestream/reaction": {}
+				},
+				"messages": {
+					"Livestream/reminder": {
+						"subject": ["Calendars/content", ["notifications", "Calendars/reminder"]]
+					},
+					"Media/livestream/start": {
+						"subject": ["Calendars/content", ["notifications", "livestream", "Started"]]
+					}
 				}
 			},
 			"Media/webrtc/chat": {
@@ -367,6 +382,19 @@
 				"admins": ["Users/owners", "Users/admins", "Media/admins"]
 			}
 		},
-		"admins": ["Users/owners", "Users/admins", "Media/admins"]
+		"admins": ["Users/owners", "Users/admins", "Media/admins"],
+		"livestream": {
+			"reminders": {
+				"86400": { /* 24 hours */
+					"selected": true
+				},
+				"18000": {}, /* 5 hours */
+				"7200": {}, /* 2 hours */
+				"3600": { /* 1 hour */
+					"selected": true
+				},
+				"600": {} /* 5 minutes */
+			}
+		}
 	}
 }

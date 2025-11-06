@@ -8,7 +8,6 @@ module.exports = function(socket, io, expressApp) {
     var userPlatformId;
     
     socket.on('Media/webrtc/joined', function (identity, cb) {
-        console.log('WebRTC.rooms Media/webrtc/joined before',identity)
         userPlatformId = identity.username.split('\t')[0];
         roomId = identity.room;
         socketRoom = identity.roomPublisher + '_' + identity.room;
@@ -22,8 +21,6 @@ module.exports = function(socket, io, expressApp) {
         }
 
         WebRTC.rooms[socketRoom][userPlatformId][socket.id] = socket;
-
-        console.log('WebRTC.rooms Media/webrtc/joined after',WebRTC.rooms)
     });
 
 

@@ -175,7 +175,8 @@
             "openInBrowserAlert": "Open link in Safari browser to join the conference.",
             "allowedVideoLimit": "Only {{limit}} video allowed in this room",
             "allowedAudioLimit": "Only {{limit}} microphones allowed in this room",
-            "processingRecording": "Processing the recording..."
+            "processingRecording": "Processing the recording...",
+            "cameraStartError": "Unable to start the video source. Make sure no other application is using the camera."
         },
         "settingsPopup": {
             "dialogTitle": "Video Settings",
@@ -234,6 +235,7 @@
             "maximizeLoudest": "Maximize Loudest",
             "staticMaximized": "Static Maximized",
             "fullScreen": "Full Screen",
+            "audioOnly": "Audio only",
             "manual": "Manual",
             "turnOffCamera": "Hide video",
             "turnOffAudio": "Mute audio",

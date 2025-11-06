@@ -182,12 +182,7 @@
                     tool.textChat().init();
                     tool.createVideoSettingsPopup();
                     tool.createAudioSettingsPopup();
-                    tool.createParticipantsPopup(function () {
-                        var activeViewMode = tool.webrtcRoomInstance.screenRendering.getActiveViewMode();
-                        if (activeViewMode == 'maximized' || activeViewMode == 'maximizedMobile') {
-                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('allButMe');
-                        }
-                    });
+                    tool.createParticipantsPopup();
                     tool.initLivestreamingEditor();
                     tool.initMediaLimits();
     
@@ -262,10 +257,6 @@
                    
                 }*/
 
-                var activeViewMode = tool.webrtcRoomInstance.screenRendering.getActiveViewMode();
-                if (activeViewMode == 'maximized' || activeViewMode == 'maximizedMobile') {
-                    tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('allButMe');
-                }
                 tool.declareEventsHandlers();
             },
             remove: function () {
@@ -672,7 +663,7 @@
                 });
 
                 tool.webrtcSignalingLib.event.on('forceTurnCameraOff', function (e) {
-                    tool.webrtcSignalingLib.localMediaControls.disableVideo();
+                    tool.webrtcSignalingLib.localMediaControls.disableVideo('all');
                     if (tool.webrtcSignalingLib.screenSharing.isActive()) {
                         tool.videoInputsTool.stopScreenSharingButton().handler();
                     }
@@ -1282,67 +1273,6 @@
             },
 
             /**
-             * Turn on/off camera (all local video tracks)
-             * @method toggleVideo
-             */
-            toggleVideo: function () {
-                var tool = this;
-                var videoInputDevices = tool.webrtcSignalingLib.localMediaControls.videoInputDevices();
-
-                if (tool.webrtcSignalingLib.localMediaControls.cameraIsEnabled() && tool.webrtcSignalingLib.localMediaControls.currentCameraDevice() == videoInputDevices[videoInputDevices.length - 1]) {
-                    tool.webrtcSignalingLib.localMediaControls.disableVideo();
-                } else {
-                    if (!tool.webrtcSignalingLib.localMediaControls.cameraIsEnabled()) {
-                        tool.webrtcSignalingLib.localMediaControls.enableVideo();
-                    }
-                    tool.webrtcSignalingLib.localMediaControls.toggleCameras();
-
-                }
-
-                if (tool.participantsListTool) tool.participantsListTool.toggleLocalVideo();
-                tool.updateControlBar();
-            },
-
-            /**
-             * Turn on/off microphone (local audio tracks)
-             * @method toggleAudio
-             */
-            toggleAudio: function () {
-                var tool = this;
-                if (_isAndroidCordova && !tool.microphonePermissionGranted) {
-                    tool.webrtcSignalingLib.localMediaControls.requestAndroidMediaPermissions({ audio: true }, function () {
-                        tool.microphonePermissionGranted = true;
-                        tool.toggleAudio();
-                    }, function () {
-                        tool.showAndroidPermissionsInstructions('Microphone');
-                    });
-                    return;
-                }
-                var localParticipant = tool.webrtcSignalingLib.localParticipant();
-                var enabledAudioTracks = localParticipant.tracks.filter(function (t) {
-                    return t.kind == 'audio' && t.mediaStreamTrack != null && t.mediaStreamTrack.enabled;
-                }).length;
-
-                if (tool.webrtcSignalingLib.localMediaControls.micIsEnabled() && (enabledAudioTracks != 0 || localParticipant.audioStream != null)) {
-                    log('controls: toggleAudio: disable audio')
-                    tool.webrtcSignalingLib.localMediaControls.disableAudio();
-                } else {
-                    log('controls: toggleAudio: enable audio')
-
-                    tool.webrtcSignalingLib.localMediaControls.enableAudio(function (e) {
-                        log('controls: toggleAudio: enable audio callback')
-
-                        if (_isiOSCordova)
-                            tool.showIosPermissionsInstructions('Microphone');
-                        else if (e.name == 'NotAllowedError' || e.name == 'MediaStreamError') tool.showBrowserPermissionsInstructions('microphone');
-                    });
-                }
-
-                if (tool.participantsListTool) tool.participantsListTool.toggleLocalAudio();
-                tool.updateControlBar();
-            },
-
-            /**
              * Turn on/off microphone (local audio tracks)
              * @method toggleAudio
              */
@@ -1439,49 +1369,6 @@
 
             },
 
-            /**
-             * Update butons for toggling view mode in participants popup
-             * @method updateControlBar
-             */
-            updateViewModeBtns: function () {
-                var tool = this;
-                if (!tool.toggleViewBtns) return;
-                var buttonsArr = tool.toggleViewBtns;
-                var activeViewMode = tool.webrtcRoomInstance.screenRendering.getActiveViewMode();
-                var loudestMode = tool.webrtcRoomInstance.screenRendering.getLoudestMode();
-
-                if (!activeViewMode || tool.webrtcRoomInstance.screenRendering.getScreens().length == 0) return;
-                var viewModeToApply;
-                if (activeViewMode == 'minimized' || activeViewMode == 'maximized' || activeViewMode == 'maximizedMobile' || activeViewMode == 'minimizedMobile') {
-                    if (loudestMode == 'all') {
-                        viewModeToApply = 'loudest';
-                    } else if (loudestMode == 'allButMe') {
-                        viewModeToApply = 'loudestExceptMe';
-                    } else if (Q.info.isMobile){
-                        viewModeToApply = 'fullScreen';
-                    }
-                } else if (activeViewMode == 'tiled' || activeViewMode == 'tiledMobile') {
-                    viewModeToApply = 'tiledView';
-                } else if (activeViewMode == 'squaresGrid') {
-                    viewModeToApply = 'squaresView';
-                } else if (activeViewMode == 'regular') {
-                    viewModeToApply = 'floatingView';
-                } else if (activeViewMode == 'manual') {
-                    viewModeToApply = 'manual';
-                } else if (activeViewMode == 'fullScreen' || activeViewMode == 'screenSharing') {
-                    viewModeToApply = 'fullScreen';
-                } else if (activeViewMode == 'audio') {
-                    viewModeToApply = 'audio';
-                }
-
-                if(!viewModeToApply) return;
-
-                for (var b in buttonsArr) {
-                    if (buttonsArr[b].viewMode == viewModeToApply) {
-                        buttonsArr[b].icon.innerHTML = buttonsArr[b].onIcon;
-                    } else buttonsArr[b].icon.innerHTML = buttonsArr[b].offIcon;
-                }
-            },
             showControlsDialog: function (dialogType) {
                 var tool = this;
                 var _dialogContetntEl, title;
@@ -1764,7 +1651,7 @@
              * Create participants popup that appears while pointer hovers users button on desktop/in modal box on mobile
              * @method createParticipantsPopup
              */
-             createParticipantsPopup: function (callback) {
+             createParticipantsPopup: function () {
                 var tool = this;
 
                 Q.activate(
@@ -1788,21 +1675,100 @@
                     tool.participantsPopup = (function () {
                         var _popUpResizeobserver;
 
-                        /**
-                         * Toggles screens view mode depending on selected option
-                         * @method toggleViewMode
-                         * @param {Object} e
-                         */
-                        function toggleViewMode(e, buttonsArr) {
-                            var btn = e.currentTarget;
-                            var viewModeToApply = btn.dataset.viewMode;
-                            for (var b in buttonsArr) {
-                                if (buttonsArr[b].viewMode == viewModeToApply) {
-                                    buttonsArr[b].icon.innerHTML = buttonsArr[b].onIcon;
-                                    if (buttonsArr[b].handler != null) buttonsArr[b].handler();
-                                } else buttonsArr[b].icon.innerHTML = buttonsArr[b].offIcon;
+                        var buttonsArr = [
+                            /* {
+                                viewMode: 'maximizedStatic',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.staticMaximized", tool.text),
+                                onIcon: icons.staticMaximizeOn,
+                                offIcon: icons.staticMaximizeOff
+                            }, */
+                            {
+                                viewMode: 'tiledView',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.tiledScreens", tool.text),
+                                onIcon: icons.tiledViewModeOn,
+                                offIcon: icons.tiledViewModeOff
+                            },
+                            {
+                                viewMode: 'loudestExceptMe',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.loudestExceptMe", tool.text),
+                                onIcon: icons.loudestExceptMeOn,
+                                offIcon: icons.loudestExceptMeOff
+                            },
+                            {
+                                viewMode: 'loudest',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.maximizeLoudest", tool.text),
+                                onIcon: icons.maximizeLoudestOn,
+                                offIcon: icons.maximizeLoudestOff
+                            },
+                            {
+                                viewMode: 'fullScreen',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.fullScreen", tool.text),
+                                onIcon: icons.staticMaximizeOn,
+                                offIcon: icons.staticMaximizeOff
+                            },
+                            {
+                                viewMode: 'audio',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.audioOnly", tool.text),
+                                onIcon: icons.audioLayoutOn,
+                                offIcon: icons.audioLayoutOff
                             }
+                        ];
+
+                        if (!Q.info.isMobile) {
+                            buttonsArr.unshift({
+                                viewMode: 'floatingView',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.floatingScreens", tool.text),
+                                onIcon: icons.freeViewModeOn,
+                                offIcon: icons.freeViewModeOff
+                            })
+                            buttonsArr.push({
+                                viewMode: 'manual',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.manual", tool.text),
+                                onIcon: icons.dragIconOn,
+                                offIcon: icons.dragIconOff
+                            })
                         }
+                        if (Q.info.isMobile) {
+                            buttonsArr.unshift({
+                                viewMode: 'squaresView',
+                                touchLabel: Q.getObject("webrtc.participantsPopup.tiledScreens", tool.text),
+                                onIcon: icons.squaresViewModeOn,
+                                offIcon: icons.squaresViewModeOff
+                            })
+
+                        }
+
+                        for (let b in buttonsArr) {
+                            let buttonEls = createScreensModeButton(buttonsArr[b]);
+                            buttonsArr[b].btn = buttonEls.button;
+                            buttonsArr[b].icon = buttonEls.icon;
+                            buttonsArr[b].btn.addEventListener('mouseup', function (e) {
+                                tool.webrtcRoomInstance.screenRendering.switchScreensMode(buttonsArr[b].viewMode);
+                            });
+                        }
+
+                        function createScreensModeButton(options) {
+                            let viewModeBtn = document.createElement('DIV');
+                            viewModeBtn.className = 'Media_webrtc_' + options.viewMode + '-mode-btn';
+                            viewModeBtn.dataset.viewMode = options.viewMode;
+                            viewModeBtn.dataset.touchlabel = options.touchLabel;
+                            let viewModeBtnIcon = document.createElement('SPAN');
+                            viewModeBtnIcon.innerHTML = options.offIcon;
+                            viewModeBtn.appendChild(viewModeBtnIcon);
+                            return { button: viewModeBtn, icon: viewModeBtnIcon };
+                        }
+
+                        tool.toggleViewBtns = buttonsArr;
+
+                        tool.webrtcRoomInstance.screenRendering.on('screensModeChanged', function (modeName) {
+                             for (var b in buttonsArr) {
+                                if (buttonsArr[b].viewMode == modeName) {
+                                    buttonsArr[b].icon.innerHTML = buttonsArr[b].onIcon;
+                                } else {
+                                    buttonsArr[b].icon.innerHTML = buttonsArr[b].offIcon;
+                                }
+                            }
+                        })
 
                         /**
                          * Create participants list that is used in popup (on desktop) or modal box (on mobile)
@@ -1821,224 +1787,16 @@
                                 disconnectBtn.innerHTML = icons.disconnectIcon;
                                 topBtns.appendChild(disconnectBtn);
                             }
+                            participantsPopupEl.appendChild(topBtns);
 
                             if (!tool.webrtcRoomInstance.getOptions().audioOnlyMode) {
-                                if (!Q.info.isMobile) {
-                                    var floatingViewModeBtn = document.createElement('DIV');
-                                    floatingViewModeBtn.className = 'Media_webrtc_floating-mode-btn';
-                                    floatingViewModeBtn.dataset.viewMode = 'floatingView';
-                                    floatingViewModeBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.floatingScreens", tool.text);
-                                    var floatingViewModeBtnIcon = document.createElement('SPAN');
-                                    floatingViewModeBtnIcon.innerHTML = icons.freeViewModeOff;
-                                    floatingViewModeBtn.appendChild(floatingViewModeBtnIcon);
-                                    topBtns.appendChild(floatingViewModeBtn);
-                                }
-
-                                var tiledViewModeBtn = document.createElement('DIV');
-                                tiledViewModeBtn.className = 'Media_webrtc_tiled-mode-btn';
-                                tiledViewModeBtn.dataset.viewMode = 'tiledView';
-                                tiledViewModeBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.tiledScreens", tool.text);
-                                var tiledViewModeBtnIcon = document.createElement('SPAN');
-                                tiledViewModeBtnIcon.innerHTML = icons.tiledViewModeOff;
-                                tiledViewModeBtn.appendChild(tiledViewModeBtnIcon);
-                                topBtns.appendChild(tiledViewModeBtn);
-
-                                if (Q.info.isMobile) {
-                                    var squaresViewModeBtn = document.createElement('DIV');
-                                    squaresViewModeBtn.className = 'Media_webrtc_tiled-mode-btn';
-                                    squaresViewModeBtn.dataset.viewMode = 'squaresView';
-                                    squaresViewModeBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.tiledScreens", tool.text);
-                                    var squaresViewModeBtnIcon = document.createElement('SPAN');
-                                    squaresViewModeBtnIcon.innerHTML = icons.squaresViewModeOff;
-                                    squaresViewModeBtn.appendChild(squaresViewModeBtnIcon);
-                                    topBtns.appendChild(squaresViewModeBtn);
-                                }
-
-
-                                var loudestExceptMeBtn = document.createElement('DIV');
-                                loudestExceptMeBtn.className = 'Media_webrtc_lem-mode-btn';
-                                loudestExceptMeBtn.dataset.viewMode = 'loudestExceptMe';
-                                loudestExceptMeBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.loudestExceptMe", tool.text);
-                                var loudestExceptMeBtnIcon = document.createElement('SPAN');
-                                loudestExceptMeBtnIcon.innerHTML = icons.loudestExceptMeOff;
-                                loudestExceptMeBtn.appendChild(loudestExceptMeBtnIcon);
-                                topBtns.appendChild(loudestExceptMeBtn);
-
-                                var loudestBtn = document.createElement('DIV');
-                                loudestBtn.className = 'Media_webrtc_loudest-mode-btn';
-                                loudestBtn.dataset.viewMode = 'loudest';
-                                loudestBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.maximizeLoudest", tool.text);
-                                var loudestBtnIcon = document.createElement('SPAN');
-                                loudestBtnIcon.innerHTML = icons.maximizeLoudestOff;
-                                loudestBtn.appendChild(loudestBtnIcon);
-                                topBtns.appendChild(loudestBtn);
-
-                                /*var maximizeStaticBtn = document.createElement('DIV');
-                                maximizeStaticBtn.className = 'Media_webrtc_loudest-mode-btn';
-                                maximizeStaticBtn.dataset.viewMode = 'maximizeStatic';
-                                maximizeStaticBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.staticMaximized", tool.text);
-                                var maximizeStaticBtnIcon = document.createElement('SPAN');
-                                maximizeStaticBtnIcon.innerHTML = icons.staticMaximizeOff;
-                                maximizeStaticBtn.appendChild(maximizeStaticBtnIcon);
-                                topBtns.appendChild(maximizeStaticBtn);*/
-
-                                var fullScreenBtn = document.createElement('DIV');
-                                fullScreenBtn.className = 'Media_webrtc_fullScreen-mode-btn';
-                                fullScreenBtn.dataset.viewMode = 'fullScreen';
-                                fullScreenBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.fullScreen", tool.text);
-                                var fullScreenBtnIcon = document.createElement('SPAN');
-                                fullScreenBtnIcon.innerHTML = icons.staticMaximizeOff;
-                                fullScreenBtn.appendChild(fullScreenBtnIcon);
-                                topBtns.appendChild(fullScreenBtn);
-
-                                var audioLayoutBtn = document.createElement('DIV');
-                                audioLayoutBtn.className = 'Media_webrtc_audio-mode-btn';
-                                audioLayoutBtn.dataset.viewMode = 'audio';
-                                audioLayoutBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.fullScreen", tool.text);
-                                var audioLayoutBtnIcon = document.createElement('SPAN');
-                                audioLayoutBtnIcon.innerHTML = icons.audioLayoutOff;
-                                audioLayoutBtn.appendChild(audioLayoutBtnIcon);
-                                topBtns.appendChild(audioLayoutBtn);
-
-                                if (!Q.info.isMobile) {
-                                    var manualLayoutBtn = document.createElement('DIV');
-                                    manualLayoutBtn.className = 'Media_webrtc_loudest-mode-btn';
-                                    manualLayoutBtn.dataset.viewMode = 'manual';
-                                    manualLayoutBtn.dataset.touchlabel = Q.getObject("webrtc.participantsPopup.manual", tool.text);
-                                    var manualLayoutBtnIcon = document.createElement('SPAN');
-                                    manualLayoutBtnIcon.innerHTML = icons.dragIconOff;
-                                    manualLayoutBtn.appendChild(manualLayoutBtnIcon);
-                                    topBtns.appendChild(manualLayoutBtn);
-                                }
-
-
-                                participantsPopupEl.appendChild(topBtns)
-
-                                var buttonsArr = [
-                                    {
-                                        viewMode: 'tiledView',
-                                        btn: tiledViewModeBtn,
-                                        icon: tiledViewModeBtnIcon,
-                                        onIcon: icons.tiledViewModeOn,
-                                        offIcon: icons.tiledViewModeOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('disabled');
-                                            if (Q.info.isMobile)
-                                                tool.webrtcRoomInstance.screenRendering.renderTiledScreensGridMobile();
-                                            else tool.webrtcRoomInstance.screenRendering.renderTiledScreensGridDesktop();
-                                        }
-                                    },
-                                    {
-                                        viewMode: 'loudestExceptMe',
-                                        btn: loudestExceptMeBtn,
-                                        icon: loudestExceptMeBtnIcon,
-                                        onIcon: icons.loudestExceptMeOn,
-                                        offIcon: icons.loudestExceptMeOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('allButMe');
-                                        }
-                                    },
-                                    {
-                                        viewMode: 'loudest',
-                                        btn: loudestBtn,
-                                        icon: loudestBtnIcon,
-                                        onIcon: icons.maximizeLoudestOn,
-                                        offIcon: icons.maximizeLoudestOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('all');
-                                        }
-                                    },
-                                    {
-                                        viewMode: 'fullScreen',
-                                        btn: fullScreenBtn,
-                                        icon: fullScreenBtnIcon,
-                                        onIcon: icons.staticMaximizeOn,
-                                        offIcon: icons.staticMaximizeOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('disabled');
-                                            var maximize = function (screen) {
-                                                if (Q.info.isMobile)
-                                                    tool.webrtcRoomInstance.screenRendering.renderMaximizedScreensGridMobile(screen, 300);
-                                                else tool.webrtcRoomInstance.screenRendering.renderFullScreenLayout(screen, 300);
-                                            }
-                                            var activeScreen = tool.webrtcRoomInstance.screenRendering.getActiveSreen();
-                                            if (activeScreen != null) {
-                                                maximize(activeScreen);
-                                            } else {
-                                                var screens = tool.webrtcRoomInstance.screenRendering.getScreens();
-                                                maximize(screens[0]);
-                                            }
-                                        }
-                                    },
-                                    {
-                                        viewMode: 'audio',
-                                        btn: audioLayoutBtn,
-                                        icon: audioLayoutBtnIcon,
-                                        onIcon: icons.audioLayoutOn,
-                                        offIcon: icons.audioLayoutOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('disabled');
-                                            if (Q.info.isMobile) {
-                                                tool.webrtcRoomInstance.screenRendering.renderAudioScreensGrid();
-                                            } else {
-                                                tool.webrtcRoomInstance.screenRendering.renderAudioScreensGrid();
-                                            }
-                                        }
-                                    }
-                                ];
-
-                                if (!Q.info.isMobile) {
-                                    buttonsArr.unshift({
-                                        viewMode: 'floatingView',
-                                        btn: floatingViewModeBtn,
-                                        icon: floatingViewModeBtnIcon,
-                                        onIcon: icons.freeViewModeOn,
-                                        offIcon: icons.freeViewModeOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('disabled');
-                                            tool.webrtcRoomInstance.screenRendering.renderDesktopScreensGrid();
-                                        }
-                                    })
-                                    buttonsArr.push({
-                                        viewMode: 'manual',
-                                        btn: manualLayoutBtn,
-                                        icon: manualLayoutBtnIcon,
-                                        onIcon: icons.dragIconOn,
-                                        offIcon: icons.dragIconOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('disabled');
-                                            tool.webrtcRoomInstance.screenRendering.renderManualScreensGrid();
-
-                                        }
-                                    })
-                                }
-                                if (Q.info.isMobile) {
-                                    buttonsArr.unshift({
-                                        viewMode: 'squaresView',
-                                        btn: squaresViewModeBtn,
-                                        icon: squaresViewModeBtnIcon,
-                                        onIcon: icons.squaresViewModeOn,
-                                        offIcon: icons.squaresViewModeOff,
-                                        handler: function () {
-                                            tool.webrtcRoomInstance.screenRendering.toggleLoudestScreenMode('disabled');
-                                            if (Q.info.isMobile)
-                                                tool.webrtcRoomInstance.screenRendering.renderSquaresGridMobile();
-                                            else tool.webrtcRoomInstance.screenRendering.renderSquaresGridMobile();
-                                        }
-                                    })
-
-                                }
-
                                 for (var b in buttonsArr) {
-                                    buttonsArr[b].btn.addEventListener('mouseup', function (e) {
-                                        toggleViewMode(e, buttonsArr);
-                                    });
+                                    topBtns.appendChild(buttonsArr[b].btn);
                                 }
-
-                                tool.toggleViewBtns = buttonsArr;
-                            } else {
-                                participantsPopupEl.appendChild(topBtns);
                             }
+
+                            tool.toggleViewBtns = buttonsArr;
+                            
 
                             participantsPopupEl.appendChild(tool.participantsListTool.toolContainer)
 
@@ -2145,8 +1903,6 @@
                         }
                     }())
                     tool.participantsPopup.createPopup();
-
-                    if(callback) callback();
                 }
                     
                     
@@ -2421,7 +2177,6 @@
                     //turn on mic+show avatar; turn on mic+camera
                     selectMediaDialog: function (callback, onCloseCallback) {
                         tool.webrtcSignalingLib.localMediaControls.getRoomLimitsInfo().then(function (result) {
-                            console.log('selectMediaDialog')
                             let dialogCon = document.createElement('DIV');
                             dialogCon.className = 'Media_webrtc_request_speak_con'
                             let dialogInner = document.createElement('DIV');

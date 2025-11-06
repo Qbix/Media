@@ -905,7 +905,6 @@
         
                 async function retrieveBlobs(fileHandles, blobs) {
                     let handle = fileHandles.shift();
-                    console.log('retrieveBlobs', fileHandles, handle)
                     let file = await handle.getFile()
                     blobs.push(file);
                     if(fileHandles.length != 0) {
