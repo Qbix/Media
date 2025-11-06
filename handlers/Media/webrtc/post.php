@@ -89,6 +89,47 @@ function Media_webrtc_post($params = array())
             }
     
             return Q_Response::setSlot('data', ['cmd'=> $cmd, 'streamWasClosed' =>  $streamWasClosed, 'userIsOnline' => $userIsOnline, 'publisherId' => $publisherId, 'streamName' => $streamName]);
+        } else if($cmd == 'postMessageToWebRTCStream') {
+            //This handler is called from node.js as posting messages to a stream directly in node.js does not trigger before/after hooks in Qbix
+            $messageType = Q::ifset($params, 'messageType', null);
+            $livestreamPublisherId = Q::ifset($params, 'livestreamPublisherId', null);
+            $livestreamStreamName = Q::ifset($params, 'livestreamStreamName', null);
+
+            if (!$loggedInUserId) {
+                throw new Users_Exception_NotAuthorized();
+            }
+            if (!$messageType || !$livestreamPublisherId || !$livestreamStreamName) {
+                throw new Exception('streamName, publisherId, hostSocketId are required');
+            }
+
+            /* $webrtcStream = Media_WebRTC::getRoomStreamRelatedTo($livestreamPublisherId, $livestreamStreamName, null, null, 'Media/webrtc/livestream', true);
+
+            $webrtcStream->post($publisherId, array(
+                'type' => $messageType,
+                'instructions' => ['livestreamPublisherId' => $livestreamPublisherId, 'livestreamStreamName' => $livestreamStreamName]
+            )); */
+
+            $relatedWebRTCStreams = Streams::related($loggedInUserId, $livestreamPublisherId, $livestreamStreamName, false, array(
+                "type" => "Media/webrtc/livestream",
+                "skipAccess" => true,
+                "streamsOnly" => false,
+                "dontFilterUsers" => true,
+                "where" => ['toStreamName != ' => 'Streams/participating', 'toStreamName LIKE ' => 'Media/webrtc/%']
+            ));
+
+            if (count($relatedWebRTCStreams[0]) != 0) {
+                $webrtcStream = Streams_Stream::fetch(null, $relatedWebRTCStreams[0][0]->fields['toPublisherId'], $relatedWebRTCStreams[0][0]->fields['toStreamName']);
+
+                if ($webrtcStream) {
+                    $webrtcStream->post($loggedInUserId, array(
+                        'type' => $messageType,
+                        'instructions' => ['livestreamPublisherId' => $livestreamPublisherId, 'livestreamStreamName' => $livestreamStreamName]
+                    ));
+                }
+            }
+           
+
+            return Q_Response::setSlot('data', ['cmd'=> $cmd]);
         }
     } else if(Q_Request::slotName('closeIfOffline')) {
         if (!$loggedInUserId) {
@@ -361,6 +402,8 @@ function Media_webrtc_post($params = array())
             throw new Users_Exception_NotAuthorized();
         }
 
+        Media_WebRTC::createAccessForContactLabelsIfNotExist($publisherId, $streamName);
+
         $personalAccess = false;
         $access = new Streams_Access();
         $access->publisherId = $publisherId;
@@ -571,112 +614,7 @@ function Media_webrtc_post($params = array())
         $publisherId = Q::ifset($params, 'publisherId', null);
         $meetingParams = Q::ifset($params, 'meetingParams', null);
 
-        //update existing room stream
-        if (!is_null($streamName) && !is_null($publisherId)) {
-            $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $publisherId, $streamName);
-
-            if (is_null($webrtcStream)) {
-                throw new Exception("Stream not found");
-            }
-            if(!$webrtcStream->testAdminLevel('manage')) {
-                throw new Users_Exception_NotAuthorized();
-            }
-
-        } else {
-            //create (schedule) new room stream
-
-            if(is_null($meetingParams)) {
-                throw new Q_Exception_RequiredField(array('field' => 'meetingParams'));
-            }
-
-            $accessLevels = $meetingParams['accessType'] == 'trusted' ? ['readLevel' => 0, 'writeLevel' => 0, 'adminLevel' => 0] : ['readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20];
-            $webrtcStream = Media_WebRTC::getOrCreateRoomStream(Users::loggedInUser(true)->id, null, false, $accessLevels, null);
-        }
-
-        $webrtcStream->setAttribute('scheduledStartTime', $meetingParams['startTimeTs']);
-        $webrtcStream->setAttribute('scheduledEndTime', $meetingParams['endTimeTs']);
-        $webrtcStream->setAttribute('timeZoneString', $meetingParams['timeZoneString']);
-        $webrtcStream->setAttribute('accessType', $meetingParams['accessType']);
-        $webrtcStream->setAttribute('scheduleLivestream', $meetingParams['scheduleLivestream']);
-        if(!empty($meetingParams['topic'])) {
-            $webrtcStream->title = $meetingParams['topic'];
-        }
-
-        if($meetingParams['accessType'] == 'trusted') {
-            $webrtcStream->adminLevel = 0;
-            $webrtcStream->writeLevel = 0;
-            $webrtcStream->readLevel = 0;
-        } else if($meetingParams['accessType'] == 'open') {
-            $webrtcStream->readLevel = Streams::$READ_LEVEL['max'];
-            $webrtcStream->writeLevel = Streams::$WRITE_LEVEL['relate'];
-            $webrtcStream->adminLevel = Streams::$ADMIN_LEVEL['invite'];
-        }
-
-        $webrtcStream->changed();
-        $webrtcStream->save();
-
-        $invites = Streams_Invite::select()->where(
-            array(
-                'streamName' => $streamName,
-                'publisherId' => $publisherId,
-                'invitingUserId' => Users::loggedInUser(true)->id,
-                'userId !=' => ''
-            ))->fetchDbRows();
-
-        $usersToInvite = $meetingParams['invitedAttendeesIds'] ? $meetingParams['invitedAttendeesIds'] : [];
-
-        //remove invites for users who were removed from "attendees" AND remove redundant (duplicate) invites just in case
-        $groupedByUserId = [];
-        foreach ($invites as $item) {
-            $groupedByUserId[$item->fields['userId']][] = $item;
-        }
-        $mostRecentTimes = [];
-        foreach ($groupedByUserId as $id => $items) {
-            usort($items, function ($a, $b) {
-                return strtotime($b->fields['insertedTime']) - strtotime($a->fields['insertedTime']);
-            });
-            $mostRecentTimes[$id] = $items[0]->fields['insertedTime'];
-        }
-
-        $invitesToRemove = array_filter($invites, function ($item) use ($mostRecentTimes, $usersToInvite) {
-            return $item->fields['insertedTime'] !== $mostRecentTimes[$item->fields['userId']] || array_search($item->fields['userId'], $usersToInvite) === false;
-        });
-
-        foreach ($invitesToRemove as $item) {
-            $item->remove();
-            $access = new Streams_Access();
-            $access->publisherId = $publisherId;
-            $access->streamName = $streamName;
-            $access->ofUserId = $item->fields['userId'];
-            if($access->retrieve()) {
-                $access->remove();
-            }
-            if(!empty($item->fields['userId'])) {
-                Media_WebRTC::cancelAccessToRoom($publisherId, $streamName, $item->fields['userId']);
-            }
-        }
-
-        //skip existing invites and invites and send invites only to users who was not previously invited
-        $newInvites = array_filter($usersToInvite, function ($userId) use ($invites) {
-            foreach ($invites as $invite) {
-                if ($invite->fields['userId'] == $userId) {
-                    return false;
-                }
-            }
-            return true;
-        });
-
-        if (count($newInvites) !== 0) {
-            $uri = Q_Uri::url("Media/meeting");
-            $webrtcStream->invite(['userId' => $newInvites], ['appUrl' => $uri, 'readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20]);
-        }
-
-        if(filter_var($meetingParams['scheduleLivestream'], FILTER_VALIDATE_BOOLEAN) === true) {
-            
-            $response['livestreamStream'] = Media_Livestream::createOrUpdateLivestreamStream($publisherId, $streamName, !is_null($meetingParams['startTimeTs']) && !empty($meetingParams['startTimeTs']) ? $meetingParams['startTimeTs'] / 1000 : null);
-        }
-
-        $response['webrtcStream'] = $webrtcStream;
+        $response = Media_WebRTC::scheduleOrUpdateRoomStream($streamName, $publisherId, $meetingParams);        
 
         Q_Response::setSlot("scheduleOrUpdateRoomStream", $response);
 

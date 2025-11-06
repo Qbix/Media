@@ -22,6 +22,7 @@
         tool.attendeesContainerEl = null;
         tool.openAccessTypeInputEl = null;
         tool.trustedAccessTypeInputEl = null;
+        tool.invitedAttendeesList = [];
 
         if(tool.state.publisherId && tool.state.streamName) {
             tool.getWebRTCStream().then(function () {
@@ -31,16 +32,20 @@
                 tool.state.meetingParams.timeZoneString = tool.webrtcStream.getAttribute('timeZoneString');
                 tool.state.meetingParams.accessType = tool.webrtcStream.getAttribute('accessType');
                 tool.state.meetingParams.scheduleLivestream = tool.webrtcStream.getAttribute('scheduleLivestream') == "true";
+                tool.createUI();
                 tool.getInvitedPeople().then(function (invitedUsers) {
                     tool.invitedUsers = invitedUsers;
                     for(let i in invitedUsers) {
                         tool.addInvitedUser(invitedUsers[i].fields.userId, invitedUsers[i])
                     }
                 });
-                tool.createUI();
+                
             });
         } else {
             tool.createUI();
+            for(let i in tool.state.meetingParams.invitedAttendeesIds) {
+                 tool.addInvitedUser(tool.state.meetingParams.invitedAttendeesIds[i])
+            }
         }
 
         
@@ -49,13 +54,16 @@
         {
             publisherId: null,
             streamName: null,
+            showSaveButton: false,
+            showCancelButton: false,
             meetingParams:{
                 topic: null,
+                invitedAttendeesIds: [],
+                scheduleLivestream: false,
+                accessType: 'trusted',
                 startTimeTs: null,
                 endTimeTs: null,
                 timeZoneString: null,
-                invitedAttendeesIds: [],
-                accessType: null,
             },
             onSave: new Q.Event(),
             onRefresh: new Q.Event(),
@@ -177,9 +185,10 @@
                 topicFieldInput.placeholder = 'e.g. Daily Meeting';
                 topicFieldInput.type = 'text';
                 topicFieldInput.className = 'webrtc-scheduler-topic-input';
+                topicFieldInput.value = tool.state.meetingParams.topic;
                 topicField.appendChild(topicFieldInput)
-                topicFieldInput.addEventListener('input', function () {
-                    tool.state.meetingParams.topic = topicFieldInput.vlaue;
+                topicFieldInput.addEventListener('input', function (e) {
+                    tool.state.meetingParams.topic = e.target.value;
                 });
 
                 if(tool.state.meetingParams.topic) {
@@ -306,7 +315,7 @@
                 accessTypeField.appendChild(trustedFieldLabel);
                 let trustedFieldInput = document.createElement('INPUT');
                 trustedFieldInput.type = 'radio';
-                trustedFieldInput.checked = tool.state.meetingParams.accessType == 'trusted';
+                trustedFieldInput.checked = !tool.state.meetingParams.accessType || tool.state.meetingParams.accessType == 'trusted';
                 trustedFieldInput.name = 'accessType';
                 trustedFieldInput.className = 'webrtc-scheduler-accessType-input';
                 trustedFieldLabel.appendChild(trustedFieldInput);
@@ -337,6 +346,10 @@
                 livestreamInput.name = 'scheduleLivestream';
                 livestreamInput.className = 'webrtc-scheduler-scheduleLivestream-input';
                 livestreamLabel.appendChild(livestreamInput);
+                livestreamInput.addEventListener('change', function (e) {
+                    tool.state.meetingParams.scheduleLivestream = e.target.checked;
+                });
+
                 let livestreaDesc = document.createElement('DIV');
                 livestreaDesc.className = 'webrtc-scheduler-livestream-desc';
                 livestreamLabel.appendChild(livestreaDesc);
@@ -379,46 +392,49 @@
                 result.className = 'webrtc-scheduler-result';
                 buttons.appendChild(result);
 
-                let cancelButton = document.createElement('DIV');
-                cancelButton.className = 'Q_button webrtc-scheduler-button-cancel';
-                cancelButton.innerHTML = 'Cancel';
-                buttons.appendChild(cancelButton);
+                if (tool.state.showCancelButton) {
+                    let cancelButton = document.createElement('DIV');
+                    cancelButton.className = 'Q_button webrtc-scheduler-button-cancel';
+                    cancelButton.innerHTML = 'Cancel';
+                    buttons.appendChild(cancelButton);
+                }
 
-                let okButton = document.createElement('DIV');
-                okButton.className = 'Q_button webrtc-scheduler-button-ok';
-                okButton.innerHTML = 'Save';
-                buttons.appendChild(okButton);
+                if (tool.state.showSaveButton) {
+                    let okButton = document.createElement('DIV');
+                    okButton.className = 'Q_button webrtc-scheduler-button-ok';
+                    okButton.innerHTML = 'Save';
+                    buttons.appendChild(okButton);
 
+                    okButton.addEventListener('click', function () {
+                        okButton.classList.add('Q_working');
+                        tool.state.meetingParams.topic = topicFieldInput.value;
+                        //tool.state.meetingParams.startTimeTs = tool.startTimePicker.getTime();
+                        //tool.state.meetingParams.endTimeTs = tool.endTimePicker.getTime();
+                        //tool.state.meetingParams.timeZoneString = timeZoneSelect.value;
+                        tool.state.meetingParams.accessType = trustedFieldInput.checked ? 'trusted' : 'open';
+                        tool.state.meetingParams.scheduleLivestream = livestreamInput.checked;
 
-                okButton.addEventListener('click', function () {
-                    okButton.classList.add('Q_working');
-                    tool.state.meetingParams.topic = topicFieldInput.value;
-                    //tool.state.meetingParams.startTimeTs = tool.startTimePicker.getTime();
-                    //tool.state.meetingParams.endTimeTs = tool.endTimePicker.getTime();
-                    //tool.state.meetingParams.timeZoneString = timeZoneSelect.value;
-                    tool.state.meetingParams.accessType = trustedFieldInput.checked ? 'trusted' : 'open';
-                    tool.state.meetingParams.scheduleLivestream = livestreamInput.checked;
+                        tool.createOrUpdateWebRTCStream().then(function (response) {
+                            okButton.classList.remove('Q_working');
+                            result.innerHTML = '';
+                            let successEl = document.createElement('SPAN');
+                            successEl.className = 'webrtc-scheduler-result-suucess';
+                            successEl.innerHTML = tool.state.publisherId ? 'Meeting updated' : 'Meeting scheduled';
+                            result.appendChild(successEl);
 
-                    tool.createOrUpdateWebRTCStream().then(function (resoponse) {
-                        okButton.classList.remove('Q_working');
-                        result.innerHTML = '';
-                        let successEl = document.createElement('SPAN');
-                        successEl.className = 'webrtc-scheduler-result-suucess';
-                        successEl.innerHTML = tool.state.publisherId ? 'Meeting updated' : 'Meeting scheduled';
-                        result.appendChild(successEl);
-                        
-                        Q.handle(tool.state.onSave, null, [resoponse]);
-                    }).catch(function (msg) {
-                        result.innerHTML = '';
-                        let errorEl = document.createElement('SPAN');
-                        errorEl.className = 'webrtc-scheduler-result-error';
-                        errorEl.innerHTML = msg;
-                        result.appendChild(errorEl);
+                            Q.handle(tool.state.onSave, null, [response]);
+                        }).catch(function (msg) {
+                            result.innerHTML = '';
+                            let errorEl = document.createElement('SPAN');
+                            errorEl.className = 'webrtc-scheduler-result-error';
+                            errorEl.innerHTML = msg;
+                            result.appendChild(errorEl);
 
-                        okButton.classList.remove('Q_working');
+                            okButton.classList.remove('Q_working');
+                        });
+
                     });
-                    
-                });
+                }
 
                 parentContainer.appendChild(widgetContainer);
 
@@ -434,10 +450,11 @@
                     tool.addInvitedUser(Q.Users.loggedInUserId());
                 } */
                 tool.addInvitedUser = function(userId, inviteRow) {             
-                    if(tool.state.meetingParams.invitedAttendeesIds.indexOf(userId) !== -1) {
+                    if(tool.invitedAttendeesList[userId] != null) {
                         return;
                     }
                     tool.state.meetingParams.invitedAttendeesIds.push(userId);
+                    
                     var userItem = document.createElement("TR");
                     userItem.className = 'webrtc-scheduler-attendees-roles-item';
                     var userItemAvatar = document.createElement("TD");
@@ -461,7 +478,11 @@
                     removeUserBtns.appendChild(removeUserBtn);
 
                     selectedUsers.appendChild(userItem)
-
+                    
+                    tool.invitedAttendeesList[userId] = {
+                        userId: userId,
+                        element: userItem
+                    };
                     Q.activate(
                         Q.Tool.setUpElement(
                             userItemAvatar, // or pass an existing element
@@ -483,6 +504,7 @@
                                     break;
                                 }
                             }
+                            delete tool.invitedAttendeesList[userId];
                             userItem.parentElement.removeChild(userItem);
                         }
                     });
