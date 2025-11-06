@@ -24,7 +24,7 @@ function Media_after_Communities_profile_tabs ($params, &$results) {
 		}
 
 		// skip importEvents if no permissions
-		if($tab == "clips" && !$isAdmin) {
+		if($tab == "importEvents" && !$isAdmin) {
 			continue;
 		}
 
