@@ -126,12 +126,8 @@
                 }
             };
             this.removeFilter = function (filterInstance) {
-                console.log('removeFilter', filterInstance)
                 for(let i = thisInstance.filters.length - 1; i >= 0; i--) {
-                    console.log('removeFilter for', thisInstance.filters[i])
-
                     if(thisInstance.filters[i] == filterInstance) {
-                        console.log('removeFilter for remove', thisInstance.filters[i])
                         let workerMessage = {
                             cmd: 'removeFilterFromTrack',
                             trackId: thisInstance.id,
@@ -149,7 +145,6 @@
                     return;
                 }
                 this.stopped = true;
-                console.log('trackProcessor STOP')
                 this.worker.postMessage({ cmd: 'removeTrack', trackId: this.id }, []);
                 this.workerInfo.tracksCounter = this.workerInfo.tracksCounter - 1;
                 this.eventDispatcher.dispatch('stop');
@@ -165,7 +160,6 @@
             this.videoTrackProcessor = null;
             this._active = null;
             this.updateParam = function (paramName, value) {
-                console.log('updateFilterParam', paramName, value)
                 thisInstance[paramName] = value;
                 this.videoTrackProcessor.worker.postMessage({
                     cmd: 'updateFilterParam',
@@ -201,7 +195,6 @@
             let logicalProcessorsNum = navigator.hardwareConcurrency;
             let i = 0;
             while (i < logicalProcessorsNum) {
-                console.log('workerUrl', workerUrl)
                 let worker = new Worker(workerUrl);
                 processorInstance.workersPool.push({
                     worker:worker,
@@ -220,14 +213,8 @@
         }
 
         this.removeFilter = function (filter, track) {
-            console.log('removeFilter', filter, track)
-            if (!poolInstance.appliedFilters[track.id]) return;
-            console.log('removeFilter 2', poolInstance.appliedFilters[track.id].filters)
-            
+            if (!poolInstance.appliedFilters[track.id]) return;            
                 for (let i = poolInstance.appliedFilters[track.id].filters.length - 1; i >= 0; i--) {
-
-                    console.log('removeFilter 2', poolInstance.appliedFilters[track.id].filters[i])
-
                     if (poolInstance.appliedFilters[track.id].filters[i] == filter) {
                         poolInstance.appliedFilters[track.id].worker.workerInstance.postMessage({
                             cmd: 'removeFiltersFromTrack',
@@ -235,7 +222,6 @@
                             trackId: track.id
                         })
 
-                        console.log('removeFilter 3')
                         poolInstance.appliedFilters[track.id].filters.splice(i, 1);
                         break;
                     }
@@ -245,7 +231,6 @@
 
         this.addVideoTrack = function (mediaStreamTrack, filters) {
             //mediaStreamTrack = mediaStreamTrack.clone();
-            console.log('addVideoTrack START', mediaStreamTrack, mediaStreamTrack.readyState)
             if(!mediaStreamTrack || mediaStreamTrack.kind != 'video') {
                 console.warn('Wrong type of track')
                 return;
@@ -286,16 +271,12 @@
             }, false); */
            /*  const transformer = new TransformStream({
                 async transform(videoFrame, controller) {
-                    console.log('aaaaaa')
                   videoFrame.close();
                 },
               });
               videoTrack.trackProcessor.readable.pipeThrough(transformer).pipeTo(videoTrack.generatedTrack.writable); */
             
-            videoTrack.worker.postMessage({ cmd: 'addTrack', trackId: videoTrack.id, trackProcessor: videoTrack.trackProcessor.readable, generatedTrack: videoTrack.generatedTrack.writable }, [videoTrack.trackProcessor.readable, videoTrack.generatedTrack.writable]);
-              console.log('videoTrack.generatedTrack', videoTrack.generatedTrack)
-          
-
+            videoTrack.worker.postMessage({ cmd: 'addTrack', trackId: videoTrack.id, trackProcessor: videoTrack.trackProcessor.readable, generatedTrack: videoTrack.generatedTrack.writable }, [videoTrack.trackProcessor.readable, videoTrack.generatedTrack.writable]);       
             return videoTrack;
         }
 

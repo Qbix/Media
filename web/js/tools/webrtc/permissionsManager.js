@@ -133,7 +133,6 @@
                 }, tool);
 
                 roomStream.onMessage("Media/webrtc/addOrRemoveCohost").set(function (message) {
-                    console.log('bindStreamsEvents: Media/webrtc/addOrRemoveCohost', message);
                     var insturctions = JSON.parse(message.instructions);
                     if (!insturctions.ofUserId) {
                         return;
@@ -155,101 +154,6 @@
                 container.appendChild(table);
 
 
-            },
-            createAccessSettings: function () {
-                var tool = this;
-                let currentInheritAccess = tool.roomStream.fields.inheritAccess ? JSON.parse(tool.roomStream.fields.inheritAccess) : [];
-                console.log('currentInheritAccess', currentInheritAccess, tool.roomStream.fields.readLevel)
-                let maxReadLevel = tool.roomStream.fields.readLevel == 40;
-                let streamAccess = document.createElement('DIV');
-                streamAccess.className = 'webrtc-permissions-access';
-                let conferencePrivacy = document.createElement('LABEL');
-                conferencePrivacy.className = 'webrtc-permissions-access-privacy';
-                streamAccess.appendChild(conferencePrivacy);
-                let conferencePrivacyText = document.createElement('SPAN');
-                conferencePrivacyText.innerHTML = "General access";
-                conferencePrivacy.appendChild(conferencePrivacyText);
-                
-                let privacySelect = document.createElement('SELECT');
-                privacySelect.className = 'webrtc-permissions-access-select';
-                conferencePrivacy.appendChild(privacySelect);
-                let publicAccess = document.createElement('OPTION');
-                publicAccess.className = 'webrtc-permissions-access-option';
-                publicAccess.value = 'public';
-                publicAccess.selected = maxReadLevel ? true : false;
-                publicAccess.innerHTML = 'Public';
-                privacySelect.appendChild(publicAccess);
-                let privateAccess = document.createElement('OPTION');
-                privateAccess.className = 'webrtc-permissions-access-option';
-                privateAccess.value = 'private';
-                privateAccess.selected = !maxReadLevel ? true : false;
-                privateAccess.innerHTML = 'Private';
-                privacySelect.appendChild(privateAccess);
-
-
-                let inheritAccessCon = document.createElement('DIV');
-                inheritAccessCon.className = 'webrtc-permissions-access-inherit';
-                streamAccess.appendChild(inheritAccessCon);
-
-                tool.getRelatedFromStreams().then(function (streams) {
-                    console.log('related streams', streams)
-                    for (let i in streams) {
-                        let inheritAccessLabel = document.createElement('LABEL');
-                        let inheritAccessInput = document.createElement('INPUT');
-                        inheritAccessInput.type = 'checkbox';
-                        inheritAccessInput.className = 'webrtc-permissions-inherit-option';
-                        inheritAccessInput.value = 'inherit_' + streams[i].fields.publisherId + '_' + streams[i].fields.name;
-                        inheritAccessInput.checked = findSubarrayIndex(currentInheritAccess, streams[i].fields.publisherId, streams[i].fields.name) != -1 ? true : false;
-                        inheritAccessLabel.appendChild(inheritAccessInput);
-                        let labelText = document.createElement('SPAN');
-                        labelText.innerHTML = 'Inherit access from ' + streams[i].fields.title;
-                        inheritAccessLabel.appendChild(labelText);
-                        inheritAccessCon.appendChild(inheritAccessLabel);
-
-                        inheritAccessInput.addEventListener('change', function () {
-                            if (inheritAccessInput.checked) {
-                                tool.changeGeneralAccess('addInheritFromStream', streams[i]);
-                            } else {
-                                tool.changeGeneralAccess('removeInheritFromStream', streams[i]);
-                            }
-                        })
-                    }
-                });
-
-                privacySelect.addEventListener('change', function () {
-                    tool.changeGeneralAccess(privacySelect.value == 'public' ? 'makeStreamPublic' : 'makeStreamPrivate');
-                });
-
-                function findSubarrayIndex(array, firstElement, secondElement) {
-                    for (let i = 0; i < array.length; i++) {
-                        if (array[i][0] === firstElement && array[i][1] === secondElement) {
-                            return i;
-                        }
-                    }
-                    return -1; // Return -1 if no matching subarray is found
-                }
-
-                return streamAccess;
-
-            },
-            getRelatedFromStreams: function () {
-                var tool = this;
-                return new Promise(function (resolve, reject) {
-                    Q.Streams.related(
-                        tool.roomStream.fields.publisherId,
-                        tool.roomStream.fields.name,
-                        null,
-                        false,
-                        { limit: 1 },
-                        function (err) {
-                            if (err) {
-                                console.warn('Error while retrieving related streams');
-                                reject();
-                            }
-                            resolve(this.relatedStreams);
-                        }
-                    );
-                });
             },
             refreshList: function () {
                 var tool = this;
@@ -393,13 +297,10 @@
             refreshPublicPermissions: function (updatedAccess) {
                 var tool = this;
                 if (!updatedAccess.permissions) return;
-                console.log('refreshPublicPermissions', updatedAccess);
                 let micIsAllowed = updatedAccess.permissions.indexOf('mic') != -1;
                 let cameraIsAllowed = updatedAccess.permissions.indexOf('camera') != -1;
                 let screenIsAllowed = updatedAccess.permissions.indexOf('screen') != -1;
                 for (let i = tool.participantsList.length - 1; i >= 0; i--) {
-                    console.log('refreshPublicPermissions item', tool.participantsList[i]);
-
                     if (tool.participantsList[i].personalAccess == true) {
                         continue;
                     }
@@ -432,12 +333,10 @@
             refreshPersonalPermissions: function (updatedAccess, ofUserId) {
                 var tool = this;
                 if (!updatedAccess.permissions) return;
-                console.log('refreshPublicPermissions', updatedAccess);
                 let micIsAllowed = updatedAccess.permissions.indexOf('mic') != -1;
                 let cameraIsAllowed = updatedAccess.permissions.indexOf('camera') != -1;
                 let screenIsAllowed = updatedAccess.permissions.indexOf('screen') != -1;
                 for (let i = tool.participantsList.length - 1; i >= 0; i--) {
-                    console.log('refreshPublicPermissions item', tool.participantsList[i]);
                     if (tool.participantsList[i].userId != ofUserId) {
                         continue;
                     }
@@ -497,9 +396,7 @@
                     }
                 }
                 tool.getUserPermission(userId).then(function (access) {
-                    console.log('getUserPermission: access', access)
                     let userPermissions = access.permissions ? access.permissions : [];
-                    console.log('userPermissions', userPermissions)
                     let micIsNotAllowed = userPermissions.indexOf('mic') == -1;
                     let cameraIsNotAllowed = userPermissions.indexOf('camera') == -1;
                     let screenIsNotAllowed = userPermissions.indexOf('screen') == -1;
@@ -684,31 +581,6 @@
                     });
                 });
             },
-            changeGeneralAccess: function (actionToDo, streamInfo) {
-                var tool = this;
-                return new Promise(function (resolve, reject) {
-                    Q.req("Media/webrtc", ['setOrRemoveGeneralAccess'], function (err, response) {
-                        var msg = Q.firstErrorMessage(err, response && response.errors);
-
-                        if (msg) {
-                            reject(msg);
-                            console.error(msg)
-                            return;
-                        }
-
-                        resolve()
-                    }, {
-                        method: 'post',
-                        fields: {
-                            publisherId: tool.roomStream.fields.publisherId,
-                            streamName: tool.roomStream.fields.name,
-                            actionToDo: actionToDo,
-                            relatedStreamName: streamInfo ? streamInfo.fields.name : null,
-                            relatedStreamPublisherId: streamInfo ? streamInfo.fields.publisherId : null
-                        }
-                    });
-                });
-            },
             addOrRemoveGlobalPermission: function (permissionName, action) {
                 var tool = this;
                 return new Promise(function (resolve, reject) {
@@ -760,7 +632,6 @@
             },
             getUserPermission: function (ofUserId) {
                 var tool = this;
-                console.log('getUserPermission', tool.roomStream)
                 return new Promise(function (resolve, reject) {
                     Q.req("Media/webrtc", ['personalPermissions'], function (err, response) {
                         var msg = Q.firstErrorMessage(err, response && response.errors);
@@ -770,7 +641,6 @@
                             console.error(msg)
                             return;
                         }
-                        console.log('response', response);
                         resolve(response.slots.personalPermissions)
                     }, {
                         method: 'get',
@@ -784,7 +654,6 @@
             },
             resetUserPermissionToGlobal: function (ofUserId) {
                 var tool = this;
-                console.log('resetUserPermissionToGlobal', tool.roomStream.fields.name)
                 return new Promise(function (resolve, reject) {
                     Q.req("Media/webrtc", ['resetPersonalPermissions'], function (err, response) {
                         var msg = Q.firstErrorMessage(err, response && response.errors);
@@ -794,7 +663,6 @@
                             console.error(msg)
                             return;
                         }
-                        console.log('response', response);
                         resolve()
                     }, {
                         method: 'post',

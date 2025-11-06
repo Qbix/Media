@@ -124,12 +124,8 @@
                         roomPublisherId: stream.fields.publisherId,
                         mode: 'node',
                         startWith: {video: false, audio: true},
-                        onWebRTCRoomCreated: function() {
-                            console.log('onWebRTCRoomCreated', this);
-                        },
-                        onWebrtcControlsCreated: function() {
-                            console.log('onWebrtcControlsCreated', this);
-                        }
+                        onWebRTCRoomCreated: function() { },
+                        onWebrtcControlsCreated: function() { }
                     });
                     WebConference.start();
                     $e.stopImmediatePropagation();

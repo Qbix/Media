@@ -21,7 +21,6 @@
 
             var tool = this;
             var state = this.state;
-            console.log('center: Media/calls', state);
 
             var pipe = new Q.Pipe(["style", "text", "stream"], function () {
                 //if user is host, init main room and show settings button (gear)
@@ -34,8 +33,6 @@
                     tool.state.eventsStream.onMessage("Media/webrtc/guest").set(function (message) {
                         let instructions = JSON.parse(message.instructions);
 
-                        console.log('Media/webrtc/guest instructions', instructions)
-                        console.log('instructions state.waitingRoom', state.waitingRoom)
                         if(instructions.joined) {
                             if(instructions.userId == Q.Users.loggedInUserId()) {
                                 if(state.waitingRoom != null) {
@@ -67,8 +64,6 @@
                 }
             });
 
-            console.log('center: Media/calls: get stream', state.publisherId, state.streamName);
-
             Streams.get.force(state.publisherId, state.streamName, function (err) {
                 var msg = Q.firstErrorMessage(err);
                 if (msg) {
@@ -77,7 +72,6 @@
 
                 // join every user to allow get messages
                 this.join();
-                console.log('center: Media/calls: get stream stream', this);
 
                 tool.stream = this;
 
@@ -147,15 +141,11 @@
              * @param {boolean} state
              */
             getMaxCalls: function () {
-                console.log('getMaxCalls', this.stream);
-                console.log('getMaxCalls2', this.state.relationType);
                 return Q.getObject(this.state.relationType, this.stream.getAttribute("maxRelations")) || 0;
             },
             initMainRoom: function() {
                 var tool = this;
                 var mainRoomStream = tool.state.mainRoomConfig.mainRoomStream;
-                console.log('calls: initMainRoom mainRoomStream', mainRoomStream.fields.publisherId, mainRoomStream.fields.name);
-                console.log('calls: initMainRoom eventsStream', tool.state.eventsStream.fields.publisherId, tool.state.eventsStream.fields.name);
                 var WebRTCClientUI = tool.state.mainWebrtcRoom = Media.WebRTC.start({
                     element: tool.state.mainRoomConfig.mainRoomContainer,
                     audioOnlyMode: true,
@@ -183,24 +173,15 @@
                 });
 
                 WebRTCClientUI.screenRendering.layoutEvents.on('layoutRendered', function (e) {
-                    /*console.log('EVENT LAYOUT');
-                    let mediaContainer = WebRTCClientUI.roomsMediaContainer();
-                    console.log('EVENT LAYOUT 2',mediaContainer);
+                    /*let mediaContainer = WebRTCClientUI.roomsMediaContainer();
 
                     if(!mediaContainer) return;
-                    console.log('EVENT LAYOUT 3', e);
 
                     if(e.viewMode != 'audio') {
                         if(document.body.firstChild) document.body.insertBefore(mediaContainer, document.body.firstChild);
-                        console.log('EVENT LAYOUT if1');
-
                     } else if(tool.state.activeRoom == 'main') {
-                        console.log('EVENT LAYOUT if2');
-
                         tool.state.mainRoomConfig.mainRoomContainer.appendChild(mediaContainer);
                     } else if(tool.state.activeRoom == 'waiting') {
-                        console.log('EVENT LAYOUT if3');
-
                         var activePreviewTool = tool.state.activePreview;
                         if(!activePreviewTool) return;
                         var previewMediaContainer = activePreviewTool.element.querySelector('.Streams_preview_media_container');
@@ -227,7 +208,6 @@
                     disconnectBtn.addEventListener('click', function () {
                         Q.req('Media/calls', 'manage', function () {
                             //tool.preview.delete();
-                            console.log('Media/webrtc/forceDisconnect');
                             tool.state.mainRoomConfig.mainRoomStream.post({
                                 type: 'Media/webrtc/forceDisconnect',
                                 content: JSON.stringify({
@@ -252,7 +232,6 @@
                     })
 
                     WebRTCClientUI.events.on('beforeRoomSwitch', function (e) {
-                        console.log('beforeRoomSwitch', e);
                         if(e.to.name == tool.state.mainRoomConfig.mainRoomStream.fields.name && e.to.publisherId == tool.state.mainRoomConfig.mainRoomStream.fields.publisherId) {
                             disconnectBtn.style.display = 'block';
                         } else {
@@ -261,7 +240,6 @@
                     });
                 })
 
-                console.log('tool.callPreviewsElement', tool.callPreviewsElement);
                 if(tool.callPreviewsElement != null) {
                     tool.callPreviewsElement.forEachTool("Media/webrtc/preview", function () {
                         this.state.mainWebrtcRoom = tool.state.mainWebrtcRoom;
@@ -308,7 +286,6 @@
                             tool.callPreviewsElement = parentElement;
                             var $callsRelated = $(".Streams_calls_related", parentElement);
 
-                            console.log('calls: settings', state.publisherId, state.streamName)
                             var prevTool = $callsRelated.tool("Streams/related", {
                                 templates: { view:{ name: 'Media/calls/preview'} },
                                 publisherId: state.publisherId,
@@ -322,7 +299,6 @@
                                     previewType: 'Media/webrtc/call/preview'
                                 }
                             }).activate(function () {
-                                console.log('previewTool', $callsRelated, Q.Tool.from(prevTool))
                                 var relatedTool = this;
                                 relatedTool.state.onUpdate.add(function () {
                                     updateCallInfoForPreviews();
@@ -340,11 +316,7 @@
                                 });
 
                                 function updateCallInfoForPreviews() {
-                                    console.log('updateCallInfoForPreviews')
-
                                     parentElement.forEachTool("Media/webrtc/call/preview", function () {
-                                        console.log('updateCallInfoForPreviews for', this)
-
                                         var previewTool = this;
                                         this.state.mainWebrtcRoom = tool.state.mainWebrtcRoom;
                                         this.state.mainRoomStream = tool.state.mainRoomConfig.mainRoomStream;
@@ -352,7 +324,6 @@
                                         this.state.screenersUsers = tool.state.mainRoomConfig.screenersUsers;
                                         this.state.eventsStream = tool.state.eventsStream;
                                         this.state.onRoomSwitch = function (roomType) {
-                                            console.log('onRoomSwitch', this, roomType)
                                             tool.state.activeRoom = roomType == 'none' ? null : roomType;
                                             tool.state.activePreview = roomType == 'none' ? null : this;
                                         };
@@ -380,7 +351,6 @@
                             return;
                         }
 
-                        console.log('call state', state, state.relationType );
                         var subtitleEl = tool.subtitleEl  = document.createElement('DIV');
                         subtitleEl.innerHTML = tool.text.calls.WaitingRoom;
                         subtitleEl.style.position = 'absolute';

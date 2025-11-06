@@ -12,8 +12,6 @@
      * @param {Q.Event} [options.onRefresh] called when tool element completely rendered
      */
     Q.Tool.define("Media/webrtc/call/preview", ["Media/webrtc/preview"], function _Media_webrtc_preview (options, parentPreviewTool) {
-            console.log('WebRTC call preview', parentPreviewTool);
-
             var tool = this;
             this.state = Q.extend({}, this.state, options);
 
@@ -57,11 +55,6 @@
                 })
 
             };
-
-            console.log('WebRTC call preview 2');
-            //tool.refresh();
-
-
         },
 
         {
@@ -86,11 +79,9 @@
                 var state = this.state;
                 var $toolElement = $(tool.element);
 
-                console.log('WebRTC call preview refresh 1', stream, tool.state);
                 if (!Q.Streams.isStream(stream)) {
                     return;
                 }
-                console.log('WebRTC call preview refresh 2');
 
                 stream.observe();
 
@@ -125,9 +116,6 @@
                     text: tool.text
                 });
 
-                console.log('preview: fields', fields, stream);
-
-                console.log('preview: renderTool');
                 Q.Template.render(
                     state.templates.view.name,
                     fields,
@@ -202,8 +190,6 @@
                 });
 
                 callButton.addEventListener('click', function () {
-
-                    console.log('callButton', tool.state.mainWebrtcRoom);
                     if(tool.state.mainWebrtcRoom != null && tool.state.mainWebrtcRoom.isActive()) {
                         tool.state.mainWebrtcRoom.switchTo( stream.fields.publisherId, stream.fields.name.split('/').pop(), {
                             resumeClosed: false
@@ -227,7 +213,6 @@
                         });
 
                     } else {
-                        console.log('previewMediaContainer', previewMediaContainer);
                         var WebConference = Q.Media.WebRTC({
                             element: previewMediaContainer,
                             audioOnlyMode: true,
@@ -323,8 +308,6 @@
 
                 approveButton.addEventListener('click', function () {
                     Q.req('Media/calls', 'approveCall', function (err, response) {
-
-                        console.log('approveeeeeeee', response);
                         if(response.slots.approveCall == 'approve') {
                             tool.state.approved = true;
                             approveButton.innerHTML = 'Approved';
@@ -350,9 +333,7 @@
                 updatePreview();
 
                 function moveVisualizationToPreview() {
-                    console.log('moveVisualizationToPreview');
                     let currentMediaContainer = tool.state.guestWaitingRoom.roomsMediaContainer();
-                    console.log('moveVisualizationToPreview', currentMediaContainer, previewMediaContainer);
 
                     if(currentMediaContainer) {
                         previewMediaContainer.appendChild(currentMediaContainer)
@@ -361,7 +342,6 @@
                     }
                 }
                 function moveVisualizationToMainContainer() {
-                    console.log('moveVisualizationToMainContainer');
                     let mediaContainerOfMainRoom = tool.state.guestWaitingRoom.getOptions().element;
                     let currentMediaContainer = tool.state.guestWaitingRoom.roomsMediaContainer();
 
@@ -373,7 +353,6 @@
                 }
 
                 tool.stream.onMessage("Media/calls/interviewing").set(function (message) {
-                    console.log('PREVIEW stream interview msg:', message)
                     let byUserId = message.byUserId;
                     if(message.content == 'started') {
                         if (tool.isHost(byUserId) && byUserId != Q.Users.loggedInUserId()) {
@@ -387,19 +366,16 @@
                 });
 
                 tool.stream.onMessage("Streams/joined").set(function (message) {
-                    console.log('PREVIEW stream JOINED event:', message)
                     let byUserId = message.byUserId;
                     updateTitle();
                 });
 
                 tool.stream.onMessage("Streams/left").set(function (message) {
-                    console.log('PREVIEW stream LEFT event:', message)
                     let byUserId = message.byUserId;
                     updateTitle();
                 });
 
                 tool.stream.onMessage("Streams/changed").set(function (message) {
-                    console.log('PREVIEW stream CHANGED event:', message)
                     let byUserId = message.byUserId;
                     updatePreview(true);
                 });
@@ -439,11 +415,8 @@
                         if (msg) {
                             return Q.alert(msg);
                         }
-                        console.log('callParticipants', response.slots.callParticipants);
-                        console.log('callParticipants2', Object.keys(response.slots.callParticipants));
                         var participantsIds = Object.keys(response.slots.callParticipants);
                         for (let i in participantsIds) {
-                            console.log('tool.isHost(participantsIds[i])',tool.isHost(participantsIds[i]), participantsIds[i] == Q.Users.loggedInUserId())
                             if ((tool.isHost(participantsIds[i]) || tool.isScreener(participantsIds[i])) && participantsIds[i] != Q.Users.loggedInUserId()) {
                                 titleContainer.innerHTML = 'Currently is interviewed by another host';
                                 return;

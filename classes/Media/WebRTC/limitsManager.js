@@ -316,7 +316,6 @@ module.exports = function (socket, io) {
                         }
         
                         let limitsConfig = stream.getAttribute('limits', null)
-                        console.log('limitsConfig', limitsConfig)
                         if (limitsConfig != null) {
                             socket.webrtcRoom.limits.active = true;
     
@@ -1193,7 +1192,6 @@ module.exports = function (socket, io) {
                 audioTracksNum = audioTracksNum + participant.audioTracks().length;
     
             }
-            console.log('isAudioSlotAvailable', audioTracksNum >= socket.webrtcRoom.limits.audio ? false : true)
     
             return audioTracksNum >= socket.webrtcRoom.limits.audio ? false : true;
         }

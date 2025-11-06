@@ -12,12 +12,12 @@ Q.page("Media/livestream", function () {
         streamName = 'Media/webrtc/livestream/' + livestreamId;
     }
 
-    var contentEl = document.getElementById('content');
+    var pageEl = document.getElementById('page');
     var livestreamElement = document.createElement('DIV');
     /* livestreamElement.style.position = 'absolute'; */
     livestreamElement.style.width = '100%';
     livestreamElement.style.height = 'inherit';
-    contentEl.appendChild(livestreamElement);
+    pageEl.appendChild(livestreamElement);
 
     Q.activate(
         Q.Tool.setUpElement(livestreamElement, 'Media/webrtc/livestream', {
@@ -25,10 +25,14 @@ Q.page("Media/livestream", function () {
             streamName: streamName,
             webrtcPublisherId: Q.Media.livestream.roomPublisherId,
             webrtcStreamName: Q.Media.livestream.roomStreamName,
+            mode: 'full',
         }),
         {},
         function () {
-            console.log('related', this)
+            let tool = this;
+            /* document.addEventListener('click', function () {
+                tool.remove();
+            }); */
         }
     );
    

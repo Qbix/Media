@@ -372,11 +372,9 @@ function Media_callCenter_post($params = array())
             throw new Exception('To continue you should be connected to the socket server.');
         }
 
-        $webrtc = new Media_WebRTC_Node();
-
         if($useTwilioTurn) {
             try {
-                $turnCredentials = $webrtc->getTwilioTurnCredentials();
+                $turnCredentials = Media_WebRTC::getTwilioTurnCredentials();
                 $turnServers = array_merge($turnServers, $turnCredentials);
             } catch (Exception $e) {
             }
@@ -395,14 +393,14 @@ function Media_callCenter_post($params = array())
         $webrtcStream = null;
         if(!empty($useRelatedTo) && !empty($useRelatedTo["publisherId"]) && !empty($useRelatedTo["streamName"]) && !empty($useRelatedTo["relationType"])) {
     
-            $webrtcStream = $webrtc->getRoomStreamRelatedTo($useRelatedTo["publisherId"], $useRelatedTo["streamName"], null, null, $useRelatedTo["relationType"], $resumeClosed);
+            $webrtcStream = Media_WebRTC::getRoomStreamRelatedTo($useRelatedTo["publisherId"], $useRelatedTo["streamName"], null, null, $useRelatedTo["relationType"], $resumeClosed);
     
             if(is_null($webrtcStream)) {
-                $webrtcStream = $webrtc->getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel]);
+                $webrtcStream = Media_WebRTC::getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel]);
             }
     
         } else {
-            $webrtcStream = $webrtc->getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel]);
+            $webrtcStream = Media_WebRTC::getOrCreateRoomStream($publisherId, $roomId, $resumeClosed, ['writeLevel' => $writeLevel]);
         }
     
         $response['stream'] = $webrtcStream;

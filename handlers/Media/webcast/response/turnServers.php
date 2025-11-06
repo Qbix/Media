@@ -5,11 +5,9 @@ function Media_webcast_response_turnServers($params = array()) {
     $turnServers = Q_Config::get('Media', 'webrtc', 'turnServers', []);
     $useTwilioTurn = Q_Config::get('Media', 'webrtc', 'useTwilioTurnServers', false);
 
-    $webrtc = new Media_WebRTC_Node();
-
     if($useTwilioTurn) {
         try {
-            $turnCredentials = $webrtc->getTwilioTurnCredentials();
+            $turnCredentials = Media_WebRTC::getTwilioTurnCredentials();
             $turnServers = array_merge($turnServers, $turnCredentials);
         } catch (Exception $e) {
             

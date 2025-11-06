@@ -12,11 +12,8 @@ module.exports = function (io) {
     var webrtcNamespace = io.of(nspName);
 
     webrtcNamespace.on('connection', function (socket) {
-        if (_debug) console.log('streaming: made sockets connection', socket.id);
-
         if (!socket.handshake.query.recording) return;
 
-        if (_debug) console.log('made sockets connection (LIVE STREAMING)', socket.id);
         var usersInfo = JSON.parse(socket.handshake.query.localInfo);
         var recordingStreamData = socket.handshake.query.recordingStream ? JSON.parse(socket.handshake.query.recordingStream) : null;
 
@@ -47,7 +44,6 @@ module.exports = function (io) {
         }
 
         socket.on('Media/webrtc/videoData', function (data, callback) {
-            //console.log(socket.id + ' VIDEODATA', data);
             fs.writeFile(filePath + '/' + data.timestamp, data.blob, function (err) {
                 if(err) {
                     console.error(err);

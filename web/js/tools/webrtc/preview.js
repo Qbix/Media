@@ -12,7 +12,6 @@
      * @param {Q.Event} [options.onRefresh] called when tool element completely rendered
      */
     Q.Tool.define("Media/webrtc/preview", ["Streams/preview"], function _Media_webrtc_preview (options, preview) {
-            console.log('main preview', options);
             var tool = this;
             this.state = Q.extend({}, this.state, options);
 
