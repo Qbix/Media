@@ -435,7 +435,7 @@
                     type: 'off',
                     handler: function (e) {
                         tool.toggleRadioButton(tool.turnOffCameraBtn);
-                        tool.webrtcSignalingLib.localMediaControls.disableVideo();
+                        tool.webrtcSignalingLib.localMediaControls.disableVideo('camera');
                         Q.Dialogs.pop();
                         tool.state.controlsTool.closeAllDialogs();
                         tool.state.controlsTool.updateControlBar();
@@ -518,6 +518,8 @@
                                     if (_isiOSCordova) tool.showIosPermissionsInstructions('Camera');
                                     if (e.name == 'NotAllowedDueLimit') {
                                         tool.webrtcUserInterface.notice.show(tool.text.webrtc.notices.allowedVideoLimit.interpolate({ limit: e.limit }));
+                                    } else {
+                                        Q.alert(Q.getObject("webrtc.notices.cameraStartError", tool.text));
                                     }
                                 })
                             }
@@ -593,12 +595,6 @@
                 }
 
                 log('controls: tool.toggleRadioButton', buttonObj);
-                try {
-                    var err = (new Error);
-                    console.log(err)
-                } catch (e) {
-    
-                }
                 if (buttonObj.type == 'camera') {
                     deselectCameraButtons();
                     if (!tool.webrtcUserInterface.getOptions().showScreenSharingInSeparateScreen) {

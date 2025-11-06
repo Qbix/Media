@@ -659,13 +659,15 @@
             }
 
             function createLogMethod(fileName) {
+                var url = new URL(location.href);
+                var consoleDebug = url.searchParams.get("console");
                 return function () {
-                    if(_debug === false) return;
+                    if (_debug === false) return;
                     var args = arguments
-                    //setTimeout(function () {
-                        args = Array.prototype.slice.call(args);
-                        var params = [];
-            
+                    args = Array.prototype.slice.call(args);
+                    var params = [];
+
+                    if (consoleDebug) {
                         if (window.performance) {
                             var now = (window.performance.now() / 1000).toFixed(3);
                             params.push(now + ": " + fileName + ': ' + args.splice(0, 1));
@@ -675,8 +677,9 @@
                             params = params.concat(args);
                             console.log.apply(console, params);
                         }
-                        logInfo(params, fileName);
-                    //}, 0);
+                    }
+
+                    logInfo(params, fileName);
                 }
             }
 
@@ -739,7 +742,7 @@
             }
 
             function connectFakeParticipant() {
-                var fakeParticipant = new webrtcSignalingLib.Participant();
+                var fakeParticipant = new webrtcSignalingLib.RemoteParticipant();
                 fakeParticipant.sid = generateId();
                 fakeParticipant.identity = getRandomUserId() + '\t' + Date.now()
                 webrtcSignalingLib.signalingDispatcher.participantConnected(fakeParticipant);
@@ -1265,32 +1268,25 @@
             var loudestModeIsActive = false;
             var loudestModeIntervalFunc;
             var roomScreens = [];
-            var layoutEvents = new EventSystem();
+            var _layoutEvents = new EventSystem();
 
-            layoutEvents.on('layoutRendered', function (e) {
+            _layoutEvents.on('layoutRendered', function (e) {
 
                 if(e.viewMode == 'audio') {
-                    if(_controlsTool) _controlsTool.updateViewModeBtns();
                     lockScreenResizingAndDragging();
                 } else if(e.viewMode == 'minimized') {
                     updateScreensButtons();
-                    if(loudestMode == 'disabled') {
+                    /* if(loudestMode == 'disabled') {
                         disableLoudesScreenMode();
-                    }
-                    if(_controlsTool != null) {
-                        _controlsTool.updateViewModeBtns();
-                    }
+                    } */
                     unlockScreenResizingAndDragging();
                 } else if(e.viewMode == 'screenSharing' || e.viewMode == 'fullScreen') {
-                    if(_controlsTool) _controlsTool.updateViewModeBtns();
                     updateScreensButtons()
                     lockScreenResizingAndDragging();
                 } else if(e.viewMode == 'squaresGrid') {
-                    if(_controlsTool) _controlsTool.updateViewModeBtns();
                     updateScreensButtons()
                     lockScreenResizingAndDragging();
                 } else {
-                    if(_controlsTool) _controlsTool.updateViewModeBtns();
                     updateScreensButtons();
                     unlockScreenResizingAndDragging();
                 }
@@ -1577,9 +1573,7 @@
             if(_options.minimizeOnPageSwitching) {
                 Q.Page.onActivate('').set(function(){
                     if(viewMode == 'minimized' || viewMode == 'minimizedMobile') return;
-                    if(Q.info.isMobile){
-                        renderMinimizedScreensGridMobile();
-                    } else renderMinimizedScreensGrid();
+                    switchScreensMode('minimizedStatic');
                 }, 'Media.WebRTC');
             }
 
@@ -1707,13 +1701,7 @@
              * @return {HTMLElement}
              */
             function createRoomScreen(participant) {
-                log('createRoomScreen', participant, participant.isLocal);
-                try {
-                    var err = (new Error);
-                    log(err.stack);
-                } catch (e) {
-
-                }
+                //log('createRoomScreen', participant, participant.isLocal);
                 //check whether it was room switching
                 /*if(participant.isLocal) {
                     for(let s in roomScreens) {
@@ -1856,20 +1844,20 @@
 
                 if(screen.screensharing) {
                     fullScreenBtn.addEventListener('click', function (e) {
-                        renderFullScreenLayout(screen, 300);
+                        switchScreensMode('fullScreen', screen);
                         e.preventDefault();
                         e.stopPropagation();
                     });
                 }
 
                 maximizeBtn.addEventListener('click', function (e) {
-                    renderMaximizedScreensGrid(screen);
+                    switchScreensMode('maximizedStatic', screen);
                     e.preventDefault();
                     e.stopPropagation();
                 });
 
                 minimizeBtn.addEventListener('click', function (e) {
-                    renderMinimizedScreensGrid();
+                    switchScreensMode('minimizedStatic');
                     e.preventDefault();
                     e.stopPropagation();
                 });
@@ -1955,7 +1943,7 @@
                     e.preventDefault();
                 });
 
-                layoutEvents.dispatch('audioScreenCreated', {audioScreen:screen.audioScreen, participant:screen.participant});
+                _layoutEvents.dispatch('audioScreenCreated', {audioScreen:screen.audioScreen, participant:screen.participant});
 
                 return screen.audioScreen;
             }
@@ -2478,14 +2466,7 @@
 
                     if(_controlsTool && _controlsTool.participantsListTool) _controlsTool.participantsListTool.showScreen(screen);
 
-                    if(Q.info.isMobile){
-                        renderMaximizedScreensGridMobile(screen);
-                    } else {
-                        log('showLoader', screen)
-
-                        renderFullScreenLayout(screen);
-                        //renderMaximizedScreensGrid(screen);
-                    }
+                    switchScreensMode('fullScreen', screen);
                     screensRendering.updateLayout();
 
                 }
@@ -2575,38 +2556,26 @@
                     if(videoResizeTool.state.appliedRecently) return;
                 }*/
 
-                disableLoudesScreenMode();
-
                 if(activeScreen && !activeScreen.screenEl.contains(e.target) && (viewMode == 'maximized' || viewMode == 'maximizedMobile')) {
                     log('toggleViewModeByScreenClick 1')
 
                     tappedScreen.screenEl.style.zIndex = '';
 
-                    if(Q.info.isMobile){
-                        renderMaximizedScreensGridMobile(tappedScreen);
-                    } else renderMaximizedScreensGrid(tappedScreen);
-
+                    switchScreensMode('maximizedStatic', tappedScreen);
                     return;
                 } else if(activeScreen && !activeScreen.screenEl.contains(e.target) && (viewMode == 'fullScreen' || viewMode == 'screenSharing')) {
                     log('toggleViewModeByScreenClick 2')
 
                     tappedScreen.screenEl.style.zIndex = '';
 
-                    /* if(Q.info.isMobile){
-                        renderMaximizedScreensGridMobile(tappedScreen);
-                    } else renderMaximizedScreensGrid(tappedScreen);*/
-                    renderFullScreenLayout(tappedScreen);
+                    switchScreensMode('fullScreen', tappedScreen);
                     return;
                 } else if(activeScreen && (activeScreen.screenEl.contains(e.target) || activeScreen.screenEl == e.target)) {
                     log('toggleViewModeByScreenClick 3')
 
-
                     tappedScreen.screenEl.style.zIndex = '';
-
-                    if(Q.info.isMobile){
-                        renderMinimizedScreensGridMobile(tappedScreen);
-                    } else renderMinimizedScreensGrid(tappedScreen);
-
+                    
+                    switchScreensMode('minimizedStatic');
                     return;
                 } /*else if (activeScreen == null && (viewMode == 'tiledMobile') && viewModeToSwitchBack != null) {
                     log('toggleViewModeByScreenClick 4.0')
@@ -2621,10 +2590,7 @@
 
                     tappedScreen.screenEl.style.zIndex = '';
 
-                    if(Q.info.isMobile){
-                        renderMaximizedScreensGridMobile(tappedScreen);
-                    } else renderMaximizedScreensGrid(tappedScreen);
-
+                    switchScreensMode('maximizedStatic', tappedScreen);
                     return;
                 } else if (activeScreen == null && (viewMode == 'minimized' || viewMode == 'minimizedMobile') && viewModeToSwitchBack != null) {
                     log('toggleViewModeByScreenClick 5')
@@ -2669,26 +2635,85 @@
                 }
 
                 if((modeToSwitch == null || modeToSwitch == 'regular') && !Q.info.isMobile) {
-                    renderDesktopScreensGrid();
+                    switchScreensMode('floatingView');
                 } else if(modeToSwitch == 'minimized') {
-                    renderMinimizedScreensGrid();
+                    switchScreensMode('minimizedStatic');
                 } else if(modeToSwitch == 'maximized') {
-                    renderMaximizedScreensGrid(tappedScreen);
+                    switchScreensMode('maximizedStatic', tappedScreen);
                 } else if(modeToSwitch == 'tiledMobile') {
                     if(roomScreens.length == 1) {
-                        renderMaximizedScreensGridMobile(tappedScreen);
-                    } else renderTiledScreenGridMobile();
+                        switchScreensMode('maximizedStatic', tappedScreen);
+                    } else {
+                        switchScreensMode('tiledView');
+                    }
                 } else if((modeToSwitch == null || modeToSwitch == 'maximizedMobile') && Q.info.isMobile) {
-                    renderMaximizedScreensGridMobile(tappedScreen);
+                    switchScreensMode('maximizedStatic', tappedScreen);
                 } else if(modeToSwitch == 'minimizedMobile') {
-                    renderMinimizedScreensGridMobile();
+                    switchScreensMode('minimizedStatic');
                 } else if(modeToSwitch == 'tiled') {
                     if(roomScreens.length == 1) {
                         modeToSwitch = 'regular';
-                        renderDesktopScreensGrid();
-                    } else renderTiledScreenGridDesktop();
+                        switchScreensMode('floatingView');
+                    } else {
+                        switchScreensMode('tiledView');
+                    }
 
                 }
+            }
+
+            function switchScreensMode(modeName, screenToSetActive) {
+
+                if (modeName != 'loudest' && modeName != 'loudestExceptMe') {
+                    toggleLoudestScreenMode('disabled');
+                }
+                if (modeName == 'maximizedStatic') {
+                    if (Q.info.isMobile) {
+                        renderMaximizedScreensGridMobile(screenToSetActive);
+                    } else {
+                        renderMaximizedScreensGrid(screenToSetActive);
+                    }
+                } else if (modeName == 'minimizedStatic') {
+                    if (Q.info.isMobile) {
+                        renderMinimizedScreensGridMobile();
+                    } else {
+                        renderMinimizedScreensGrid();
+                    }
+                } else if (modeName == 'tiledView') {
+                    if (Q.info.isMobile) {
+                        renderTiledScreenGridMobile();
+                    } else {
+                        renderTiledScreenGridDesktop();
+                    }
+                } else if (modeName == 'loudestExceptMe') {
+                    toggleLoudestScreenMode('allButMe');
+                } else if (modeName == 'loudest') {
+                    toggleLoudestScreenMode('all');
+                } else if (modeName == 'fullScreen') {
+                    var maximize = function (screen) {
+                        if (Q.info.isMobile) {
+                            renderMaximizedScreensGridMobile(screen, 300);
+                        } else { 
+                            renderFullScreenLayout(screen, 300);
+                        }
+                    }
+                    var activeScreen = screenToSetActive != null ? screenToSetActive : getActiveSreen();
+                    if (activeScreen != null) {
+                        maximize(activeScreen);
+                    } else {
+                        var screens = getScreens();
+                        maximize(screens[0]);
+                    }
+                } else if (modeName == 'audio') {
+                    renderAudioScreensGrid();
+                } else if (modeName == 'floatingView') { //desktop only
+                    renderDesktopScreensGrid();
+                } else if (modeName == 'manual') { //desktop only
+                    renderManualScreensGrid();
+                } else if (modeName == 'squaresView') {
+                    renderSquaresGridMobile();
+                }
+
+                _layoutEvents.dispatch('screensModeChanged', modeName)
             }
 
             function switchScreenType(modeToSwitchTo) {
@@ -3096,19 +3121,8 @@
              * @method renderTiledScreenGridMobile
              */
             function renderTiledScreenGridMobile() {
-                log('renderTiledScreenGridMobile', roomScreens.length);
+                //log('renderTiledScreenGridMobile', roomScreens.length);
                 switchScreenType('video');
-
-
-                log('renderTiledScreenGridMobile 2', roomScreens.length);
-
-                /*if(roomScreens.length <= 1) {
-                    renderMaximizedScreensGridMobile();
-                    updateScreensButtons();
-                    if(_controlsTool) _controlsTool.updateViewModeBtns();
-                    return;
-                }*/
-
 
                 if(window.innerHeight > window.innerWidth) {
                     //_roomsMedia.className = 'Media_webrtc_tiled-vertical-grid';
@@ -3124,7 +3138,7 @@
 
                 viewMode = 'tiledMobile';
                 activeScreen = null;
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3152,7 +3166,7 @@
 
                 viewMode = 'sideBySideMobile';
                 activeScreen = null;
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3178,7 +3192,7 @@
                 viewMode = 'tiled';
                 activeScreen = null;
 
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3186,7 +3200,7 @@
              * @method renderDesktopScreensGrid
              */
             function renderDesktopScreensGrid() {
-                log('renderDesktopScreensGrid', prevViewMode);
+                //log('renderDesktopScreensGrid', prevViewMode);
                 if(_layoutTool == null || _controls == null) return;
                 activeScreen = null;
 
@@ -3205,15 +3219,15 @@
                 _layoutTool.animate('regularScreensGrid', elements, 500, true);
                 viewMode = 'regular';
 
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
-             * Render normal view mode on desktop/tablet (screens are about same size side by side at the middle of the screen).
-             * @method renderDesktopScreensGrid
+             * Render avatars with audio visualization.
+             * @method renderAudioScreensGrid
              */
             function renderAudioScreensGrid() {
-                log('renderAudioScreensGrid', prevViewMode);
+                //log('renderAudioScreensGrid', prevViewMode);
                 if(_layoutTool == null || _controls == null) return;
                 activeScreen = null;
 
@@ -3234,7 +3248,7 @@
 
                 viewMode = 'audio';
 
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3259,7 +3273,7 @@
                 _layoutTool.animate('manualScreensGrid', elements, 500, true);
                 viewMode = 'manual';
 
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3267,7 +3281,7 @@
              * @method renderMinimizedScreensGrid
              */
             function renderMinimizedScreensGrid() {
-                log('renderMinimizedScreensGrid')
+                //log('renderMinimizedScreensGrid')
                 if(_layoutTool == null || _controls == null) return;
 
                 activeScreen = null;
@@ -3286,7 +3300,7 @@
                 _layoutTool.animate('minimizedScreensGrid', elements, 500, true);
                 viewMode = 'minimized';
 
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3296,7 +3310,6 @@
             function renderMaximizedScreensGrid(screenToMaximize, duration) {
                 if(typeof duration == 'undefined') duration = 500;
                 //log('renderMaximizedScreensGrid', screenToMaximize)
-                //log('renderMaximizedScreensGrid activeScreen', activeScreen)
                 //TODO: check if "(screenToMaximize != null && screenToMaximize == activeScreen)" impacts updating layout
                 if(_layoutTool == null || _controls == null || (screenToMaximize != null && screenToMaximize == activeScreen && !(viewMode == 'screenSharing' || viewMode == 'fullScreen'))) return;
 
@@ -3304,13 +3317,10 @@
 
                 if(screenToMaximize != null && screenToMaximize.isActive) activeScreen = screenToMaximize;
                 if(screenToMaximize == null && (activeScreen == null || activeScreen.isLocal) /*&& roomScreens.length == 2*/) {
-                    //log('renderMaximizedScreensGrid if1')
-
                     var screensToTakeInc = roomScreens.filter(function (s) {
                         return (!s.isLocal ? true : false);
                     });
                     if(screensToTakeInc.length != 0) {
-                        //log('renderMaximizedScreensGrid if1.1')
 
                         activeScreen = screensToTakeInc.reduce(function (prev, current) {
                             return (prev.participant.connectedTime > current.participant.connectedTime) ? prev : current;
@@ -3320,7 +3330,6 @@
                 }
 
                 if(activeScreen == null || !_roomsMedia.contains(activeScreen.screenEl)) activeScreen = roomScreens[0];
-                //log('renderMaximizedScreensGrid activeScreen', activeScreen)
 
                 if(!_layoutTool.getLayoutGenerator('maximizedScreensGrid')) _layoutTool.setLayoutGenerator('maximizedScreensGrid', function (container, count) {
                     return customLayouts.minimizedOrMaximizedScreenGrid(_roomsMedia, count, _controls.querySelector('.Media_webrtc_conference-control'), true);
@@ -3331,7 +3340,7 @@
                 _layoutTool.animate('maximizedScreensGrid', elements, duration, true);
                 viewMode = 'maximized';
 
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3340,7 +3349,7 @@
              * @param {Object} [screenToMaximize] Screen that contains screensharing video.
              */
             function renderFullScreenLayout(screenToMaximize) {
-                log('renderFullScreenLayout', screenToMaximize, activeScreen)
+                //log('renderFullScreenLayout', screenToMaximize, activeScreen)
                 if(_layoutTool == null || _controls == null/* || (screenToMaximize != null && screenToMaximize == activeScreen)*/) return;
                 switchScreenType('video');
 
@@ -3367,19 +3376,13 @@
 
                     activeScreen = screenToActivate;
                 }
-                log('renderFullScreenLayout activeScreen 0', activeScreen);
-
-
 
                 var elements = toggleScreensClass(activeScreen && activeScreen.screensharing ? 'screenSharing' : 'fullScreen');
-                log('renderFullScreenLayout length', elements.length)
                 prevViewMode = viewMode;
                 _layoutTool.animate('fullScreen', elements, 100, true);
                 viewMode = activeScreen && activeScreen.screensharing ? 'screenSharing' : 'fullScreen';
 
-                log('renderFullScreenLayout activeScreen 2', activeScreen);
-
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3404,14 +3407,12 @@
                 }
 
                 if(activeScreen == null || !_roomsMedia.contains(activeScreen.screenEl)) activeScreen = roomScreens[0];
-                //log('renderMaximizedScreensGridMobile: animate')
 
                 if(window.innerHeight > window.innerWidth) {
                     var elements = toggleScreensClass('maximizedVerticalMobile');
                     prevViewMode = viewMode;
                     _layoutTool.animate('maximizedVerticalMobile', elements, 100, true);
                 } else {
-                    //log('renderMaximizedScreensGridMobile maximizedHorizontalMobile');
                     var elements = toggleScreensClass('maximizedHorizontalMobile');
                     prevViewMode = viewMode;
                     _layoutTool.animate('maximizedHorizontalMobile', elements, 100, true);
@@ -3419,7 +3420,7 @@
 
                 viewMode = 'maximizedMobile';
 
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3427,7 +3428,7 @@
              * @method renderMinimizedScreensGridMobile
              */
             function renderMinimizedScreensGridMobile() {
-                log('renderMinimizedScreensGridMobile')
+                //log('renderMinimizedScreensGridMobile')
                 if(_layoutTool == null || _controls == null) return;
                 activeScreen = null;
 
@@ -3444,7 +3445,7 @@
                 }
 
                 viewMode = 'minimizedMobile';
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
             /**
@@ -3452,7 +3453,7 @@
              * @method renderSquaresGridMobile
              */
             function renderSquaresGridMobile() {
-                log('renderSquaresGridMobile')
+                //log('renderSquaresGridMobile')
                 if(_layoutTool == null || _controls == null) return;
                 activeScreen = null;
 
@@ -3461,13 +3462,12 @@
                     return customLayouts.squaresGrid(new DOMRect(0, 0, 375, 812), count, _controls.querySelector('.Media_webrtc_conference-control'), true);
                 });
                 var elements = toggleScreensClass('squaresGrid');
-                log('renderSquaresGridMobile: elements', elements)
 
                 prevViewMode = viewMode;
                 _layoutTool.animate('squaresGrid', elements, 100, true);
 
                 viewMode = 'squaresGrid';
-                layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
             }
 
 
@@ -3497,9 +3497,6 @@
                 }, fakeDefaultLoudest)
 
                 if(loudestParticipant == fakeDefaultLoudest)  {
-                    /*if(Q.info.isMobile){
-                        renderMinimizedScreensGridMobile();
-                    } else renderMinimizedScreensGrid();*/
                     state.animationRequest = window.requestAnimationFrame(state.function);
                     return;
                 }
@@ -3535,9 +3532,6 @@
                 }
                  
                 if(loudestParticipant == null)  {
-                    /*if(Q.info.isMobile){
-                        renderMinimizedScreensGridMobile();
-                    } else renderMinimizedScreensGrid();*/
                     state.animationRequest = requestAnimationFrame(state.function);
                     return;
                 }
@@ -3567,9 +3561,7 @@
                 }
 
                 if (mode == 'allButMe') {
-                    if(Q.info.isMobile){
-                        renderMinimizedScreensGridMobile();
-                    } else renderMinimizedScreensGrid();
+                    switchScreensMode('minimizedStatic');
                 }
 
                 if(mode == 'all') {
@@ -6400,7 +6392,10 @@
             }
 
             function layoutEvents() {
-                return layoutEvents;
+                return _layoutEvents;
+            }
+            function on(eventName, handler) {
+                return _layoutEvents.on(eventName, handler);
             }
 
             return {
@@ -6424,6 +6419,7 @@
                 getActiveSreen:getActiveSreen,
                 getScreens:getScreens,
                 layoutEvents:layoutEvents,
+                on:on,
                 createRoomScreen:createRoomScreen,
                 removeParticipantsScreens:removeParticipantsScreens,
                 videoTrackIsAdding:videoTrackIsAdding,
@@ -6431,20 +6427,10 @@
                 fitScreenToVideo:fitScreenToVideo,
                 toggleViewMode:toggleViewMode,
                 updateLocalScreenClasses:updateLocalScreenClasses,
-                renderMaximizedScreensGrid:renderMaximizedScreensGrid,
-                renderMinimizedScreensGrid:renderMinimizedScreensGrid,
-                renderMaximizedScreensGridMobile:renderMaximizedScreensGridMobile,
-                renderDesktopScreensGrid:renderDesktopScreensGrid,
-                renderTiledScreensGridDesktop:renderTiledScreenGridDesktop,
-                renderTiledScreensGridMobile:renderTiledScreenGridMobile,
-                renderManualScreensGrid:renderManualScreensGrid,
-                renderFullScreenLayout:renderFullScreenLayout,
-                renderAudioScreensGrid:renderAudioScreensGrid,
-                renderSquaresGridMobile:renderSquaresGridMobile,
-                toggleLoudestScreenMode:toggleLoudestScreenMode,
                 disableLoudesScreenMode:disableLoudesScreenMode,
                 showLoader:showLoader,
-                hideLoader:hideLoader
+                hideLoader:hideLoader,
+                switchScreensMode:switchScreensMode
             };
         })()
 
@@ -6575,7 +6561,7 @@
                     webrtcSignalingLib.localMediaControls.disableAudio();
                     notice.show('The host has restricted the use of the microphone in this room');
                 } else if (insturctions.permission == 'camera' && !localParticipant.hasPermission('camera')) {
-                    webrtcSignalingLib.localMediaControls.disableVideo();
+                    webrtcSignalingLib.localMediaControls.disableVideo('camera');
                     notice.show('The host has restricted the use of the camera in this room');
                 } else if (insturctions.permission == 'screen' && !localParticipant.hasPermission('screen')) {
                     webrtcSignalingLib.screenSharing.stopShareScreen()
@@ -6627,7 +6613,7 @@
                         notice.show('The host has allowed you to use the microphone in this room');
                     }
                     if (prevCameraPermission == true && !localParticipant.hasPermission('camera')) {
-                        webrtcSignalingLib.localMediaControls.disableVideo();
+                        webrtcSignalingLib.localMediaControls.disableVideo('camera');
                         notice.show('The host has limited your ability to use the camera in this room');
                     } else if (prevCameraPermission == false && localParticipant.hasPermission('camera')) {
                         notice.show('The host has allowed you to use the camera in this room');
@@ -6918,8 +6904,6 @@
 
             webrtcSignalingLib.event.on('remoteScreensharingStarting', function (e) {
                 log('screen sharing is being started', e)
-
-                screensRendering.toggleLoudestScreenMode('disabled');
                 screensRendering.onScreensharingStarting(e);
                 screensRendering.showLoader('screensharingStarting', {participant: e.participant});
             });
@@ -6952,11 +6936,8 @@
                         return true
                     };
     
-                    if(Q.info.isMobile){
-                        screensRendering.renderMaximizedScreensGridMobile(screensharingTrack.parentScreen);
-                    } else {
-                        screensRendering.renderFullScreenLayout(screensharingTrack.parentScreen);
-                    }
+                    screensRendering.switchScreensMode('fullScreen', screensharingTrack.parentScreen);
+                    
                     screensRendering.updateLayout();
 
                     return true;

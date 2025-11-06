@@ -98,12 +98,12 @@
                     className: 'settings-item-permissions'
                 }));
 
-                settingsNavigationInner.appendChild(createNavitem({
+                /* settingsNavigationInner.appendChild(createNavitem({
                     key: 'limits',
                     text: 'Time limits',
                     icon: 'timerIcon',
                     className: 'settings-item-limits'
-                }));
+                })); */
 
                 let settingsParamsContainer = tool.settingsParams = document.createElement('DIV');
                 settingsParamsContainer.className = 'settings-params';

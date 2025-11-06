@@ -88,19 +88,36 @@ WebRTC.listen = function () {
 
     Q.plugins.Media.WebRTC.rooms = {};
 
-    Q.plugins.Media.WebRTC.postLivestreamStartMessage =  function (stream, asUserId) {
+    /**
+     *
+     *
+     * @param {string} messageType Media/livestream/start or Media/livestream/stop
+     * @param {object} options
+     * @param {Streams_Stream} options.streamToPostTo Media/webrtc/livestream stream to which the message is posted
+     * @param {string} options.asUserId id of user by which the message is supposed to be posted
+     * @param {string} options.cookie cookie of the user who posts the message (client.handshake.headers.cookie)
+     * @return {*} 
+     */
+    Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage =  function (messageType, options) {
+        console.log('postLivestreamStartOrStopMessage', options.streamToPostTo)
+        let streamToPostTo = options.streamToPostTo, asUserId = options.asUserId, cookie = options.cookie;
         return new Promise(function (resolve, reject) {
             Q.plugins.Media.WebRTC.getCommunityAvatarInfo(asUserId).then(function (communityLogo) {
                 Q.plugins.Media.WebRTC.getUserAvatarInfo(asUserId)
                 .then(function (avatarInfo) {
-                    let joinUrl = stream.url();
-                    stream.post(asUserId, {
-                        type: 'Media/livestream/start',
+
+                    if(messageType === 'Media/livestream/stop') {
+                        streamToPostTo.setAttribute('endTime', +Date.now());
+                        streamToPostTo.save();
+                    }
+
+                    streamToPostTo.post(asUserId, {
+                        type: messageType,
                         instructions: JSON.stringify({
-                            streamTitle: stream.fields.title,
+                            streamTitle: streamToPostTo.fields.title,
                             logoInfo: communityLogo,
                             avatarInfo: avatarInfo,
-                            joinUrl: stream.url()
+                            joinUrl: streamToPostTo.url()
                         }),
                     }, function (err) {
                         if (err) {
@@ -108,9 +125,24 @@ WebRTC.listen = function () {
                             reject(err);
                             return;
                         }
+
+                        let data = {
+                            cmd: 'postMessageToWebRTCStream',
+                            messageType: messageType,
+                            livestreamPublisherId: streamToPostTo.fields.publisherId,
+                            livestreamStreamName: streamToPostTo.fields.name,
+                        };
+                        var headers = {
+                            'user-agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/2.0.0.9',
+                            'cookie': cookie
+                        };
+
+                        Q.Utils.queryExternal('Media/webrtc', data, null, headers, function (err, response) {
+
+                        });
                         resolve();
                     });
-    
+
                 }).catch(function (err) {
                     reject(err);
                 })

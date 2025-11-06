@@ -65,6 +65,10 @@ window.WebRTCWebcastClient = function (options) {
 
     var localParticipant;
     app.localParticipant = function () { return localParticipant; }
+
+    app.mediaElements = []
+    app.tracks = []
+
     app.state = 'disconnected';
     app.initNegotiationState = 'disconnected';
 
@@ -1300,9 +1304,12 @@ window.WebRTCWebcastClient = function (options) {
         function webrtcToHTMLMediaInterface() {
             var _mediaStream = new MediaStream();
 
+            function getMediaStream() {
+                return _mediaStream;
+            }
+
             function publishStream(stream) {
                 if(options.role != 'publisher') return;
-                console.log('publishStream');
                 var tracks = stream.getTracks();
                 for (var t in tracks) {
                     var trackToAttach = new Track();
@@ -1335,7 +1342,7 @@ window.WebRTCWebcastClient = function (options) {
 
                 for (let t in atracks) {
                     log('audioTrackIsAdded removeTrack', atracks[t]);
-
+                    if(atracks[t].id == track.mediaStreamTrack.id) continue;
                     _mediaStream.removeTrack(atracks[t]);
                 }
                 _mediaStream.addTrack(track.mediaStreamTrack);
@@ -1388,6 +1395,14 @@ window.WebRTCWebcastClient = function (options) {
                     participant.tracks.push(track);
                 }
 
+                let globalExisting = app.tracks.find(function (t) {
+                    return t.mediaStreamTrack.id == track.mediaStreamTrack.id
+                })
+                
+                if(!globalExisting) {
+                    app.tracks.push(track);
+                }
+
                 app.event.dispatch('trackAdded', { participant: participant, track: track });
 
             }
@@ -1425,22 +1440,30 @@ window.WebRTCWebcastClient = function (options) {
 
             function getMediaElement(asAudio) {
                 var _mediaElement = document.createElement(asAudio ? 'AUDIO' : 'VIDEO');
-                _mediaElement.controls = true;
                 _mediaElement.muted = asAudio ? false : true;
                 _mediaElement.controls = true;
-                _mediaElement.autoplay = true;
-                _mediaElement.playsInline = true;
-                _mediaElement.setAttribute('webkit-playsinline', true);
+                _mediaElement.autoplay = false;
+                _mediaElement.playsInline = false;
+                _mediaElement.setAttribute('webkit-playsinline', false);
 
+                /* let events = ['abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'encrypted', 'ended', 'error', 'loadeddata', 'loadedmetadata', 'loadstart', 'pause', 'play', 'playing', 'progress', 'ratechange', 'seeked', 'seeking', 'stalled', 'suspend', 'timeupdate', 'volumechange', 'waiting', 'waitingforkey']
+                events.forEach(function (eventName) {
+                    _mediaElement.addEventListener(eventName, function (e) {
+                        console.log("_mediaElement: " + eventName, e);
+                    });
+                }) */
                 
                 _mediaElement.srcObject = _mediaStream;
+                app.mediaElements.push(_mediaElement);
+
                 return _mediaElement;
             }
 
             return {
                 attachTrack: attachTrack,
                 publishStream: publishStream,
-                getMediaElement: getMediaElement
+                getMediaElement: getMediaElement,
+                getMediaStream: getMediaStream
             }
         }
 
@@ -1458,7 +1481,7 @@ window.WebRTCWebcastClient = function (options) {
                 return modeInterface.getMediaElement(asAudio);
             },
             getMediaStream: function () {
-                return _mediaStream;
+                return modeInterface.getMediaStream();
             },
             getModeInterface: function () {
                 return modeInterface;
@@ -1494,7 +1517,6 @@ window.WebRTCWebcastClient = function (options) {
          * @param {Object} [participant] Participant who sent the message
          */
         function processDataTrackMessage(data, participant) {
-            //console.log('processDataTrackMessage', data);
             if (data instanceof ArrayBuffer) {
                 app.mediaControls.getModeInterface().processRawSegment(data);
                 return;
@@ -1756,14 +1778,12 @@ window.WebRTCWebcastClient = function (options) {
                     log('replaceOrAddTrack: sender exist - ', sender != null);
 
                     if (sender != null) {
-                        console.log('replaceOrAddTrack ids', sender.track.id, track.mediaStreamTrack.id)
                         if (sender.track.id == track.mediaStreamTrack.id) {
                             log('replaceOrAddTrack: sender has the SAME TRACK, skip');
                             return;
                         }
 
                         var oldTrackid = sender.track.id;
-                        console.log('replaceOrAddTrack oldTrackid', oldTrackid)
 
                         //sender.track.stop();
 
@@ -1853,7 +1873,6 @@ window.WebRTCWebcastClient = function (options) {
         }
 
         function socketEventBinding() {
-            console.log('socketEventBinding', socket)
             socket.on('Media/broadcast/participantConnected', function (participant) {
                 log('socket: participantConnected', participant);
                 socketParticipantConnected().initPeerConnection(participant);
@@ -2320,7 +2339,6 @@ window.WebRTCWebcastClient = function (options) {
                             }
                         }
                     }
-                    console.log('onsignalingstatechange1', newPeerConnection.signalingState);
                     participant.signalingState.state = newPeerConnection.signalingState;
                 };
 
@@ -2640,7 +2658,6 @@ window.WebRTCWebcastClient = function (options) {
                         }
                     }
 
-                    console.log('onsignalingstatechange2', newPeerConnection.signalingState);
                     senderParticipant.signalingState.state = newPeerConnection.signalingState;
 
                 };
@@ -3246,7 +3263,7 @@ window.WebRTCWebcastClient = function (options) {
     }
 
     app.disconnect = function (switchRoom, byHumanAction) {
-        console.log('broadcastClient.disconnect', app.id);
+        log('broadcastClient.disconnect', app.id);
 
         for (var p = roomParticipants.length - 1; p >= 0; p--) {
             if (options.mode == 'node' && !roomParticipants[p].isLocal) {
@@ -3256,12 +3273,14 @@ window.WebRTCWebcastClient = function (options) {
 
             for(let t in roomParticipants[p].tracks) {
                 if(roomParticipants[p].tracks[t].mediaStreamTrack != null) {
-                    console.log('broadcastClient.disconnect stop track', roomParticipants[p], roomParticipants[p].tracks[t].mediaStreamTrack);
-
                     roomParticipants[p].tracks[t].mediaStreamTrack.stop();
                 }
             }
             if (!switchRoom) roomParticipants[p].remove();
+        }
+
+        for(let i in app.mediaElements) {
+            if(app.mediaElements[i].parentElement) app.mediaElements[i].parentElement.removeChild(app.mediaElements[i]);
         }
 
 

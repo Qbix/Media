@@ -49,7 +49,6 @@
          * If WebRTC stream doesn't exist, try to create one.
          */
         startWebRTC: function () {
-            console.log('startWebRTC');
             var tool = this;
             var state = this.state;
             var chatTool = tool.chatTool;

@@ -1,5 +1,4 @@
 import("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js").then(function (module) {
-    console.log('vision_bundle', module)
     let taskVision = module;
     self.createImageSegmenter = async (canvas) => {
         const audio = await taskVision.FilesetResolver.forVisionTasks(

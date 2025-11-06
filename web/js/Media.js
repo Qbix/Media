@@ -376,6 +376,7 @@
 					Q.Tool.setUpElement(livestreamElement, 'Media/webrtc/livestream', {
 						publisherId: publisherId,
 						streamName: streamName,
+						mode: 'compact',
 					}),
 					{},
 					function () {

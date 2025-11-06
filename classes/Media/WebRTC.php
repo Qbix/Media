@@ -76,6 +76,125 @@ abstract class Media_WebRTC
         }
     }
 
+    static function scheduleOrUpdateRoomStream($streamName, $publisherId, $meetingParams) {
+        $response = [];
+        //update existing room stream
+        if (!is_null($streamName) && !is_null($publisherId)) {
+            $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $publisherId, $streamName);
+
+            if (is_null($webrtcStream)) {
+                throw new Exception("Stream not found");
+            }
+            if(!$webrtcStream->testAdminLevel('manage')) {
+                throw new Users_Exception_NotAuthorized();
+            }
+
+        } else {
+            //create (schedule) new room stream
+
+            if(is_null($meetingParams)) {
+                throw new Q_Exception_RequiredField(array('field' => 'meetingParams'));
+            }
+
+            if(is_array($meetingParams['accessType'])) {
+                $accessLevels = array_merge(['readLevel' => 10, 'writeLevel' => 0, 'adminLevel' => 0], $meetingParams['accessType']);
+            } else {
+                $accessLevels = $meetingParams['accessType'] == 'trusted' ? ['readLevel' => 10, 'writeLevel' => 0, 'adminLevel' => 0] : ['readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20];
+            }
+
+            $webrtcStream = Media_WebRTC::getOrCreateRoomStream(Users::loggedInUser(true)->id, null, false, $accessLevels, null);
+            $publisherId = $webrtcStream->fields['publisherId'];
+            $streamName = $webrtcStream->fields['name'];
+        }
+
+        $webrtcStream->setAttribute('scheduledStartTime', $meetingParams['startTimeTs']);
+        $webrtcStream->setAttribute('scheduledEndTime', $meetingParams['endTimeTs']);
+        $webrtcStream->setAttribute('timeZoneString', $meetingParams['timeZoneString']);
+        $webrtcStream->setAttribute('accessType', $meetingParams['accessType']);
+        $webrtcStream->setAttribute('scheduleLivestream', $meetingParams['scheduleLivestream']);
+        if(!empty($meetingParams['topic'])) {
+            $webrtcStream->title = $meetingParams['topic'];
+        }
+
+        if($meetingParams['accessType'] == 'trusted') {
+            $webrtcStream->adminLevel = 0;
+            $webrtcStream->writeLevel = 0;
+            $webrtcStream->readLevel = 0;
+        } else if($meetingParams['accessType'] == 'open') {
+            $webrtcStream->readLevel = Streams::$READ_LEVEL['max'];
+            $webrtcStream->writeLevel = Streams::$WRITE_LEVEL['relate'];
+            $webrtcStream->adminLevel = Streams::$ADMIN_LEVEL['invite'];
+        }
+
+        $webrtcStream->changed();
+        $webrtcStream->save();
+
+        $invites = Streams_Invite::select()->where(
+            array(
+                'streamName' => $streamName,
+                'publisherId' => $publisherId,
+                'invitingUserId' => Users::loggedInUser(true)->id,
+                'userId !=' => ''
+            ))->fetchDbRows();
+
+        $usersToInvite = $meetingParams['invitedAttendeesIds'] ? $meetingParams['invitedAttendeesIds'] : [];
+
+        //remove invites for users who were removed from "attendees" AND remove redundant (duplicate) invites just in case
+        $groupedByUserId = [];
+        foreach ($invites as $item) {
+            $groupedByUserId[$item->fields['userId']][] = $item;
+        }
+        $mostRecentTimes = [];
+        foreach ($groupedByUserId as $id => $items) {
+            usort($items, function ($a, $b) {
+                return strtotime($b->fields['insertedTime']) - strtotime($a->fields['insertedTime']);
+            });
+            $mostRecentTimes[$id] = $items[0]->fields['insertedTime'];
+        }
+
+        $invitesToRemove = array_filter($invites, function ($item) use ($mostRecentTimes, $usersToInvite) {
+            return $item->fields['insertedTime'] !== $mostRecentTimes[$item->fields['userId']] || array_search($item->fields['userId'], $usersToInvite) === false;
+        });
+
+        foreach ($invitesToRemove as $item) {
+            $item->remove();
+            $access = new Streams_Access();
+            $access->publisherId = $publisherId;
+            $access->streamName = $streamName;
+            $access->ofUserId = $item->fields['userId'];
+            if($access->retrieve()) {
+                $access->remove();
+            }
+            if(!empty($item->fields['userId'])) {
+                Media_WebRTC::cancelAccessToRoom($publisherId, $streamName, $item->fields['userId']);
+            }
+        }
+
+        //skip existing invites and invites and send invites only to users who was not previously invited
+        $newInvites = array_filter($usersToInvite, function ($userId) use ($invites) {
+            foreach ($invites as $invite) {
+                if ($invite->fields['userId'] == $userId) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        if (count($newInvites) !== 0) {
+            $uri = Q_Uri::url("Media/meeting");
+            $webrtcStream->invite(['userId' => $newInvites], ['appUrl' => $uri, 'readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20]);
+        }
+
+        if(filter_var($meetingParams['scheduleLivestream'], FILTER_VALIDATE_BOOLEAN) === true) {
+            
+            $response['livestreamStream'] = Media_Livestream::createOrUpdateLivestreamStream($publisherId, $streamName, !is_null($meetingParams['startTimeTs']) && !empty($meetingParams['startTimeTs']) ? $meetingParams['startTimeTs'] / 1000 : null);
+        }
+
+        $response['webrtcStream'] = $webrtcStream;
+
+        return $response;
+    }
+
     static function getRoomStreamByInviteToken($invite) {
         return Streams_Stream::fetch(Users::loggedInUser(true)->id, $invite->publisherId, $invite->streamName, true);
     }
@@ -219,26 +338,7 @@ abstract class Media_WebRTC
         $stream->changed();
         $stream->save();
 
-        $access = new Streams_Access();
-        $access->publisherId = $stream->fields['publisherId'];
-        $access->streamName = $stream->fields['name'];
-        $access->ofContactLabel = 'Users/hosts';
-        if(!$access->retrieve()) {
-            $access->adminLevel = Streams::$ADMIN_LEVEL['manage'];
-            $access->writeLevel = Streams::$WRITE_LEVEL['max'];
-            $access->readLevel = Streams::$READ_LEVEL['max'];
-            $access->save();
-        }
-
-        $access = new Streams_Access();
-        $access->publisherId = $stream->fields['publisherId'];
-        $access->streamName = $stream->fields['name'];
-        $access->ofContactLabel = 'Users/screeners';
-        if(!$access->retrieve()) {
-            $access->readLevel = Streams::$WRITE_LEVEL['max'];
-            $access->writeLevel = Streams::$WRITE_LEVEL['edit'];
-            $access->save();
-        }
+        self::createAccessForContactLabelsIfNotExist($stream->fields['publisherId'],  $stream->fields['name']);
 
         return $stream;
         // set quota
@@ -248,6 +348,44 @@ abstract class Media_WebRTC
             return $stream;
         }*/
     }
+
+    /**
+     * Creates default access rows for the contanct labels that are supposed to be used as roles in WebRTC streams (hosts, screeners).
+     * @method createAccessForContactLabelsIfNotExist
+     * @param {string} $publisherId publisher of stream that access rows are created for
+     * @param {string} $streamName name of stream that access rows are created for
+     * @return {boolean} whether rows was created (false may mean that access already exist)
+     */
+    static function createAccessForContactLabelsIfNotExist($publisherId, $streamName)
+    {
+        $created = false;
+
+        $access = new Streams_Access();
+        $access->publisherId = $publisherId;
+        $access->streamName = $streamName;
+        $access->ofContactLabel = 'Users/hosts';
+        if (!$access->retrieve()) {
+            $access->adminLevel = Streams::$ADMIN_LEVEL['manage'];
+            $access->writeLevel = Streams::$WRITE_LEVEL['max'];
+            $access->readLevel = Streams::$READ_LEVEL['max'];
+            $access->save();
+            $created = true;
+        }
+
+        $access = new Streams_Access();
+        $access->publisherId = $publisherId;
+        $access->streamName = $streamName;
+        $access->ofContactLabel = 'Users/screeners';
+        if (!$access->retrieve()) {
+            $access->readLevel = Streams::$WRITE_LEVEL['max'];
+            $access->writeLevel = Streams::$WRITE_LEVEL['edit'];
+            $access->save();
+            $created = true;
+        }
+
+        return $created;
+    }
+
 
     /**
      * Create or fetch Media/webrtc stream

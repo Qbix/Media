@@ -332,7 +332,12 @@ function WebcastServer(socket) {
 
                         let otherLives = stream.getAttribute('lives');
                         if(!otherLives || (Array.isArray(otherLives) && otherLives.length == 0)) {
-                            Q.plugins.Media.WebRTC.postLivestreamStartMessage(stream, socket.livestreamStreamData.publisherId).then(function () {
+
+                            Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage('Media/livestream/start', {
+                                streamToPostTo: stream, 
+                                asUserId: socket.livestreamStreamData.publisherId, 
+                                cookie: socket.handshake.headers.cookie
+                            }).then(function () {
                                 findReceiver(localParticipant);
                             }).catch(function (err) {
                                 console.error(err)
@@ -608,8 +613,18 @@ function WebcastServer(socket) {
                         let otherLives = stream.getAttribute('lives');
                         //do not send Media/livestream/stop message when rtmp lives are active
                         if(!otherLives || (Array.isArray(otherLives) && otherLives.length == 0)) {
-                            stream.setAttribute('endTime', +Date.now());
+                            Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage('Media/livestream/stop', {
+                                streamToPostTo: stream, 
+                                asUserId: socket.livestreamStreamData.publisherId, 
+                                cookie: socket.handshake.headers.cookie
+                            }).then(function () {
+                                findReceiver(localParticipant);
+                            }).catch(function (err) {
+                                console.error(err)
+                                log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
+                            });
 
+                            /* stream.setAttribute('endTime', +Date.now());
                             stream.post(socket.livestreamStreamData.publisherId, {
                                 type: 'Media/livestream/stop',
                             }, function (err) {
@@ -617,9 +632,9 @@ function WebcastServer(socket) {
                                     log('Something went wrong when posting to stream with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName)
                                     return;
                                 }
-                            });
+                            }); */
                         }
-                        stream.save();
+                        //stream.save();
                         
                     });
                 
