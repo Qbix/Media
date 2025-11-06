@@ -1413,7 +1413,7 @@
                             this.audioScreen.avatarImgCon.appendChild(this.videoCanvasEl);
                         }
                     } else if (this.audioScreen.avatarImg != null){
-                        if (!this.audioScreen.avatarImgCon.contains(this.videoTrackEl)) {
+                        if (!this.audioScreen.avatarImgCon.contains(this.audioScreen.avatarImg)) {
                             this.audioScreen.avatarImgCon.innerHTML = '';
                             this.audioScreen.avatarImgCon.appendChild(this.audioScreen.avatarImg);
                         }
