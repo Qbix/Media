@@ -1231,8 +1231,6 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.id && data.stream_url) {
-                        console.log('Live Video Created Successfully!');
-                        console.log('Stream URL:', data.stream_url);
                         resolve(data);
                     } else {
                         console.error('Error creating live video:', data.error.message);

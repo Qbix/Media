@@ -1607,12 +1607,6 @@
                         customSelect.customSelectControlsEl.appendChild(scenesColumnControlAddBtn);
                         customSelect.syncOptionsList = function () {
                             log('syncOptionsList START');
-                            /*try {
-                                var err = (new Error);
-                                log(err.stack);
-                            } catch (e) {
-            
-                            }*/
                             let originalSelect = customSelect.originalSelect;
                             let optionsNumber = originalSelect.options.length;
                             for(let e = customSelect.optionsList.length - 1; e >= 0; e--) {
@@ -3123,12 +3117,6 @@
                         log('visual: syncList _sourcesList', _sourcesList.length);
                         log('visual: syncList sources', sources.length);
                         log('visual: syncList _id', _id);
-                        try {
-                            var err = (new Error);
-                            log(err.stack);
-                        } catch (e) {
-        
-                        }
                         for (let i = _sourcesList.length - 1; i >= 0; i--) {
                             log('visual: syncList _sourcesList', _sourcesList[i]);
                             if(_sourcesList[i] == null) continue;
@@ -8918,12 +8906,6 @@
                                 optionElementCon.className = 'live-editor-custom-select-option';
                                 optionElementCon.dataset.selectValue = originalSelect.options[j].value;
                                 optionElementCon.addEventListener("click", function(e) {
-                                    try {
-                                        var err = (new Error);
-                                        log(err.stack);
-                                    } catch (e) {
-
-                                    }
                                     selectInstance.selectOption(e.currentTarget);
                                 });
                                 selectInstance.customSelectListEl.appendChild(optionElementCon);
@@ -9734,13 +9716,13 @@
                         document.body.appendChild(streamingCanvas);
                     }
 
-                    if (!tool.RTMPSender.isStreaming() && !tool.RTMPSender.isRecording()) {
+                    if (!tool.RTMPSender.isStreaming() && !tool.RTMPSender.isRecording() && !tool.state.p2pBroadcastIsActive) {
                         //tool.canvasComposer.videoComposer.stop();
                         tool.canvasComposer.stopCaptureCanvas(true); //if there is no active streaming or recording, then turn canvas rendering off to save CPU resources
                     }
                     
                     document.documentElement.classList.remove('Media_webrtc_live');
-                    tool.webrtcUserInterface.screenRendering.renderMinimizedScreensGrid();
+                    tool.webrtcUserInterface.screenRendering.switchScreensMode('minimizedStatic');
 
                     if (tool.livestreamStream) {
                         tool.livestreamStream.release(tool);
@@ -9910,7 +9892,7 @@
                             document.documentElement.classList.add('Media_webrtc_live');
                         }
                         
-                        tool.webrtcUserInterface.screenRendering.renderMinimizedScreensGrid();
+                        tool.webrtcUserInterface.screenRendering.switchScreensMode('minimizedStatic');
                     });
                 }
 
@@ -9976,40 +9958,13 @@
                     if (tool.livestreamingEditor != null) {
                         resolve(tool.livestreamingEditor);
                     } else {
-                        Q.Streams.related(webrtcStream.fields.publisherId, webrtcStream.fields.name, "Media/webrtc/livestream", true, { dontFilterUsers: true }, function (err) {
-                            if (err) {
-                                console.error(err)
-                                return;
-                            }
-                            if(Object.keys(this.relatedStreams).length) {
-                                for (var key in this.relatedStreams) {
-                                    if (this.relatedStreams.hasOwnProperty(key)) {
-                                        tool.livestreamStream = this.relatedStreams[key];
-                                        if(tool.livestreamStream) tool.declareStreamEvents();
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (!tool.livestreamStream) {
-                                tool.getOrCreateLivestreamStream().then(function () {
-                                    if (tool.livestreamStream) tool.declareStreamEvents();
-                                    tool.getApiCredentials().then(function (credentials) {
-                                        tool.livestreamingEditor = tool.create();
-                                        resolve(tool.livestreamingEditor);
-                                    });
-                                });
-                            } else {
-                                if (tool.livestreamStream) tool.declareStreamEvents();
-                                tool.getApiCredentials().then(function (credentials) {
-                                    tool.livestreamingEditor = tool.create();
-                                    resolve(tool.livestreamingEditor);
-                                });
-                            }
-
-                        });
-
-                        
+                        tool.getOrCreateLivestreamStream().then(function () {
+                            if (tool.livestreamStream) tool.declareStreamEvents();
+                            tool.getApiCredentials().then(function (credentials) {
+                                tool.livestreamingEditor = tool.create();
+                                resolve(tool.livestreamingEditor);
+                            });
+                        });                        
                     }
                   });
                 

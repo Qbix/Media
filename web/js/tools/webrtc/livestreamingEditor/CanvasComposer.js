@@ -7,7 +7,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
     var _canvasMediStream = null;
     var _mediaRecorder = null;
     var _mediaRecorders = [];
-    var _fps = 30;
+    var _fps = 60;
     var _videoTrackIsMuted = false;
     var _dataListeners = [];
     var _eventDispatcher = new EventSystem();
@@ -312,6 +312,8 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         var _size = {width:1920, height: 1080};
         var _inputCtx = null;
         var _isActive = null;
+        var _isRendering = false;
+        var _frameQueue = [];
         var _canvasRenderInterval = null;
 
         function createCanvas() {
@@ -326,7 +328,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             videoCanvas.width = _size.width;
             videoCanvas.height = _size.height;
 
-            _inputCtx = videoCanvas.getContext('2d', { alpha: false, desynchronized: true });
+            _inputCtx = videoCanvas.getContext('2d', { alpha: false, desynchronized: false });
 
             _canvas = videoCanvas;
 
@@ -2280,6 +2282,11 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
     
         function drawVideosOnCanvas() {
             if(!_isActive) return;
+            if (_isRendering) {
+                console.log('skip frame')
+                return;
+            }
+            _isRendering = true;
 
             _inputCtx.clearRect(0, 0, _size.width, _size.height);
 
@@ -2294,26 +2301,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     drawVideo(streamData);
                 }
             }
-
-            /*for(let i = _activeScene.sources.length - 1; i >= 0; i--) {
-                if(_activeScene.sources[i].active == false ||_activeScene.sources[i].sourceType == 'group') continue;
-
-                let streamData = _activeScene.sources[i];
-
-                if(streamData.sourceType == 'webrtc' && streamData.kind == 'video') {
-                    drawSingleVideoOnCanvas(streamData.htmlVideoEl, streamData, _size.width, _size.height, streamData.htmlVideoEl.videoWidth, streamData.htmlVideoEl.videoHeight);
-                    streamData.eventDispatcher.dispatch('userRendered')
-
-                } else if(streamData.sourceType == 'webrtc' && streamData.kind == 'audio') {
-                    drawSingleAudioOnCanvas(streamData);
-                    streamData.eventDispatcher.dispatch('userRendered')
-
-                } else if(streamData.sourceType == 'image') {
-                    drawImage(streamData);
-                } else if(streamData.sourceType == 'video' || streamData.sourceType == 'videoInput') {
-                    drawVideo(streamData);
-                } 
-            }*/
 
             for(let i = _activeScene.visualSources.length - 1; i >= 0; i--) {
             //for(let i = 0; i < _activeScene.visualSources.length; i++) {
@@ -2417,12 +2404,18 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 }
             }
             
-            _fpsData++;
+            //_fpsData++;
 
+            _isRendering = false;
             //requestAnimationFrame(function() {
             //    drawVideosOnCanvas();
             //});
         }
+
+        /* setInterval(function() {
+            console.log('_fpsData', _fpsData)
+            _fpsData = 0;
+        }, 1000) */
 
         function drawImage(imageSource) {
             var imageInstanse = imageSource.imageInstance || imageSource.canvas;
@@ -2453,6 +2446,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             if(imageSource.opacity) {
                 _inputCtx.globalAlpha = imageSource.opacity;
             }
+
             _inputCtx.drawImage(imageInstanse,
                 x, y,
                 outWidth, outHeight);
@@ -4773,17 +4767,13 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 var webrtcSignalingLib = tool.webrtcSignalingLib;
 
                 function updateAudioSources(e, eventName) {
-                    var track = e.track || e.tracks[0];
-                    log('audioComposer: updateAudioSources', e, track.kind, eventName);
-                    if(e.track) log('audioComposer: updateAudioSources: track.kind',track.kind);
                     let participant = eventName == 'audioTrackLoaded' || eventName == 'trackAdded' || 'trackUnmuted' ? e.participant : e;
-                    log('audioComposer: updateAudioSources participant', participant);
 
                     if(!participant) {
                         return;
                     }
 
-                    if(eventName == 'trackUnmuted' && track.kind != 'audio') {
+                    if(eventName == 'trackUnmuted') {
                         return;
                     }
 
@@ -4794,8 +4784,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     });
 
                     if(audioTracks.length == 0) {
-                        log('audioComposer: updateAudioSources audioTracks.length == 0');
-
                         return;
                     }
                     let participantsAudioSourse = addSource({
