@@ -2,7 +2,7 @@
 	"Q": {
 		"pluginInfo": {
 			"Media": {
-				"version": "0.4.2",
+				"version": "0.4.3",
 				"compatible": "0.1",
 				"requires": {
 					"Q": "1.0",
@@ -40,6 +40,7 @@
 			"clip/:clipId": {"module": "Media", "action": "clip"},
 			"clip/:publisherId/:clipId": {"module":  "Media", "action":  "clip"},
 			"clip/:publisherId/:episodeDate/:clipTime": {"module":  "Media", "action":  "clip"},
+			"clips": {"module":  "Media", "action":  "clips"},
 			"livestream/:publisherId/:livestreamId": { "module": "Media", "action": "livestream" },
 			"livestream/:publisherId/:livestreamId[]": {"module": "Media", "action": "livestream"},
 		    "meeting": { "module": "Media", "action": "meeting" },
@@ -51,7 +52,12 @@
 			"feed/:feedId": { "module": "Media", "action": "feed" },
 			"newFeed": {"module": "Media", "action": "newFeed"},
 			"presentation/:calendarId": {"module": "Media", "action": "presentation"},
-			"presentation/:communityId/:calendarId": {"module": "Media", "action": "presentation"}
+			"presentation/:communityId/:calendarId": {"module": "Media", "action": "presentation"},
+			"channels": {"module": "Media", "action": "channels"},
+			"channels/:publisherId": {"module": "Media", "action": "channels"},
+			"channel": {"module": "Media", "action": "channel"},
+			"channel/:publisherId": {"module": "Media", "action": "channel"},
+			"channel/:publisherId/:channelId": {"module": "Media", "action": "channel"}
 		},
 		"web": {
 			"contentSecurityPolicy": {
@@ -258,6 +264,25 @@
 				"create": false,
 				"edit": ["attributes"]
 			},
+			"Media/channel": {
+				"defaults": {
+					"icon": "Streams/category",
+					"title": "Untitled Media Channel",
+					"readLevel": 40,
+					"writeLevel": 10,
+					"adminLevel": 20
+				},
+				"create": true,
+				"close": true,
+				"edit": [
+					"title",
+					"icon",
+					"content",
+					"attributes"
+				],
+				"uri": "Media/channel publisherId={{publisherId}} channelId={{streamName.[2]}}",
+				"url": "{{baseUrl}}/channel/{{publisherId}}/{{streamName.[2]}}"
+			},
 			"Media/clip": {
 				"emoji": "🎬",
 				"defaults": {
@@ -375,6 +400,7 @@
 		},
 		"pageSizes": {
 			"clips": 50,
+			"channels": 50,
 			"feeds": 100
 		},
 		"access": {
