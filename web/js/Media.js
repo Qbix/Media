@@ -69,6 +69,14 @@
 			js: "{{Media}}/js/tools/episode/preview.js",
 			css: "{{Media}}/css/tools/episodePreview.css"
 		},
+		"Media/channel/preview": {
+			js: "{{Media}}/js/tools/channel/preview.js",
+			css: "{{Media}}/css/tools/channelPreview.css"
+		},
+		"Media/channel": {
+			js: "{{Media}}/js/tools/channel.js",
+			css: "{{Media}}/css/tools/channel.css"
+		},
 		"Media/feed": "{{Media}}/js/tools/feed.js",
 		"Media/feed/composer": "{{Media}}/js/tools/feed/composer.js",
 		"Media/audioVisualization"	 : "{{Media}}/js/tools/webrtc/audioVisualization.js",

@@ -131,3 +131,9 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 	50% { background-color: green; }
 	75% { background-color: yellow; }
 }
+
+#dashboard .Q_tabs_tabs .Q_tab_videos::before, .Q_listing_wrapper  .Q_tabs_tabs .Q_tab_videos::before {
+	font-family: 'qplatform-media';
+	content: "\e912";
+	margin-right: 5px;
+}

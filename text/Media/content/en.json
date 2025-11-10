@@ -1,6 +1,7 @@
 {
     "Shows": "Shows",
     "Clips": "Clips",
+    "Channels": "Channels",
     "Video": "Video",
     "Audio": "Audio",
     "categories": {
@@ -16,6 +17,13 @@
         }
     },
     "NewEpisode": "New Episode",
+    "channels": {
+        "NewChannel": "New Channel",
+        "MyChannels": "My Channels",
+        "AllChannels": "All Channels",
+        "AddChannel": "Add Channel",
+        "ChannelClosed": "Channel closed"
+    },
     "NewClip": "Make a New Clip",
     "NewClipTitlePlaceholder": "Enter Clip Title",
     "NewClipDescriptionPlaceholder": "Enter Clip Description",
