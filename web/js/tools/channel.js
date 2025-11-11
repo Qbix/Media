@@ -26,7 +26,16 @@ Q.Tool.define("Media/channel", function(options) {
 	show: {
 		participants: false,
 		closeChannel: false
-	}
+	},
+	onClose: new Q.Event(function () {
+		var $column = $(this.element).closest(".Media_column_channel");
+		if ($column.length) {
+			var columns = Q.Tool.from($column.closest(".Q_columns_tool")[0], "Q/columns");
+			if (columns) {
+				columns.close($column[0]);
+			}
+		}
+	})
 },
 
 {
@@ -54,7 +63,7 @@ Q.Tool.define("Media/channel", function(options) {
 			isAdmin = tool.isAdmin = tool.stream.testWriteLevel('close');
 
 			// check if user is publisher or admin for current community
-			if (isAdmin) {
+			if (isAdmin && state.streamName !== "Media/channel/main") {
 				state.show.closeChannel = true;
 			}
 
@@ -79,7 +88,7 @@ Q.Tool.define("Media/channel", function(options) {
 				tool.element.innerHTML = html;
 				Q.activate(tool.element, function () {
 					// close event button handler
-					tool.$(".Media_aspect_close").on(Q.Pointer.fastclick, function () {
+					tool.$("button[name=closeChannel]").on(Q.Pointer.fastclick, function () {
 						var $this = $(this);
 
 						$this.addClass("Q_working");
@@ -94,30 +103,27 @@ Q.Tool.define("Media/channel", function(options) {
 									console.warn(msg);
 									return;
 								}
-								_closeFeed();
+
+								// send request to close feed
+								Q.req('Media/channel', '', function (err, response) {
+									var r = response && response.errors;
+									var msg = Q.firstErrorMessage(err, r);
+									if (msg) {
+										$this.removeClass("Q_working");
+										return Q.alert(msg);
+									}
+
+									Q.handle(state.onClose, tool);
+								}, {
+									method: 'delete',
+									fields: {
+										publisherId: tool.stream.fields.publisherId,
+										streamName: tool.stream.fields.name
+									}
+								});
 							},
 							{participants: 1000}
 						);
-
-						function _closeFeed(){
-							// send request to close feed
-							Q.req('Media/channel', '', function (err, response) {
-								var r = response && response.errors;
-								var msg = Q.firstErrorMessage(err, r);
-								if (msg) {
-									return Q.alert(msg);
-								}
-
-								Q.handle(state.onClose, tool);
-							}, {
-								method: 'delete',
-								fields: {
-									publisherId: tool.stream.fields.publisherId,
-									streamName: tool.stream.fields.name
-								}
-							});
-						}
-
 						return false;
 					});
 
@@ -130,12 +136,19 @@ Q.Tool.define("Media/channel", function(options) {
 					});
 
 					// related clips
-					tool.$(".Media_channel_clips").tool("Streams/related", {
+					tool.$(".Media_episodes").tool("Streams/related", {
 						publisherId: state.publisherId,
 						streamName: state.streamName,
-						relationType: "Media/clip",
+						relationType: "Media/episode",
+						closeable: true,
+						editable: true,
+						sortable: false,
+						specificOptions: {
+							layout: "cards",
+							templateStyle: "square"
+						},
 						creatable: {
-							"Media/clip": {
+							"Media/episode": {
 								title: tool.text.NewClip
 							}
 						}
@@ -151,21 +164,16 @@ Q.Tool.define("Media/channel", function(options) {
 
 );
 
-Q.Template.set('Media/channel',
-`
+Q.Template.set('Media/channel',`
 	<img class="Streams_preview_icon Q_square">
 	{{{tool "Streams/inplace" "title" field="title" inplaceType="text" inplace-placeholder="Title of feed" inplace-selectOnEdit=true publisherId=stream.fields.publisherId streamName=stream.fields.name}}}
 	{{#if show.participants}}
-		{{{tool "Streams/participants" "feed" max=peopleMax maxShow=10 showSummary=false showControls=true publisherId=stream.fields.publisherId streamName=stream.fields.name }}}
+		{{{tool "Streams/participants" "feed" max=peopleMax maxShow=10 showSummary=false showControls=true publisherId=stream.fields.publisherId streamName=stream.fields.name}}}
 	{{/if}}
-	{{#if show.closeFeed}}
-		<div class="Q_button Media_aspect_close">
-			<div class="Media_info_icon"><img alt="Close Feed" src="{{toUrl "Q/plugins/Calendars/img/white/close.png"}}"></div>
-			<div class="Media_info_content">{{text.CloseFeed.button}}</div>
-		</div>
+	{{#if show.closeChannel}}
+		<button class="Q_button" name="closeChannel">Close channel</button>
 	{{/if}}
-	<div class="Media_channel_clips"></div>
-`
-);
+	<div class="Media_episodes Media_episodes_cards"></div>
+`);
 
 })(Q, Q.jQuery, window);
