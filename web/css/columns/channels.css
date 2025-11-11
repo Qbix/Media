@@ -1,0 +1,17 @@
+:root {
+    --channels-zero-column-width: 30%;
+}
+
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0 {
+    min-width: var(--channels-zero-column-width);
+    width: var(--channels-zero-column-width);
+}
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1 {
+    width: calc(100% - var(--channels-zero-column-width) - var(--column-margin));
+}
+
+.Streams_related_tool.Media_channels_my .Streams_preview:not(.Streams_preview_composer) {
+    display: none;
+}
