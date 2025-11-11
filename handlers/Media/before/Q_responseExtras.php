@@ -28,4 +28,8 @@ function Media_before_Q_responseExtras() {
 	))->fetchDbRows(null, null, 'contactUserId');
     $screeners = array_keys($screeners);
 	Q_Response::setScriptData("Q.plugins.Media.screeners", $screeners);
+
+	$templateStyle = Q_Request::isMobile() ? "tall" : "square";
+	Q_Response::setScriptData("Q.plugins.Media.episode.templateStyle", $templateStyle);
+	Q_Response::setScriptData("Q.plugins.Calendars.event.templateStyle", $templateStyle);
 }
