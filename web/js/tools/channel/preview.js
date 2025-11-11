@@ -31,9 +31,11 @@ Q.Tool.define("Media/channel/preview", ["Streams/preview"], function _Media_clip
 				publisherId: stream.fields.publisherId,
 				streamName: stream.fields.name
 			}),
+			//url: stream.url(),
 			trigger: tool.element,
-			callback: function (options, index, div, data) {
-				console.log("Media/channel tool loaded");
+			className: 'Media_column_channel',
+			onActivate: function (options, index, div, data) {
+
 			}
 		});
 	}, 'Media/channel/preview')
