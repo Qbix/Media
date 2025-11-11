@@ -23,6 +23,7 @@
 		"handlersAfterEvent": {
 			"Streams/create/Media/episode": ["Media/after/Streams_create_Media_episode"],
 			"Streams/create/Media/clip": ["Media/after/Streams_create_Media_clip"],
+			"Streams/create/Media/channel": ["Media/after/Streams_create_Media_channel"],
 			"Streams/relateTo/Streams/chat": ["Media/after/Streams_relateTo_Streams_chat"],
 			"Streams/message/Streams/closed": ["Media/after/Streams_message_Streams_closed"],
 			"Communities/community/tabs": ["Media/after/Communities_community_tabs"],
