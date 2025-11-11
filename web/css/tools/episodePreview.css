@@ -12,7 +12,7 @@
 .Media_episode_preview_tool.Q_expandable_tool > h2 > .Streams_preview_tool > .Streams_preview_container {
     line-height: 52px;
 }
-.Media_episode_preview_tool,
+.Media_episode_preview_tool:not(.Streams_preview_composer),
 .Media_episode_preview_tool.Q_expandable_tool:hover,
 .Media_episode_preview_tool.Q_expandable_tool .Streams_preview_tool:hover {
     background-color: rgba(100, 100, 100, 0.5);
