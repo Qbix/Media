@@ -22,7 +22,9 @@ echo '<div class="Media_shows_layout"><a href="' . $url . '">' . ($layout == 'ca
     <button class="Q_button Media_newEpisode" name="addEpisode"><?php echo $NewEpisode ?></button>
 <?php } ?>
 
+<?php if (!empty(Q_Config::get("Media", "liveShow", null))) { ?>
 <button class="Q_button Media_liveShow Q_pulsate"><?php echo $LiveShow ?></button>
+<?php } ?>
 
 <?php
 
