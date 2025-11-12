@@ -37,8 +37,8 @@ echo Q::tool('Streams/related', array(
 	"editable" => false,
 	"infinitescroll" => true,
 	"previewOptions" => array(
-        "closeable" => true,
-        "editable" => false,
+        //"closeable" => true,
+        //"editable" => false,
         "expandable" => array("expanded" => false) // this for Media/episodes/preview
     ),
 	"specificOptions" => array(
