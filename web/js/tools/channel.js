@@ -17,6 +17,17 @@ Q.Tool.define("Media/channel", function(options) {
 		throw new Q.Exception("Media/channel: streamName required!");
 	}
 
+	// update column title
+	var $column = $(this.element).closest(".Media_column_channel");
+	if ($column.length) {
+		$(".Q_title_slot", $column).css({}).tool("Streams/inplace", {
+			publisherId: state.publisherId,
+			streamName: state.streamName,
+			field: "title",
+			editable: false
+		}).activate();
+	}
+
 	this.refresh();
 },
 
@@ -24,7 +35,7 @@ Q.Tool.define("Media/channel", function(options) {
 	publisherId: null,
 	streamName: null,
 	show: {
-		participants: false,
+		participants: true,
 		closeChannel: false
 	},
 	onClose: new Q.Event(function () {
@@ -60,7 +71,7 @@ Q.Tool.define("Media/channel", function(options) {
 			}
 
 			// whether user have permissions to edit feed
-			isAdmin = tool.isAdmin = tool.stream.testWriteLevel('close');
+			isAdmin = state.isAdmin = tool.stream.testWriteLevel('close');
 
 			// check if user is publisher or admin for current community
 			if (isAdmin && state.streamName !== "Media/channel/main") {
@@ -85,90 +96,191 @@ Q.Tool.define("Media/channel", function(options) {
 				if (err) {
 					return;
 				}
-				tool.element.innerHTML = html;
-				Q.activate(tool.element, function () {
-					// close event button handler
-					tool.$("button[name=closeChannel]").on(Q.Pointer.fastclick, function () {
-						var $this = $(this);
 
-						$this.addClass("Q_working");
+				Q.replace(tool.element, html);
 
-						Q.Streams.get(
-							tool.stream.fields.publisherId,
-							tool.stream.fields.name,
-							function (err, stream, extra) {
-								var msg = Q.firstErrorMessage(err);
+				var $cover = tool.$(".Media_channel_cover");
+				var $coverEdit = tool.$(".Media_channel_cover i");
+				// close event button handler
+				tool.$("button[name=closeChannel]").on(Q.Pointer.fastclick, function () {
+					var $this = $(this);
+
+					$this.addClass("Q_working");
+
+					Q.Streams.get(
+						tool.stream.fields.publisherId,
+						tool.stream.fields.name,
+						function (err, stream, extra) {
+							var msg = Q.firstErrorMessage(err);
+							if (msg) {
+								$this.removeClass("Q_working");
+								console.warn(msg);
+								return;
+							}
+
+							// send request to close feed
+							Q.req('Media/channel', '', function (err, response) {
+								var r = response && response.errors;
+								var msg = Q.firstErrorMessage(err, r);
 								if (msg) {
 									$this.removeClass("Q_working");
-									console.warn(msg);
-									return;
+									return Q.alert(msg);
 								}
 
-								// send request to close feed
-								Q.req('Media/channel', '', function (err, response) {
-									var r = response && response.errors;
-									var msg = Q.firstErrorMessage(err, r);
-									if (msg) {
-										$this.removeClass("Q_working");
-										return Q.alert(msg);
-									}
-
-									Q.handle(state.onClose, tool);
-								}, {
-									method: 'delete',
-									fields: {
-										publisherId: tool.stream.fields.publisherId,
-										streamName: tool.stream.fields.name
-									}
-								});
-							},
-							{participants: 1000}
-						);
-						return false;
-					});
-
-					// icon
-					$("<div>").tool("Streams/preview", Q.extend({
-						closeable: false,
-						editable: true
-					}, state)).activate(function () {
-						this.icon(tool.$("img.Streams_preview_icon")[0]);
-					});
-
-					// related clips
-					tool.$(".Media_episodes").tool("Streams/related", {
-						publisherId: state.publisherId,
-						streamName: state.streamName,
-						relationType: "Media/episode",
-						closeable: true,
-						editable: true,
-						sortable: false,
-						specificOptions: {
-							layout: "cards",
-							templateStyle: "square"
+								Q.handle(state.onClose, tool);
+							}, {
+								method: 'delete',
+								fields: {
+									publisherId: tool.stream.fields.publisherId,
+									streamName: tool.stream.fields.name
+								}
+							});
 						},
-						creatable: {
-							"Media/episode": {
-								title: tool.text.NewClip
-							}
-						}
-					}).activate();
+						{participants: 1000}
+					);
+					return false;
 				});
 
+				// cover image
+				_getOrCreateCoverImageStream(function (err, coverStream) {
+					if (err || !coverStream) {
+						return;
+					}
+
+					var _getCoverUrl = function () {
+						return coverStream.iconUrl(Q.image.defaultSize['Users/cover']) + '?' + new Date().getTime();
+					};
+
+					$cover[0].style['background-image'] = "url(" + _getCoverUrl() + ")";
+
+					if (!isAdmin) {
+						return;
+					}
+
+					$coverEdit[0].style['display'] = 'block';
+					var splitId = coverStream.fields.publisherId.splitId('');
+					var subpath = splitId + '/' + coverStream.fields.name + '/icon/' +  + Math.floor(Date.now()/1000);
+					Q.Tool.setUpElement($coverEdit[0], 'Q/imagepicker', {
+						saveSizeName: 'Users/cover',
+						//showSize: state.icon || $img.width(),
+						path: 'Q/uploads/Streams',
+						subpath: subpath,
+						save: "Users/cover",
+						onSuccess: function () {
+							coverStream.refresh(function () {
+								$cover[0].style['background-image'] = "url(" + _getCoverUrl() + ")";
+							}, {
+								messages: true,
+								changed: {icon: true},
+								evenIfNotRetained: true
+							});
+						}
+					});
+					Q.activate($coverEdit[0]);
+				});
+
+				// icon
+				$("<div>").tool("Streams/preview", Q.extend({
+					closeable: false,
+					editable: true,
+					imagepicker: {
+						showSize: "80"
+					}
+				}, state)).activate(function () {
+					this.icon(tool.$("img.Media_channel_icon")[0]);
+				});
+
+				// title
+				tool.$(".Media_channel_title").tool("Streams/inplace", {
+					publisherId: state.publisherId,
+					streamName: state.streamName,
+					field: "title",
+					inplaceType: "text"
+				}).activate();
+
+				// participants
+				tool.$(".Media_channel_participants").tool("Streams/participants", {
+					showSummary: false,
+					showControls: true,
+					publisherId: state.publisherId,
+					streamName: state.streamName
+				}).activate();
+
+				// related clips
+				tool.$(".Media_episodes").tool("Streams/related", {
+					publisherId: state.publisherId,
+					streamName: state.streamName,
+					relationType: "Media/episode",
+					closeable: true,
+					editable: true,
+					sortable: false,
+					specificOptions: {
+						layout: "cards",
+						templateStyle: "square"
+					},
+					creatable: {
+						"Media/episode": {
+							title: tool.text.NewClip
+						}
+					}
+				}).activate();
 			});
 		}, {
 			participants: 100
 		});
+
+		var _getOrCreateCoverImageStream = function (callback) {
+			var relationType = "Media/channel/cover";
+			Q.Streams.related.force(state.publisherId, state.streamName, relationType, true, {
+				withParticipant: false
+			}, function (err) {
+				if (err) {
+					return Q.handle(callback, null, [err]);
+				}
+
+				if (this.relations.length) {
+					Q.Streams.get.force(this.relations[0].fromPublisherId, this.relations[0].fromStreamName, function (err) {
+						if (err) {
+							return Q.handle(callback, null, [err]);
+						}
+
+						Q.handle(callback, this, [null, this]);
+					});
+					return;
+				}
+
+				if (!isAdmin) {
+					return Q.handle(callback, null);
+				}
+
+				Q.Streams.create({
+					publisherId: state.publisherId,
+					type: 'Streams/image',
+					readLevel: 40
+				}, function (err) {
+					if (err) {
+						return Q.handle(callback, null, [err]);
+					}
+
+					Q.handle(callback, this, [null, this]);
+				}, {
+					publisherId: state.publisherId,
+					streamName: state.streamName,
+					type: relationType
+				});
+			});
+		};
 	}
 }
 
 );
 
 Q.Template.set('Media/channel',`
-	<img class="Streams_preview_icon Q_square">
-	{{{tool "Streams/inplace" "title" field="title" inplaceType="text" inplace-placeholder="Title of feed" inplace-selectOnEdit=true publisherId=stream.fields.publisherId streamName=stream.fields.name}}}
+	<div class="Media_channel_cover">{{#if isAdmin}}<i class="qp-media-pencil"></i>{{/if}}</div>
+	<img class="Media_channel_icon">
+	<div class="Media_channel_title"></div>
 	{{#if show.participants}}
-		{{{tool "Streams/participants" "feed" max=peopleMax maxShow=10 showSummary=false showControls=true publisherId=stream.fields.publisherId streamName=stream.fields.name}}}
+		<div class="Media_channel_participants"></div>
 	{{/if}}
 	{{#if show.closeChannel}}
 		<button class="Q_button" name="closeChannel">Close channel</button>

@@ -1,0 +1,40 @@
+.Media_channel_tool {
+    text-align: center;
+}
+.Media_channel_tool .Media_channel_cover {
+    position: relative;
+    height: 0;
+    padding-bottom: 30%;
+    background-color: #f0f0f0;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.Q_notMobile .Media_channel_tool .Media_channel_cover {
+    padding-bottom: 20%;
+}
+.Media_channel_tool .Media_channel_cover i {
+    display: none;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+}
+.Media_channel_tool .Media_channel_icon {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    /* transform: translateY(-50%); */
+    border-radius: 50%;
+    margin-top: -40px;
+}
+.Media_channel_tool .Streams_participants_tool {
+    height: auto;
+}
+.Media_channel_tool .Media_channel_title {
+    font-size: 1.5em;
+}
+.Media_column_channel h2.Q_title_slot {
+    display: block;
+}
