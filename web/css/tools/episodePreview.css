@@ -269,6 +269,7 @@
     display:inline-block;
     width: calc(100% - 150px);
     position: relative;
+    background-color: #f0f0f0;
 }
 @media (max-width: 680px) {
     .Media_episode_preview_tool.Media_episode_preview_template_square .Streams_preview_episode_card_fg {
