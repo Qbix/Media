@@ -17,7 +17,7 @@
     position: absolute;
     right: 10px;
     bottom: 10px;
-    background-color: #fff;
+    background-color: #f0f0f0;
     padding: 10px;
     border-radius: 50%;
 }
@@ -37,4 +37,10 @@
 }
 .Media_column_channel h2.Q_title_slot {
     display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+    .Media_channel_tool .Media_channel_cover i {
+        background-color: #3f3f3f;
+    }
 }

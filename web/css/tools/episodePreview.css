@@ -16,7 +16,6 @@
 .Media_episode_preview_tool.Q_expandable_tool:hover,
 .Media_episode_preview_tool.Q_expandable_tool .Streams_preview_tool:hover {
     background-color: rgba(100, 100, 100, 0.5);
-    color: unset;
 }
 .Media_episode_preview_tool.Q_expandable_tool > h2 img {
     width: 40px;
@@ -71,6 +70,7 @@
     box-shadow: none;
     text-align: left;
     border: none;
+    color: var(--column-title-color);
 }
 .Media_episode_preview_tool.Q_expandable_tool .Q_expandable_container .Streams_related_tool .Streams_preview_tool img {
     display: none;
@@ -98,26 +98,15 @@
 .Media_episode_preview_tool.Q_expandable_tool .Q_expandable_container .Streams_related_tool.Streams_related_meetings {
     margin-left: 10%;
 }
-.Media_episode_preview_tool.Q_expandable_tool h2,
-.Media_episode_preview_tool.Q_expandable_tool h2 .Media_episode_publishTime {
-    background: #575757;
-}
-.Media_episode_preview_tool.Q_expandable_tool h2:hover,
-.Media_episode_preview_tool.Q_expandable_tool h2:hover .Media_episode_publishTime,
-.Media_episode_preview_tool.Q_expandable_tool h2.Q_expanded,
-.Media_episode_preview_tool.Q_expandable_tool h2.Q_expanded .Media_episode_publishTime {
-    background: #92a0ae;
-}
 .Media_episode_preview_tool .Media_episode_publishTime {
     white-space: nowrap;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
     padding: 0 0 0 5px;
     display: block;
     position: absolute;
-    right: 5px;
-    bottom: 1px;
-    height: 18px;
+    right: 0;
+    bottom: 0;
+    height: 16px;
 }
 
 
@@ -129,7 +118,6 @@
 }
 .Q_mobile .Media_shows_layout {
     margin-top: 0;
-    float:right;
     text-align: right;
     padding-left: 3px;
 }
@@ -201,22 +189,13 @@
     top:0;
     left:0;
     width: 100%;
-    padding: 10px;
-    display: flex;
-    justify-content: start;
-    align-items: start;
+    padding: 5px;
     height:80%;
     bottom:26px;
     text-align: left;
+    white-space: normal;
 }
-.Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_card_title_text {
-    max-height: 100%;
-}
-
 .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_card_info {
-    position: absolute;
-    bottom:13px;
-    left:0;
     width:100%;
     height:20%;
     overflow: hidden;
@@ -225,6 +204,9 @@
     padding:5px;
     text-align: left;
     line-height: 1;
+}
+.Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_card_title_text {
+    max-height: 100%;
 }
 .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_card_info .Streams_preview_episode_card_info_date:before{
     font-family: 'qplatform-calendars' !important;
@@ -277,20 +259,18 @@
     }
 }
 .Media_episode_preview_tool.Media_episode_preview_template_square .Streams_preview_episode_card_title {
-    position: relative;
+    position: static;
     max-height: unset;
-    height: 130px;
+    height: 75%;
 }
 @media (max-width: 680px) {
     .Media_episode_preview_tool.Media_episode_preview_template_square .Streams_preview_episode_card_title {
-        height: 40px;
+        /*height: 80px;*/
     }
 }
 .Media_episode_preview_tool.Media_episode_preview_template_square .Streams_preview_episode_card_info {
-    position: relative;
     text-shadow: none;
     height: 20px;
-    margin-bottom: 10px;
 }
 /* </square template> */
 /* <tall template> */
@@ -319,7 +299,17 @@
 .Media_episode_preview_tool.Media_episode_preview_template_tall .Streams_preview_episode_card_info {
     position: static;
     text-shadow: none;
-    color: #000;
     height: 20px;
 }
 /* </tall template> */
+
+@media (prefers-color-scheme: dark) {
+    .Media_episode_preview_tool.Media_episode_preview_template_tall .Streams_preview_episode_card_fg,
+    .Media_episode_preview_tool.Media_episode_preview_template_square .Streams_preview_episode_card_fg {
+        background-color: #3f3f3f;
+    }
+    .Media_episode_preview_tool.Q_selected.Media_episode_preview_template_tall .Streams_preview_episode_card_fg,
+    .Media_episode_preview_tool.Q_selected.Media_episode_preview_template_square .Streams_preview_episode_card_fg {
+        color: #fff;
+    }
+}
