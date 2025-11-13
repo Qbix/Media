@@ -149,7 +149,10 @@
                         }
 					}).activate();
 
-					$('.Streams_preview_episode_card_title', tool.element).plugin('Q/textfill', null, stream.fields.name.split("/").pop());
+					$('.Streams_preview_episode_card_title', tool.element).plugin('Q/textfill', {
+						maxFontPixels: 25,
+						minFontPixels: 12
+					}, stream.fields.name.split("/").pop());
                 });
 
 				$toolElement.on(Q.Pointer.fastclick, function () {
@@ -375,9 +378,7 @@
              style="background-image: url({{iconURL}});"></div>
         <div class="Streams_preview_episode_card_fg">
             <div class="Streams_preview_episode_card_title">
-                <div class="Streams_preview_episode_card_title_text">
-                    {{{title}}}
-                </div>
+            	<div class="Streams_preview_episode_card_title_text">{{{title}}}</div>
             </div>
             <div class="Streams_preview_episode_card_info">
                 <div class="Streams_preview_episode_card_info_date">
