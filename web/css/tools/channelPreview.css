@@ -3,3 +3,8 @@
     border-radius: 5px;
     background-color: #f0f0f0;
 }
+@media (prefers-color-scheme: dark) {
+    .Media_channel_preview_tool:not(.Streams_preview_composer) {
+        background-color: #3f3f3f;
+    }
+}

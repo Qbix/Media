@@ -20,7 +20,7 @@ Q.Tool.define("Media/channel", function(options) {
 	// update column title
 	var $column = $(this.element).closest(".Media_column_channel");
 	if ($column.length) {
-		$(".Q_title_slot", $column).css({}).tool("Streams/inplace", {
+		$(".Q_title_slot", $column).tool("Streams/inplace", {
 			publisherId: state.publisherId,
 			streamName: state.streamName,
 			field: "title",
