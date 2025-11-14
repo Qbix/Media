@@ -69,7 +69,6 @@
             $(tool.element).attr("data-type", this.fields.type);
             pipe.fill("stream")();
 
-            // join user once he visited clip tool to allow get messages (relatedTo, unrelatedTo, ...)
             if (Q.Users.loggedInUserId()) {
                 //this.join();
                 this.observe();
@@ -813,15 +812,28 @@
         },
         joinClip: function () {
             let tool = this;
-            Streams.get.force(tool.state.publisherId, tool.state.streamName, function (err) {
-                if (err) {
+
+            if (!Q.Users.loggedInUserId()) {
+                return console.warn("You need to login first");
+            }
+
+            // join episode
+            Streams.Stream.join(tool.state.publisherId, tool.state.streamName);
+
+            // join to all Media/channel streams this episode related to
+            Streams.related(tool.state.publisherId, tool.state.streamName, "Media/episode", false, {
+                withParticipant: false,
+                relationsOnly: true,
+                prefix: "Media/channel/"
+            }, function () {
+                var relations = Q.getObject("relations", this);
+                if (Q.isEmpty(relations)) {
                     return;
                 }
 
-                if (Q.Users.loggedInUserId()) {
-                    this.join();
-                }
-
+                Q.each(relations, function () {
+                    Streams.Stream.join(this.toPublisherId, this.toStreamName);
+                });
             });
         },
         waiting: function (condition, callback, period=500, timeOut=50000) {
