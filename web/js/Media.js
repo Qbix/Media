@@ -182,7 +182,7 @@
 
 				},
 				onClose: function () {
-					$trigger.removeClass("Q_selected");
+
 				}
 			});
 		},
