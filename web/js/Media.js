@@ -163,6 +163,29 @@
 				}
 			});
 		},
+		pushChannelColumn: function (stream, $trigger) {
+			$trigger = $($trigger || this.element);
+			var publisherId = stream.fields.publisherId;
+			var streamName = stream.fields.name;
+			var min = parseInt($trigger.closest('.Q_columns_column').data('index')) + 1;
+			var columns = Q.Tool.from($trigger.closest('.Q_columns_tool')[0], "Q/columns");
+			columns.close({min: min}, null, {animation: {duration: 0}});
+			columns.push({
+				title: stream.fields.title,
+				name: "channel",
+				column: Q.Tool.setUpElement('div', 'Media/channel', {
+					publisherId: publisherId,
+					streamName: streamName
+				}),
+				columnClass: 'Media_column_channel',
+				onActivate: function () {
+
+				},
+				onClose: function () {
+					$trigger.removeClass("Q_selected");
+				}
+			});
+		},
 		/**
 		 * Generate RTMP link for this stream
 		 * @method getRTMPlink
@@ -224,7 +247,8 @@
 		handlers: {
 			feeds: "{{Media}}/js/columns/feeds.js",
 			feed: "{{Media}}/js/columns/feed.js",
-			newFeed: "{{Media}}/js/columns/newFeed.js"
+			newFeed: "{{Media}}/js/columns/newFeed.js",
+			channels: "{{Media}}/js/columns/channels.js",
 		}
 	};
 

@@ -25,19 +25,7 @@ Q.Tool.define("Media/channel/preview", ["Streams/preview"], function _Media_clip
 		var tool = this;
 		var stream = this.stream;
 
-		Q.invoke({
-			title: stream.fields.title,
-			content: $("<div>").tool("Media/channel", {
-				publisherId: stream.fields.publisherId,
-				streamName: stream.fields.name
-			}),
-			//url: stream.url(),
-			trigger: tool.element,
-			className: 'Media_column_channel',
-			onActivate: function (options, index, div, data) {
-
-			}
-		});
+		Q.Media.pushChannelColumn(stream, $(tool.element));
 	}, 'Media/channel/preview')
 },
 
