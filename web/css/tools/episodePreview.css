@@ -308,8 +308,7 @@
     .Media_episode_preview_tool.Media_episode_preview_template_square .Streams_preview_episode_card_fg {
         background-color: #3f3f3f;
     }
-    .Media_episode_preview_tool.Q_selected.Media_episode_preview_template_tall .Streams_preview_episode_card_fg,
-    .Media_episode_preview_tool.Q_selected.Media_episode_preview_template_square .Streams_preview_episode_card_fg {
+    .Media_episode_preview_tool.Q_selected {
         color: #fff;
     }
 }
