@@ -23,7 +23,7 @@ Q.page("Media/meeting", function () {
             inviteToken:inviteToken,
             invitingUserId:invitingUserId,
             resumeClosed: true,
-            defaultDesktopViewMode: 'maximized',
+            defaultDesktopViewMode: 'maximizedStatic',
             defaultMobileViewMode: 'audio',
             mode: 'node',
             startWith: {video: false, audio: true},

@@ -284,7 +284,8 @@ Q.Media.WebRTCRoomClient = function app(options){
          * @method remove
          */
         this.remove = function () {
-            log('participant: remove');
+            console.log('participant: remove');
+            console.trace();
             app.event.dispatch('participantRemoved', this);
 
             for(let t = this.tracks.length - 1; t >= 0; t--){
@@ -2078,6 +2079,7 @@ Q.Media.WebRTCRoomClient = function app(options){
 
                 }).catch(function (error) {
                     console.warn(error)
+                    app.signalingDispatcher.sendDataTrackMessage("remoteScreensharingFailed");
                     if(failureCallback) failureCallback();
                 });
             }

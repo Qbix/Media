@@ -1675,6 +1675,8 @@
                     tool.participantsPopup = (function () {
                         var _popUpResizeobserver;
 
+                        var modeNames = tool.webrtcRoomInstance.screenRendering.modes;
+
                         var buttonsArr = [
                             /* {
                                 viewMode: 'maximizedStatic',
@@ -1683,31 +1685,31 @@
                                 offIcon: icons.staticMaximizeOff
                             }, */
                             {
-                                viewMode: 'tiledView',
+                                viewMode: modeNames.tiled,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.tiledScreens", tool.text),
                                 onIcon: icons.tiledViewModeOn,
                                 offIcon: icons.tiledViewModeOff
                             },
                             {
-                                viewMode: 'loudestExceptMe',
+                                viewMode: modeNames.loudestExceptMe,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.loudestExceptMe", tool.text),
                                 onIcon: icons.loudestExceptMeOn,
                                 offIcon: icons.loudestExceptMeOff
                             },
                             {
-                                viewMode: 'loudest',
+                                viewMode: modeNames.loudest,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.maximizeLoudest", tool.text),
                                 onIcon: icons.maximizeLoudestOn,
                                 offIcon: icons.maximizeLoudestOff
                             },
                             {
-                                viewMode: 'fullScreen',
+                                viewMode: modeNames.fullScreen,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.fullScreen", tool.text),
                                 onIcon: icons.staticMaximizeOn,
                                 offIcon: icons.staticMaximizeOff
                             },
                             {
-                                viewMode: 'audio',
+                                viewMode: modeNames.audio,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.audioOnly", tool.text),
                                 onIcon: icons.audioLayoutOn,
                                 offIcon: icons.audioLayoutOff
@@ -1716,13 +1718,13 @@
 
                         if (!Q.info.isMobile) {
                             buttonsArr.unshift({
-                                viewMode: 'floatingView',
+                                viewMode: modeNames.floating,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.floatingScreens", tool.text),
                                 onIcon: icons.freeViewModeOn,
                                 offIcon: icons.freeViewModeOff
                             })
                             buttonsArr.push({
-                                viewMode: 'manual',
+                                viewMode: modeNames.manual,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.manual", tool.text),
                                 onIcon: icons.dragIconOn,
                                 offIcon: icons.dragIconOff
@@ -1730,7 +1732,7 @@
                         }
                         if (Q.info.isMobile) {
                             buttonsArr.unshift({
-                                viewMode: 'squaresView',
+                                viewMode: modeNames.squares,
                                 touchLabel: Q.getObject("webrtc.participantsPopup.tiledScreens", tool.text),
                                 onIcon: icons.squaresViewModeOn,
                                 offIcon: icons.squaresViewModeOff
@@ -1761,14 +1763,19 @@
                         tool.toggleViewBtns = buttonsArr;
 
                         tool.webrtcRoomInstance.screenRendering.on('screensModeChanged', function (modeName) {
-                             for (var b in buttonsArr) {
+                            updateScreensModeButtons(modeName);
+                        })
+
+                        updateScreensModeButtons(tool.webrtcRoomInstance.screenRendering.layoutState.currentScreensMode);
+                        function updateScreensModeButtons(modeName) {
+                            for (var b in buttonsArr) {
                                 if (buttonsArr[b].viewMode == modeName) {
                                     buttonsArr[b].icon.innerHTML = buttonsArr[b].onIcon;
                                 } else {
                                     buttonsArr[b].icon.innerHTML = buttonsArr[b].offIcon;
                                 }
                             }
-                        })
+                        }
 
                         /**
                          * Create participants list that is used in popup (on desktop) or modal box (on mobile)

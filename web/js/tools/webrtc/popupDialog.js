@@ -15,6 +15,7 @@
         var _isTouchScreen = isTouchDevice();
     
         this.hide = function (e) {
+            if(!pupupInstance.active) return;
             if (!e || (e && (e.target == this.closeButtonEl || !pupupInstance.popupDialogEl.contains(e.target)))) {
                 if (pupupInstance.popupDialogEl.parentElement) pupupInstance.popupDialogEl.parentElement.removeChild(pupupInstance.popupDialogEl);
     
@@ -32,6 +33,10 @@
         }
     
         this.show = function (e, elementToShowBy) {
+            if(this.disabled) return;
+
+            this.hideOtherPopupsButMe();
+
             if(options.position == 'byPointer') {
                 this.showByPointer(e);
             } else {
@@ -636,11 +641,8 @@
             pupupInstance.popupDialogEl.style.maxHeight = '';
             pupupInstance.popupDialogEl.style.maxWidth = '';
             togglePopupClassName('', false, false);
-            let existingPopupDialog = document.querySelector('.webrtc-popup-dialog');
-            if (existingPopupDialog && existingPopupDialog.parentElement) existingPopupDialog.parentElement.removeChild(existingPopupDialog);
     
             let triggeringElementRect = elementToShowBy ? elementToShowBy.getBoundingClientRect() : pupupInstance.element.getBoundingClientRect();
-    
             pupupInstance.popupDialogEl.style.position = 'fixed';
             pupupInstance.popupDialogEl.style.visibility = 'hidden';
             pupupInstance.popupDialogEl.style.top = triggeringElementRect.y + triggeringElementRect.height + arrowSideSize + 'px';
@@ -1397,6 +1399,25 @@
             }
         }
     
+        this.hideOtherPopupsButMe = function () {
+            //hide all popups that have no relation with current
+            let existingPopupDialogs = document.querySelectorAll('.webrtc-popup-dialog');
+            existingPopupDialogs.forEach(element => {
+                let popupToolId = element.dataset.toolId;
+                if(!popupToolId) return;
+                let popupTool = Q.Tool.byId(popupToolId);
+
+                if (!popupTool) return;
+                
+                let popupElement = popupTool.getPopupElement();
+                if (popupElement && (popupElement.contains(pupupInstance.element) || pupupInstance.popupDialogEl.contains(popupTool.element))) {
+                    return;
+                }
+                popupTool.hide();
+
+            });
+        }
+
         this.destroy = function () {
             this.element.removeEventListener('mouseenter', onElementMouseEnterListener);
             this.element.removeEventListener('mouseleave', onElementMouseLeaveListener);
@@ -1456,7 +1477,8 @@
         }
     
         this.popupDialogEl = document.createElement('DIV');
-        this.popupDialogEl.className = 'webrtc-popup-dialog';
+        this.popupDialogEl.classList.add('webrtc-popup-dialog');
+        this.popupDialogEl.dataset.toolId = options.toolId;
         if (options.className) {
             this.popupDialogEl.classList.add(options.className);
         }
@@ -1598,18 +1620,29 @@
                     triggerOn: tool.state.triggerOn,
                     parent: tool.state.parent,
                     xPositionsOrder: tool.state.xPositionsOrder,
-                    yPositionsOrder: tool.state.yPositionsOrder
+                    yPositionsOrder: tool.state.yPositionsOrder,
+                    toolId: tool.id
                 })
+            },
+            getPopupElement: function () {
+                var tool = this;
+                return tool.popupDialog.popupDialogEl;
+            },
+            disabled: function (value) {
+                var tool = this;
+                if (tool.popupDialog) {
+                    tool.popupDialog.disabled = value;
+                }
             },
             hide: function () {
                 var tool = this;
-                if(tool.popupDialog) {
+                if (tool.popupDialog) {
                     tool.popupDialog.hide();
                 }
             },
             show: function (elementToShowBy) {
                 var tool = this;
-                if(tool.popupDialog) {
+                if (tool.popupDialog) {
                     tool.popupDialog.show(null, elementToShowBy);
                 }
             },

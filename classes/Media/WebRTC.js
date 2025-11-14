@@ -96,9 +96,9 @@ WebRTC.listen = function () {
      * @param {Streams_Stream} options.streamToPostTo Media/webrtc/livestream stream to which the message is posted
      * @param {string} options.asUserId id of user by which the message is supposed to be posted
      * @param {string} options.cookie cookie of the user who posts the message (client.handshake.headers.cookie)
-     * @return {*} 
+     * @return {*}
      */
-    Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage =  function (messageType, options) {
+    Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage = function (messageType, options) {
         let streamToPostTo = options.streamToPostTo, asUserId = options.asUserId, cookie = options.cookie;
         return new Promise(function (resolve, reject) {
             Q.plugins.Media.WebRTC.getCommunityAvatarInfo(asUserId).then(function (communityLogo) {
@@ -107,6 +107,10 @@ WebRTC.listen = function () {
 
                     if(messageType === 'Media/livestream/stop') {
                         streamToPostTo.setAttribute('endTime', +Date.now());
+                        streamToPostTo.save();
+                    } else {
+                        //reset viewers number
+                        streamToPostTo.setAttribute('audience', 0);
                         streamToPostTo.save();
                     }
 

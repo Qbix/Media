@@ -667,7 +667,7 @@
                     args = Array.prototype.slice.call(args);
                     var params = [];
 
-                    if (consoleDebug) {
+                    //if (consoleDebug) {
                         if (window.performance) {
                             var now = (window.performance.now() / 1000).toFixed(3);
                             params.push(now + ": " + fileName + ': ' + args.splice(0, 1));
@@ -677,7 +677,7 @@
                             params = params.concat(args);
                             console.log.apply(console, params);
                         }
-                    }
+                    //}
 
                     logInfo(params, fileName);
                 }
@@ -1263,15 +1263,47 @@
             var activeScreenRect;
             var activeScreensType;
             var viewMode;
-            var prevViewMode;
             var loudestMode;
-            var loudestModeIsActive = false;
             var loudestModeIntervalFunc;
             var roomScreens = [];
             var _layoutEvents = new EventSystem();
 
-            _layoutEvents.on('layoutRendered', function (e) {
+            let modes = {
+                maximized: 'maximizedStatic',
+                minimized: 'minimizedStatic',
+                floating: 'floatingView',
+                tiled: 'tiledView',
+                loudestExceptMe: 'loudestExceptMe',
+                loudest: 'loudest',
+                fullScreen: 'fullScreen',
+                audio: 'audio',
+                manual: 'manual',
+                squares: 'squaresView',
+            };
 
+            let layoutState = {
+                defaultScreensMode: 'maximizedStatic',
+                currentScreensMode: null,
+                currentScreensModeChangedByUser: true,
+                previousScreensMode: null,
+            };
+
+            if(Q.info.isMobile){
+                if(_options.audioOnlyMode) {
+                    layoutState.defaultScreensMode = 'audio';
+                } else {
+                    layoutState.defaultScreensMode = _options.defaultMobileViewMode || 'minimizedStatic';
+                }
+            } else {
+                if(_options.audioOnlyMode) {
+                    layoutState.defaultScreensMode = 'audio';
+                } else {
+                    layoutState.defaultScreensMode = _options.defaultDesktopViewMode || 'floatingView';
+                }
+            }
+
+            _layoutEvents.on('layoutRendered', function (e) {
+                console.log('layoutRendered event', e.viewMode)
                 if(e.viewMode == 'audio') {
                     lockScreenResizingAndDragging();
                 } else if(e.viewMode == 'minimized') {
@@ -1446,20 +1478,31 @@
                         this.videoScreen.videoCon.appendChild(avatarContainer);
                     }
                 }
+                //for nowm this method is used only when participants disconnected and we need to remove his screens forever
                 this.remove = function() {
                     let screen = this;
                     if(this.participant) {
-                        for(let s in this.participant.screens) {
+                        for(let s = this.participant.screens.length - 1; s >= 0; s--) {
                             if(screen == this.participant.screens[s]){
                                 this.participant.screens.splice(s, 1);
                                 break;
                             }
                         }
                     }
-                    this.hide();
+                    if(screen.screenEl != null && screen.screenEl.parentElement != null) {
+                        screen.screenEl.parentElement.removeChild(screen.screenEl);
+                    }
+
+                    for(let m in roomScreens) {
+                        if(screen == roomScreens[m]){
+                            screen.isActive = false;
+                            roomScreens.splice(m, 1);
+                            break;
+                        }
+                    }
                 }
                 this.hide = function() {
-                    log('screen.hide');
+                    log('screen.hide', this);
                     let screen = this;
                     if(screen.videoIsChanging) {
                         return;
@@ -1563,29 +1606,11 @@
 
             };
 
-            if(Q.info.isMobile){
-                if(_options.audioOnlyMode) {
-                    viewMode = prevViewMode = 'audio';
-                } else {
-                    viewMode = prevViewMode = _options.defaultMobileViewMode || 'maximizedMobile';
-                }
-            } else {
-                if(_options.audioOnlyMode) {
-                    viewMode = prevViewMode = 'audio';
-                } else {
-                    viewMode = prevViewMode = _options.defaultDesktopViewMode || 'regular';
-                }
-            }
             if(_options.minimizeOnPageSwitching) {
                 Q.Page.onActivate('').set(function(){
-                    if(viewMode == 'minimized' || viewMode == 'minimizedMobile') return;
+                    if(layoutState.currentMode == 'minimizedStatic') return;
                     switchScreensMode('minimizedStatic');
                 }, 'Media.WebRTC');
-            }
-
-            function setViewMode(mode) {
-                viewMode = mode;
-                updateLayout();
             }
 
             /**
@@ -1596,7 +1621,14 @@
                 if(webrtcSignalingLib == null) return;
                 log('updateLayout, current mode is ', viewMode);
 
-                log('updateLayout, roomScreens', roomScreens.length);
+                log('updateLayout, roomScreens', layoutState.defaultScreensMode, layoutState.currentMode, roomScreens.length);
+
+                if(!layoutState.currentMode) {
+                    log('updateLayout, roomScreens 111', roomScreens.length);
+
+                    switchScreensMode(layoutState.defaultScreensMode);
+                    return;
+                }
 
                 var roomParticipants = webrtcSignalingLib.roomParticipants();
                 var i, participantScreen;
@@ -1617,12 +1649,6 @@
                 if(Q.info.isMobile){
                     if(viewMode == 'tiledMobile'){
                         renderTiledScreenGridMobile();
-                    } else if(viewMode == 'sideBySideMobile'){
-                        if(roomScreens.length != 2) {
-                            renderTiledScreenGridMobile();
-                        } else {
-                            renderSideBySideGridMobile();
-                        }
                     } else if(viewMode == 'maximizedMobile') {
                         if(activeScreen == null && roomScreens.length == 2) {
                             var i, screen;
@@ -1685,14 +1711,6 @@
             }
 
             /**
-             * Returns active screens view mode
-             * @returns {String}
-             */
-            function getActiveViewMode() {
-                return viewMode;
-            }
-
-            /**
              * Returns active loudest mode or "disabled" if loudest mode is turned off
              * @returns {String}
              */
@@ -1734,16 +1752,6 @@
 
                 var videoScreen = createVideoScreen(screen);
                 var audioScreen = createAudioScreen(screen);
-
-                /*if(viewMode != 'audio') {
-                    screen.switchToVideoScreen();
-                } else {
-                    screen.switchToAudioScreen();
-                }*/
-                //chatParticipantEl.appendChild(videoScreen.videoCon);
-                //chatParticipantEl.appendChild(audioScreen.nameEl);
-                //chatParticipantEl.appendChild(audioScreen.avatarCon);
-
 
                 if(Q.info.isTouchscreen) {
                     chatParticipantEl.addEventListener('touchstart', moveScreenFront);
@@ -2097,7 +2105,7 @@
             }
 
             function onParticipantDisconnected(participant) {
-                screensRendering.removeScreensByParticipant(participant);
+                screensRendering.removeScreensByParticipant(participant, true);
                 //addScreenToCommonList(newScreen);
             }
 
@@ -2242,13 +2250,12 @@
                 if(videoEl.videoHeight != null && videoEl.videoWidth != null && videoEl.videoHeight != 0 && videoEl.videoWidth != 0 && videoEl.parentNode != null) {
 
                     if (videoEl.videoHeight > videoEl.videoWidth) {
-                        if ((viewMode == 'maximized' || viewMode == 'maximizedMobile' || viewMode == 'regular') && !videoEl.parentNode.classList.contains('isVertical')) videoEl.parentNode.classList.add('isVertical');
+                        if ((layoutState.currentScreensMode == modes.maximized || layoutState.currentScreensMode == modes.floating) && !videoEl.parentNode.classList.contains('isVertical')) videoEl.parentNode.classList.add('isVertical');
                         videoEl.className = 'isVertical';
                     } else if (videoEl.videoWidth) {
-                        if ((viewMode == 'maximized' || viewMode == 'maximizedMobile' || viewMode == 'regular') && !videoEl.parentNode.classList.contains('isHorizontal')) videoEl.parentNode.classList.add('isHorizontal');
+                        if ((layoutState.currentScreensMode ==  modes.maximized || layoutState.currentScreensMode == modes.floating) && !videoEl.parentNode.classList.contains('isHorizontal')) videoEl.parentNode.classList.add('isHorizontal');
                         videoEl.className = 'isHorizontal';
                     }
-
                 }
 
                 var resizeTool = Q.Tool.from(screen.screenEl, "Q/resize");
@@ -2303,7 +2310,7 @@
              */
             function updateScreensButtons() {
 
-                if(viewMode == 'regular') {
+                if(layoutState.currentScreensMode == modes.floating) {
                     var i, screen;
                     for (i = 0; screen = roomScreens[i]; i++) {
                         var maximizeBtn = screen.videoScreen.nameEl.querySelector('.Media_webrtc_maximize-btn');
@@ -2312,7 +2319,7 @@
                         minimizeBtn.style.display = 'none';
                     }
 
-                } else if(viewMode == 'maximized' || viewMode == 'maximizedMobile') {
+                } else if(layoutState.currentScreensMode == modes.maximized) {
                     var i, screen;
                     for (i = 0; screen = roomScreens[i]; i++) {
 
@@ -2332,7 +2339,7 @@
                         }
                     }
 
-                } else if(viewMode == 'minimized' || viewMode == 'tiled' || viewMode == 'minimizedMobile' || viewMode == 'squaresGrid') {
+                } else if(layoutState.currentScreensMode == modes.minimized || layoutState.currentScreensMode == modes.tiled || layoutState.currentScreensMode == modes.squares) {
                     var i, screen;
                     for (i = 0; screen = roomScreens[i]; i++) {
                         var maximizeBtn = screen.videoScreen.nameEl.querySelector('.Media_webrtc_maximize-btn');
@@ -2340,7 +2347,7 @@
                         maximizeBtn.style.display = 'none';
                         minimizeBtn.style.display = 'none';
                     }
-                } else if(viewMode == 'screenSharing') {
+                } else if(layoutState.currentScreensMode == modes.fullScreen) {
                     var i, screen;
                     for (i = 0; screen = roomScreens[i]; i++) {
                         var maximizeBtn = screen.videoScreen.nameEl.querySelector('.Media_webrtc_maximize-btn');
@@ -2357,7 +2364,7 @@
              * @method moveScreenFront
              */
             function moveScreenFront(e) {
-                if(e != null && viewMode == 'screenSharing') return;
+                if(e != null && layoutState.currentScreensMode == modes.fullScreen) return;
                 var screenEl = this;
                 var currentHighestZIndex = Math.max.apply(Math, roomScreens.map(function(o) { return o.screenEl != null && o.screenEl.style.zIndex != '' ? o.screenEl.style.zIndex : 1000; }))
                 screenEl.style.zIndex = currentHighestZIndex+1;
@@ -2468,11 +2475,11 @@
                     screen.screenEl.appendChild(loaderCon);
                     //screen.screensharing = true;
 
-                    Q.Pointer.activateTouchlabels(document.body);
+                    //Q.Pointer.activateTouchlabels(document.body);
 
                     if(_controlsTool && _controlsTool.participantsListTool) _controlsTool.participantsListTool.showScreen(screen);
 
-                    switchScreensMode('fullScreen', screen);
+                    switchScreensMode('fullScreen', screen, false);
                     screensRendering.updateLayout();
 
                 }
@@ -2508,6 +2515,7 @@
                     if(loaderName == 'screensharingFailed' || loaderName == 'videoTrackLoaded' || loaderName == 'afterCamerasToggle') {
                         var loader = screen.screenEl.querySelector('.spinner-load');
                         if(loader != null && loader.parentNode != null) loader.parentNode.removeChild(loader);
+                        console.log('layoutState.currentModeChangedByUser',layoutState.currentModeChangedByUser)
                     } else if(loaderName == 'videoUnmuted') {
                         if(participant.isLocal) return;
                         var loader = screen.screenEl.querySelector('.connect-spinner-con');
@@ -2522,13 +2530,15 @@
                         if(participant.screens.length > 1) {
                             screen.hide();
                         }
+                        if(layoutState.currentModeChangedByUser === false) {
+                            switchToPreviousScreensMode();
+                        }
                         screensRendering.updateLayout();
                     }
                 }
 
             }
 
-            var viewModeToSwitchBack;
             /**
              * Toggle view mode (Maximized, minimized etc) on screen click.
              * @method toggleViewModeByScreenClick
@@ -2536,21 +2546,20 @@
              */
             function toggleViewModeByScreenClick(e) {
                 log('toggleViewModeByScreenClick')
-                log('toggleViewModeByScreenClick: current viewMode', viewMode)
-
-                if(viewMode == 'audio' || viewMode == 'squaresGrid') return;
+                log('toggleViewModeByScreenClick: current layoutState.currentMode', layoutState.currentMode)
+                /* var resizeTool = Q.Tool.from(roomScreens[s].screenEl, "Q/resize");
+                if(resizeTool.state.active === false) return; */
+                
+                if(layoutState.currentMode == 'audio' || layoutState.currentMode == 'squaresView') return;
 
                 e.stopImmediatePropagation();
                 e.preventDefault();
-
-                if(viewMode == 'tiled' || viewMode == 'regular' || viewMode == 'tiledMobile' || viewMode == 'sideBySideMobile' || viewMode == 'maximizedMobile') {
-                    viewModeToSwitchBack = viewMode;
-                }
 
                 var tappedScreen = roomScreens.filter(function (obj) {
                     return obj.screenEl.contains(e.target) || obj.screenEl == e.target;
                 })[0];
 
+               
                 log('tappedScreen', tappedScreen);
                 if(tappedScreen == null) return;
                 var resizeTool = Q.Tool.from(tappedScreen.screenEl, "Q/resize");
@@ -2562,112 +2571,72 @@
                     if(videoResizeTool.state.appliedRecently) return;
                 }*/
 
-                if(activeScreen && !activeScreen.screenEl.contains(e.target) && (viewMode == 'maximized' || viewMode == 'maximizedMobile')) {
-                    log('toggleViewModeByScreenClick 1')
+                log('toggleViewModeByScreenClick 0')
 
-                    tappedScreen.screenEl.style.zIndex = '';
+                if (activeScreen) {
+                    if (!activeScreen.screenEl.contains(e.target) && (layoutState.currentMode == 'maximizedStatic')) {
+                        log('toggleViewModeByScreenClick 1')
 
-                    switchScreensMode('maximizedStatic', tappedScreen);
-                    return;
-                } else if(activeScreen && !activeScreen.screenEl.contains(e.target) && (viewMode == 'fullScreen' || viewMode == 'screenSharing')) {
-                    log('toggleViewModeByScreenClick 2')
+                        tappedScreen.screenEl.style.zIndex = '';
 
-                    tappedScreen.screenEl.style.zIndex = '';
+                        switchScreensMode('maximizedStatic', tappedScreen);
+                        return;
+                    } else if (!activeScreen.screenEl.contains(e.target) && (layoutState.currentMode == 'fullScreen')) {
+                        log('toggleViewModeByScreenClick 2')
 
-                    switchScreensMode('fullScreen', tappedScreen);
-                    return;
-                } else if(activeScreen && (activeScreen.screenEl.contains(e.target) || activeScreen.screenEl == e.target)) {
-                    log('toggleViewModeByScreenClick 3')
+                        tappedScreen.screenEl.style.zIndex = '';
 
-                    tappedScreen.screenEl.style.zIndex = '';
-                    
-                    switchScreensMode('minimizedStatic');
-                    return;
-                } /*else if (activeScreen == null && (viewMode == 'tiledMobile') && viewModeToSwitchBack != null) {
-                    log('toggleViewModeByScreenClick 4.0')
+                        switchScreensMode('fullScreen', tappedScreen);
+                        return;
+                    } else if ((activeScreen.screenEl.contains(e.target) || activeScreen.screenEl == e.target)) {
+                        log('toggleViewModeByScreenClick 3')
 
-                    tappedScreen.screenEl.style.zIndex = '';
+                        tappedScreen.screenEl.style.zIndex = '';
 
-                    renderSideBySideGridMobile();
-
-                    return;
-                }*/ else if (activeScreen == null && (viewMode == 'tiled' || viewMode == 'tiledMobile' || viewMode == 'sideBySideMobile') && viewModeToSwitchBack != null) {
-                    log('toggleViewModeByScreenClick 4')
-
-                    tappedScreen.screenEl.style.zIndex = '';
-
-                    switchScreensMode('maximizedStatic', tappedScreen);
-                    return;
-                } else if (activeScreen == null && (viewMode == 'minimized' || viewMode == 'minimizedMobile') && viewModeToSwitchBack != null) {
-                    log('toggleViewModeByScreenClick 5')
-
-                    tappedScreen.screenEl.style.zIndex = '';
-                    if(viewModeToSwitchBack == 'tiled' || viewModeToSwitchBack == 'tiledMobile' || viewModeToSwitchBack == 'maximizedMobile' || viewModeToSwitchBack == 'regular') {
-                        if(viewModeToSwitchBack == 'maximizedMobile') viewModeToSwitchBack = 'tiledMobile';
-                        toggleViewMode(viewModeToSwitchBack, tappedScreen);
+                        switchScreensMode('minimizedStatic');
+                        return;
                     }
+                } else {
+                    if ((layoutState.currentMode == 'tiledView')) {
+                        log('toggleViewModeByScreenClick 4')
 
-                    return;
+                        tappedScreen.screenEl.style.zIndex = '';
+
+                        switchScreensMode('maximizedStatic', tappedScreen);
+                        return;
+                    } else if ((layoutState.currentMode == 'minimizedStatic')) {
+                        log('toggleViewModeByScreenClick 5')
+
+                        tappedScreen.screenEl.style.zIndex = '';
+                        switchScreensMode(Q.info.isMobile ? 'tiledView' : 'maximizedStatic', tappedScreen);
+                        
+                        return;
+                    } else {
+                        switchScreensMode('minimizedStatic');
+                    }
                 }
+                log('toggleViewModeByScreenClick 6')
 
-                toggleViewMode(null, tappedScreen);
+                //toggleViewMode(null, tappedScreen);
                 bindScreensEvents();
             }
 
             /**
-             * Toggle participants' screens view mode.
-             * @method toggleViewMode
-             * @param {Object} [tappedScreen] Screen that has tapped/clicked in order to maximize it
+             * 
+             * @param {string} modeName 
+             * @param {object} screenToSetActive instance of screen to set active (if mode supports making screen maximized or fullscreen)
+             * @param {boolean} changedByUserInteraction ture by default whether screens mode changed by user interaction. E.g. mode can be changed automatically when remote user is starting screensharing
+             * @returns 
              */
-            function toggleViewMode(modeToSwitch, tappedScreen) {
-                log('toggleViewMode', modeToSwitch);
-                var modes;
-                if(Q.info.isMobile)
-                    modes = ['tiledMobile', 'maximizedMobile'];
-                else modes = ['regular', 'maximized', 'tiled'];
-
-                if(typeof modeToSwitch == 'undefined' || modeToSwitch == null) {
-                    var i, mode;
-
-                    for (i = 0; mode = modes[i]; i++) {
-                        if (mode == viewMode || viewMode == null) {
-                            if (i != modes.length - 1) {
-                                modeToSwitch = modes[i + 1];
-                            } else modeToSwitch = modes[0];
-                            break;
-                        }
-                    }
-                    ;
-                }
-
-                if((modeToSwitch == null || modeToSwitch == 'regular') && !Q.info.isMobile) {
-                    switchScreensMode('floatingView');
-                } else if(modeToSwitch == 'minimized') {
-                    switchScreensMode('minimizedStatic');
-                } else if(modeToSwitch == 'maximized') {
-                    switchScreensMode('maximizedStatic', tappedScreen);
-                } else if(modeToSwitch == 'tiledMobile') {
-                    if(roomScreens.length == 1) {
-                        switchScreensMode('maximizedStatic', tappedScreen);
-                    } else {
-                        switchScreensMode('tiledView');
-                    }
-                } else if((modeToSwitch == null || modeToSwitch == 'maximizedMobile') && Q.info.isMobile) {
-                    switchScreensMode('maximizedStatic', tappedScreen);
-                } else if(modeToSwitch == 'minimizedMobile') {
-                    switchScreensMode('minimizedStatic');
-                } else if(modeToSwitch == 'tiled') {
-                    if(roomScreens.length == 1) {
-                        modeToSwitch = 'regular';
-                        switchScreensMode('floatingView');
-                    } else {
-                        switchScreensMode('tiledView');
-                    }
-
-                }
-            }
-
-            function switchScreensMode(modeName, screenToSetActive) {
+            function switchScreensMode(modeName, screenToSetActive, changedByUserInteraction) {
+                /* if(layoutState.currentMode == modeName) {
+                    return;
+                } */
+                console.log('switchScreensMode START', modeName, layoutState.currentMode)
+                console.trace();
+                layoutState.previousScreensMode = layoutState.currentMode;
+                layoutState.currentMode = modeName;
+                layoutState.currentModeChangedByUser = changedByUserInteraction !== false;
 
                 if (modeName != 'loudest' && modeName != 'loudestExceptMe') {
                     toggleLoudestScreenMode('disabled');
@@ -2686,9 +2655,17 @@
                     }
                 } else if (modeName == 'tiledView') {
                     if (Q.info.isMobile) {
-                        renderTiledScreenGridMobile();
+                        if(roomScreens.length == 1) {
+                            renderMaximizedScreensGridMobile(screenToSetActive);
+                        } else {
+                            renderTiledScreenGridMobile();
+                        }
                     } else {
-                        renderTiledScreenGridDesktop();
+                        if(roomScreens.length == 1) { //render floating instead of tiled if there is only one screen
+                            renderDesktopScreensGrid();
+                        } else {
+                            renderTiledScreenGridDesktop();
+                        }
                     }
                 } else if (modeName == 'loudestExceptMe') {
                     toggleLoudestScreenMode('allButMe');
@@ -2720,6 +2697,13 @@
                 }
 
                 _layoutEvents.dispatch('screensModeChanged', modeName)
+            }
+
+            function switchToPreviousScreensMode() {
+                console.log('switchToPreviousScreensMode', layoutState.previousScreensMode)
+                if(layoutState.previousScreensMode != null) {
+                    switchScreensMode(layoutState.previousScreensMode);
+                }
             }
 
             function switchScreenType(modeToSwitchTo) {
@@ -3133,18 +3117,16 @@
                 if(window.innerHeight > window.innerWidth) {
                     //_roomsMedia.className = 'Media_webrtc_tiled-vertical-grid';
                     var elements = toggleScreensClass('tiledVerticalMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('tiledVerticalMobile', elements, 500, true);
                 } else {
                     //_roomsMedia.className = 'Media_webrtc_tiled-horizontal-grid';
                     var elements = toggleScreensClass('tiledHorizontalMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('tiledHorizontalMobile', elements, 500, true);
                 }
 
                 viewMode = 'tiledMobile';
                 activeScreen = null;
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3161,18 +3143,16 @@
                 if(window.innerHeight > window.innerWidth) {
                     //_roomsMedia.className = 'Media_webrtc_tiled-vertical-grid';
                     var elements = toggleScreensClass('sideBySideMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('sideBySideMobile', elements, 500, true);
                 } else {
                     //_roomsMedia.className = 'Media_webrtc_tiled-horizontal-grid';
                     var elements = toggleScreensClass('tiledHorizontalMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('tiledHorizontalMobile', elements, 500, true);
                 }
 
                 viewMode = 'sideBySideMobile';
                 activeScreen = null;
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3187,18 +3167,16 @@
                 if(window.innerHeight > window.innerWidth) {
                     //_roomsMedia.className = 'Media_webrtc_tiled-vertical-grid';
                     var elements = toggleScreensClass('tiledVertical');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('tiledVertical', elements, 500, true);
                 } else {
                     //_roomsMedia.className = 'Media_webrtc_tiled-horizontal-grid';
                     var elements = toggleScreensClass('tiledHorizontal');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('tiledHorizontal', elements, 500, true);
                 }
                 viewMode = 'tiled';
                 activeScreen = null;
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3206,7 +3184,6 @@
              * @method renderDesktopScreensGrid
              */
             function renderDesktopScreensGrid() {
-                //log('renderDesktopScreensGrid', prevViewMode);
                 if(_layoutTool == null || _controls == null) return;
                 activeScreen = null;
 
@@ -3221,11 +3198,10 @@
                     });
                 }
 
-                prevViewMode = viewMode;
                 _layoutTool.animate('regularScreensGrid', elements, 500, true);
                 viewMode = 'regular';
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3233,8 +3209,7 @@
              * @method renderAudioScreensGrid
              */
             function renderAudioScreensGrid() {
-                //log('renderAudioScreensGrid', prevViewMode);
-                if(_layoutTool == null || _controls == null) return;
+                if(_layoutTool == null) return;
                 activeScreen = null;
 
                 _layoutTool.maximizedScreen = null;
@@ -3248,13 +3223,11 @@
                     });
                 }
 
-                prevViewMode = viewMode;
-
                 _layoutTool.animate('audioScreensGrid', elements, 500, true);
 
                 viewMode = 'audio';
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3275,11 +3248,10 @@
                     });
                 }
 
-                prevViewMode = viewMode;
                 _layoutTool.animate('manualScreensGrid', elements, 500, true);
                 viewMode = 'manual';
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3302,11 +3274,10 @@
 
                 var elements = toggleScreensClass('minimizedScreensGrid');
 
-                prevViewMode = viewMode;
                 _layoutTool.animate('minimizedScreensGrid', elements, 500, true);
                 viewMode = 'minimized';
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3317,7 +3288,7 @@
                 if(typeof duration == 'undefined') duration = 500;
                 //log('renderMaximizedScreensGrid', screenToMaximize)
                 //TODO: check if "(screenToMaximize != null && screenToMaximize == activeScreen)" impacts updating layout
-                if(_layoutTool == null || _controls == null || (screenToMaximize != null && screenToMaximize == activeScreen && !(viewMode == 'screenSharing' || viewMode == 'fullScreen'))) return;
+                if(_layoutTool == null || _controls == null) return;
 
                 switchScreenType('video');
 
@@ -3342,11 +3313,10 @@
                 });
 
                 var elements = toggleScreensClass('maximizedScreensGrid');
-                prevViewMode = viewMode;
                 _layoutTool.animate('maximizedScreensGrid', elements, duration, true);
                 viewMode = 'maximized';
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3384,11 +3354,10 @@
                 }
 
                 var elements = toggleScreensClass(activeScreen && activeScreen.screensharing ? 'screenSharing' : 'fullScreen');
-                prevViewMode = viewMode;
                 _layoutTool.animate('fullScreen', elements, 100, true);
                 viewMode = activeScreen && activeScreen.screensharing ? 'screenSharing' : 'fullScreen';
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3416,17 +3385,15 @@
 
                 if(window.innerHeight > window.innerWidth) {
                     var elements = toggleScreensClass('maximizedVerticalMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('maximizedVerticalMobile', elements, 100, true);
                 } else {
                     var elements = toggleScreensClass('maximizedHorizontalMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('maximizedHorizontalMobile', elements, 100, true);
                 }
 
                 viewMode = 'maximizedMobile';
 
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3442,16 +3409,14 @@
 
                 if(window.innerHeight > window.innerWidth) {
                     var elements = toggleScreensClass('minimizedVerticalMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('minimizedVerticalMobile', elements, 100, true);
                 } else {
                     var elements = toggleScreensClass('minimizedHorizontalMobile');
-                    prevViewMode = viewMode;
                     _layoutTool.animate('minimizedHorizontalMobile', elements, 100, true);
                 }
 
                 viewMode = 'minimizedMobile';
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
             /**
@@ -3469,11 +3434,10 @@
                 });
                 var elements = toggleScreensClass('squaresGrid');
 
-                prevViewMode = viewMode;
                 _layoutTool.animate('squaresGrid', elements, 100, true);
 
                 viewMode = 'squaresGrid';
-                _layoutEvents.dispatch('layoutRendered', {prevViewMode:prevViewMode, viewMode});
+                _layoutEvents.dispatch('layoutRendered', {viewMode});
             }
 
 
@@ -3507,7 +3471,7 @@
                     return;
                 }
 
-                if(activeScreen != loudestParticipant.screens[0] || (viewMode != 'minimized' && viewMode != 'maximized')) {
+                if(activeScreen != loudestParticipant.screens[0] || (layoutState.currentScreensMode != modes.loudest && layoutState.currentScreensMode != modes.loudestExceptMe)) {
                     if (!Q.info.isMobile) {
                         renderMaximizedScreensGrid(loudestParticipant.screens[0], 0);
                     } else {
@@ -3542,7 +3506,7 @@
                     return;
                 }
                 
-                if (loudestParticipant.screens[0] && (activeScreen != loudestParticipant.screens[0] || (viewMode != 'minimized' && viewMode != 'maximized'))) {
+                if (loudestParticipant.screens[0] && (activeScreen != loudestParticipant.screens[0] || (layoutState.currentScreensMode != modes.loudest && layoutState.currentScreensMode != modes.loudestExceptMe))) {
                     if (!Q.info.isMobile) {
                         renderMaximizedScreensGrid(loudestParticipant.screens[0], 0);
                     } else {
@@ -6154,7 +6118,7 @@
                 }
             }
 
-            function removeScreensByParticipant(participant) {
+            function removeScreensByParticipant(participant, forever) {
                 log('removeScreensByParticipant', participant, roomScreens.length);
 
                 for(var i = roomScreens.length -1; i >= 0; i--){
@@ -6162,19 +6126,13 @@
                     log('removeScreensByParticipant remove', roomScreens[i]);
 
                     var screenEl = roomScreens[i].screenEl;
-                    removeScreenFromCommonList(roomScreens[i]);
+                    removeScreenFromCommonList(roomScreens[i], forever);
                     if(screenEl != null && screenEl.parentNode != null) screenEl.parentNode.removeChild(screenEl)
                 }
             }
 
             function addScreenToCommonList(screen) {
                 log('addScreenToCommonList');
-                try {
-                    var err = (new Error);
-                    log(err.stack);
-                } catch (e) {
-
-                }
                 screen.show();
                 /*app.event.dispatch('screenAdded', {
                     screen: screen,
@@ -6187,12 +6145,6 @@
 
             function removeScreenFromCommonList(screen, removeScreenEntirely) {
                 log('removeScreenFromCommonList')
-                try {
-                    var err = (new Error);
-                    log(err.stack);
-                } catch (e) {
-
-                }
                 if(!removeScreenEntirely) {
                     screen.hide();
                 } else {
@@ -6405,7 +6357,8 @@
             }
 
             return {
-                setViewMode:setViewMode,
+                layoutState: layoutState,
+                modes: modes,
                 updateLayout:updateLayout,
                 removeScreensByParticipant:removeScreensByParticipant,
                 removeScreenFromCommonList:removeScreenFromCommonList,
@@ -6420,7 +6373,6 @@
                 onSomeonesMicDisabled:onSomeonesMicDisabled,
                 onParticipantConnected:onParticipantConnected,
                 onParticipantDisconnected:onParticipantDisconnected,
-                getActiveViewMode:getActiveViewMode,
                 getLoudestMode:getLoudestMode,
                 getActiveSreen:getActiveSreen,
                 getScreens:getScreens,
@@ -6431,12 +6383,12 @@
                 videoTrackIsAdding:videoTrackIsAdding,
                 newTrackAdded:newTrackAdded,
                 fitScreenToVideo:fitScreenToVideo,
-                toggleViewMode:toggleViewMode,
                 updateLocalScreenClasses:updateLocalScreenClasses,
                 disableLoudesScreenMode:disableLoudesScreenMode,
                 showLoader:showLoader,
                 hideLoader:hideLoader,
-                switchScreensMode:switchScreensMode
+                switchScreensMode:switchScreensMode,
+                switchToPreviousScreensMode:switchToPreviousScreensMode
             };
         })()
 
@@ -6535,11 +6487,11 @@
                 let localParticipant = webrtcSignalingLib.localParticipant();
                 if (!localParticipant.access.personalAccess) {
                     if (insturctions.permission == 'mic' && !localParticipant.hasPermission('mic')) {
-                        notice.show('The host has allowed the use of a microphone in this room');
+                        notice.show(Q.getObject("webrtc.notices.micAllowed", text));
                     } else if (insturctions.permission == 'camera' && !localParticipant.hasPermission('camera')) {
-                        notice.show('The host has allowed the use of a camera in this room');
+                        notice.show(Q.getObject("webrtc.notices.cameraAllowed", text));
                     } else if (insturctions.permission == 'screen' && !localParticipant.hasPermission('screen')) {
-                        notice.show('The host has allowed the use of a screen sharing in this room');
+                        notice.show(Q.getObject("webrtc.notices.screenShareAllowed", text));
                     }
                 }
 
@@ -6565,13 +6517,13 @@
 
                 if(insturctions.permission == 'mic' && !localParticipant.hasPermission('mic')) {
                     webrtcSignalingLib.localMediaControls.disableAudio();
-                    notice.show('The host has restricted the use of the microphone in this room');
+                    notice.show(Q.getObject("webrtc.notices.micNotAllowed", text));
                 } else if (insturctions.permission == 'camera' && !localParticipant.hasPermission('camera')) {
                     webrtcSignalingLib.localMediaControls.disableVideo('camera');
-                    notice.show('The host has restricted the use of the camera in this room');
+                    notice.show(Q.getObject("webrtc.notices.cameraNotAllowed", text));
                 } else if (insturctions.permission == 'screen' && !localParticipant.hasPermission('screen')) {
                     webrtcSignalingLib.screenSharing.stopShareScreen()
-                    notice.show('The host has restricted the use of the screen sharing in this room');
+                    notice.show(Q.getObject("webrtc.notices.screenShareNotAllowed", text));
                 }
             }
 
@@ -6926,17 +6878,18 @@
                             screensharingTrack = tracks[i];
                         }
                     }
-    
+                    console.log('checkIfScreensharingTrackAdded', screensharingTrack);
                     if(!screensharingTrack) {
                         return false;
                     }
+                    
 
-                    let currentViewMode = screensRendering.getActiveViewMode();
+                    let currentViewMode = screensRendering.layoutState.currentScreensMode;
                     let currentViewModeIsRight = false;
                     if(Q.info.isMobile) {
-                        if(currentViewMode == 'maximizedMobile') currentViewModeIsRight = true
+                        if(currentViewMode == screensRendering.modes.maximized) currentViewModeIsRight = true
                     } else {
-                        if(currentViewMode == 'fullScreen' || currentViewMode == 'screenSharing') currentViewModeIsRight = true
+                        if(currentViewMode == screensRendering.modes.fullScreen) currentViewModeIsRight = true
                     }
                     if(screensharingTrack.parentScreen && screensharingTrack.parentScreen.screensharing && currentViewModeIsRight) {
                         return true
@@ -8164,12 +8117,6 @@
                     if(key == 'mode') continue;
                     _options[key] = options.hasOwnProperty(key) && typeof options[key] !== 'undefined' ? options[key] : _options[key];
                 }
-
-                /*if(!Q.info.isMobile && options.defaultDesktopViewMode != null) {
-                    screensRendering.setViewMode(options.defaultDesktopViewMode );
-                } else if(Q.info.isMobile && options.defaultMobilevViewMode != null) {
-                    screensRendering.setViewMode(options.defaultMobileViewMode);
-                }*/
             }
 
         }

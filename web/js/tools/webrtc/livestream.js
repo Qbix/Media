@@ -42,6 +42,8 @@
         tool.invitedUsers = [];
         tool.participatedUsers = [];
         tool.livestreamStreamParticipants = {};
+        tool.mediaPlayerContainer = null;
+        tool.activeLivestreamData = null;
 
         tool.compactBeforeWidget = null;
         tool.compactDuringWidget = null;
@@ -122,6 +124,17 @@
                     tool.updateWidgetStateOnStreamUpdate();
                 });
                
+                Q.Page.onActivate('').set(function(e){
+                    console.log('Q.Page.onActivat', e, arguments)
+                    if ((location.pathname).indexOf("/livestream") != -1) {
+                        tool.state.mode = 'full';
+                        tool.updateWidgetStateOnStreamUpdate()
+                    } else {
+                        tool.state.mode = 'compact';
+                        tool.updateWidgetStateOnStreamUpdate()
+                    }
+                   
+                }, 'Media.Livestream');
                 
             }, {participants: 100});
             
@@ -170,6 +183,9 @@
                 tool.state.onWebrtcStreamLoaded.removeAllHandlers();
                 tool.state.onLiveIsPlaying.removeAllHandlers();
                 
+                let switchPageDetector = Q.Page.onActivate('');
+                switchPageDetector.remove('Media.Livestream');
+
                 if(tool.state.onLivestreamStreamRefresh) {
                     tool.state.onLivestreamStreamRefresh.removeAllHandlers()
                 }
@@ -196,7 +212,7 @@
                 return new Promise(function (resolve, reject) {
                     tool.removeAllEventHandlers();
                     tool.stopPlayer();
-
+                    tool.joinOrLeaveLivestreamAudience('leave');
                     if (tool.currentWidgetUI) {
                         let widgetElement = tool.currentWidgetUI.widgetEl.querySelector('.media-livestream-widget');
 
@@ -302,6 +318,7 @@
                 });
                 tool.livestreamStream.onMessage("Media/livestream/stop").set(function (message) {
                     console.log('declareStreamEventHandlers: Media/livestream/stop');
+                    tool.joinOrLeaveLivestreamAudience('leave');
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
 
@@ -352,12 +369,13 @@
                     });
                 });
             },
-            joinLivestreamAsListener: function () {
+            joinOrLeaveLivestreamAudience: function (action) {
                 var tool = this;
                 var socketConnection = Q.Socket.get();
-                if(!socketConnection) return;
+                if(action == 'join' && !socketConnection) return;
+                let slotName = action == 'join' ? 'joinLivestreamAudience' : 'leaveLivestreamAsListener'; 
                 return new Promise(function (resolve, reject) {
-                    Q.req("Media/livestream", ["joinLivestreamAsListener"], function (err, response) {
+                    Q.req("Media/livestream", [slotName], function (err, response) {
                         let msg = Q.firstErrorMessage(err, response && response.errors);
 
                         if(msg) {
@@ -366,7 +384,7 @@
                             return;
                         }
                         
-                        resolve(response.slots.setReminderOnLivestreamStart);
+                        resolve(response.slots[slotName]);
                     }, {
                         method: 'post',
                         fields: {
@@ -510,6 +528,10 @@
                     
                     tool.element.appendChild(tool.compactDuringWidget.widgetEl);
 
+                    if(tool.activeLivestreamData) {
+                        tool.currentWidgetUI.playLive(tool.activeLivestreamData)
+                    }
+
                     toggleToolClass('media-livestream-during');       
                 } else if(stateName == 'after') {
                     //we don't need "after" state for now
@@ -543,6 +565,10 @@
                         
                     tool.currentWidgetUI = tool.fullWidget;
                     tool.element.appendChild(tool.fullWidget.widgetEl);
+
+                    if(tool.activeLivestreamData) {
+                        tool.activeLivestreamData.tabObject.tabElement.click()
+                    }
 
                     toggleToolClass('media-livestream-full');       
                 }
@@ -709,47 +735,49 @@
                 let offlineText = document.createElement('DIV');
                 offlineText.className = 'media-livestream-offline-text';
                 offlineText.innerHTML = 'Stream is offline';
-                widgetContainer.appendChild(offlineText);
+                widgetContainer.appendChild(offlineText);                
 
-                let countdown = document.createElement('DIV');
-                countdown.className = 'media-livestream-countdown';
-                widgetContainer.appendChild(countdown);
-                let countdownTitle = document.createElement('DIV');
-                countdownTitle.className = 'media-livestream-countdown-title';
-                countdownTitle.innerHTML = 'Event start time:&nbsp';
-                countdown.appendChild(countdownTitle);
-                let countdownToolContainer = document.createElement('DIV');
-                countdownToolContainer.className = 'media-livestream-countdown-container';
-                countdown.appendChild(countdownToolContainer);
-                
+                if (tool.eventStream) {
+                    let countdown = document.createElement('DIV');
+                    countdown.className = 'media-livestream-countdown';
+                    widgetContainer.appendChild(countdown);
+                    let countdownTitle = document.createElement('DIV');
+                    countdownTitle.className = 'media-livestream-countdown-title';
+                    countdownTitle.innerHTML = 'Event start time:&nbsp';
+                    countdown.appendChild(countdownTitle);
+                    let countdownToolContainer = document.createElement('DIV');
+                    countdownToolContainer.className = 'media-livestream-countdown-container';
+                    countdown.appendChild(countdownToolContainer);
+                    showCountdown();
+                    tool.state.onEventUpdate.add(showCountdown);
 
-                if(tool.eventStream) showCountdown();
-                tool.state.onEventUpdate.add(showCountdown);
-
-                function showCountdown() {
-                    if(tool.countdownTool) {
-                        tool.countdownTool.remove();
-                        if(tool.countdownTool.element.parentElement) tool.countdownTool.element.parentElement.removeChild(tool.countdownTool.element);
-                    }
-                    countdownToolContainer.innerHTML = '';
-                    let countdownTool = document.createElement('DIV');
-                    countdownTool.className = 'media-livestream-countdown-tool';
-                    countdownToolContainer.appendChild(countdownTool);
-                    Q.activate(
-                        Q.Tool.setUpElement(
-                            countdownTool,
-                            "Q/timestamp",
-                            {
-                                time: parseInt(tool.eventStream.getAttribute('startTime')),
-                                capitalized: true,
-                                relative: true
-                            }
-                        ),
-                        function () {
-                            tool.countdownTool = this;
+                    function showCountdown() {
+                        if (!tool.eventStream) return;
+                        if (tool.countdownTool) {
+                            tool.countdownTool.remove();
+                            if (tool.countdownTool.element.parentElement) tool.countdownTool.element.parentElement.removeChild(tool.countdownTool.element);
                         }
-                    );
+                        countdownToolContainer.innerHTML = '';
+                        let countdownTool = document.createElement('DIV');
+                        countdownTool.className = 'media-livestream-countdown-tool';
+                        countdownToolContainer.appendChild(countdownTool);
+                        Q.activate(
+                            Q.Tool.setUpElement(
+                                countdownTool,
+                                "Q/timestamp",
+                                {
+                                    time: parseInt(tool.eventStream.getAttribute('startTime')),
+                                    capitalized: true,
+                                    relative: true
+                                }
+                            ),
+                            function () {
+                                tool.countdownTool = this;
+                            }
+                        );
+                    }
                 }
+                
 
                 let metingParticipants = document.createElement('DIV');
                 metingParticipants.className = 'media-livestream-meeting-users';
@@ -1064,7 +1092,6 @@
 
                 function updateListOfLives() {
                     currentlyStreamingToList.innerHTML = '';
-                    //_activePlayerLive
 
                     for(let i = tool.activeLivestreamings.length - 1; i >= 0; i--) {
                         let livestreamData = tool.activeLivestreamings[i];
@@ -1633,33 +1660,35 @@
                 }
 
                 function playLive(livestreamData, onlyAudio) {
-                    if(livestreamData.platform == 'Peer2Peer' && livestreamData.broadcastClient) return;
+                    //if(livestreamData.platform == 'Peer2Peer' && livestreamData.broadcastClient) return;
 
                     //deactivate previous players, especially of peer2peer broadcast
-                    if(_activePlayerLive) {
-                        if(_activePlayerLive.platform == 'Peer2Peer' && _activePlayerLive.broadcastClient){
-                            _activePlayerLive.broadcastClient.disconnect();
-                            _activePlayerLive.broadcastClient = null;
+                    if(tool.activeLivestreamData && livestreamData != tool.activeLivestreamData) {
+                        if(tool.activeLivestreamData.platform == 'Peer2Peer' && tool.activeLivestreamData.broadcastClient){
+                            tool.activeLivestreamData.broadcastClient.disconnect();
+                            tool.activeLivestreamData.broadcastClient = null;
                         }
                     }
 
-                    _activePlayerLive = livestreamData;
-
                     livestreamWidngetPlayer.innerHTML = '';
-                    let streamingContainer = tool.generateLivestreamVideo(livestreamData, onlyAudio);
-                    livestreamWidngetPlayer.appendChild(streamingContainer);
-                    _mediaPlayerElementContainer = streamingContainer;
+                                        
+                    //when user switches between full or compact state, we should move player between two states
+                    if(tool.activeLivestreamData && tool.activeLivestreamData == livestreamData) {
+                        livestreamWidngetPlayer.appendChild(tool.mediaPlayerContainer);
+                        _activePlayerLive = tool.activeLivestreamData;
+                        _mediaPlayerElementContainer = tool.mediaPlayerContainer;
+                    } else {
+                        _activePlayerLive = tool.activeLivestreamData = livestreamData;
+                        let streamingContainer = tool.generateLivestreamVideo(livestreamData, onlyAudio);
+                        _mediaPlayerElementContainer = tool.mediaPlayerContainer = streamingContainer;
+                        livestreamWidngetPlayer.appendChild(streamingContainer);
+                    }
 
                     if(_joinButton.classList.contains('media-livestream-join-audience')) {
                         joinButtonCon.style.display = 'none';
                     }
 
-                    /* tool.livestreamStream.join({
-                        extra: JSON.stringify({listener: 'yes'})
-                    }, function () {
-
-                    }); */
-                    tool.joinLivestreamAsListener();
+                    tool.joinOrLeaveLivestreamAudience('join');
 
                     Q.handle(tool.state.onLiveIsPlaying, tool);
                 }
@@ -1676,8 +1705,9 @@
                 }
 
                 function updateRealTimeInfo() {
-                    livestreamListenersCounter.innerHTML = tool.livestreamStream.fields.participatingCount + ' ';
-                    _minimizedWidgetViewerCounterEl.innerHTML = tool.livestreamStream.fields.participatingCount;
+                    let audienceNumber = tool.livestreamStream.getAttribute('audience');
+                    livestreamListenersCounter.innerHTML = audienceNumber + ' ';
+                    _minimizedWidgetViewerCounterEl.innerHTML = audienceNumber;
                 }
 
                 function isMinimized() {
@@ -1688,7 +1718,8 @@
                     widgetEl: widgetContainer0,
                     minimizeWidget: minimizeWidget,
                     maximizeWidget: maximizeWidget,
-                    isMinimized: isMinimized
+                    isMinimized: isMinimized,
+                    playLive: playLive
                 };
             },
             //we don't need "after" state for now
@@ -2510,8 +2541,16 @@
                     prevNumOfLives: -1
                 }]);
 
+                function playLivestream() {
+
+                }
+
                 return {
-                    widgetEl: toolContainer
+                    widgetEl: toolContainer,
+                    playLivestream: playLivestream,
+                    isMinimized: function () {
+                        return false;
+                    }
                 };
             },
             goOnStage: function () {
@@ -2721,6 +2760,12 @@
                                 activeLivestreamItem.broadcastClient.disconnect();
                                 activeLivestreamItem.broadcastClient = null;
                             }
+                            if(tool.activeLivestreamData && tool.activeLivestreamData == activeLivestreamItem) {
+                                tool.activeLivestreamData = null;
+                            }
+                            if(tool.mediaPlayerContainer) {
+                                tool.mediaPlayerContainer.remove();
+                            }
                             tool.activeLivestreamings.splice(i, 1);
                         } else {
                             activeLivestreamItem.offline = false;
@@ -2912,6 +2957,10 @@
                                     mediaElement.srcObject = mediaStream;
         
                                     localParticipantId.innerHTML = 'My ID: ' + (broadcastClient.localParticipant().sid).replace('/broadcast#', '');
+
+                                    broadcastClient.event.on('disconnected', function () {
+                                        
+                                    });
                                 });
         
                                 broadcastClient.event.on('trackAdded', onTrackAdded)
@@ -3031,18 +3080,30 @@
 
                     if(!clickedTabObject) return;
 
-                    for (let i in tool.videoTabsTool.tabs) {
-                        let tab = tool.videoTabsTool.tabs[i];
+                    if (tool.activeLivestreamData && tool.activeLivestreamData !== clickedTabObject.livestreamData) {
+                        for (let i in tool.videoTabsTool.tabs) {
+                            let tab = tool.videoTabsTool.tabs[i];
 
-                        if(tab.livestreamData && tab.livestreamData.broadcastClient != null) {
-                            tab.livestreamData.broadcastClient.disconnect();
-                            tab.livestreamData.broadcastClient = null;
+                            if (tab.livestreamData && tab.livestreamData.broadcastClient != null) {
+                                tab.livestreamData.broadcastClient.disconnect();
+                                tab.livestreamData.broadcastClient = null;
+                            }
                         }
                     }
                     
+                    
                     tool.videoContainerEl.innerHTML = '';
-                    let tabContent = tool.generateLivestreamVideo(clickedTabObject.livestreamData);
-                    tool.videoContainerEl.appendChild(tabContent);
+                    let tabContent;
+                    if(tool.activeLivestreamData && tool.mediaPlayerContainer) {
+                        tabContent = tool.mediaPlayerContainer;
+                    } else{
+                        tool.activeLivestreamData = clickedTabObject.livestreamData;
+                        tabContent = tool.mediaPlayerContainer = tool.generateLivestreamVideo(clickedTabObject.livestreamData);
+                        tool.joinOrLeaveLivestreamAudience('join');
+                    }
+                    if(!tool.videoContainerEl.contains(tabContent)) {
+                        tool.videoContainerEl.appendChild(tabContent);
+                    }
                     tool.updateUIOnResize();
                 }
             },

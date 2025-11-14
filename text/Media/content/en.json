@@ -176,7 +176,13 @@
             "allowedVideoLimit": "Only {{limit}} video allowed in this room",
             "allowedAudioLimit": "Only {{limit}} microphones allowed in this room",
             "processingRecording": "Processing the recording...",
-            "cameraStartError": "Unable to start the video source. Make sure no other application is using the camera."
+            "cameraStartError": "Unable to start the video source. Make sure no other application is using the camera.",
+            "micAllowed": "The host has allowed the use of a microphone in this room",
+            "cameraAllowed": "The host has allowed the use of a camera in this room",
+            "screenShareAllowed": "The host has allowed the use of a screen sharing in this room",
+            "micNotAllowed": "The host has restricted the use of the microphone in this room",
+            "cameraNotAllowed": "The host has restricted the use of the camera in this room",
+            "screenShareNotAllowed": "The host has restricted the use of the screen sharing in this room"
         },
         "settingsPopup": {
             "dialogTitle": "Video Settings",
@@ -221,7 +227,9 @@
         "audioSettings": {
             "dialogTitle": "Audio Settings",
             "speakers": "Speakers",
-            "microphone": "Microphone"
+            "microphone": "Microphone",
+            "inputDevices": "Input devices",
+            "outputDevices": "Output devices"
         },
         "broadcastPopup": {
             "dialogTitle": "Manage Broadcast"

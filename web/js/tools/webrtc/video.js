@@ -2,32 +2,62 @@
     var _controlsToolIcons = []; 
 
     var ButtonInstance = function (data) {
-        this.buttonEl = data.buttonEl;
-        this.textEl = data.textEl;
+        this.button = null;
+        this.buttonInner = null;
+        this.textEl = null;
         this.type = data.type;
         this.isActive = false;
         this.deviceId = data.deviceId;
         this.handler = data.handler.bind(this);
         this.makeActive = function () {
-            if (!this.buttonEl.classList.contains('webrtc-video-settings_popup_active')) this.buttonEl.classList.add('webrtc-video-settings_popup_active');
-            if (!this.buttonEl.classList.contains('webrtc-video-disabled-radio')) this.buttonEl.classList.add('webrtc-video-disabled-radio');
+            this.button.classList.add('webrtc-video-settings_popup_active');
+            this.button.classList.add('webrtc-video-disabled-radio');
             this.isActive = true;
         };
         this.switchToRegularState = function () {
-            if (this.buttonEl.classList.contains('webrtc-video-settings_popup_active')) this.buttonEl.classList.remove('webrtc-video-settings_popup_active');
-            if (this.buttonEl.classList.contains('webrtc-video-disabled-radio')) this.buttonEl.classList.remove('webrtc-video-disabled-radio');
+            this.button.classList.remove('webrtc-video-settings_popup_active');
+            this.button.classList.remove('webrtc-video-disabled-radio');
             this.isActive = false;
         };
         this.show = function () {
-            if (this.buttonEl.classList.contains('webrtc-video-hidden')) this.buttonEl.classList.remove('webrtc-video-hidden');
+            this.button.classList.remove('webrtc-video-hidden');
             this.switchToRegularState();
         };
         this.hide = function () {
-            if (!this.buttonEl.classList.contains('webrtc-video-hidden')) this.buttonEl.classList.add('webrtc-video-hidden');
+            this.button.classList.add('webrtc-video-hidden');
         };
         this.remove = function () {
-            if (this.buttonEl.parentNode != null) this.buttonEl.parentNode.removeChild(this.buttonEl);
+            this.button.remove();
         };
+
+        var radioBtnItemCon = this.button = document.createElement('DIV');
+        radioBtnItemCon.className = 'webrtc-video-settings_popup_item_con';
+        if(data.deviceId) {
+            radioBtnItemCon.dataset.deviceId = data.deviceId;
+        }
+        if(data.className) {
+            let classes = (data.className).split(' ');
+            for(let i in classes) {
+                radioBtnItemCon.classList.add(classes[i]);
+            }
+        }
+
+        var radioBtnItem = this.buttonInner = document.createElement('DIV');
+        radioBtnItem.className = 'webrtc-video-settings_popup_item';
+        radioBtnItemCon.appendChild(radioBtnItem);
+
+        var textLabelCon = this.textEl = document.createElement('SPAN');
+        textLabelCon.className = 'webrtc-video-settings_popup_item_text';
+        radioBtnItem.appendChild(textLabelCon);
+        var textLabel = document.createTextNode(data.label);
+        textLabelCon.appendChild(textLabel);
+
+        var checkmark = document.createElement('SPAN');
+        checkmark.className = 'webrtc-video-radio-checkmark';
+        checkmark.innerHTML = data.icon;
+        radioBtnItem.appendChild(checkmark);
+
+        radioBtnItem.addEventListener('mouseup', this.handler);
     }
 
     var ua = navigator.userAgent;
@@ -176,14 +206,80 @@
 
                 if(localParticipant.hasPermission('camera')) {
                     tool.videoinputListEl.classList.remove('webrtc-camera-disabled');
+                    tool.videoinputListEl.removeAttribute('data-touchlabel');
+                    disableAlertOnHover(tool.cameraListButtons);
+
                 } else {
                     tool.videoinputListEl.classList.add('webrtc-camera-disabled');
+                    showAlertOnHover(tool.cameraListButtons);
                 }
 
                 if(localParticipant.hasPermission('screen')) {
                     tool.videoinputListEl.classList.remove('webrtc-screen-disabled');
+                    disableAlertOnHover([tool.startScreenSharingBtn]);
                 } else {
                     tool.videoinputListEl.classList.add('webrtc-screen-disabled');
+                    showAlertOnHover([tool.startScreenSharingBtn]);
+                }
+
+                function showAlertOnHover(buttons) {
+                    for(let i = buttons.length - 1; i >= 0; i--) {
+                        let buttonData = buttons[i];
+                        if(!buttonData.button) continue;
+
+                        let popupTool = Q.Tool.from(buttonData.button, 'Media/webrtc/popupDialog')
+                        
+                        if(!popupTool) {
+                             Q.activate(
+                                Q.Tool.setUpElement(
+                                    buttonData.button,
+                                    "Media/webrtc/popupDialog",
+                                    {
+                                        content: createAlertMessage(buttonData == 'camera' ? Q.getObject("webrtc.notices.cameraNotAllowed", tool.text) : Q.getObject("webrtc.notices.screenShareNotAllowed", tool.text)),
+                                        className: 'webrtc-camera-permission-alert'
+                                    }
+                                ),
+                                {},
+                                function () {
+                                   
+                                }
+                            );
+                        } else {
+                            popupTool.disabled(false);
+                        }
+                    }
+                }
+
+                function disableAlertOnHover(buttons) {
+                    for(let i = buttons.length - 1; i >= 0; i--) {
+                        let buttonData = buttons[i];
+
+                        if(buttonData.button) {
+                            let popupTool = Q.Tool.from(buttonData.button, 'Media/webrtc/popupDialog');
+                            if(popupTool) {
+                                popupTool.disabled(true);
+                            }
+                        }
+                    }
+                }
+
+                function createAlertMessage(text) {
+                    //let existingMessage = parentElement.querySelector('.webrtc-audio-disabled-msg');
+                    //if (existingMessage) return;
+                    let msg = document.createElement('DIV');
+                    msg.className = 'webrtc-video-disabled-msg';
+                    //parentElement.appendChild(msg);
+                    let msgTextCon = document.createElement('DIV');
+                    msgTextCon.className = 'webrtc-video-disabled-msg-text-con';
+                    msg.appendChild(msgTextCon);
+                    let msgBg = document.createElement('DIV');
+                    msgBg.className = 'webrtc-video-disabled-msg-bg';
+                    msgTextCon.appendChild(msgBg);
+                    let msgText = document.createElement('DIV');
+                    msgText.className = 'webrtc-video-disabled-msg-text';
+                    msgText.innerHTML = text;
+                    msgTextCon.appendChild(msgText);
+                    return msg;
                 }
             },
             createList: function () {
@@ -192,23 +288,12 @@
                 var videoinputList = document.createElement('DIV');
                 videoinputList.className = 'webrtc-video-choose-device';
 
-                var turnOnCameraItem = document.createElement('DIV');
-                turnOnCameraItem.dataset.deviceId = 'auto';
-                turnOnCameraItem.className = 'webrtc-video-settings_popup_item webrtc-video-settings_popup_camera_item';
-                var textLabelCon = document.createElement('SPAN');
-                textLabelCon.className = 'webrtc-video-settings_popup_item_text';
-                var textLabel = document.createTextNode(Q.getObject("webrtc.settingsPopup.webCamera", tool.text));
-                var checkmark = document.createElement('SPAN');
-                checkmark.className = 'webrtc-video-radio-checkmark';
-                checkmark.innerHTML = _controlsToolIcons.screen;
-                textLabelCon.appendChild(textLabel);
-                turnOnCameraItem.appendChild(textLabelCon);
-                turnOnCameraItem.appendChild(checkmark);
-
                 tool.turnOnCameraBtn = new ButtonInstance({
-                    buttonEl: turnOnCameraItem,
-                    textEl: textLabelCon,
+                    className: 'webrtc-video-settings_popup_camera_item',
+                    label: Q.getObject("webrtc.settingsPopup.webCamera", tool.text),
                     type: 'camera',
+                    icon: _controlsToolIcons.screen,
+                    deviceId: 'auto',
                     handler: function (e) {
                         var turnCameraOn = function () {
                             tool.toggleRadioButton(tool.turnOnCameraBtn);
@@ -252,36 +337,25 @@
                     }
                 });
 
-                var screenSharingRadioItem = document.createElement('DIV');
-                screenSharingRadioItem.dataset.deviceId = 'screen';
-                screenSharingRadioItem.className = 'webrtc-video-settings_popup_item webrtc-video-settings_popup_screen_item';
-                var textLabelCon = document.createElement('SPAN');
-                textLabelCon.className = 'webrtc-video-settings_popup_item_text';
-                var textLabel = document.createTextNode(Q.getObject("webrtc.settingsPopup.screenSharing", tool.text));
-                var checkmark = document.createElement('SPAN');
-                checkmark.className = 'webrtc-video-radio-checkmark';
-                checkmark.innerHTML = _controlsToolIcons.screen;
-                textLabelCon.appendChild(textLabel);
-                screenSharingRadioItem.appendChild(textLabelCon);
-                screenSharingRadioItem.appendChild(checkmark);
-
                 tool.startScreenSharingBtn = new ButtonInstance({
-                    buttonEl: screenSharingRadioItem,
-                    textEl: textLabelCon,
+                    className: 'webrtc-video-settings_popup_screen_item',
+                    label: Q.getObject("webrtc.settingsPopup.screenSharing", tool.text),
                     type: 'screen',
+                    icon: _controlsToolIcons.screen,
+                    deviceId: 'screen',
                     handler: function (e) {
                         var btnInstance = this;
-                        if (!screenSharingRadioItem.classList.contains('Q_working')) screenSharingRadioItem.classList.add('Q_working');
+                        if (!btnInstance.button.classList.contains('Q_working')) btnInstance.button.classList.add('Q_working');
 
                         var turnScreensharingOn = function () {
                             tool.webrtcSignalingLib.screenSharing.startShareScreen(function () {
-                                if (screenSharingRadioItem.classList.contains('Q_working')) screenSharingRadioItem.classList.remove('Q_working');
+                                if (btnInstance.button.classList.contains('Q_working')) btnInstance.button.classList.remove('Q_working');
                                 Q.Dialogs.pop();
                                 tool.toggleRadioButton(btnInstance);
                                 tool.state.controlsTool.closeAllDialogs();
                                 tool.state.controlsTool.updateControlBar();
                             }, function () {
-                                if (screenSharingRadioItem.classList.contains('Q_working')) screenSharingRadioItem.classList.remove('Q_working');
+                                if (btnInstance.button.classList.contains('Q_working')) btnInstance.button.classList.remove('Q_working');
 
                                 var currentCameraDevice = tool.webrtcSignalingLib.localMediaControls.currentCameraDevice();
                                 if (currentCameraDevice != null) {
@@ -305,22 +379,12 @@
                     }
                 });
 
-                var anotherScreenSharingRadioItem = document.createElement('DIV');
-                anotherScreenSharingRadioItem.className = 'webrtc-video-hidden webrtc-video-settings_popup_item webrtc-video-settings_popup_screen_item webrtc-video-video_anotherScreen';
-                anotherScreenSharingRadioItem.dataset.deviceId = 'anotherScreen';
-                var textLabelCon = document.createElement('SPAN');
-                textLabelCon.className = 'webrtc-video-settings_popup_item_text';
-                var textLabel = document.createTextNode(Q.getObject("webrtc.settingsPopup.shareAnotherScreen", tool.text));
-                var checkmark = document.createElement('SPAN');
-                checkmark.className = 'webrtc-video-radio-checkmark';
-                checkmark.innerHTML = _controlsToolIcons.screen;
-                textLabelCon.appendChild(textLabel);
-                anotherScreenSharingRadioItem.appendChild(textLabelCon);
-                anotherScreenSharingRadioItem.appendChild(checkmark);
                 tool.startAnotherScreenSharingBtn = new ButtonInstance({
-                    buttonEl: anotherScreenSharingRadioItem,
-                    textEl: textLabelCon,
                     type: 'shareAnotherScreen',
+                    className: 'webrtc-video-video_anotherScreen',
+                    label: Q.getObject("webrtc.settingsPopup.shareAnotherScreen", tool.text),
+                    icon: _controlsToolIcons.screen,
+                    deviceId: 'screen',
                     handler: function () {
                         var turnScreensharingOn = function () {
                             tool.webrtcSignalingLib.screenSharing.startShareScreen(function () {
@@ -351,46 +415,27 @@
                         }
                     }
                 });
+                tool.startAnotherScreenSharingBtn.hide()
 
-                var turnScreenSharingOff = document.createElement('DIV');
-                turnScreenSharingOff.className = 'webrtc-video-hidden webrtc-video-settings_popup_item webrtc-video-settings_popup_screen_item webrtc-video-turn_off_screensharing';
-                turnScreenSharingOff.dataset.deviceId = 'turnScreenSharingOff';
-                var textLabelCon = document.createElement('SPAN');
-                textLabelCon.className = 'webrtc-video-settings_popup_item_text';
-                var textLabel = document.createTextNode(Q.getObject("webrtc.settingsPopup.turnOffScreenSharing", tool.text));
-                var checkmark = document.createElement('SPAN');
-                checkmark.className = 'webrtc-video-radio-checkmark';
-                checkmark.innerHTML = _controlsToolIcons.switchOffCameras;
-                textLabelCon.appendChild(textLabel);
-                turnScreenSharingOff.appendChild(textLabelCon);
-                turnScreenSharingOff.appendChild(checkmark);
                 tool.stopScreenSharingBtn = new ButtonInstance({
-                    buttonEl: turnScreenSharingOff,
-                    textEl: textLabelCon,
                     type: 'turnScreenSharingOff',
+                    className: 'webrtc-video-turn_off_screensharing',
+                    label: Q.getObject("webrtc.settingsPopup.turnOffScreenSharing", tool.text),
+                    icon: _controlsToolIcons.switchOffCameras,
+                    deviceId: 'turnScreenSharingOff',
                     handler: function () {
                         tool.toggleRadioButton(tool.stopScreenSharingBtn);
                         tool.webrtcSignalingLib.screenSharing.stopShareScreen();
                     }
                 });
-
-                var mobileScreenSharingRadioItem = document.createElement('DIV');
-                mobileScreenSharingRadioItem.dataset.deviceId = 'screen';
-                mobileScreenSharingRadioItem.className = 'webrtc-video-settings_popup_item webrtc-video-settings_popup_screen_item';
-                var textLabelCon = document.createElement('SPAN');
-                textLabelCon.className = 'webrtc-video-settings_popup_item_text';
-                var textLabel = document.createTextNode(Q.getObject("webrtc.settingsPopup.screenSharing", tool.text));
-                var checkmark = document.createElement('SPAN');
-                checkmark.className = 'webrtc-video-radio-checkmark';
-                checkmark.innerHTML = _controlsToolIcons.screen;
-                textLabelCon.appendChild(textLabel);
-                mobileScreenSharingRadioItem.appendChild(textLabelCon);
-                mobileScreenSharingRadioItem.appendChild(checkmark);
+                tool.stopScreenSharingBtn.hide();
 
                 tool.startMobileScreenSharingBtn = new ButtonInstance({
-                    buttonEl: mobileScreenSharingRadioItem,
-                    textEl: textLabelCon,
                     type: 'mobileScreen',
+                    className: 'webrtc-video-settings_popup_screen_item',
+                    label: Q.getObject("webrtc.settingsPopup.screenSharing", tool.text),
+                    icon: _controlsToolIcons.screen,
+                    deviceId: 'screen',
                     handler: function (e) {
                         var btnInstance = this;
                         tool.webrtcSignalingLib.screenSharing.startShareScreen(function () {
@@ -416,23 +461,12 @@
                     tool.toggleRadioButton(tool.startScreenSharingBtn);
                 }
 
-                var turnOffradioBtnItem = document.createElement('DIV');
-                turnOffradioBtnItem.className = 'webrtc-video-settings_popup_item webrtc-video-settings_popup_camera_item webrtc-video-turn_video_off';
-                turnOffradioBtnItem.dataset.deviceId = 'off';
-                var textLabelCon = document.createElement('SPAN');
-                textLabelCon.className = 'webrtc-video-settings_popup_item_text webrtc-video-turn_video_off_text';
-                var textLabel = document.createTextNode(Q.getObject("webrtc.settingsPopup.cameraIsTurnedOff", tool.text));
-                var checkmark = document.createElement('SPAN');
-                checkmark.className = 'webrtc-video-radio-checkmark';
-                checkmark.innerHTML = _controlsToolIcons.switchOffCameras;
-                textLabelCon.appendChild(textLabel);
-                turnOffradioBtnItem.appendChild(textLabelCon);
-                turnOffradioBtnItem.appendChild(checkmark);
-
                 tool.turnOffCameraBtn = new ButtonInstance({
-                    buttonEl: turnOffradioBtnItem,
-                    textEl: textLabelCon,
                     type: 'off',
+                    className: 'webrtc-video-settings_popup_camera_item webrtc-video-turn_video_off',
+                    label: Q.getObject("webrtc.settingsPopup.cameraIsTurnedOff", tool.text),
+                    icon: _controlsToolIcons.switchOffCameras,
+                    deviceId: 'off',
                     handler: function (e) {
                         tool.toggleRadioButton(tool.turnOffCameraBtn);
                         tool.webrtcSignalingLib.localMediaControls.disableVideo('camera');
@@ -446,19 +480,12 @@
                     tool.toggleRadioButton(tool.turnOffCameraBtn);
                 }
 
-                videoinputList.appendChild(turnOnCameraItem);
-                if (!Q.info.useTouchEvents) videoinputList.appendChild(screenSharingRadioItem);
-                if (!Q.info.useTouchEvents) videoinputList.appendChild(anotherScreenSharingRadioItem);
-                if (tool.webrtcUserInterface.getOptions().showScreenSharingInSeparateScreen && !Q.info.useTouchEvents) videoinputList.appendChild(turnScreenSharingOff);
-                if ((Q.info.useTouchEvents) && typeof cordova != 'undefined') videoinputList.appendChild(mobileScreenSharingRadioItem);
-                videoinputList.appendChild(turnOffradioBtnItem);
-
-                screenSharingRadioItem.addEventListener('mouseup', tool.startScreenSharingBtn.handler);
-                anotherScreenSharingRadioItem.addEventListener('mouseup', tool.startAnotherScreenSharingBtn.handler);
-                mobileScreenSharingRadioItem.addEventListener('mouseup', tool.startMobileScreenSharingBtn.handler);
-                turnScreenSharingOff.addEventListener('mouseup', tool.stopScreenSharingBtn.handler);
-
-                turnOffradioBtnItem.addEventListener('mouseup', tool.turnOffCameraBtn.handler)
+                videoinputList.appendChild(tool.turnOnCameraBtn.button);
+                if (!Q.info.useTouchEvents) videoinputList.appendChild(tool.startScreenSharingBtn.button);
+                if (!Q.info.useTouchEvents) videoinputList.appendChild(tool.startAnotherScreenSharingBtn.button);
+                if (tool.webrtcUserInterface.getOptions().showScreenSharingInSeparateScreen && !Q.info.useTouchEvents) videoinputList.appendChild(tool.stopScreenSharingBtn.button);
+                if ((Q.info.useTouchEvents) && typeof cordova != 'undefined') videoinputList.appendChild(tool.startMobileScreenSharingBtn.button);
+                videoinputList.appendChild(tool.turnOffCameraBtn.button);
 
                 tool.videoinputListEl = videoinputList;
 
@@ -470,32 +497,19 @@
                 log('contros: loadCamerasList')
                 if (tool.webrtcUserInterface.getOptions().audioOnlyMode) return;
                 //location.reload();
-                var count = 1;
 
                 tool.clearCameraList();
 
-                tool.webrtcSignalingLib.localMediaControls.videoInputDevices().forEach(function (mediaDevice) {
-                    var radioBtnItem = document.createElement('DIV');
-                    radioBtnItem.className = 'webrtc-video-settings_popup_item webrtc-video-settings_popup_camera_item';
-                    radioBtnItem.dataset.deviceId = mediaDevice.deviceId;
-
-                    var textLabelCon = document.createElement('SPAN');
-                    textLabelCon.className = 'webrtc-video-settings_popup_item_text';
-                    var textLabel = document.createTextNode(mediaDevice.label || `Camera ${count}`);
-                    var checkmark = document.createElement('SPAN');
-                    checkmark.className = 'webrtc-video-radio-checkmark';
-                    checkmark.innerHTML = _controlsToolIcons.cameraTransparent;
-                    textLabelCon.appendChild(textLabel);
-                    radioBtnItem.appendChild(textLabelCon);
-                    radioBtnItem.appendChild(checkmark);
-                    tool.videoinputListEl.insertBefore(radioBtnItem, tool.videoinputListEl.firstChild);
-
+                tool.webrtcSignalingLib.localMediaControls.videoInputDevices().forEach(function (mediaDevice, index) {
                     let cameraItem = new ButtonInstance({
-                        buttonEl: radioBtnItem,
-                        textEl: textLabelCon,
+                        className: 'webrtc-video-settings_popup_camera_item',
+                        label: mediaDevice.label || `Camera ${index}`,
                         type: 'camera',
                         deviceId: mediaDevice.deviceId,
+                        icon:_controlsToolIcons.cameraTransparent,
                         handler: function (e) {
+                            const btnInstance = this;
+                            const radioBtnItem = btnInstance.button;
                             if (!radioBtnItem.classList.contains('Q_working')) radioBtnItem.classList.add('Q_working');
                             Q.Dialogs.pop();
                             tool.state.controlsTool.closeAllDialogs();
@@ -536,14 +550,13 @@
                         }
                     });
 
+                    tool.videoinputListEl.insertBefore(cameraItem.button, tool.videoinputListEl.firstChild);
+
                     tool.cameraListButtons.push(cameraItem);
 
                     if (tool.webrtcSignalingLib.localMediaControls.currentCameraDevice() != null && tool.webrtcSignalingLib.localMediaControls.currentCameraDevice().deviceId == mediaDevice.deviceId) {
                         tool.toggleRadioButton(cameraItem);
                     }
-
-                    radioBtnItem.addEventListener('mouseup', cameraItem.handler)
-                    count++;
                 });
 
                 //if(turnOnCameraItem.parentNode != null) turnOnCameraItem.parentNode.removeChild(turnOnCameraItem);

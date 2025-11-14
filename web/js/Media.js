@@ -350,7 +350,7 @@
 		});
 	}
 	
-	Media.openLivestreamTool = function (publisherId, streamName) {
+	Media.openLivestreamTool = function (publisherId, streamName, options) {
 		return new Promise(function (resolve, reject) {
 			let existingLivestreamTools = Q.Tool.byName('Media/webrtc/livestream');
 			let tools = Object.values(existingLivestreamTools)
@@ -376,7 +376,7 @@
 					Q.Tool.setUpElement(livestreamElement, 'Media/webrtc/livestream', {
 						publisherId: publisherId,
 						streamName: streamName,
-						mode: 'compact',
+						mode: options.mode != null ? options.mode : 'compact',
 					}),
 					{},
 					function () {

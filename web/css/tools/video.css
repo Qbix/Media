@@ -13,22 +13,22 @@
     min-height: 35px;
     cursor: pointer;
 }
-.webrtc-video-choose-device.webrtc-camera-disabled .webrtc-video-settings_popup_item.webrtc-video-settings_popup_camera_item {
+.webrtc-video-choose-device.webrtc-camera-disabled .webrtc-video-settings_popup_camera_item .webrtc-video-settings_popup_item {
     opacity: 0.4;
     pointer-events: none;
 }
-.webrtc-video-choose-device.webrtc-screen-disabled .webrtc-video-settings_popup_item.webrtc-video-settings_popup_screen_item {
+.webrtc-video-choose-device.webrtc-screen-disabled .webrtc-video-settings_popup_screen_item .webrtc-video-settings_popup_item {
     opacity: 0.4;
     pointer-events: none;
 }
-.webrtc-video-choose-device .webrtc-video-hidden.webrtc-video-settings_popup_item {
+.webrtc-video-choose-device .webrtc-video-hidden.webrtc-video-settings_popup_item_con {
     display: none;
 }
-.webrtc-video-choose-device  .webrtc-video-disabled-radio {
+.webrtc-video-choose-device .webrtc-video-disabled-radio {
     color: #a7a7a7;
     pointer-events: none;
 }
-.webrtc-video-choose-device  .webrtc-video-disabled-radio svg {
+.webrtc-video-choose-device .webrtc-video-disabled-radio svg {
     pointer-events: none;
 }
 .webrtc-video-choose-device input{
@@ -48,7 +48,7 @@
 }
 .webrtc-video-choose-device label:not([data-device-id="anotherScreen"]) input:checked ~ .webrtc-video-radio-checkmark svg path,
 .webrtc-video-choose-device input:checked ~ .webrtc-video-radio-checkmark svg path,
-.webrtc-video-choose-device .webrtc-video-settings_popup_item.webrtc-video-settings_popup_active svg path {
+.webrtc-video-choose-device .webrtc-video-settings_popup_item_con.webrtc-video-settings_popup_active svg path {
     fill:green;
 }
 .webrtc-video-choose-device .webrtc-video-radio-checkmark svg {
@@ -61,4 +61,43 @@
     border: 1px solid #d6d8db;
     padding: 5px;
     font-size: 14px;
+}
+
+.webrtc-popup-dialog.webrtc-camera-permission-alert {
+    background: none;
+    pointer-events: none;
+}
+
+.webrtc-video-disabled-msg {
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+    color: #c12236;
+    font-weight: bold;
+}
+.webrtc-video-disabled-msg .webrtc-video-disabled-msg-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #cccccc00;
+    z-index: 0;
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    box-shadow: 0 0 10px 5px rgb(135 135 135 / 30%);
+}
+.webrtc-video-disabled-msg .webrtc-video-disabled-msg-text-con {
+    position: relative;
+    padding:10px;
+}
+.webrtc-video-disabled-msg .webrtc-video-disabled-msg-text {
+    position: relative;
+    z-index: 1;
 }
