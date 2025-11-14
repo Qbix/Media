@@ -132,8 +132,16 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 	75% { background-color: yellow; }
 }
 
-#dashboard .Q_tabs_tabs .Q_tab_videos::before, .Q_listing_wrapper  .Q_tabs_tabs .Q_tab_videos::before {
-	font-family: 'qplatform-media';
-	content: "\e912";
-	margin-right: 5px;
+#dashboard .Q_tabs_tabs .Q_tab_videos::before,
+.Q_listing_wrapper .Q_tabs_tabs .Q_tab_videos::before {
+    font-family: 'qplatform-media';
+    content: "\e912";
+    margin-right: 5px
+}
+
+#dashboard .Q_tabs_tabs .Q_tab_channels::before,
+.Q_listing_wrapper .Q_tabs_tabs .Q_tab_channels::before {
+    font-family: 'qplatform-media';
+    content: "\e914";
+    margin-right: 5px
 }
