@@ -10,7 +10,6 @@ function Media_channels_response($params)
 			'columnClass' => 'Media_column_channels'
 		)
 	);
-	Q_Response::addScript('{{Media}}/js/pages/channels.js');
 
 	if (Q_Request::slotName('content')) {
 		$content = Q::view('Media/content/columns.php', $params);

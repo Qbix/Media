@@ -5,10 +5,21 @@ var Streams = Q.Streams;
 var Media = Q.Media;
 
 Q.exports(function (options, index, columnElement, data) {
-	var loggedUserId = Q.Users.loggedInUserId();
-	var $channelsColumn = $(".Media_column_channels", columnElement);
-
 	Q.addStylesheet('{{Media}}/css/columns/channels.css');
+
+	var columnsTool = Q.Tool.from($(columnElement).closest(".Q_columns_tool")[0], "Q/columns");
+	if (columnsTool) {
+		columnsTool.state.beforeClose.set(function (index, prevIndex, div) {
+			if (!$(div).hasClass("Media_column_channel")) {
+				return;
+			}
+
+			var channelTool = Q.Tool.from($(".Media_channel_tool", div)[0], "Media/channel");
+			if (channelTool) {
+				$(".Media_channel_preview_tool[data-publisherId='" + channelTool.state.publisherId + "'][data-streamName='" + channelTool.state.streamName + "']", columnElement).removeClass("Q_selected");
+			}
+		});
+	}
 
 	var _setSelectedPreview = function ($toolElement) {
 		$toolElement.addClass("Q_selected").siblings(".Media_channel_preview_tool").removeClass("Q_selected");
