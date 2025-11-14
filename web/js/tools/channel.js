@@ -8,7 +8,9 @@
  *   @param {String} options.streamName The name of the stream
  */
 Q.Tool.define("Media/channel", function(options) {
+	var tool = this;
 	var state = this.state;
+	var $toolElement = $(this.element);
 
 	if (!state.publisherId) {
 		throw new Q.Exception("Media/channel: publisherId required!");
@@ -18,7 +20,7 @@ Q.Tool.define("Media/channel", function(options) {
 	}
 
 	// update column title
-	var $column = $(this.element).closest(".Media_column_channel");
+	var $column = $toolElement.closest(".Media_column_channel");
 	if ($column.length) {
 		$(".Q_title_slot", $column).tool("Streams/inplace", {
 			publisherId: state.publisherId,
@@ -270,6 +272,11 @@ Q.Tool.define("Media/channel", function(options) {
 				});
 			});
 		};
+	},
+	Q: {
+		beforeRemove: function () {
+
+		}
 	}
 }
 

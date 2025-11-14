@@ -22,6 +22,11 @@ function Media_channel_response_column(&$params, &$result)
 	Q_Response::setCommonMetas(compact('title', 'description', 'keywords', 'image', 'url'));
 	Q_Response::setSlot('title', $title);
 
+	Q_Response::setScriptData("Q.plugins.Media.channels.current", array(
+		"publisherId" => $stream->publisherId,
+		"streamName" => $stream->name
+	));
+
 	return Q::view('Media/column/channel.php', array(
 		'channelParams' => array(
 			'publisherId' => $stream->publisherId,
