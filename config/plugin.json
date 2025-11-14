@@ -309,7 +309,7 @@
 					"icon": "{{Media}}/img/icons/Media/episode",
 					"title": "Untitled Episode",
 					"readLevel": 40,
-					"writeLevel": 10,
+					"writeLevel": 23,
 					"adminLevel": 20
 				},
 				"create": true,
