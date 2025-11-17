@@ -1,26 +1,5 @@
 <?php
-echo Q::tool('Streams/related', array(
-	"stream" => $allChannels,
-	"relationType" => 'Media/channel',
-	"realtime" => true,
-	"sortable" => false,
-	"closeable" => false,
-	"editable" => false,
-	"infinitescroll" => true,
-	"previewOptions" => array(
-        "closeable" => false,
-        "editable" => false,
-        "expandable" => array("expanded" => false) // this for Media/episodes/preview
-    ),
-	"relatedOptions" => array(
-        "limit" => $limit,
-        "offset" => $offset,
-        "withParticipant" => false
-    )
-), array('classes' => 'Media_channels')
-) ?>
-
-<?php if ($currentUser) {
+if ($currentUser) {
 	echo Q::tool('Streams/related', array(
 		"stream" => $myChannels,
 		"relationType" => 'Media/channel',
@@ -43,6 +22,26 @@ echo Q::tool('Streams/related', array(
 				'title' => $channels['AddChannel']
 			)
 		)
-	), array('classes' => 'Media_channels_my'));
-} ?>
+	), array('classes' => 'Media_channels Media_channels_my'));
+}
 
+echo Q::tool('Streams/related', array(
+	"stream" => $allChannels,
+	"relationType" => 'Media/channel',
+	"realtime" => true,
+	"sortable" => false,
+	"closeable" => false,
+	"editable" => false,
+	"infinitescroll" => true,
+	"previewOptions" => array(
+        "closeable" => false,
+        "editable" => false,
+        "expandable" => array("expanded" => false) // this for Media/episodes/preview
+    ),
+	"relatedOptions" => array(
+        "limit" => $limit,
+        "offset" => $offset,
+        "withParticipant" => false
+    )
+), array('classes' => 'Media_channels')
+) ?>
