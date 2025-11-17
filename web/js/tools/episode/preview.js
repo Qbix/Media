@@ -273,7 +273,9 @@
 				content: "<div data-name='title'></div><button class='Q_button' type='button' name='add'>Add New Episode</button>",
 				onActivate: function (dialog) {
 					var $title = $("input[name=title]", dialog);
+					var platform = null;
 					var videoUrl = null;
+					var videoId = null;
 					var publishTime = null;
 					var audioUrl = null;
 					var $submit = $("button[name=add]", dialog);
@@ -288,8 +290,10 @@
 					}).activate(function () {
 						this.state.onChoose.set(function (element, detailes) {
 							$title = $("input[name=filter]", this.element);
+							platform = $(element).attr("data-platform");
 							videoUrl = $(element).attr("data-url");
 							publishTime = $(element).attr("data-time") || null;
+							videoId = $(element).attr("data-videoId");
 
 							var videoTool = Q.Tool.from($(".Q_video_tool", dialog), "Q/video");
 							if (videoTool) {
@@ -354,7 +358,7 @@
 								content: content,
 								icon: result.iconBig || result.iconSmall,
 								attributes: {
-									video: {url: videoUrl},
+									video: {url: videoUrl, duration: result.duration},
 									audio: {url: audioUrl},
 									publishTime: publishTime
 								}
@@ -362,7 +366,9 @@
 						}, {
 							method: 'post',
 							fields: {
-								url: videoUrl || audioUrl
+								url: videoUrl || audioUrl,
+								videoId,
+								platform
 							}
 						});
 					});
