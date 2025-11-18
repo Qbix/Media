@@ -153,19 +153,22 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0,
 .Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0,
-.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0,
+.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0 {
+	min-width: 30%;
+	width: 30%;
+}
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0,
 .Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0,
 .Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0 {
-	min-width: 30%;
-	width: 30%;
+	min-width: 25%;
+	width: 25%;
 }
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
 .Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
 .Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1 {
-	width: calc(70% - var(--column-margin));
+	width: 70%;
 }
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1 {
