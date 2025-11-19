@@ -52,7 +52,10 @@ html.Media_clip #content .Q_button.Media_clip_preview_tool .Streams_preview_cont
 	padding: 0;
 	vertical-align: unset;
 }
-html.Media_clip #content .Q_button[name=addClip],
+html.Media_clip #content .Q_button[name=addClip] {
+	width: 90%;
+	margin: 10px auto;
+}
 html.Media_clip #content .Q_button.Media_newEpisode {
 	width: 100%;
 }
@@ -168,29 +171,29 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
 .Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
 .Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1 {
-	width: 70%;
+	width: calc(70% - var(--column-margin));
 }
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1 {
-	width: 30%;
+	width: calc(30% - var(--column-margin));
 }
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_1,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_1 {
-	width: 25%;
+	width: calc(25% - var(--column-margin));
 }
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2 {
-	width: 40%;
+	width: calc(40% - var(--column-margin));
 }
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_2,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_2 {
-	width: 25%;
+	width: calc(25% - var(--column-margin));
 }
 .Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1,
 .Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1 {
-	width: 60%;
+	width: calc(30% - var(--column-margin));
 }
 .Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2,
 .Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2 {
-	width: 30%;
+	width: calc(30% - var(--column-margin));
 }
