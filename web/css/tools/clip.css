@@ -147,8 +147,10 @@ html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_j
     display: block;
 }
 .Media_clips_list_segments {
-    max-height: 150px;
+    height: 150px;
     overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px;
 }
 .Q_notMobile .Media_clips_list_segments {
 
@@ -194,4 +196,7 @@ html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_j
 }
 .Media_clips_call_btn svg path{
     fill: #024fbd;
+}
+button[name=addClip] img, button.Media_newEpisode img {
+    display: none;
 }
