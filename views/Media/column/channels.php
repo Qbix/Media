@@ -1,3 +1,12 @@
+<div class="Media_channels_menuBox">
+    <div class="Media_channels_menu" data-expanded="false"></div>
+</div>
+<div class="Media_channels_menu_items">
+    <div data-action="all">All channels</div>
+    <?php if ($currentUser) {?><div data-action="my">My channels</div><?php } ?>
+    <div data-action="search">Search</div>
+</div>
+
 <?php
 if ($currentUser) {
 	echo Q::tool('Streams/related', array(
