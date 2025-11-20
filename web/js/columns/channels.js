@@ -80,9 +80,9 @@ Q.exports(function (options, index, columnElement, data) {
 			$menuItems.width($menu.innerWidth()).show();
 		}
 	};
-	$(">", $menuItems).on(Q.Pointer.fastclick, _selectItem);
+	$(">", $menuItems).off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, _selectItem);
 	Q.handle(_selectItem, $(":first-child", $menuItems), [true]);
-	$menu.on(Q.Pointer.fastclick, _upDown);
+	$menu.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, _upDown);
 
 	/*var columnsTool = Q.Tool.from($(columnElement).closest(".Q_columns_tool")[0], "Q/columns");
 	if (columnsTool) {
