@@ -29,7 +29,6 @@ Q.exports(function (options, index, columnElement, data) {
 			case 'search':
 				var $input = $("<input type='text' name='search' placeholder='type...'>").on(Q.Pointer.fastclick, function (e) {
 					e.stopPropagation();
-					return false;
 				}).on('focus', function() {
 					if (!this.placeholder) {
 						return;
@@ -42,6 +41,7 @@ Q.exports(function (options, index, columnElement, data) {
 					}
 				}).on('input', _filterChannels);
 				$menu.empty().append($input);
+				setTimeout(function () { $input[0].focus(); }, 0);
 				break;
 		}
 
@@ -60,17 +60,9 @@ Q.exports(function (options, index, columnElement, data) {
 			}
 
 			if (!filter || normalizeAscii(eTitle.text()).indexOf(normalizeAscii(filter)) >= 0) {
-				/*if (Q.info.isMobile) {
-					$this.attr('data-match', true);
-				} else {*/
-					$this.fadeIn(500);
-				//}
+				$this.fadeIn(500);
 			} else {
-				/*if (Q.info.isMobile) {
-					$this.attr('data-match', false);
-				} else {*/
-					$this.fadeOut(500);
-				//}
+				$this.fadeOut(500);
 			}
 		});
 	};
