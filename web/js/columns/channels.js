@@ -40,9 +40,7 @@ Q.exports(function (options, index, columnElement, data) {
 					if (!this.value) {  // Only restore if input is empty
 						this.placeholder = this.dataset.placeholder;
 					}
-				}).on('change', function () {
-
-				});
+				}).on('input', _filterChannels);
 				$menu.empty().append($input);
 				break;
 		}
@@ -51,6 +49,35 @@ Q.exports(function (options, index, columnElement, data) {
 			_upDown();
 		}
 	};
+	var _filterChannels = function () {
+		var filter = $(this).val();
+		var allChannels = $(".Streams_related_tool.Media_channels:not(.Media_channels_my) .Media_channel_preview_tool:not(.Streams_preview_composer)", columnElement);
+		Q.each(allChannels, function () {
+			var $this = $(this);
+			var eTitle = $(".Streams_preview_title .Q_inplace_tool_static_container", this);
+			if (!eTitle.length) {
+				eTitle = $(".Streams_preview_title", this);
+			}
+
+			if (!filter || normalizeAscii(eTitle.text()).indexOf(normalizeAscii(filter)) >= 0) {
+				/*if (Q.info.isMobile) {
+					$this.attr('data-match', true);
+				} else {*/
+					$this.fadeIn(500);
+				//}
+			} else {
+				/*if (Q.info.isMobile) {
+					$this.attr('data-match', false);
+				} else {*/
+					$this.fadeOut(500);
+				//}
+			}
+		});
+	};
+	function normalizeAscii(str) {
+		return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase() : '';
+	}
+
 	var _upDown = function () {
 		var expanded = JSON.parse($menu.attr("data-expanded"));
 		if (expanded) {
