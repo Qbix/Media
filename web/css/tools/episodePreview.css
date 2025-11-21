@@ -107,6 +107,7 @@
     right: 0;
     bottom: 0;
     height: 16px;
+    translate(0, 10px);
 }
 
 
