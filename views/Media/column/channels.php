@@ -14,13 +14,8 @@ if ($currentUser) {
 		"relationType" => 'Media/channel',
 		"realtime" => true,
 		"sortable" => false,
-		"closeable" => true,
-		"editable" => true,
-		"previewOptions" => array(
-			"closeable" => true,
-			"editable" => true,
-			"expandable" => array("expanded" => false) // this for Media/episodes/preview
-		),
+		"closeable" => false,
+		"editable" => false,
 		"relatedOptions" => array(
 			"limit" => $limit,
 			"offset" => $offset,
@@ -42,11 +37,6 @@ echo Q::tool('Streams/related', array(
 	"closeable" => false,
 	"editable" => false,
 	"infinitescroll" => true,
-	"previewOptions" => array(
-        "closeable" => false,
-        "editable" => false,
-        "expandable" => array("expanded" => false) // this for Media/episodes/preview
-    ),
 	"relatedOptions" => array(
         "limit" => $limit,
         "offset" => $offset,
