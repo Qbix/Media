@@ -56,9 +56,6 @@ html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
 .Media_clip_tool .Media_clip_player {
     position: relative;
     display: flex;
-    flex-direction: row;
-}
-.Q_mobile .Media_clip_tool .Media_clip_player {
     flex-direction: column;
 }
 .Media_clip_tool .Media_clip_player_inner {
@@ -199,4 +196,30 @@ html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_j
 }
 button[name=addClip] img, button.Media_newEpisode img {
     display: none;
+}
+.Media_clip_tool .Q_video_tool {
+    display: none;
+}
+.Media_clip_tool .Q_audio_tool {
+    display: none;
+}
+.Media_clip_tool .Q_video_tool.Q_current,
+.Media_clip_tool .Q_audio_tool.Q_current {
+    display: block;
+}
+.Media_clip_tool .Media_tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.Media_clip_tool .Media_tabs .Media_tab {
+    cursor: pointer;
+    padding: 0 10px;
+    border-radius: 5px;
+    height: 40px;
+    line-height: 40px;
+    white-space: nowrap;
+}
+.Media_tab.Q_current {
+    background: rgba(100, 100, 100, 0.5);
 }

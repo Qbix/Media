@@ -1,41 +1,5 @@
 @import "icons.css";
 
-.Media_clip_tool .Q_video_tool {
-	display: none;
-}
-.Media_clip_tool .Q_audio_tool {
-	display: none;
-}
-.Media_clip_tool .Q_video_tool.Q_current,
-.Media_clip_tool .Q_audio_tool.Q_current {
-	display: block;
-}
-.Q_notMobile .Media_tabs {
-	/*position: absolute;
-	top: 0;
-	right: 0;
-	width: 10%;*/
-	flex:1;
-}
-.Q_mobile .Media_tabs {
-	display: flex;
-	justify-content: center;
-}
-.Media_clip_player .Media_tabs {
-	margin-bottom: 10px;
-}
-.Media_tab {
-	cursor: pointer;
-	padding: 0 10px;
-	border-radius: 5px;
-	height: 40px;
-	line-height: 40px;
-	white-space: nowrap;
-}
-.Media_tab.Q_current {
-	background: rgba(100, 100, 100, 0.5);
-}
-
 .Media_column_clips {
 	box-sizing: border-box;
 	text-align: center;
