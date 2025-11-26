@@ -258,8 +258,8 @@
 		handleTheirOwnClicks: ["Media/webrtc/preview"]
 	});
 
-	//Q.Streams.Tool.highlightPreviews('Media/episode');
-	//Q.Streams.Tool.highlightPreviews('Media/channel');
+	Q.Streams.Tool.highlightPreviews('Media/episode');
+	Q.Streams.Tool.highlightPreviews('Media/channel');
 
 	// listen for Media/feed/closed message and remove preview tool
 	Q.Streams.onMessage('Media/feed', 'Media/feed/access')
