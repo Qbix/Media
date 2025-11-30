@@ -178,7 +178,7 @@ Q.Tool.define("Media/clip/preview", ["Streams/preview"], function _Media_clip_pr
 
 					if (Q.getObject("slots.result", response) === "needPayment") {
 						var createCost = Q.getObject("clip.createCost", Q.Media);
-						Q.Assets.Credits.pay({
+						Q.Assets.pay({
 							amount: createCost.amount,
 							currency: createCost.currency,
 							userId: Q.Users.currentCommunityId,
