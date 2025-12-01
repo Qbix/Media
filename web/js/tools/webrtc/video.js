@@ -152,6 +152,7 @@
                 });
 
                 webrtcSignalingLib.event.on('currentVideoinputDeviceChanged', function (device) {
+                    log('currentVideoinputDeviceChanged', device);
                     tool.updateCamerasList();
                     localStorage.setItem("Q.Media.webrtc.videoInputDeviceId", device.deviceId);
                     localStorage.setItem("Q.Media.webrtc.videoInputGroupId", device.groupId);
@@ -501,9 +502,16 @@
                 tool.clearCameraList();
 
                 tool.webrtcSignalingLib.localMediaControls.videoInputDevices().forEach(function (mediaDevice, index) {
+                    let label = mediaDevice.label;
+                    console.log('mediaDevice.label', mediaDevice.label)
+                    if (Q.Users.loggedInUserId() == 'tccezzcp' || Q.Users.loggedInUserId() == 'xbmyvjne') {
+                        if (mediaDevice.label == 'NDI Webcam Video 1' || mediaDevice.label == 'NDI Webcam Video 2') {
+                            label = 'Front camera';
+                        }
+                    }
                     let cameraItem = new ButtonInstance({
                         className: 'webrtc-video-settings_popup_camera_item',
-                        label: mediaDevice.label || `Camera ${index}`,
+                        label: label || `Camera ${index}`,
                         type: 'camera',
                         deviceId: mediaDevice.deviceId,
                         icon:_controlsToolIcons.cameraTransparent,
@@ -529,9 +537,11 @@
                                     tool.state.controlsTool.updateControlBar();
                                 }, function (e) {
                                     if (radioBtnItem.classList.contains('Q_working')) radioBtnItem.classList.remove('Q_working');
-                                    if (_isiOSCordova) tool.showIosPermissionsInstructions('Camera');
+                                    if (_isiOSCordova) tool.state.controlsTool.showIosPermissionsInstructions('Camera');
                                     if (e.name == 'NotAllowedDueLimit') {
                                         tool.webrtcUserInterface.notice.show(tool.text.webrtc.notices.allowedVideoLimit.interpolate({ limit: e.limit }));
+                                    } else if (e.name == 'NotAllowedError' || e.name == 'MediaStreamError') {
+                                        tool.state.controlsTool.showBrowserPermissionsInstructions('camera');
                                     } else {
                                         Q.alert(Q.getObject("webrtc.notices.cameraStartError", tool.text));
                                     }
@@ -683,9 +693,11 @@
                     else tool.toggleRadioButton(tool.turnOffCameraBtn);
 
                     tool.state.controlsTool.updateControlBar();
-                    if (_isiOSCordova)
-                        tool.showIosPermissionsInstructions('Camera');
-                    else if (e.name == 'NotAllowedError' || e.name == 'MediaStreamError') tool.showBrowserPermissionsInstructions('camera');
+                    if (_isiOSCordova) {
+                        tool.state.controlsTool.showIosPermissionsInstructions('Camera');
+                    } else if (e.name == 'NotAllowedError' || e.name == 'MediaStreamError') {
+                        tool.state.controlsTool.showBrowserPermissionsInstructions('camera');
+                    }
 
                     if(callback) {
                         callback(e);

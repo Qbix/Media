@@ -20,19 +20,27 @@
     justify-content: space-around;
     padding: 5px;
 }
+
 .participants-list-btns svg {
     height:45px;
     width:45px;
 }
-.participants-list-btns button{
-    box-shadow: 0 5px 20px -5px #0048b5;
+.participants-list-btns > div {
+    filter: drop-shadow(0 2px 1px rgb(81, 81, 81));
+    transition: all 0.2s ease;
+}
+.participants-list-btns > div:active {
+    filter: drop-shadow(0 0 1px rgb(81, 81, 81));
+    transform: translateY(2px);
+}
+.participants-list-btns > div:hover svg path[fill="#8C8C8C"],
+.participants-list-btns > div:hover svg path[fill="#8c8c8c"] {
+    fill: hsl(0, 0%, 58%);
 }
 .participants-list-btns .Media_webrtc_facebook-live-btn.Q_working {
     cursor: pointer;
 }
-.participants-list-btns .Media_webrtc_facebook-live-btn.Q_working svg path[fill="#4373B9"]{
-    fill: #C12236;
-}
+.participants-list-btns .Media_webrtc_facebook-live-btn.Q_working svg path[fill="#4373B9"],
 .participants-list-btns .Media_webrtc_facebook-live-btn.Q_working svg circle[fill="#4373B9"]{
     fill: #C12236;
 }
@@ -222,10 +230,24 @@
 }
 .Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control svg {
     height: 50px;
+    /* filter: drop-shadow(0 2px 1px rgb(81, 81, 81)); */
+    /* transition: all 0.2s ease; */
 }
+
+/* .Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control svg:active {
+    filter: drop-shadow(0 0 1px rgb(81, 81, 81));
+    transform: translateY(2px);
+} */
 .Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn .camera-icon path,
 .Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-audio-btn.Media_webrtc_isLocal .microphone-icon path {
     fill: #4AAA4E;
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn .camera-icon:hover path,
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-audio-btn .microphone-icon:hover path {
+    fill: hsl(122, 39%, 51%);
+}
+.Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn:hover path[fill="#8C8C8C"] {
+    fill: hsl(0, 0%, 58%);
 }
 .Media_webrtc_desktop-screen ul.Media_webrtc_participants-list .Media_webrtc_tracks-control .Media_webrtc_mute-video-btn.Media_webrtc_screensharing-active {
     height: 50px;
@@ -382,8 +404,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #1e7f4b;
+    background-color: hsl(148, 62%, 31%);
     color: #ffffff;
+}
+.Media_webrtc_participants-btns-con .Media_webrtc_participants-btn:hover {
+    background-color: hsl(148, 62%, 34%);
 }
 .Media_webrtc_participants-btns-con .Media_webrtc_participants-btn.Media_webrtc_participants-manage-btn {
    margin-left: 10px;

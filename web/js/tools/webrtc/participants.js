@@ -231,7 +231,7 @@
                 tool.toolContainer.appendChild(buttonsCon);
 
                 var inviteBtn = document.createElement('DIV');
-                inviteBtn.className = 'Media_webrtc_participants-btn Media_webrtc_participants-invite-btn';
+                inviteBtn.className = 'Media_webrtc_button Media_webrtc_participants-btn Media_webrtc_participants-invite-btn';
                 buttonsCon.appendChild(inviteBtn);
                 var inviteBtnIcon = document.createElement('DIV');
                 inviteBtnIcon.className = 'Media_webrtc_participants-btn-icon';
@@ -243,7 +243,7 @@
                 inviteBtn.appendChild(inviteBtnText);
 
                 var manageBtn = document.createElement('DIV');
-                manageBtn.className = 'Media_webrtc_participants-btn Media_webrtc_participants-manage-btn';
+                manageBtn.className = 'Media_webrtc_button Media_webrtc_participants-btn Media_webrtc_participants-manage-btn';
                 buttonsCon.appendChild(manageBtn);
                 var manageBtnIcon = document.createElement('DIV');
                 manageBtnIcon.className = 'Media_webrtc_participants-btn-icon';

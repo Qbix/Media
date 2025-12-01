@@ -85,6 +85,10 @@
 			js: "{{Media}}/js/tools/webrtc/recordings.js",
 			css: "{{Media}}/css/tools/webrtcRecordings.css"
 		},
+		"Media/webrtc/preparingDialog"  : {
+			js: "{{Media}}/js/tools/webrtc/preparingDialog.js",
+			css: "{{Media}}/css/tools/preparingDialog.css"
+		},
 		"Media/webrtc/controls"  : "{{Media}}/js/tools/webrtc/controls.js",
 		"Media/webrtc/participants"  : "{{Media}}/js/tools/webrtc/participants.js",
 		"Media/webrtc/waitingRoomList"  : "{{Media}}/js/tools/webrtc/waitingRoomList.js",
@@ -351,6 +355,7 @@
 	}
 	
 	Media.openLivestreamTool = function (publisherId, streamName, options) {
+		if(!options) options = {};
 		return new Promise(function (resolve, reject) {
 			let existingLivestreamTools = Q.Tool.byName('Media/webrtc/livestream');
 			let tools = Object.values(existingLivestreamTools)
