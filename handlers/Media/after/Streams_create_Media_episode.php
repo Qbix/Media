@@ -7,6 +7,21 @@ function Media_after_Streams_create_Media_episode ($params) {
 	$weight = time();
 	$communityId = Users::communityId();
 
+	// relate to Media/episodes if not related
+	$episodesStreamName = "Media/episodes";
+	if (empty(Streams_RelatedTo::select()->where(array(
+		"toPublisherId" => $communityId,
+		"toStreamName" => $episodesStreamName,
+		"type" => $episode->type,
+		"fromPublisherId" => $clip->publisherId,
+		"fromStreamName" => $clip->name
+	))->limit(1)->fetchDbRow())) {
+		$episode->relateTo((object)array("publisherId" => $communityId, "name" => $episodesStreamName), $episode->type, $communityId, array(
+			'skipAccess' => true,
+			'weight' => $weight
+		));
+	}
+
 	// relate to main chats category
 	$episode->relateTo((object)array("publisherId" => $communityId, "name" => "Streams/chats/main"), $episode->type, $communityId, array(
 		'skipAccess' => true,

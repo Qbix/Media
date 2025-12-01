@@ -1,41 +1,5 @@
 @import "icons.css";
 
-.Media_clip_tool .Q_video_tool {
-	display: none;
-}
-.Media_clip_tool .Q_audio_tool {
-	display: none;
-}
-.Media_clip_tool .Q_video_tool.Q_current,
-.Media_clip_tool .Q_audio_tool.Q_current {
-	display: block;
-}
-.Q_notMobile .Media_tabs {
-	/*position: absolute;
-	top: 0;
-	right: 0;
-	width: 10%;*/
-	flex:1;
-}
-.Q_mobile .Media_tabs {
-	display: flex;
-	justify-content: center;
-}
-.Media_clip_player .Media_tabs {
-	margin-bottom: 10px;
-}
-.Media_tab {
-	cursor: pointer;
-	padding: 0 10px;
-	border-radius: 5px;
-	height: 40px;
-	line-height: 40px;
-	white-space: nowrap;
-}
-.Media_tab.Q_current {
-	background: rgba(100, 100, 100, 0.5);
-}
-
 .Media_column_clips {
 	box-sizing: border-box;
 	text-align: center;
@@ -52,7 +16,10 @@ html.Media_clip #content .Q_button.Media_clip_preview_tool .Streams_preview_cont
 	padding: 0;
 	vertical-align: unset;
 }
-html.Media_clip #content .Q_button[name=addClip],
+html.Media_clip #content .Q_button[name=addClip] {
+	width: 90%;
+	margin: 10px auto;
+}
 html.Media_clip #content .Q_button.Media_newEpisode {
 	width: 100%;
 }
@@ -130,4 +97,67 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 	25% { background-color: blue; }
 	50% { background-color: green; }
 	75% { background-color: yellow; }
+}
+
+#dashboard .Q_tabs_tabs .Q_tab_videos::before,
+.Q_listing_wrapper .Q_tabs_tabs .Q_tab_videos::before {
+    font-family: 'qplatform-media';
+    content: "\e912";
+    margin-right: 5px
+}
+
+#dashboard .Q_tabs_tabs .Q_tab_channels::before,
+.Q_listing_wrapper .Q_tabs_tabs .Q_tab_channels::before {
+    font-family: 'qplatform-media';
+    content: "\e914";
+    margin-right: 5px
+}
+
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,
+.Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,
+.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0,
+.Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0,
+.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_0 {
+	min-width: 30%;
+	width: 30%;
+}
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0,
+.Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0,
+.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_0 {
+	min-width: 25%;
+	width: 25%;
+}
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
+.Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1,
+.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_1 {
+	width: calc(70% - var(--column-margin));
+}
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1 {
+	width: calc(30% - var(--column-margin));
+}
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_1,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_1 {
+	width: calc(25% - var(--column-margin));
+}
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2 {
+	width: calc(40% - var(--column-margin));
+}
+.Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_2,
+.Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='4'] .Q_column_2 {
+	width: calc(25% - var(--column-margin));
+}
+.Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1,
+.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_1 {
+	width: calc(30% - var(--column-margin));
+}
+.Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2,
+.Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2 {
+	width: calc(30% - var(--column-margin));
 }
