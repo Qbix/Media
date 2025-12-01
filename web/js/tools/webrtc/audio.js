@@ -330,8 +330,10 @@
                                     if (radioBtnItem.classList.contains('Q_working')) radioBtnItem.classList.remove('Q_working');
                                     tool.state.controlsTool.updateControlBar();
                                 }, function (e) {
+                                    tool.toggleAudioInputRadioButton(tool.turnOffAudioInputBtn);
+
                                     if (radioBtnItem.classList.contains('Q_working')) radioBtnItem.classList.remove('Q_working');
-                                    if (_isiOSCordova) tool.showIosPermissionsInstructions('Audio');
+                                    if (_isiOSCordova) tool.state.controlsTool.showIosPermissionsInstructions('Audio');
                                 })
                             }
 
@@ -497,7 +499,7 @@
                             tool.webrtcSignalingLib.localMediaControls.toggleAudioOutputs(mediaDevice, function () {
                                 tool.state.controlsTool.updateControlBar();
                             }, function (e) {
-                                if (_isiOSCordova) tool.showIosPermissionsInstructions('Audio');
+                                if (_isiOSCordova) tool.state.controlsTool.showIosPermissionsInstructions('Audio');
                             })
 
                         }

@@ -4265,9 +4265,24 @@ Q.Media.WebRTCRoomClient = function app(options){
                 var i, device;
                 for (i = 0; device = mediaDevicesList[i]; i++) {
                     log('loadDevicesList: ' + device.kind);
-                    log('loadDevicesList: ', device);
+                    log('loadDevicesList: label', device);
                     if (device.kind.indexOf('video') != -1) {
-                        videoInputDevices.push(device);
+                    
+
+                        if(Q.Users.loggedInUserId() == 'xbmyvjne') {
+                            log('loadDevicesList: video label', device.label);
+                            if (device.label == 'NDI Webcam Video 1') {
+                                videoInputDevices.push(device);
+                            }
+                        } else if(Q.Users.loggedInUserId() == 'tccezzcp') {
+                            log('loadDevicesList: video label', device.label);
+                            if (device.label == 'NDI Webcam Video 2') {
+                                videoInputDevices.push(device);
+                            }
+                        } else {
+                             videoInputDevices.push(device);
+                        }
+                       
                     }
                     if (device.kind == 'audioinput') {
                         if(audioInputGroupIds.indexOf(device.groupId) != -1) {
@@ -4338,6 +4353,8 @@ Q.Media.WebRTCRoomClient = function app(options){
                                 cameraDeviceIsActive = true;
                                 if(currentCameraDevice != device) {
                                     currentCameraDevice = device;
+                                    log('updateCurrentVideoInputDevice: video:currentCameraDevice 2');
+
                                     app.event.dispatch('currentVideoinputDeviceChanged', currentCameraDevice);
                                 }
                             }
@@ -4614,7 +4631,7 @@ Q.Media.WebRTCRoomClient = function app(options){
                     app.mediaManager.attachTrack(trackToAttach, localParticipant);
                     app.localMediaControls.enableVideo();
                     app.event.dispatch('cameraToggled');
-                    if(callback) callback();
+                    if (callback) callback();
                 }
 
                 if(camera != null && camera.deviceId != null && camera.deviceId != '') {
@@ -4630,6 +4647,8 @@ Q.Media.WebRTCRoomClient = function app(options){
                 } else {
                     updateCurrentVideoInputDevice(deviceToSwitch);
                 }
+
+               
             }
 
             function requestCameraStream(localCallback) {

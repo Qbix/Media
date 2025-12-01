@@ -5,7 +5,8 @@
         arrowDown: '<svg width="800px" height="800px" viewBox="0 -4.5 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-220.000000, -6684.000000)" fill="#000000"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M164.292308,6524.36583 L164.292308,6524.36583 C163.902564,6524.77071 163.902564,6525.42619 164.292308,6525.83004 L172.555873,6534.39267 C173.33636,6535.20244 174.602528,6535.20244 175.383014,6534.39267 L183.70754,6525.76791 C184.093286,6525.36716 184.098283,6524.71997 183.717533,6524.31405 C183.328789,6523.89985 182.68821,6523.89467 182.29347,6524.30266 L174.676479,6532.19636 C174.285736,6532.60124 173.653152,6532.60124 173.262409,6532.19636 L165.705379,6524.36583 C165.315635,6523.96094 164.683051,6523.96094 164.292308,6524.36583" id="arrow_down-[#338]"> </path> </g> </g> </g> </svg>',
         share: '<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 7L12 3M12 3L8 7M12 3V16M20 13V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18L4 13" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
         close: '<svg fill="#000000" width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4.293,18.293,10.586,12,4.293,5.707A1,1,0,0,1,5.707,4.293L12,10.586l6.293-6.293a1,1,0,1,1,1.414,1.414L13.414,12l6.293,6.293a1,1,0,1,1-1.414,1.414L12,13.414,5.707,19.707a1,1,0,0,1-1.414-1.414Z"/></svg>',
-        viewerUser: '<svg width="42.473919mm" height="48.740181mm" viewBox="0 0 42.473919 48.740181" version="1.1" id="svg1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"><defs id="defs1" /><g id="layer1" transform="translate(-107.11929,-113.67575)"><path id="path1" d="m 128.38286,113.67575 c -8.45499,0 -15.37529,6.9203 -15.37529,15.37529 0,7.22019 5.04816,13.31685 11.7874,14.94482 -1.8198,3.00454 -3.68758,3.50263 -9.00514,3.50263 -7.42036,0.76407 -8.33723,5.99032 -8.62118,8.52403 -0.11107,2.14225 0,6.39341 0,6.39341 h 5.9738 v -6.13503 c 0,-0.8298 0.51685,-2.45571 2.19573,-2.77657 1.75575,-0.17579 1.74326,-0.004 4.90771,-0.0646 4.45694,-0.0853 7.3473,-3.33563 8.1101,-4.3 0.76254,0.9641 3.65335,4.21466 8.11062,4.3 3.16443,0.0606 3.15196,-0.11119 4.90771,0.0646 1.67886,0.32086 2.19573,1.94677 2.19573,2.77657 v 6.13503 h 5.97379 c 0,0 0.11107,-4.25116 0,-6.39341 -0.28395,-2.53371 -1.2008,-7.75996 -8.62118,-8.52403 -5.311,0 -7.18073,-0.4971 -8.99841,-3.49178 6.76246,-1.61112 11.83338,-7.71892 11.83338,-14.95567 0,-8.45499 -6.91978,-15.37529 -15.37477,-15.37529 z m 0,6.1991 c 5.10428,0 9.17567,4.07192 9.17567,9.17619 0,5.10427 -4.07139,9.17566 -9.17567,9.17566 -5.10426,0 -9.17567,-4.07139 -9.17567,-9.17566 0,-5.10427 4.07141,-9.17619 9.17567,-9.17619 z" /></g></svg>'
+        viewerUser: '<svg width="42.473919mm" height="48.740181mm" viewBox="0 0 42.473919 48.740181" version="1.1" id="svg1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"><defs id="defs1" /><g id="layer1" transform="translate(-107.11929,-113.67575)"><path id="path1" d="m 128.38286,113.67575 c -8.45499,0 -15.37529,6.9203 -15.37529,15.37529 0,7.22019 5.04816,13.31685 11.7874,14.94482 -1.8198,3.00454 -3.68758,3.50263 -9.00514,3.50263 -7.42036,0.76407 -8.33723,5.99032 -8.62118,8.52403 -0.11107,2.14225 0,6.39341 0,6.39341 h 5.9738 v -6.13503 c 0,-0.8298 0.51685,-2.45571 2.19573,-2.77657 1.75575,-0.17579 1.74326,-0.004 4.90771,-0.0646 4.45694,-0.0853 7.3473,-3.33563 8.1101,-4.3 0.76254,0.9641 3.65335,4.21466 8.11062,4.3 3.16443,0.0606 3.15196,-0.11119 4.90771,0.0646 1.67886,0.32086 2.19573,1.94677 2.19573,2.77657 v 6.13503 h 5.97379 c 0,0 0.11107,-4.25116 0,-6.39341 -0.28395,-2.53371 -1.2008,-7.75996 -8.62118,-8.52403 -5.311,0 -7.18073,-0.4971 -8.99841,-3.49178 6.76246,-1.61112 11.83338,-7.71892 11.83338,-14.95567 0,-8.45499 -6.91978,-15.37529 -15.37477,-15.37529 z m 0,6.1991 c 5.10428,0 9.17567,4.07192 9.17567,9.17619 0,5.10427 -4.07139,9.17566 -9.17567,9.17566 -5.10426,0 -9.17567,-4.07139 -9.17567,-9.17566 0,-5.10427 4.07141,-9.17619 9.17567,-9.17619 z" /></g></svg>',
+        maximize: '<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>'
     }
 
     var ua = navigator.userAgent;
@@ -594,14 +595,33 @@
                 let tool = this;
                 let widgetControls = document.createElement('DIV');
                 widgetControls.className = 'media-livestream-widget-controls';
-                
+
+                let widgetModeButtons = document.createElement('DIV');
+                widgetModeButtons.className = 'media-livestream-widget-controls-mode';
+                widgetControls.appendChild(widgetModeButtons);
+
                 let minimizeButton = document.createElement('BUTTON');
                 minimizeButton.className = 'media-livestream-widget-controls-min media-livestream-widget-controls-btn';
                 minimizeButton.innerHTML = _icons.arrowDown;
-                widgetControls.appendChild(minimizeButton);
+                widgetModeButtons.appendChild(minimizeButton);
                
                 minimizeButton.addEventListener('click', function () {
                     tool.currentWidgetUI.minimizeWidget();
+                });
+                
+                let maximizeButton = document.createElement('BUTTON');
+                maximizeButton.className = 'media-livestream-widget-controls-max media-livestream-widget-controls-btn';
+                maximizeButton.innerHTML = _icons.maximize;
+                widgetModeButtons.appendChild(maximizeButton);
+               
+                maximizeButton.addEventListener('click', function () {
+                    Q.Tool.byId('Q_columns-Communities').close(0)
+
+                    setTimeout(function () {
+
+                        tool.state.mode = 'full';
+                        tool.updateWidgetStateOnStreamUpdate();
+                    }, 500)
                 });
 
                 let rightSideButtons = document.createElement('DIV');
@@ -649,8 +669,12 @@
 
                 let livestreamTitleText = document.createElement('H1');
                 livestreamTitleText.className = 'media-livestream-title-text';
-                livestreamTitleText.innerHTML = tool.livestreamStream.fields.title;
+                livestreamTitleText.innerHTML = tool.eventStream ? tool.eventStream.fields.title : tool.livestreamStream.fields.title;
                 livestreamTitle.appendChild(livestreamTitleText);
+
+                tool.state.onEventUpdate.add(function () {
+                    livestreamTitleText.innerHTML = tool.eventStream ? tool.eventStream.fields.title : tool.livestreamStream.fields.title;
+                });
 
                 Q.activate(
                     Q.Tool.setUpElement(
@@ -1000,7 +1024,7 @@
     
                     let livestreamTitleText = document.createElement('H1');
                     livestreamTitleText.className = 'media-livestream-title-text';
-                    livestreamTitleText.innerHTML = tool.livestreamStream.fields.title;
+                    livestreamTitleText.innerHTML = tool.eventStream ? tool.eventStream.fields.title : tool.livestreamStream.fields.title;
                     livestreamTitle.appendChild(livestreamTitleText);
 
                     let close = document.createElement('DIV');
@@ -1461,8 +1485,13 @@
 
                     let livestreamTitleText = document.createElement('H1');
                     livestreamTitleText.className = 'media-livestream-title-text';
-                    livestreamTitleText.innerHTML = tool.livestreamStream.fields.title;
+                    livestreamTitleText.innerHTML = tool.eventStream ? tool.eventStream.fields.title : tool.livestreamStream.fields.title;
                     livestreamTitleAndConunter.appendChild(livestreamTitleText);
+
+                    tool.state.onEventUpdate.add(function () {
+                        livestreamTitleText.innerHTML = tool.eventStream ? tool.eventStream.fields.title : tool.livestreamStream.fields.title;
+                    });
+
 
                     let livestreamViewers = document.createElement('DIV');
                     livestreamViewers.className = 'media-livestream-title-viewers';
@@ -1787,7 +1816,7 @@
 
                 let livestreamTitleText = document.createElement('H1');
                 livestreamTitleText.className = 'media-livestream-title-text';
-                livestreamTitleText.innerHTML = tool.livestreamStream.fields.title;
+                livestreamTitleText.innerHTML = tool.eventStream ? tool.eventStream.fields.title : tool.livestreamStream.fields.title;
                 livestreamTitle.appendChild(livestreamTitleText);
 
                 Q.activate(
@@ -2033,7 +2062,7 @@
 
                     let livestreamTitleText = document.createElement('H1');
                     livestreamTitleText.className = 'media-livestream-title-text';
-                    livestreamTitleText.innerHTML = tool.livestreamStream.fields.title;
+                    livestreamTitleText.innerHTML = tool.eventStream ? tool.eventStream.fields.title : tool.livestreamStream.fields.title;
                     livestreamTitleAndConunter.appendChild(livestreamTitleText);
 
                     let livestreamViewers = document.createElement('DIV');
@@ -2386,7 +2415,7 @@
                 livestreamChatBtnsInner.className = 'media-livestream-chat-buttons-inner';
                 livestreamChatBtnsCon.appendChild(livestreamChatBtnsInner);
 
-                /* if (tool.state.webrtcPublisherId && tool.state.webrtcStreamName) {
+                if (tool.state.webrtcPublisherId && tool.state.webrtcStreamName) {
                         var livestreamChatButton = document.createElement('BUTTON');
                         livestreamChatButton.className = 'media-livestream-chat-button';
                         livestreamChatBtnsInner.appendChild(livestreamChatButton);
@@ -2433,7 +2462,7 @@
                                 });
                             }
                         });
-                } */
+                }
 
 
                 var livestreamChatCon = document.createElement('DIV');

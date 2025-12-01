@@ -341,7 +341,7 @@
                             recordingButtons.appendChild(startLocalRecBtn);
 
                             var startLocRecordingBtn = document.createElement('DIV');
-                            startLocRecordingBtn.className = 'Q_button live-editor-rec-start-btn';
+                            startLocRecordingBtn.className = 'live-editor-rec-start-btn livestream_button';
                             startLocalRecBtn.appendChild(startLocRecordingBtn);
 
                             var startLocRecordingBtnInner = document.createElement('DIV');
@@ -374,7 +374,7 @@
                             recordingButtons.appendChild(recordingsContainer);
 
                             var getRecordingsBtn = document.createElement('BUTTON');
-                            getRecordingsBtn.className = 'Q_button';
+                            getRecordingsBtn.className = 'livestream_button';
                             getRecordingsBtn.innerHTML = 'Show Recordings';
                             recordingsContainer.appendChild(getRecordingsBtn);
 
@@ -633,7 +633,7 @@
 
                             var startBroadcastingBtn = document.createElement('BUTTON');
                             startBroadcastingBtn.type = 'button';
-                            startBroadcastingBtn.className = 'Q_button';
+                            startBroadcastingBtn.className = 'livestream_button';
                             startBroadcastingBtn.innerHTML = Q.getObject("webrtc.settingsPopup.start", tool.text);
                             startBroadcastingBtnCon.appendChild(startBroadcastingBtn);
 
@@ -674,7 +674,7 @@
 
                             var stopBroadcastingBtn = document.createElement('BUTTON');
                             stopBroadcastingBtn.type = 'button';
-                            stopBroadcastingBtn.className = 'Q_button';
+                            stopBroadcastingBtn.className = 'livestream_button';
                             stopBroadcastingBtn.innerHTML = Q.getObject("webrtc.settingsPopup.stop", tool.text);
                             stopBroadcastingBtnCon.appendChild(stopBroadcastingBtn);
 
@@ -684,7 +684,7 @@
 
                             var shareBroadcastingBtn = document.createElement('BUTTON');
                             shareBroadcastingBtn.type = 'button';
-                            shareBroadcastingBtn.className = 'Q_button';
+                            shareBroadcastingBtn.className = 'livestream_button';
                             shareBroadcastingBtnCon.appendChild(shareBroadcastingBtn);
                             var shareBroadcastingBtnIcon = document.createElement('SPAN');
                             shareBroadcastingBtnIcon.className = 'live-editor-stream-to-section-p2p-share-icon';
@@ -711,7 +711,7 @@
                                             var turnCredentials = response.slots.room.turnCredentials;
                                             var socketServer = response.slots.room.socketServer;
 
-                                            _broadcastClient = window.WebRTCWebcastClient({
+                                            _broadcastClient = tool.broadcastClient = window.WebRTCWebcastClient({
                                                 mode: 'node',
                                                 role: 'publisher',
                                                 nodeServer: socketServer,
@@ -747,6 +747,7 @@
                                                 tool.webrtcSignalingLib.event.dispatch('webcastEnded', { participant: tool.webrtcSignalingLib.localParticipant() });
 
                                                 tool.state.p2pBroadcastIsActive = false;
+                                                _broadcastClient = tool.broadcastClient = null;
                                             });
 
                                         }, {
@@ -778,10 +779,14 @@
                             })
                             shareBroadcastingBtn.addEventListener('click', function () {
                                 if(tool.livestreamStream) {
+                                    let oldSendBy = Q.Streams.Dialogs.invite.options.sendBy;
+                                    Q.Streams.Dialogs.invite.options.sendBy = null;
                                     Q.Streams.invite(tool.livestreamStream.fields.publisherId, tool.livestreamStream.fields.name, { 
                                         title: 'Share Livestream',
                                         addLabel: [],
                                         addMyLabel: [] 
+                                    }, function() {
+                                        Q.Streams.Dialogs.invite.options.sendBy = oldSendBy;
                                     });
                                 }
                             })
@@ -796,7 +801,7 @@
                         }
 
                         return {
-                            getSection: getSection,
+                            getSection: getSection
                         }
                     }())
 
@@ -4357,7 +4362,7 @@
                         sourcesColumnControl.appendChild(inviteBtnCon);
 
                         var inviteBtn = document.createElement('DIV');
-                        inviteBtn.className = 'live-editor-sources-control-btn live-editor-sources-control-btn-invite';
+                        inviteBtn.className = 'livestream_button live-editor-sources-control-btn live-editor-sources-control-btn-invite';
                         inviteBtnCon.appendChild(inviteBtn);
                         var inviteBtnIcon = document.createElement('DIV');
                         inviteBtnIcon.className = 'live-editor-sources-control-btn-icon';
@@ -9377,7 +9382,7 @@
                     title.className = 'live-editor-specific-controls-title';
                     activeDialog.specificControls.appendChild(title);
                     let backButton = document.createElement('DIV');
-                    backButton.className = 'Q_button';
+                    backButton.className = 'livestream_button';
                     backButton.innerHTML = 'Back';
                     title.appendChild(backButton);
                     let titleText = document.createElement('DIV');

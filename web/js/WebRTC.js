@@ -208,11 +208,7 @@
             console.error = function (txt) {
 
                 try {
-                    try {
-                        var err = (new Error);
-                    } catch (e) {
-
-                    }
+                    console.trace();
 
                     var i, argument;
                     var argumentsString = '';
@@ -7665,8 +7661,8 @@
          * @method getMediaStream
          */
         function getMediaStream(constrains) {
-            log('getMediaStream: video = ' + (constrains != null && constrains.video))
-            log('getMediaStream: audio = ' + (constrains != null && constrains.audio))
+            log('getMediaStream: video = ', (constrains != null && constrains.video))
+            log('getMediaStream: audio = ', (constrains != null && constrains.audio))
             log('getMediaStream: audio = ', constrains.audio)
 
             if(Q.info.isCordova && Q.info.platform === 'ios' && _options.useCordovaPlugins) {
@@ -7766,7 +7762,7 @@
                         }
                     }
 
-                    log('getMediaStream: before getUserMedia');
+                    log('getMediaStream: before getUserMedia', constrains.video);
                     //if(!Q.info.isMobile && !Q.info.isTablet && (!constrains.video || videoDevices == 0) && (!constrains.audio || audioDevices == 0)) return;
 
                     navigator.mediaDevices.getUserMedia({video:videoDevices != 0 ? constrains.video : false, audio:audioDevices != 0 ? constrains.audio : false})
@@ -8411,7 +8407,7 @@
                                 for (var r in Q.Media.WebRTCRooms) {
                                     let streamOfRoom = Q.Media.WebRTCRooms[r].roomStream();
 
-                                    if (streamOfRoom.fields.publisherId == _roomStream.flelds.publisherId && streamOfRoom.fields.name == _roomStream.flelds.name) {
+                                    if (streamOfRoom.fields.publisherId == _roomStream.fields.publisherId && streamOfRoom.fields.name == _roomStream.fields.name) {
                                         connectionState.updateStatus('You are already connected to this room');
                                         setTimeout(function() {
                                             connectionState.hide();
@@ -8450,9 +8446,7 @@
                 }
 
                 let rememberedAudioDeviceId = localStorage.getItem("Q.Media.webrtc.audioInputDeviceId");
-                let rememberedVideoDeviceId = localStorage.getItem("Q.Media.webrtc.videoInputDeviceId");
                 rememberedAudioDeviceId = rememberedAudioDeviceId != 'false' ? rememberedAudioDeviceId : false;
-                rememberedVideoDeviceId = rememberedVideoDeviceId != 'false' ? rememberedVideoDeviceId : false;
                 let audioConstraints, videoConstraints;
                 if(rememberedAudioDeviceId) {
                     audioConstraints = {deviceId: rememberedAudioDeviceId}
@@ -8463,8 +8457,12 @@
                     audioConstraints = true;
                 }
 
+                let rememberedVideoDeviceId = localStorage.getItem("Q.Media.webrtc.videoInputDeviceId");
+                rememberedVideoDeviceId = rememberedVideoDeviceId != 'false' ? rememberedVideoDeviceId : false;
+                console.log('startConference rememberedVideoDeviceId', rememberedVideoDeviceId)
+
                 if(rememberedVideoDeviceId !== false && rememberedVideoDeviceId !== null) {
-                    videoConstraints = {deviceId: rememberedVideoDeviceId}
+                    videoConstraints = {deviceId: { ideal: rememberedVideoDeviceId }}
                     _options.startWith.video = true;
                 } else if(rememberedVideoDeviceId == false) {
                     videoConstraints = false;
@@ -8643,7 +8641,25 @@
                     log('start: onTextLoad: regular connect (desktop)');
 
                     if(preparingWindow) {
-                        getMediaStream({video: startWith.video, audio: true}).then(function (streams) {
+
+                        Q.activate(
+                            Q.Tool.setUpElement(
+                                'DIV', // or pass an existing element
+                                "Media/webrtc/preparingDialog",
+                                {
+                                    
+                                }
+                            ),
+                            {},
+                            function () {
+                                
+
+                            }
+                        );
+
+                        
+
+                        /* getMediaStream({video: startWith.video, audio: true}).then(function (streams) {
                             showPreparingDialog(function () {
                                 createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
                             }, function () {
@@ -8657,7 +8673,7 @@
                             console.log(err.name + ": " + err.message);
                             console.error(err.name + ": " + err.message);
                             if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
-                        });
+                        }); */
 
                     } else {
                         let premissionGrantedCallback = function (streams) {
