@@ -59,5 +59,10 @@ function Media_clip_response_column(&$params, &$result)
 
 	$episodeParams = compact('transcript');
 
-	return Q::view('Media/column/clip.php', compact('clipParams', 'episodeParams', 'transcript'));
+    Q_Response::setScriptData("Q.plugins.Media.clips.current", array(
+        "publisherId" => $stream->publisherId,
+        "streamName" => $stream->name
+    ));
+
+    return Q::view('Media/column/clip.php', compact('clipParams', 'episodeParams', 'transcript'));
 }

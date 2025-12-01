@@ -69,6 +69,14 @@
 			js: "{{Media}}/js/tools/episode/preview.js",
 			css: "{{Media}}/css/tools/episodePreview.css"
 		},
+		"Media/channel/preview": {
+			js: "{{Media}}/js/tools/channel/preview.js",
+			css: "{{Media}}/css/tools/channelPreview.css"
+		},
+		"Media/channel": {
+			js: "{{Media}}/js/tools/channel.js",
+			css: "{{Media}}/css/tools/channel.css"
+		},
 		"Media/feed": "{{Media}}/js/tools/feed.js",
 		"Media/feed/composer": "{{Media}}/js/tools/feed/composer.js",
 		"Media/audioVisualization"	 : "{{Media}}/js/tools/webrtc/audioVisualization.js",
@@ -159,6 +167,29 @@
 				}
 			});
 		},
+		pushChannelColumn: function (stream, $trigger) {
+			$trigger = $($trigger || this.element);
+			var publisherId = stream.fields.publisherId;
+			var streamName = stream.fields.name;
+			var min = parseInt($trigger.closest('.Q_columns_column').data('index')) + 1;
+			var columns = Q.Tool.from($trigger.closest('.Q_columns_tool')[0], "Q/columns");
+			columns.close({min: min}, null, {animation: {duration: 0}});
+			columns.push({
+				title: stream.fields.title,
+				name: "channel",
+				column: Q.Tool.setUpElement('div', 'Media/channel', {
+					publisherId: publisherId,
+					streamName: streamName
+				}),
+				columnClass: 'Media_column_channel',
+				onActivate: function () {
+
+				},
+				onClose: function () {
+
+				}
+			});
+		},
 		/**
 		 * Generate RTMP link for this stream
 		 * @method getRTMPlink
@@ -220,7 +251,9 @@
 		handlers: {
 			feeds: "{{Media}}/js/columns/feeds.js",
 			feed: "{{Media}}/js/columns/feed.js",
-			newFeed: "{{Media}}/js/columns/newFeed.js"
+			newFeed: "{{Media}}/js/columns/newFeed.js",
+			channels: "{{Media}}/js/columns/channels.js",
+			//clips: "{{Media}}/js/columns/clips.js",
 		}
 	};
 
@@ -230,6 +263,7 @@
 	});
 
 	Q.Streams.Tool.highlightPreviews('Media/episode');
+	Q.Streams.Tool.highlightPreviews('Media/channel');
 
 	// listen for Media/feed/closed message and remove preview tool
 	Q.Streams.onMessage('Media/feed', 'Media/feed/access')

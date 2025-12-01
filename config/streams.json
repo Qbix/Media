@@ -14,5 +14,16 @@
 		"readLevel": 0,
 		"writeLevel": 0,
 		"adminLevel": 0
+	},
+	"Media/channels/main": {
+		"type": "Streams/category",
+		"title": "My Channels",
+		"readLevel": 40,
+		"writeLevel": 10,
+		"adminLevel": 20
+	},
+	"Media/channel/main": {
+		"type": "Media/channel",
+		"title": "My Clips"
 	}
 }

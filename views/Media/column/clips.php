@@ -22,7 +22,9 @@ echo '<div class="Media_shows_layout"><a href="' . $url . '">' . ($layout == 'ca
     <button class="Q_button Media_newEpisode" name="addEpisode"><?php echo $NewEpisode ?></button>
 <?php } ?>
 
+<?php if (!empty(Q_Config::get("Media", "liveShow", null))) { ?>
 <button class="Q_button Media_liveShow Q_pulsate"><?php echo $LiveShow ?></button>
+<?php } ?>
 
 <?php
 
@@ -35,8 +37,8 @@ echo Q::tool('Streams/related', array(
 	"editable" => false,
 	"infinitescroll" => true,
 	"previewOptions" => array(
-        "closeable" => true,
-        "editable" => false,
+        //"closeable" => true,
+        //"editable" => false,
         "expandable" => array("expanded" => false) // this for Media/episodes/preview
     ),
 	"specificOptions" => array(
