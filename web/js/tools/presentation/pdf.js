@@ -42,6 +42,7 @@
                         var lastScrollEphemeral = null;
                         var lastSlideEphemeral = null;
                         var _scroll = function (ephemeral) {
+                            pdfTool.element.removeAttribute('data-slideMode');
                             lastScrollEphemeral = ephemeral;
                             var scrollTop = Q.getObject("scrollTop", ephemeral);
                             if (scrollTop) {
@@ -55,6 +56,7 @@
                             pdfTool.setCurrentPosition(scrollTop, scrollLeft);
                         };
                         var _slide = function (ephemeral) {
+                            pdfTool.element.setAttribute('data-slideMode', true);
                             lastSlideEphemeral = ephemeral;
                             state.trackScroll = pdfTool.element.slideIndex === ephemeral.slideIndex;
                             $("canvas", pdfTool.element).each(function (index, element) {
