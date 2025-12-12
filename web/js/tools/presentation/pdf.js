@@ -55,13 +55,18 @@
                             pdfTool.setCurrentPosition(scrollTop, scrollLeft);
                         };
                         var _slide = function (ephemeral) {
+                            pdfTool.element.setAttribute('data-slideMode', true);
                             lastSlideEphemeral = ephemeral;
                             state.trackScroll = pdfTool.element.slideIndex === ephemeral.slideIndex;
+                            if (state.trackScroll) {
+                                pdfTool.element.removeAttribute('data-slideMode');
+                            }
+
                             $("canvas", pdfTool.element).each(function (index, element) {
-                                if (index === ephemeral.slideIndex) {
+                                if (index === ephemeral.slideIndex || state.trackScroll) {
                                     element.style.display = 'block';
                                 } else {
-                                    element.style.display = state.trackScroll ? 'block' : 'none';
+                                    element.style.display = 'none';
                                 }
                             });
                             if (state.trackScroll) {
