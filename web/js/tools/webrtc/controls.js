@@ -849,61 +849,6 @@
                     destroy: destroy
                 }
             },
-            showIosPermissionsInstructions: function (kind) {
-                var tool = this;
-                var instructionsPermissionDialog = document.createElement('DIV');
-                instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
-                var dialogList = document.createElement('OL');
-                dialogList.className = 'Media_webrtc_instructions_dialog';
-                dialogList.innerHTML = `<div>Permission for ` + kind + ` denied. To use it please follow these steps:</div><li>Go to your iOS Settings</li>
-									<li>Open "Privacy"</li>
-									<li>Find "` + kind + `" and open it</li>
-									<li>Find "` + Q.Users.communityId + `" and enable</li>`;
-                instructionsPermissionDialog.appendChild(dialogList);
-                Q.Dialogs.push({
-                    title: tool.text.webrtc.webInstructionsDialog.dialogTitle,
-                    className: 'Media_webrtc_devices_dialog',
-                    content: instructionsPermissionDialog,
-                    apply: true
-                });
-            },
-
-            showAndroidPermissionsInstructions: function (kind) {
-                var tool = this;
-                var instructionsPermissionDialog = document.createElement('DIV');
-                instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
-                var dialogList = document.createElement('OL');
-                dialogList.className = 'Media_webrtc_instructions_dialog';
-                dialogList.innerHTML = `<div>Permission for ` + kind + ` denied. To use it please follow these steps:</div><li>Go to your Android Settings</li>
-									<li>Open "Apps & notifications"</li>
-									<li>Find "` + (Q.Users.communityId) + `" and open it</li>
-									<li>Tap on Permissions</li>
-									<li>Enable ` + kind + `</li>`;
-                instructionsPermissionDialog.appendChild(dialogList);
-                Q.Dialogs.push({
-                    title: tool.text.webrtc.webInstructionsDialog.dialogTitle,
-                    className: 'Media_webrtc_devices_dialog',
-                    content: instructionsPermissionDialog,
-                    apply: true
-                });
-            },
-
-            showBrowserPermissionsInstructions: function (kind) {
-                var tool = this;
-                var instructionsPermissionDialog = document.createElement('DIV');
-                instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
-                var dialogList = document.createElement('OL');
-                dialogList.className = 'Media_webrtc_instructions_dialog';
-                dialogList.innerHTML = `<div>Permission for ` + kind + ` denied. To use it please follow these steps:</div><li>Reload this page</li>
-									<li>` + (Q.info.useTouchEvents ? 'Tap' : 'Click') + ` "Allow" when dialog will appear asking for access to your ` + kind + `</li>`;
-                instructionsPermissionDialog.appendChild(dialogList);
-                Q.Dialogs.push({
-                    title: tool.text.webrtc.webInstructionsDialog.dialogTitle,
-                    className: 'Media_webrtc_devices_dialog',
-                    content: instructionsPermissionDialog,
-                    apply: true
-                });
-            },
 
             cameraButtonHandler: function () {
                 var tool = this;
@@ -914,7 +859,7 @@
                         tool.cameraPermissionGranted = true;
                         tool.cameraButtonHandler();
                     }, function () {
-                        tool.showAndroidPermissionsInstructions('Camera');
+                        Q.Media.WebRTC.showAndroidPermissionsInstructions('Camera');
                     });
                     return;
                 }

@@ -44,7 +44,7 @@
 
     var _debug = null;
     var _debugTimer = {};
-
+    
     Media.WebRTC = function Media_WebRTC(options) {
         if(!new.target) {
             return new Media_WebRTC(options);
@@ -100,7 +100,7 @@
             streams: [],
             notForUsingTracks: [],
             audioOnlyMode: false,
-            showPreparingDialog: false,
+            showPreparingDialog: true,
             useCordovaPlugins: false,
             showScreenSharingInSeparateScreen: true,
             minimizeOnPageSwitching: true,
@@ -658,7 +658,7 @@
                 var url = new URL(location.href);
                 var consoleDebug = url.searchParams.get("console");
                 return function () {
-                    if (_debug === false) return;
+                    if (window.debugWebRTC !== true) return;
                     var args = arguments
                     args = Array.prototype.slice.call(args);
                     var params = [];
@@ -699,7 +699,7 @@
 
         var sandboxWidget = (function () {
             let _participantsListCon = null;
-
+            let _fakeParticipants = new Map();
             let _streamingIcons = {
                 addItem: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z"/></svg>',
                 removeItem: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 16.538l-4.592-4.548 4.546-4.587-1.416-1.403-4.545 4.589-4.588-4.543-1.405 1.405 4.593 4.552-4.547 4.592 1.405 1.405 4.555-4.596 4.591 4.55 1.403-1.416z"/></svg>',
@@ -728,7 +728,21 @@
                 addParticipantLink.innerHTML = 'Add Participant';
                 sandboxControls.appendChild(addParticipantLink);
 
-                addParticipantLink.addEventListener('click', connectFakeParticipant)
+                addParticipantLink.addEventListener('click', function () {
+                    /* setTimeout(function () {
+                        connectFakeParticipant(Q.Media.fakeUsers.get('ilrhkmku'));
+                    }, 2000); */
+                    setTimeout(function () {
+                        connectFakeParticipant(Q.Media.fakeUsers.get('ubsazgun'));
+                    }, 4000);
+                    setTimeout(function () {
+                        connectFakeParticipant(Q.Media.fakeUsers.get('jxmmmsyu'));
+                    }, 6000);
+                    setTimeout(function () {
+                        connectFakeParticipant(Q.Media.fakeUsers.get('qjxzjfjp'));
+                    }, 6000);
+                    
+                })
 
                 var participantsListCon = _participantsListCon = document.createElement('DIV');
                 participantsListCon.className = 'webrtc-sandbox-participants'
@@ -737,11 +751,42 @@
                 document.body.appendChild(sandboxContainer);
             }
 
-            function connectFakeParticipant() {
+            function connectFakeParticipant(userData) {
+                let userId = userData != null ? userData.id : getRandomUserId();
                 var fakeParticipant = new webrtcSignalingLib.RemoteParticipant();
                 fakeParticipant.sid = generateId();
-                fakeParticipant.identity = getRandomUserId() + '\t' + Date.now()
+                fakeParticipant.identity = userId + '\t' + Date.now()
+
+                fakeParticipant.access.isAdmin = true
+                fakeParticipant.access.permissions = ['camera', 'mic', 'screen'];
+
+
                 webrtcSignalingLib.signalingDispatcher.participantConnected(fakeParticipant);
+
+                _fakeParticipants.set(userId, fakeParticipant);
+                /* Q.Media.fakeUsers */
+
+                createLoopedVideoTrack(userData.video.start).then(e => {
+                    // track is MediaStreamTrack
+
+                    webrtcSignalingLib.signalingDispatcher.rawTrackSubscribed({
+                        track: e.track,
+                        streams: [e.stream],
+                    }, fakeParticipant)
+                });
+            }
+
+            async function createLoopedVideoTrack(url) {
+                const video = document.createElement('video');
+                video.src = url;
+                video.loop = true;
+                video.muted = true;
+                video.playsInline = true;
+
+                await video.play(); // ensures playback starts
+
+                const stream = video.captureStream(); // or video.mozCaptureStream() in Firefox
+                return { stream: stream, track: stream.getVideoTracks()[0] };
             }
 
             function disconnectParticipant(participant) {
@@ -6704,7 +6749,7 @@
             });
 
             webrtcSignalingLib.event.on('joined', function (participant) {
-                if(document.querySelector('.Media_webrtc_instructions_dialog') == null) Q.Dialogs.pop();
+                //if(document.querySelector('.Media_webrtc_instructions_dialog') == null) Q.Dialogs.pop();
                 setRealName(participant);
                 setUserAvatar(participant);
                 setUserGreeting(participant);
@@ -7039,7 +7084,7 @@
             var preparingWindow = (_options.showPreparingDialog || (!_options.startWith.video && !_options.startWith.audio));
 
             var _notice = null;
-            var _currentState = preparingWindow ? "Checking room's state" : 'Connecting...';
+            var _currentState = 'Connecting...';
 
             function show(state) {
                 if(state != null) updateStatus(state);
@@ -7592,7 +7637,6 @@
                     }
 
                     joinAction = true;
-                    var dialog = Q.Dialogs.pop();
                     joinAction = false;
                     //if(dialog && dialog.parentNode != null) dialog.parentNode.removeChild(dialog);
 
@@ -8184,7 +8228,7 @@
 
                 var preparingWindow = (_options.showPreparingDialog/* || (!_options.startWith.video && !_options.startWith.audio)*/);
 
-                connectionState.show(preparingWindow ? "Checking room's state" : 'Connecting...');
+                connectionState.show('Connecting...');
 
                 _debugTimer.loadStart = performance.now();
 
@@ -8474,251 +8518,304 @@
                 }
                 log('start: constraints', videoConstraints, audioConstraints);
 
-                if(Q.info.isMobile || Q.info.isTablet) {
+                let preparingDialog;
+                let preparingDialogTool;
+                function onCancel() {
+                    unsetResizeObserver();
+                    connectionState.updateStatus('Disconnected');
+                    setTimeout(function () {
+                        connectionState.hide();
+                    }, 3000);
+
+                    if (preparingDialogTool) preparingDialogTool.onCancel();
+                    _options.notForUsingTracks.map(function (track) {
+                        track.stop();
+                    });
+                }
+
+                if (Q.info.isMobile || Q.info.isTablet) {
                     log('start: onTextLoad: connect from mobile/tablet browser');
 
-                    if(preparingWindow) {
-                        showPreparingDialog(function () {
-                            createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
-                        }, function () {
-                            connectionState.updateStatus('Disconnected');
-                            setTimeout(function() {
-                                connectionState.hide();
-                            }, 3000);
-                            unsetResizeObserver();
-                        });
-                    } else {
 
-                        let premissionGrantedCallback = function (streams) {
-                            _options.streams = _options.streams.concat(streams);
 
-                            if(streams.length != 0) {
-                                let audioTracks = streams[0].getAudioTracks();
-                                if(audioTracks.length != 0) {
-                                    let trackClone = audioTracks[0].clone();
-                                    _options.notForUsingTracks.push(trackClone);
-                                } else {
-                                    Q.confirm('Allow access to microphone to be able to join videoconference', function (result) {
-                                        if (!result) return;
-                                        module.start();
-                                    });
-                                    return;
-                                }
+                    let premissionGrantedCallback = function (streams) {
+                        _options.streams = _options.streams.concat(streams);
+
+                        if (streams.length != 0) {
+                            let audioTracks = streams[0].getAudioTracks();
+                            if (audioTracks.length != 0) {
+                                let trackClone = audioTracks[0].clone();
+                                _options.notForUsingTracks.push(trackClone);
+                            } else {
+                                Q.confirm('Allow access to microphone to be able to join videoconference', function (result) {
+                                    if (!result) return;
+                                    module.start();
+                                });
+                                return;
                             }
+                        }
+                        if (preparingWindow) {
+                         
+                            Q.Dialogs.push({
+                                title: 'Preparing to join the meeting',
+                                className: 'Media_webrtc_devices_dialog',
+                                content: Q.Tool.setUpElement(
+                                    'DIV', // or pass an existing element
+                                    "Media/webrtc/preparingDialog",
+                                    {
+                                        initAudioStream: streams[0].getAudioTracks().length != 0 ? streams[0] : null,
+                                        initVideoStream: streams[0].getVideoTracks().length != 0 ? streams[0] : null,
+                                        onJoin: function (streams) {
+                                            _options.startWith.video = false;
+                                            _options.startWith.audio = false;
+                                            for(let i in streams) {
+                                                if(streams[i].getVideoTracks().length != 0) {
+                                                    _options.startWith.video = true;
+                                                }
+                                                if(streams[i].getAudioTracks().length != 0) {
+                                                    _options.startWith.audio = true;
+                                                }
+                                            }
+                                            _options.streams = streams;
+                                            if(preparingDialog) Q.Dialogs.close(preparingDialog, {isJoined: true});
+                                            createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
+                                        }
+                                    }
+                                ),
+                                apply: false,
+                                onClose: function (dialog, options) {
+                                    console.log('arguments', arguments)
+                                   if(!options.isJoined) onCancel();
+                                },
+                                onActivate: function (dialog) {
+                                    var labelsTool = Q.Tool.from(dialog.querySelector(".Media_webrtc_preparingDialog_tool"), 'Media/webrtc/preparingDialog');
+                                    if (Q.typeOf(labelsTool) !== 'Q.Tool') {
+                                        return;
+                                    }
+                                    preparingDialog = dialog;
+                                    preparingDialogTool = labelsTool;
+                                }
+                            });
 
+                        } else {
                             createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
-                        };
+                        }
+                    };
 
-                        if (Q.info.isCordova && Q.info.isAndroid()) {
-                            log('start: onTextLoad: isCordova && isAndroid');
+                    if (Q.info.isCordova && Q.info.isAndroid()) {
+                        log('start: onTextLoad: isCordova && isAndroid');
 
-                            var showInstructions = function(kind) {
-                                var instructionsPermissionDialog = document.createElement('DIV');
-                                instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
-                                var dialogList = document.createElement('OL');
-                                dialogList.className = 'Media_webrtc_instructions_dialog';
-                                dialogList.innerHTML = `<div>` + text.webrtc.androidInstructionsDialog.permissionDenied.interpolate({kind: kind}) + `</div>
+                        var showInstructions = function (kind) {
+                            var instructionsPermissionDialog = document.createElement('DIV');
+                            instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
+                            var dialogList = document.createElement('OL');
+                            dialogList.className = 'Media_webrtc_instructions_dialog';
+                            dialogList.innerHTML = `<div>` + text.webrtc.androidInstructionsDialog.permissionDenied.interpolate({ kind: kind }) + `</div>
 									<li>` + Q.getObject("webrtc.androidInstructionsDialog.point1", text) + `</li>
 									<li>` + Q.getObject("webrtc.androidInstructionsDialog.point2", text) + `</li>
-									<li>` + text.webrtc.androidInstructionsDialog.point3.interpolate({communityId: Q.Users.communityId}) + `</li>
+									<li>` + text.webrtc.androidInstructionsDialog.point3.interpolate({ communityId: Q.Users.communityId }) + `</li>
 									<li>` + Q.getObject("webrtc.androidInstructionsDialog.point4", text) + `</li>
-									<li>` + text.webrtc.androidInstructionsDialog.point5.interpolate({kind: kind}) + `</li>`;
-                                instructionsPermissionDialog.appendChild(dialogList);
-                                Q.Dialogs.push({
-                                    title: Q.getObject("webrtc.androidInstructionsDialog.dialogTitle", text),
-                                    className: 'Media_webrtc_devices_dialog',
-                                    content: instructionsPermissionDialog,
-                                    apply: true
-                                });
-                            }
+									<li>` + text.webrtc.androidInstructionsDialog.point5.interpolate({ kind: kind }) + `</li>`;
+                            instructionsPermissionDialog.appendChild(dialogList);
+                            Q.Dialogs.push({
+                                title: Q.getObject("webrtc.androidInstructionsDialog.dialogTitle", text),
+                                className: 'Media_webrtc_devices_dialog',
+                                content: instructionsPermissionDialog,
+                                apply: true
+                            });
+                        }
 
-                            var requestMicPermission = function (callback) {
-                                cordova.plugins.permissions.checkPermission("android.permission.RECORD_AUDIO", function(result){
-                                    if(!result.hasPermission) {
-                                        cordova.plugins.permissions.requestPermission("android.permission.RECORD_AUDIO", function(result){
-                                            if(!result.hasPermission) {
-                                                showInstructions('audio');
-                                            } else {
-                                                if(callback != null) callback();
-                                            }
-                                        }, function(){
-                                            console.log("Permission is not granted");
-                                            console.error("Permission is not granted");
-                                        })
-                                    } else {
-                                        if(callback != null) callback();
-                                    }
-                                }, function(){
-                                    console.log("Permission is not granted");
-                                    console.error("Permission is not granted");
-                                })
-                            }
+                        var requestMicPermission = function (callback) {
+                            cordova.plugins.permissions.checkPermission("android.permission.RECORD_AUDIO", function (result) {
+                                if (!result.hasPermission) {
+                                    cordova.plugins.permissions.requestPermission("android.permission.RECORD_AUDIO", function (result) {
+                                        if (!result.hasPermission) {
+                                            showInstructions('audio');
+                                        } else {
+                                            if (callback != null) callback();
+                                        }
+                                    }, function () {
+                                        console.log("Permission is not granted");
+                                        console.error("Permission is not granted");
+                                    })
+                                } else {
+                                    if (callback != null) callback();
+                                }
+                            }, function () {
+                                console.log("Permission is not granted");
+                                console.error("Permission is not granted");
+                            })
+                        }
 
-                            var requestCameraPermission = function (callback) {
-                                cordova.plugins.permissions.checkPermission("android.permission.CAMERA", function(result){
-                                    if(!result.hasPermission) {
-                                        cordova.plugins.permissions.requestPermission("android.permission.CAMERA", function(result){
-                                            if(!result.hasPermission) {
-                                                showInstructions('video');
-                                            } else {
-                                                if(callback != null) callback();
-                                            }
-                                        }, function(){
-                                            console.log("Permission is not granted");
-                                            console.error("Permission is not granted");
-                                        })
-                                    } else {
-                                        //Permission granted
-                                        if(callback != null) callback();
-                                    }
-                                }, function(){
-                                    console.log("Permission is not granted");
-                                    console.error("Permission is not granted");
-                                })
-                            }
+                        var requestCameraPermission = function (callback) {
+                            cordova.plugins.permissions.checkPermission("android.permission.CAMERA", function (result) {
+                                if (!result.hasPermission) {
+                                    cordova.plugins.permissions.requestPermission("android.permission.CAMERA", function (result) {
+                                        if (!result.hasPermission) {
+                                            showInstructions('video');
+                                        } else {
+                                            if (callback != null) callback();
+                                        }
+                                    }, function () {
+                                        console.log("Permission is not granted");
+                                        console.error("Permission is not granted");
+                                    })
+                                } else {
+                                    //Permission granted
+                                    if (callback != null) callback();
+                                }
+                            }, function () {
+                                console.log("Permission is not granted");
+                                console.error("Permission is not granted");
+                            })
+                        }
 
-                            if(startWith.audio && startWith.video && !_options.audioOnlyMode) {
-                                requestMicPermission(function () {
-                                    requestCameraPermission(function () {
-                                        getMediaStream({video: true, audio: true}).then(function (streams) {
-                                            premissionGrantedCallback(streams);
-                                        }).catch(function (err) {
-                                            console.log(err.name + ": " + err.message);
-                                            console.error(err.name + ": " + err.message);
-                                            if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
-                                        });
-                                    });
-                                });
-                            } else if (startWith.audio) {
-                                requestMicPermission(function () {
-                                    getMediaStream({video: false, audio: true}).then(function (streams) {
-                                        premissionGrantedCallback(streams);
-                                    }).catch(function (err) {
-                                        console.log(err.name + ": " + err.message);
-                                        console.error(err.name + ": " + err.message);
-                                        if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
-                                    });
-                                });
-                            } else if (startWith.video && !_options.audioOnlyMode) {
+                        if (startWith.audio && startWith.video && !_options.audioOnlyMode) {
+                            requestMicPermission(function () {
                                 requestCameraPermission(function () {
-                                    getMediaStream({video: true, audio: true}).then(function (streams) {
+                                    getMediaStream({ video: true, audio: true }).then(function (streams) {
                                         premissionGrantedCallback(streams);
                                     }).catch(function (err) {
                                         console.log(err.name + ": " + err.message);
                                         console.error(err.name + ": " + err.message);
-                                        if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
+                                        if (err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
                                     });
                                 });
-                            }
-
-                        } else if(!Q.info.isCordova || (Q.info.isCordova && Q.info.platform === 'ios' && !_options.useCordovaPlugins) || (Q.info.isCordova && Q.info.platform === 'ios' && _options.useCordovaPlugins)){
-                            log('start: onTextLoad: isCordova && isiOS');
-
-                            //requesting access to users media. Audio should always be true to avoid autoplay issues
-                            if(startWith.video && startWith.audio && !_options.audioOnlyMode) {
-                                getMediaStream({video: true, audio: true}).then(function (streams) {
+                            });
+                        } else if (startWith.audio) {
+                            requestMicPermission(function () {
+                                getMediaStream({ video: false, audio: true }).then(function (streams) {
                                     premissionGrantedCallback(streams);
                                 }).catch(function (err) {
                                     console.log(err.name + ": " + err.message);
                                     console.error(err.name + ": " + err.message);
-                                    if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
+                                    if (err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
                                 });
-                            } else {
-                                getMediaStream({video: startWith.video, audio: true}).then(function (streams) {
+                            });
+                        } else if (startWith.video && !_options.audioOnlyMode) {
+                            requestCameraPermission(function () {
+                                getMediaStream({ video: true, audio: true }).then(function (streams) {
                                     premissionGrantedCallback(streams);
                                 }).catch(function (err) {
                                     console.log(err.name + ": " + err.message);
                                     console.error(err.name + ": " + err.message);
-                                    if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
+                                    if (err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
                                 });
+                            });
+                        }
 
-                            }
+                    } else if (!Q.info.isCordova || (Q.info.isCordova && Q.info.platform === 'ios' && !_options.useCordovaPlugins) || (Q.info.isCordova && Q.info.platform === 'ios' && _options.useCordovaPlugins)) {
+                        log('start: onTextLoad: isCordova && isiOS');
+
+                        //requesting access to users media. Audio should always be true to avoid autoplay issues
+                        if (startWith.video && startWith.audio && !_options.audioOnlyMode) {
+                            getMediaStream({ video: true, audio: true }).then(function (streams) {
+                                premissionGrantedCallback(streams);
+                            }).catch(function (err) {
+                                console.log(err.name + ": " + err.message);
+                                console.error(err.name + ": " + err.message);
+                                if (err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
+                            });
+                        } else {
+                            getMediaStream({ video: startWith.video, audio: true }).then(function (streams) {
+                                premissionGrantedCallback(streams);
+                            }).catch(function (err) {
+                                console.log(err.name + ": " + err.message);
+                                console.error(err.name + ": " + err.message);
+                                if (err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
+                            });
+
                         }
                     }
 
                 } else {
+                    log('start: regular connect (desktop)');
+                  
+                    let premissionGrantedCallback = function (streams) {
+                        _options.streams = _options.streams.concat(streams);
 
-                    log('start: onTextLoad: regular connect (desktop)');
-
-                    if(preparingWindow) {
-
-                        Q.activate(
-                            Q.Tool.setUpElement(
-                                'DIV', // or pass an existing element
-                                "Media/webrtc/preparingDialog",
-                                {
-                                    
-                                }
-                            ),
-                            {},
-                            function () {
-                                
-
+                        if (streams.length != 0) {
+                            let audioTracks = streams[0].getAudioTracks();
+                            if (audioTracks.length != 0) {
+                                let trackClone = audioTracks[0].clone();
+                                _options.notForUsingTracks.push(trackClone);
+                            } else {
+                                Q.confirm('Allow access to microphone to be able to join videoconference', function (result) {
+                                    if (!result) return;
+                                    module.start();
+                                });
+                                return;
                             }
-                        );
+                        }
 
-                        
+                        if (preparingWindow) {
+                         
+                            Q.Dialogs.push({
+                                title: 'Preparing to join the meeting',
+                                className: 'Media_webrtc_devices_dialog',
+                                content: Q.Tool.setUpElement(
+                                    'DIV', // or pass an existing element
+                                    "Media/webrtc/preparingDialog",
+                                    {
+                                        initAudioStream: streams[0].getAudioTracks().length != 0 ? streams[0] : null,
+                                        initVideoStream: streams[0].getVideoTracks().length != 0 ? streams[0] : null,
+                                        onJoin: function (streams) {
+                                            _options.startWith.video = false;
+                                            _options.startWith.audio = false;
+                                            for(let i in streams) {
+                                                if(streams[i].getVideoTracks().length != 0) {
+                                                    _options.startWith.video = true;
+                                                }
+                                                if(streams[i].getAudioTracks().length != 0) {
+                                                    _options.startWith.audio = true;
+                                                }
+                                            }
+                                            _options.streams = streams;
+                                            if(preparingDialog) Q.Dialogs.close(preparingDialog, {isJoined: true});
+                                            createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
+                                        }
+                                    }
+                                ),
+                                apply: false,
+                                onClose: function (dialog, options) {
+                                    console.log('arguments', arguments)
+                                   if(!options.isJoined) onCancel();
+                                },
+                                onActivate: function (dialog) {
+                                    var labelsTool = Q.Tool.from(dialog.querySelector(".Media_webrtc_preparingDialog_tool"), 'Media/webrtc/preparingDialog');
+                                    if (Q.typeOf(labelsTool) !== 'Q.Tool') {
+                                        return;
+                                    }
+                                    preparingDialog = dialog;
+                                    preparingDialogTool = labelsTool;
+                                }
+                            });
 
-                        /* getMediaStream({video: startWith.video, audio: true}).then(function (streams) {
-                            showPreparingDialog(function () {
-                                createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
-                            }, function () {
-                                unsetResizeObserver();
-                                connectionState.updateStatus('Disconnected');
-                                setTimeout(function() {
-                                    connectionState.hide();
-                                }, 3000);
-                            }, streams);
+                        } else {
+                            createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
+                        }
+
+                    };
+
+                    //requesting access to users media. Audio should always be true to avoid autoplay issues
+                    if (startWith.video && startWith.audio && !_options.audioOnlyMode) {
+                        getMediaStream({ video: videoConstraints, audio: audioConstraints }).then(function (streams) {
+                            premissionGrantedCallback(streams);
                         }).catch(function (err) {
                             console.log(err.name + ": " + err.message);
                             console.error(err.name + ": " + err.message);
-                            if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
-                        }); */
-
+                            if (err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
+                        });
                     } else {
-                        let premissionGrantedCallback = function (streams) {
-                            _options.streams = _options.streams.concat(streams);
-
-                            if(streams.length != 0) {
-                                let audioTracks = streams[0].getAudioTracks();
-                                if(audioTracks.length != 0) {
-                                    let trackClone = audioTracks[0].clone();
-                                    _options.notForUsingTracks.push(trackClone);
-                                } else {
-                                    Q.confirm('Allow access to microphone to be able to join videoconference', function (result) {
-                                        if (!result) return;
-                                        module.start();
-                                    });
-                                    return;
-                                }
-                            }
-                            
-                            createOrJoinRoomStream(_options.roomId, _options.roomPublisherId);
-                        };
-                        
-                        //requesting access to users media. Audio should always be true to avoid autoplay issues
-                        if(startWith.video && startWith.audio && !_options.audioOnlyMode) {
-                            getMediaStream({video: videoConstraints, audio: audioConstraints}).then(function (streams) {
-                                premissionGrantedCallback(streams);
-                            }).catch(function (err) {
-                                console.log(err.name + ": " + err.message);
-                                console.error(err.name + ": " + err.message);
-                                if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
-                            });
-                        } else {
-                            getMediaStream({video: videoConstraints, audio: audioConstraints}).then(function (streams) {
-                                premissionGrantedCallback(streams);
-                            }).catch(function (err) {
-                                console.log(err.name + ": " + err.message);
-                                console.error(err.name + ": " + err.message);
-                                if(err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
-                            });
-
-                        }
+                        getMediaStream({ video: videoConstraints, audio: audioConstraints }).then(function (streams) {
+                            premissionGrantedCallback(streams);
+                        }).catch(function (err) {
+                            console.log(err.name + ": " + err.message);
+                            console.error(err.name + ": " + err.message);
+                            if (err.name == 'NotAllowedError') showInstructionsDialog('camera/microphone');
+                        });
 
                     }
-
-
                 }
 
             }
@@ -9105,6 +9202,63 @@
             return M;
         }
     };
+
+    Media.WebRTC.showBrowserPermissionsInstructions = function (kind) {
+        var text = Q.Text.collection[Q.Text.language]['Media/content'];
+
+        var instructionsPermissionDialog = document.createElement('DIV');
+        instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
+        var dialogList = document.createElement('OL');
+        dialogList.className = 'Media_webrtc_instructions_dialog';
+        dialogList.innerHTML = `<div>Permission for ` + kind + ` denied. To use it please follow these steps:</div><li>Reload this page</li>
+									<li>` + (Q.info.useTouchEvents ? 'Tap' : 'Click') + ` "Allow" when dialog will appear asking for access to your ` + kind + `</li>`;
+        instructionsPermissionDialog.appendChild(dialogList);
+        Q.Dialogs.push({
+            title: text.webrtc.webInstructionsDialog.dialogTitle,
+            className: 'Media_webrtc_devices_dialog',
+            content: instructionsPermissionDialog,
+            apply: true
+        });
+    }
+
+    Media.WebRTC.showIosPermissionsInstructions = function (kind) {
+        var text = Q.Text.collection[Q.Text.language]['Media/content'];
+        var instructionsPermissionDialog = document.createElement('DIV');
+        instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
+        var dialogList = document.createElement('OL');
+        dialogList.className = 'Media_webrtc_instructions_dialog';
+        dialogList.innerHTML = `<div>Permission for ` + kind + ` denied. To use it please follow these steps:</div><li>Go to your iOS Settings</li>
+									<li>Open "Privacy"</li>
+									<li>Find "` + kind + `" and open it</li>
+									<li>Find "` + Q.Users.communityId + `" and enable</li>`;
+        instructionsPermissionDialog.appendChild(dialogList);
+        Q.Dialogs.push({
+            title: text.webrtc.webInstructionsDialog.dialogTitle,
+            className: 'Media_webrtc_devices_dialog',
+            content: instructionsPermissionDialog,
+            apply: true
+        });
+    }
+
+    Media.WebRTC.showAndroidPermissionsInstructions = function (kind) {
+        var text = Q.Text.collection[Q.Text.language]['Media/content'];
+        var instructionsPermissionDialog = document.createElement('DIV');
+        instructionsPermissionDialog.className = 'Media_webrtc_devices_dialog_inner';
+        var dialogList = document.createElement('OL');
+        dialogList.className = 'Media_webrtc_instructions_dialog';
+        dialogList.innerHTML = `<div>Permission for ` + kind + ` denied. To use it please follow these steps:</div><li>Go to your Android Settings</li>
+									<li>Open "Apps & notifications"</li>
+									<li>Find "` + (Q.Users.communityId) + `" and open it</li>
+									<li>Tap on Permissions</li>
+									<li>Enable ` + kind + `</li>`;
+        instructionsPermissionDialog.appendChild(dialogList);
+        Q.Dialogs.push({
+            title: text.webrtc.webInstructionsDialog.dialogTitle,
+            className: 'Media_webrtc_devices_dialog',
+            content: instructionsPermissionDialog,
+            apply: true
+        });
+    }
 
     /**
      * Start live stream conference related to some stream.

@@ -431,7 +431,7 @@
 }
 
 .Media_manage_webrtc_permissions .Q_dialog_slot {
-    overflow: auto;
+    overflow: hidden;
 }
 
 .Media_webrtc_participants-manage-dialog {

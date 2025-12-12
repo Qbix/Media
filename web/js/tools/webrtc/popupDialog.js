@@ -29,6 +29,10 @@
                 } else {
                     window.removeEventListener('touchend', pupupInstance.hide);
                 }
+
+                if (options.onStateChanged) {
+                    Q.handle(options.onStateChanged, pupupInstance, [pupupInstance.active]);
+                }
             }
         }
     
@@ -41,6 +45,10 @@
                 this.showByPointer(e);
             } else {
                 this.showByElement(elementToShowBy);
+            }
+
+            if (options.onStateChanged) {
+                Q.handle(options.onStateChanged, pupupInstance, [this.active]);
             }
         }
     
@@ -1587,6 +1595,8 @@
     
     }
 
+    Q.Media.WebRTC.PopupDialog = PopupDialog;
+
     Q.Tool.define("Media/webrtc/popupDialog", function (options) {
         var tool = this;
         //window = tool.element.ownerDocument.defaultView;
@@ -1600,7 +1610,8 @@
         {
             className: null,
             content: null,
-            triggerOn: 'hover'
+            triggerOn: 'hover',
+            onStateChanged: new Q.Event()
         },
 
         {
@@ -1621,7 +1632,8 @@
                     parent: tool.state.parent,
                     xPositionsOrder: tool.state.xPositionsOrder,
                     yPositionsOrder: tool.state.yPositionsOrder,
-                    toolId: tool.id
+                    toolId: tool.id,
+                    onStateChanged: tool.state.onStateChanged
                 })
             },
             getPopupElement: function () {
