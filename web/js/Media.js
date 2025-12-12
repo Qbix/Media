@@ -103,7 +103,9 @@
 		"Media/webrtc/permissionsManager"  : "{{Media}}/js/tools/webrtc/permissionsManager.js",
 		"Media/webrtc/limitsManager"  : "{{Media}}/js/tools/webrtc/limitsManager.js",
 		"Media/webrtc/video"  : "{{Media}}/js/tools/webrtc/video.js",
+		"Media/webrtc/video2"  : "{{Media}}/js/tools/webrtc/video2.js",
 		"Media/webrtc/audio"  : "{{Media}}/js/tools/webrtc/audio.js",
+		"Media/webrtc/audio2"  : "{{Media}}/js/tools/webrtc/audio2.js",
 		"Media/webrtc/livestreaming"  : {
 			js: "{{Media}}/js/tools/webrtc/livestreamingEditor/livestreamingEditor.js",
 			css: "{{Media}}/css/tools/livestreamingEditor.css",

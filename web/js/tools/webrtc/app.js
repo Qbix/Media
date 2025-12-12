@@ -4229,6 +4229,7 @@ Q.Media.WebRTCRoomClient = function app(options){
             socketParticipantConnected: socketParticipantConnected,
             participantConnected: participantConnected, //for testing purposes
             participantDisconnected: participantDisconnected, //for testing purposes
+            rawTrackSubscribed: rawTrackSubscribed, //for testing purposes
         }
     }())
 
