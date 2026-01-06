@@ -410,7 +410,7 @@ function Media_webrtc_post($params = array())
         $access->streamName = $streamName;
         $access->ofUserId = $userId;
         if($access->retrieve()) {
-            $personalAccess = true;
+            $access->remove();
         }
 
         if($actionToDo == 'add') {
@@ -418,7 +418,8 @@ function Media_webrtc_post($params = array())
             $usersContact->userId = $publisherId;
             $usersContact->contactUserId = $userId;
             $usersContact->label = "Users/hosts";
-            if (!$usersContact->retrieve()) {
+            $exists = $usersContact->retrieve();
+            if (!$exists) {
                 $usersContact->save();
             }
         } else {
@@ -434,6 +435,11 @@ function Media_webrtc_post($params = array())
         //$stillCohost0 = $webrtcStream->testAdminLevel('manage');
 
         $webrtcStream = Streams_Stream::fetch($userId, $publisherId, $streamName);
+
+        //if host role was removed, give that user a regular access to room
+        if($actionToDo == 'remove' && !$webrtcStream->testReadLevel("max") && $webrtcStream->getAttribute('accessType') == 'trusted') {
+            Media_WebRTC::admitUserToRoom($publisherId, $streamName, null, $userId);
+        }
 
         $isCohost = $webrtcStream->testAdminLevel('manage');
 

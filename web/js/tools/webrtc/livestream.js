@@ -77,7 +77,9 @@
                     tool.state.onWebRTCStreamRefresh.set(function () {
                         tool.webrtcStream = this;
                         tool.updateWidgetStateOnStreamUpdate();
+                        Q.handle(tool.state.onWebrtcStreamLoaded, tool, []);
                     });
+                    Q.handle(tool.state.onWebrtcStreamLoaded, tool, []);
                 })
                 tool.livestreamStream.relatedFrom('Calendars/event/livestream', {}, function () {
                    for(let i in this.relatedStreams) {
@@ -615,7 +617,11 @@
                 widgetModeButtons.appendChild(maximizeButton);
                
                 maximizeButton.addEventListener('click', function () {
-                    Q.Tool.byId('Q_columns-Communities').close(0)
+                    try {
+                        Q.Tool.byId('Q_columns-Communities').close(0)
+                    } catch(e) {
+
+                    }
 
                     setTimeout(function () {
 
@@ -2415,42 +2421,51 @@
                 livestreamChatBtnsInner.className = 'media-livestream-chat-buttons-inner';
                 livestreamChatBtnsCon.appendChild(livestreamChatBtnsInner);
 
-                if (tool.state.webrtcPublisherId && tool.state.webrtcStreamName) {
-                        var livestreamChatButton = document.createElement('BUTTON');
+                function showOrHideJoinButton() {
+                    if (tool.webrtcStream) {
+                        if(tool.livestreamChatButton) {
+                            return;
+                        }
+                        var livestreamChatButton = tool.livestreamChatButton = document.createElement('DIV');
+                        livestreamChatButton.role = 'button';
                         livestreamChatButton.className = 'media-livestream-chat-button';
                         livestreamChatBtnsInner.appendChild(livestreamChatButton);
+                        var askQuestionText = document.createElement('SPAN');
+                        askQuestionText.className = 'media-livestream-chat-button-ask';
+                        askQuestionText.innerHTML = 'Ask a Question';
+                        livestreamChatButton.appendChild(askQuestionText);
                         var livestreamChatButtonIcon = document.createElement('SPAN');
                         livestreamChatButtonIcon.className = 'media-livestream-chat-button-icon';
                         livestreamChatButtonIcon.innerHTML = _icons.askQuestion;
                         livestreamChatButton.appendChild(livestreamChatButtonIcon);
-                        var livestreamChatButtonText = document.createElement('SPAN');
-                        livestreamChatButtonText.innerHTML = 'Ask a Question / Request to Join';
-                        livestreamChatButton.appendChild(livestreamChatButtonText);
-    
+                        var requestToJoinText = document.createElement('SPAN');
+                        requestToJoinText.className = 'media-livestream-chat-button-join';
+                        requestToJoinText.innerHTML = 'Request to Join';
+                        livestreamChatButton.appendChild(requestToJoinText);
+
                         Q.activate(
                             Q.Tool.setUpElement('div', 'Media/webrtc/callCenter/client', {
-                                publisherId: tool.state.webrtcPublisherId,
-                                streamName: tool.state.webrtcStreamName,
+                                publisherId: tool.webrtcStream.fields.publisherId,
+                                streamName: tool.webrtcStream.fields.name
                             }),
                             {},
                             function () {
                                 tool.callCenterClientTool = this;
-    
                             }
                         );
-    
+
                         livestreamChatButton.addEventListener('click', function () {
                             tool.callCenterClientTool.requestCall();
                         });
-                        
+
                         tool.getWebRTCStream().then(function (webrtcStream) {
-                            if(webrtcStream && webrtcStream.testWriteLevel('contribute')) {
+                            if (webrtcStream && webrtcStream.testWriteLevel('contribute')) {
                                 livestreamChatBtnsInner.innerHTML = '';
                                 let livestreamChatButton = document.createElement('BUTTON');
                                 livestreamChatButton.className = 'media-livestream-chat-button';
                                 livestreamChatBtnsInner.appendChild(livestreamChatButton);
                                 let livestreamChatButtonIcon = document.createElement('SPAN');
-                                livestreamChatButtonIcon.className = 'media-livestream-chat-button-icon';
+                                livestreamChatButtonIcon.className = 'media-livestream-chat-button-icon media-livestream-chat-button-icon-join';
                                 livestreamChatButtonIcon.innerHTML = _icons.join;
                                 livestreamChatButton.appendChild(livestreamChatButtonIcon);
                                 let livestreamChatButtonText = document.createElement('SPAN');
@@ -2462,8 +2477,12 @@
                                 });
                             }
                         });
+                    }
                 }
 
+                tool.state.onWebrtcStreamLoaded.add(function () {
+                   showOrHideJoinButton();
+                });
 
                 var livestreamChatCon = document.createElement('DIV');
                 livestreamChatCon.className = 'media-livestream-chat-con';
@@ -2849,7 +2868,7 @@
                     if(livestreamData.platform == 'youtube') iframe.id = 'youtube-player';
                     iframe.src = src;
                     iframe.title = title;
-                    iframe.sandbox = '';
+                    iframe.sandbox = 'allow-scripts allow-same-origin';
                     iframe.frameborder = 0;
                     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
                     iframe.setAttribute('allowfullscreen', '');
@@ -2976,8 +2995,8 @@
                                     mediaElement.setAttribute('webkit-playsinline', true);
                                     if(!asAudio) {
                                         mediaElement.muted = true;
-                                        mediaElement.style.width = '100%';
-                                        mediaElement.style.height = '100%';
+                                        /* mediaElement.style.width = '100%';
+                                        mediaElement.style.height = '100%'; */
                                         mediaElement.style.maxWidth = '100%';
                                         mediaElement.style.maxHeight = '100%';
                                     }
@@ -3109,6 +3128,7 @@
 
                     if(!clickedTabObject) return;
 
+                    let tabContent;
                     if (tool.activeLivestreamData && tool.activeLivestreamData !== clickedTabObject.livestreamData) {
                         for (let i in tool.videoTabsTool.tabs) {
                             let tab = tool.videoTabsTool.tabs[i];
@@ -3118,18 +3138,19 @@
                                 tab.livestreamData.broadcastClient = null;
                             }
                         }
-                    }
-                    
-                    
-                    tool.videoContainerEl.innerHTML = '';
-                    let tabContent;
-                    if(tool.activeLivestreamData && tool.mediaPlayerContainer) {
+                        tool.activeLivestreamData = clickedTabObject.livestreamData;
+                        tabContent = tool.mediaPlayerContainer = tool.generateLivestreamVideo(clickedTabObject.livestreamData);
+                        tool.joinOrLeaveLivestreamAudience('join');
+                    } else if(tool.activeLivestreamData && tool.activeLivestreamData == clickedTabObject.livestreamData) {
                         tabContent = tool.mediaPlayerContainer;
-                    } else{
+                    } else {
                         tool.activeLivestreamData = clickedTabObject.livestreamData;
                         tabContent = tool.mediaPlayerContainer = tool.generateLivestreamVideo(clickedTabObject.livestreamData);
                         tool.joinOrLeaveLivestreamAudience('join');
                     }
+                    
+                    tool.videoContainerEl.innerHTML = '';
+                    
                     if(!tool.videoContainerEl.contains(tabContent)) {
                         tool.videoContainerEl.appendChild(tabContent);
                     }
