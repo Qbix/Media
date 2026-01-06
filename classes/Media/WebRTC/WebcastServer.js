@@ -639,7 +639,7 @@ function WebcastServer(socket) {
                                 }
                             }); */
                         }
-                        //stream.save();
+                        stream.save();
                         
                     });
                 

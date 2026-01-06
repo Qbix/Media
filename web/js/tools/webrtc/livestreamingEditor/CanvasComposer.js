@@ -1607,7 +1607,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             if(layoutName == 'loudestFullScreen' || (!layoutName && webrtcGroupSource.currentLayout == 'loudestFullScreen')) {
                 webrtcGroupSource.loudestMode = true;
                 layoutName = 'loudestFullScreen'
-            } if(layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
+            } else if(layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
                 webrtcGroupSource.loudestMode = true;
                 layoutName = 'floatingScreenSharing'
             } else {
@@ -2140,7 +2140,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                             currentLoudestSource.auidoLevel = auidoLevel;
                         }
                     }
-                    
                     if(currentLoudestSource.source) {
                         for(let a in webrtcGroup.sources) {
                             if(webrtcGroup.sources[a] == currentLoudestSource.source) {

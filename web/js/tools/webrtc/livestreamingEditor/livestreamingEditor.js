@@ -1135,7 +1135,8 @@
                             _sourcesColumnEl.appendChild(_activeScene.sourcesInterface.createSourcesCol());
 
                             let sceneIndex = _scenesList.indexOf(sceneItem);
-                            if(sceneIndex != -1 && _layoutsList[sceneIndex]) { //set default webrtc layout
+                            if(sceneIndex != -1 && _layoutsList[sceneIndex] && !_layoutsList[sceneIndex].inited) { //set default webrtc layout
+                                _layoutsList[sceneIndex].inited = true;
                                 sceneItem.sourcesInterface.selectLayout(_layoutsList[sceneIndex].key, true);
                             }
                         }
@@ -2017,8 +2018,20 @@
                                     content: [_audioTool.audioOutputListEl, _audioTool.audioinputListEl]
                                 })
                             //}
-                            sourceInstance.microphoneBtnIcon = microphoneBtnIcon;
-                                            
+                            sourceInstance.microphoneBtnIcon = microphoneBtnIcon;          
+                        }
+
+                        if (source.sourceType == 'video' || source.sourceType == 'audio') {
+                            let configBtnCon = document.createElement('DIV');
+                            configBtnCon.className = 'live-editor-sources-item-control-item live-editor-sources-item-config';
+                            configBtnCon.innerHTML = tool.icons.settings;
+                            itemElControl.appendChild(configBtnCon);
+
+                            configBtnCon.addEventListener('click', function () {
+                                let settingsDialogEl = optionsColumn.getSettingsDialog();
+                                showSpecificControls(settingsDialogEl);
+                            })
+
                         }
 
                         if (source.sourceType == 'video') {
@@ -3453,112 +3466,115 @@
                                 files = tgt.files;
 
                             if (FileReader && files && files.length) {
-                                let file = files[0], mime = file.type;
-                                let reader = new  FileReader();
-                                reader.readAsArrayBuffer(file);
-                                reader.addEventListener('loadstart', loadStartHandler);
-                                reader.addEventListener('load', loadHandler);
-                                reader.addEventListener('loadend', loadEndHandler);
-                                reader.addEventListener('progress', updateProgress);
-                                reader.addEventListener('error', errorHandler);
-                                reader.addEventListener('abort', abortHandler);
+                                for (let i = 0; i < files.length; i++) {
+                                    let file = files[i], mime = file.type;
+                                    let reader = new FileReader();
+                                    reader.readAsArrayBuffer(file);
+                                    reader.addEventListener('loadstart', loadStartHandler);
+                                    reader.addEventListener('load', loadHandler);
+                                    reader.addEventListener('loadend', loadEndHandler);
+                                    reader.addEventListener('progress', updateProgress);
+                                    reader.addEventListener('error', errorHandler);
+                                    reader.addEventListener('abort', abortHandler);
 
-                                var loadProgressBar = new ProgressBar();
-                                loadProgressBar.show();
+                                    let loadProgressBar = new ProgressBar();
+                                    loadProgressBar.show();
 
-                                function loadHandler(e) {
-                                    // The file reader gives us an ArrayBuffer:
-                                    let buffer = e.target.result;
+                                    function loadHandler(e) {
+                                        // The file reader gives us an ArrayBuffer:
+                                        let buffer = e.target.result;
 
-                                    // We have to convert the buffer to a blob:
-                                    let videoBlob = new Blob([new Uint8Array(buffer)], { type: mime });
+                                        // We have to convert the buffer to a blob:
+                                        let videoBlob = new Blob([new Uint8Array(buffer)], { type: mime });
 
-                                    // The blob gives us a URL to the video file:
-                                    let url = window.URL.createObjectURL(videoBlob);
+                                        // The blob gives us a URL to the video file:
+                                        let url = window.URL.createObjectURL(videoBlob);
 
-                                    tool.canvasComposer.videoComposer.addSource({
-                                        sourceType: 'video',
-                                        title: files[0].name,
-                                        url: url,
-                                    },
-                                    null, 
-                                    function () {
-                                        loadProgressBar.updateTextStatus('loaded');
-                                        loadProgressBar.hide();
-                                    }, 
-                                    function (e) {
-                                        loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">' + e.message + '</span>');
-                                    });
+                                        tool.canvasComposer.videoComposer.addSource({
+                                            sourceType: 'video',
+                                            title: files[i].name,
+                                            url: url,
+                                        },
+                                            null,
+                                            function () {
+                                                loadProgressBar.updateTextStatus('loaded');
+                                                loadProgressBar.hide();
+                                            },
+                                            function (e) {
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">' + e.message + '</span>');
+                                            });
 
-                                    loadProgressBar.updateProgress(100);
+                                        loadProgressBar.updateProgress(100);
 
 
-                                }
+                                    }
 
-                                function loadStartHandler(evt) {
+                                    function loadStartHandler(evt) {
 
-                                }
+                                    }
 
-                                function loadEndHandler(evt) {
+                                    function loadEndHandler(evt) {
 
-                                }
+                                    }
 
-                                function abortHandler(evt) {
-                                    loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File read cancelled</span>');
-                                }
+                                    function abortHandler(evt) {
+                                        loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File read cancelled</span>');
+                                    }
 
-                                function errorHandler(evt) {
-                                    log('errorHandler',  evt.target.error)
+                                    function errorHandler(evt) {
+                                        log('errorHandler', evt.target.error)
 
-                                    switch (evt.target.error.code) {
-                                        case evt.target.error.NOT_FOUND_ERR:
-                                            loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File Not Found!</span>');
-                                            break;
-                                        case evt.target.error.NOT_READABLE_ERR:
-                                            loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File is not readable</span>');
-                                            break;
-                                        case evt.target.error.ABORT_ERR:
-                                            break; // noop
-                                        default:
-                                            loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">An error occurred reading this file.</span>');
-                                    };
-                                }
+                                        switch (evt.target.error.code) {
+                                            case evt.target.error.NOT_FOUND_ERR:
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File Not Found!</span>');
+                                                break;
+                                            case evt.target.error.NOT_READABLE_ERR:
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File is not readable</span>');
+                                                break;
+                                            case evt.target.error.ABORT_ERR:
+                                                break; // noop
+                                            default:
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">An error occurred reading this file.</span>');
+                                        };
+                                    }
 
-                                function updateProgress(evt) {
-                                    // evt is an ProgressEvent.
-                                    if (evt.lengthComputable) {
-                                        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-                                        // Increase the progress bar length.
-                                        if (percentLoaded < 100) {
-                                            loadProgressBar.updateProgress(percentLoaded);
+                                    function updateProgress(evt) {
+                                        // evt is an ProgressEvent.
+                                        if (evt.lengthComputable) {
+                                            let percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+                                            // Increase the progress bar length.
+                                            if (percentLoaded < 100) {
+                                                loadProgressBar.updateProgress(percentLoaded);
+                                            }
                                         }
                                     }
                                 }
 
+
                                 function ProgressBar() {
-                                    var _progrssBarPopup = null;
-                                    var _barProggressEl = null;
-                                    var _progressText = null;
-                                    var _isHidden = true;
-                                    var _barWidth = 300;
-                                    var _barheight = 100;
+                                    let _progrssBarPopup = null;
+                                    let _barProggressEl = null;
+                                    let _progressText = null;
+                                    let _isHidden = true;
+                                    let _barWidth = 300;
+                                    let _barheight = 100;
 
                                     log('createProgressBar')
-                                    var dialog=document.createElement('DIV');
+                                    let dialog=document.createElement('DIV');
                                     dialog.className = 'live-editor-progress-bar-popup';
                                     dialog.style.width = _barWidth + 'px';
                                     dialog.style.height = _barheight + 'px';
                                     _progrssBarPopup = dialog;
 
-                                    var dialogInner=document.createElement('DIV');
+                                    let dialogInner=document.createElement('DIV');
                                     dialogInner.className = 'live-editor-progress-bar-popup-inner';
-                                    var boxContent=document.createElement('DIV');
+                                    let boxContent=document.createElement('DIV');
                                     boxContent.className = 'live-editor-streaming-box live-editor-box';
-                                    var boxContentText = _progressText = document.createElement('DIV');
+                                    let boxContentText = _progressText = document.createElement('DIV');
                                     boxContentText.innerHTML = 'loading...';
-                                    var progressBar = document.createElement('DIV');
+                                    let progressBar = document.createElement('DIV');
                                     progressBar.className = 'live-editor-progress-bar';
-                                    var progressEl = _barProggressEl = document.createElement('SPAN');
+                                    let progressEl = _barProggressEl = document.createElement('SPAN');
                                     progressEl.className = 'live-editor-progress-el';
 
 
@@ -3566,10 +3582,10 @@
                                     boxContent.appendChild(boxContentText);
                                     boxContent.appendChild(progressBar);
 
-                                    var close=document.createElement('div');
+                                    let close=document.createElement('div');
                                     close.className = 'live-editor-close-dialog-sign';
-                                    close.innerHTML = '&#10005;';
-                                    var popupinstance = this;
+                                    //close.innerHTML = '&#10005;';
+                                    let popupinstance = this;
                                     close.addEventListener('click', function() {
                                         popupinstance.hide();
                                     });
@@ -3579,9 +3595,9 @@
                                     dialog.appendChild(dialogInner);
 
                                     this.show = function() {
-                                        var boxRect = activeDialog.dialogEl.getBoundingClientRect();
-                                        var x = (boxRect.width / 2) - (_barWidth / 2);
-                                        var y = (boxRect.height / 2) - (_barheight / 2);
+                                        let boxRect = activeDialog.dialogEl.getBoundingClientRect();
+                                        let x = (boxRect.width / 2) - (_barWidth / 2);
+                                        let y = (boxRect.height / 2) - (_barheight / 2);
                                         _progrssBarPopup.style.top = y + 'px';
                                         _progrssBarPopup.style.left = x + 'px';
                                         activeDialog.dialogEl.appendChild(_progrssBarPopup);
@@ -4696,6 +4712,7 @@
                         videoItemInput.type = 'file';
                         videoItemInput.name = 'fileVideoSource';
                         videoItemInput.accept = 'video/mp4, video/*';
+                        videoItemInput.multiple = true;
                         boxContent.appendChild(videoItemInput);
 
                         videoItemInput.addEventListener('change', function (e) {
@@ -6346,12 +6363,12 @@
                                 outerHorizontalMarginsCon.appendChild(outerHorizontalMarginsInput);
                                 dialogBodyInner.appendChild(outerHorizontalMarginsCon);
 
-                                outerHorizontalMarginsInput.addEventListener('input', function () {
+                                outerHorizontalMarginsInput.addEventListener('input', function (e) {
                                     if(isNaN(parseFloat(outerHorizontalMarginsInput.value))) {
                                         return;
                                     }
                                     webrtcGroupSource.sourceInstance.params.tiledLayoutOuterHorizontalMargins = outerHorizontalMarginsInput.value != '' ? outerHorizontalMarginsInput.value : 0;
-                                    updateWebrtcRect();
+                                    updateWebrtcRect(e);
                                 });
 
                                 var outerVerticalMarginsCon = document.createElement('DIV');
@@ -6368,12 +6385,12 @@
                                 outerVerticalMarginsCon.appendChild(outerVerticalMarginsInput);
                                 dialogBodyInner.appendChild(outerVerticalMarginsCon);
 
-                                outerVerticalMarginsInput.addEventListener('input', function () {
+                                outerVerticalMarginsInput.addEventListener('input', function (e) {
                                     if(isNaN(parseFloat(outerVerticalMarginsInput.value))) {
                                         return;
                                     }
                                     webrtcGroupSource.sourceInstance.params.tiledLayoutOuterVerticalMargins = outerVerticalMarginsInput.value != '' ? outerVerticalMarginsInput.value : 0;
-                                    updateWebrtcRect();
+                                    updateWebrtcRect(e);
                                 });
 
                                 var innerMarginsCon = document.createElement('DIV');
@@ -6390,12 +6407,12 @@
                                 innerMarginsCon.appendChild(innerMarginsInput);
                                 dialogBodyInner.appendChild(innerMarginsCon);
 
-                                innerMarginsInput.addEventListener('input', function () {
+                                innerMarginsInput.addEventListener('input', function (e) {
                                     if(isNaN(parseFloat(innerMarginsInput.value))) {
                                         return;
                                     }
                                     webrtcGroupSource.sourceInstance.params.tiledLayoutInnerMargins = innerMarginsInput.value != '' ? innerMarginsInput.value : 0;
-                                    updateWebrtcRect();
+                                    updateWebrtcRect(e);
                                 });
                             }
 
@@ -9580,6 +9597,10 @@
                     generalControls.className = 'live-editor-general-controls';
                     streamingControls.appendChild(generalControls);
 
+                    var specificControls = document.createElement('DIV');
+                    specificControls.className = 'live-editor-specific-controls';
+                    streamingControls.appendChild(specificControls);
+
                     var scenesColumn = scenesInterface.createScenesCol();
                     generalControls.appendChild(scenesColumn);
 
@@ -9701,7 +9722,8 @@
                     return {
                         dialogEl: dialog,
                         previewBoxEl: previewBoxBodyInner,
-                        previewBoxParent: previewBoxBody
+                        previewBoxParent: previewBoxBody,
+                        specificControls: specificControls
                     }
                 }
 
