@@ -400,7 +400,7 @@
                                     tool.setPending(false, [radioBtnItem]);
 
                                     if (_isiOSCordova) Q.Media.WebRTC.showIosPermissionsInstructions('Camera');
-                                    if (e.name == 'NotAllowedError' || e.name == 'MediaStreamError') {
+                                    if (error.name == 'NotAllowedError' || error.name == 'MediaStreamError') {
                                         Q.Media.WebRTC.showBrowserPermissionsInstructions('camera');
                                     } else {
                                         Q.alert(Q.getObject("webrtc.notices.cameraStartError", tool.text));
