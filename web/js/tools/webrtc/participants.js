@@ -688,18 +688,10 @@
                 participantItem.appendChild(participantIdentity);
 
                 var participantIdentityIcon = document.createElement('DIV');
+                participantIdentityIcon.className = 'Media_webrtc_participants-identity-avatar';
                 participantIdentity.appendChild(participantIdentityIcon);
                 var userId = roomParticipant.identity != null ? roomParticipant.identity.split('\t')[0] : Q.Users.loggedInUser.id;
-                Q.activate(
-                    Q.Tool.setUpElement(
-                        participantIdentityIcon, // or pass an existing element
-                        "Users/avatar",
-                        {
-                            userId: userId,
-                            contents: false
-                        }
-                    )
-                );
+               
                 //$(participantIdentityText).tool('Users/avatar', { userId: userId }).activate();
                 //participantIdentityText.innerHTML = isLocal ? roomParticipant.identity + ' <span style="font-weight: normal;font-style: italic;">(me)</span>' : roomParticipant.identity;
                 var liveStatus = document.createElement('DIV');
@@ -713,19 +705,25 @@
                 participantIdentity.appendChild(requestStatus);
                 //liveStatus.innerHTML = _controlsToolIcons.facebookLive;
 
-                var participantIdentityText = document.createElement('DIV');
-                participantIdentity.appendChild(participantIdentityText);
-                //fullName.innerHTML = roomParticipant.userName;
-                Q.activate(
-                    Q.Tool.setUpElement(
-                        participantIdentityText, // or pass an existing element
-                        "Users/avatar",
-                        {
-                            userId: userId,
-                            icon: false
-                        }
-                    )
-                );
+                var participantIdentityName = document.createElement('DIV');
+                participantIdentityName.className = 'Media_webrtc_participants-identity-name';
+                participantIdentity.appendChild(participantIdentityName);
+                var participantIdentityText = document.createElement('SPAN');
+                participantIdentityText.className = 'Media_webrtc_participants-identity-text';
+                participantIdentityName.appendChild(participantIdentityText);
+              
+
+                Q.Streams.Avatar.get(userId).then(function (avatar) {
+                     if (!avatar) {
+                        return;
+                    }
+					let name = avatar.displayName();
+					let iconUrl = avatar.iconUrl();
+                    let avatarImg = document.createElement('IMG');
+					avatarImg.src = iconUrl;
+					participantIdentityIcon.appendChild(avatarImg);
+					participantIdentityText.innerHTML = name;
+				})
 
                 /*var audioVisualization = document.createElement('DIV')
                 audioVisualization.className = 'Media_webrtc_popup-visualization';
