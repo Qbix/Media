@@ -673,6 +673,7 @@
     color: white;
     min-width: 500px;
     max-width: 500px;
+    background: #424242;
 }
 
 .view-slider-con .view-slider-view-ctl {
@@ -1124,6 +1125,7 @@
 }
 .live-editor-dialog-body .live-editor-sources-layouts-con .live-editor-layouts-list-con .live-editor-custom-select {
     flex: 1;
+    overflow: hidden;
 }
 .live-editor-dialog-body .live-editor-sources-layouts-con .live-editor-layouts-list-con .live-editor-participants-list-config {
     margin-left: 10px;
@@ -1142,6 +1144,10 @@
 
 .live-editor-dialog-body .live-editor-custom-select-selected {
     padding-left:45px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 .live-editor-dialog-body .live-editor-custom-select-selected:before {
     content: ' ';
@@ -1647,7 +1653,8 @@
     align-items: center;
     cursor: pointer;
 }
-.live-editor-sources-item-control .live-editor-sources-item-control-item.live-editor-sources-item-playpause svg{
+.live-editor-sources-item-control .live-editor-sources-item-control-item.live-editor-sources-item-playpause svg,
+.live-editor-sources-item-control .live-editor-sources-item-control-item.live-editor-sources-item-config svg {
     height: 22px;
     width: auto;
 }
