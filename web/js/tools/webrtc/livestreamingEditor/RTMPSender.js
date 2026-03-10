@@ -150,10 +150,13 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
     }
 
     function startStreaming(rtmpUrls, service, livestreamStream, useMp4Muxer) {
-        log('startStreaming', rtmpUrls);
+        log('startStreaming', rtmpUrls, useMp4Muxer);
         if (useMp4Muxer) {
+            log('startStreamin 1');
+
             return startStreamingUsingMp4Muxer();
         } else {
+            log('startStreamin 2');
             return startStreamingUsingMediaRecorder();
         }
 
@@ -180,6 +183,8 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                     let chunknum = 0;
                     let firstChunks = [];
                     let initSent = false;
+                    let lastChunkTimestamp = Date.now();
+
                     _mp4Streamer = new Mp4Recorder({
                         mediaStream: mediaStream,
                         audioContext: audioContext,
@@ -195,7 +200,11 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                             if (_streamingSocket[service] == null) return;
                             
                             if (_streamingSocket[service].connected) {
-                                _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
+                                let nowTs = Date.now();
+                                let secondsSinceLastChunk = (nowTs - lastChunkTimestamp) / 1000;
+                                lastChunkTimestamp = nowTs;
+                                //console.log('onDataAvailable secondsSinceLastChunk', secondsSinceLastChunk)
+                                //_streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
                                 /* if(_streamingSocket[service].chunksSkipped != 0) {
 
                                     let ftypBlob = new Blob([_mp4Streamer.ftypBox]);
@@ -733,7 +742,7 @@ function Mp4Recorder(options) {
         muxer = new Mp4Muxer.Muxer({
             /* target: new Mp4Muxer.ArrayBufferTarget(), */
             target: new Mp4Muxer.StreamTarget({
-                onData: async function (buffer) {
+                onData: async function (buffer, _) {
                     if (chunkCounter == -1) {
                         let info = {
                             publisherId: options.publisherId,
@@ -750,7 +759,7 @@ function Mp4Recorder(options) {
                         let chunkHandle = await saveTempChunk(buffer, fileName + '_' + chunkCounter);
                         if (chunkHandle) chunkHandles.push(chunkHandle);
                     }
-
+                    console.log('onData EVENT');
                     if (options.onDataAvailable) {
                         options.onDataAvailable(buffer);
                     }
@@ -778,6 +787,8 @@ function Mp4Recorder(options) {
 
         thisInstance.videoEncoder = new VideoEncoder({
             output: function (chunk, meta) {
+                console.log('VideoEncoder addVideoChunk EVENT');
+
                 return muxer.addVideoChunk(chunk, meta)
             },
             error: e => console.error(e)
