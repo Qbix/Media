@@ -19,6 +19,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
             });;
     });
    
+    //const FACEBOOK_APP_SECRET = 'bfe8cd74ad8ba7c87176ed37dcc227e9';
     function connectGoogleAccount() {
         
         return new Promise(function (resolve, reject) {
