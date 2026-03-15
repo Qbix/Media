@@ -7592,10 +7592,13 @@
                     "{{Media}}/js/tools/webrtc/app.js",
                     "{{Media}}/js/tools/webrtc/HackTimer.js",
                     "{{Media}}/js/tools/webrtc/RecordRTC.js",
-                    "{{Media}}/js/tools/webrtc/mp4-muxer.min.js",
                     "https://accounts.google.com/gsi/client",
                 ], function () {
-                    initConference();
+                    import(Q.url('{{Media}}/js/tools/webrtc/mediabunny.mjs')).then((Mediabunny) => {
+                        Media.WebRTC.Mediabunny = Mediabunny;
+                        Media.WebRTC.Mediabunny.registerUnthrottledTimerWorker(Q.url('{{Media}}/js/tools/webrtc/mediabunnyWorker.js'));
+                        initConference();
+                    })
                 });
             }
 
