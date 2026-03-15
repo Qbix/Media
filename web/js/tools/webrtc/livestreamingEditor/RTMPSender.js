@@ -183,9 +183,13 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                     let chunknum = 0;
                     let firstChunks = [];
                     let initSent = false;
-                    let lastChunkTimestamp = Date.now();
+                    //let lastChunkTimestamp = Date.now();
 
                     _mp4Streamer = new Mp4Recorder({
+                        bitrateMode: 'constant',
+                        bitrate: 4_000_000,
+                        keyFrameInterval: 5,
+                        latencyMode: 'realtime',
                         mediaStream: mediaStream,
                         audioContext: audioContext,
                         canvas: canvas,
@@ -200,11 +204,11 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                             if (_streamingSocket[service] == null) return;
                             
                             if (_streamingSocket[service].connected) {
-                                let nowTs = Date.now();
+                                /* let nowTs = Date.now();
                                 let secondsSinceLastChunk = (nowTs - lastChunkTimestamp) / 1000;
                                 lastChunkTimestamp = nowTs;
-                                //console.log('onDataAvailable secondsSinceLastChunk', secondsSinceLastChunk)
-                                //_streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
+                                console.log('onDataAvailable secondsSinceLastChunk', secondsSinceLastChunk, blob) */
+                                _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
                                 /* if(_streamingSocket[service].chunksSkipped != 0) {
 
                                     let ftypBlob = new Blob([_mp4Streamer.ftypBox]);
@@ -608,8 +612,12 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
 function Mp4Recorder(options) {
     const thisInstance = this;
     const canvas = options.canvas;
-    const mediaStream = options.mediaStream; //for audio input
-    const audioContext = options.audioContext; //for audio input
+    const mediaStream = options.mediaStream;
+    const audioContext = options.audioContext;
+    const bitrateMode = options.bitrateMode ? options.bitrateMode : 'constant';
+    const bitrate = options.bitrate ? options.bitrate : 1_000_000;
+    const keyFrameInterval = options.keyFrameInterval ? options.keyFrameInterval : 5;
+    const latencyMode = options.latencyMode ? options.latencyMode : "quality"; 
     let _opfsRoot = null;
     let _tempDir = null;
 
@@ -619,10 +627,11 @@ function Mp4Recorder(options) {
     let infoFile = null;
     let chunkCounter = -1;
 
-    let muxer = null;
-    this.videoEncoder = null;
+    let output = null;
+    let chunks = [];
+    //this.videoEncoder = null;
     this.fps = 0;
-    let audioEncoder = null;
+    //let audioEncoder = null;
     let startTime = null;
     let startTimestamp = null;
     let recording = false;
@@ -717,6 +726,7 @@ function Mp4Recorder(options) {
     }
 
     this.startRecording = async function () {
+        const Mediabunny = Q.Media.WebRTC.Mediabunny;
         // Check for VideoEncoder availability
         if (typeof VideoEncoder === 'undefined') {
             alert("Looks like your user agent doesn't support VideoEncoder / WebCodecs API yet.");
@@ -737,10 +747,74 @@ function Mp4Recorder(options) {
         } else {
             console.warn('AudioEncoder not available; no need to acquire a user media audio track.');
         }
+                    let lastChunkTimestamp = Date.now();
+
+        output = new Mediabunny.Output({
+            format: new Mediabunny.Mp4OutputFormat({ fastStart: "fragmented" }),
+            target: new Mediabunny.StreamTarget(
+                new WritableStream({
+                    async write(chunk) {
+                        /* let nowTs = Date.now();
+                        let secondsSinceLastChunk = (nowTs - lastChunkTimestamp) / 1000;
+                        lastChunkTimestamp = nowTs;
+                        console.log('onDataAvailable chuuuuuuuunk', secondsSinceLastChunk) */
+                        if (chunkCounter == -1) {
+                            let info = {
+                                publisherId: options.publisherId,
+                                streamName: options.streamName,
+                                webrtcStarttime: options.startTime,
+                                title: options.title,
+                            }
+                            infoFile = await saveTempChunk(JSON.stringify(info), fileName + '_info')
+                        }
+
+                        //chunks.push(chunk.data);
+                        
+                        chunkCounter++;
+                        if (options.recording !== false) {
+                            let chunkHandle = await saveTempChunk(chunk.data, fileName + '_' + chunkCounter);
+                            if (chunkHandle) chunkHandles.push(chunkHandle);
+                        }
+                        if (options.onDataAvailable) {
+                            options.onDataAvailable(chunk.data);
+                        }
+                    }
+                }), {
+                    //chunked: true,
+                    chunkSize: 0.5 * 1024 * 1024
+                }
+
+            )
+        });
+
+        if (videoTrack) {
+            videoSource = new Mediabunny.MediaStreamVideoTrackSource(videoTrack, {
+                codec: "avc",
+                bitrateMode: bitrateMode,
+                bitrate: bitrate,
+                keyFrameInterval: keyFrameInterval,
+                latencyMode: latencyMode
+            });
+
+            output.addVideoTrack(videoSource);
+        }
+
+        if (audioTrack) {
+			// Add the audio track, with the media stream track as the source
+			const audioSource = new Mediabunny.MediaStreamAudioTrackSource(audioTrack, {
+				codec: 'aac',
+				bitrate: Mediabunny.QUALITY_MEDIUM,
+			});
+			//audioSource.errorPromise.catch(cancelRecording); // Make sure errors are bubbled up
+
+			output.addAudioTrack(audioSource);
+		}
+        
+
+        await output.start();
 
         // Create an MP4 muxer with a video track and maybe an audio track
-        muxer = new Mp4Muxer.Muxer({
-            /* target: new Mp4Muxer.ArrayBufferTarget(), */
+        /* muxer = new Mp4Muxer.Muxer({
             target: new Mp4Muxer.StreamTarget({
                 onData: async function (buffer, _) {
                     if (chunkCounter == -1) {
@@ -798,7 +872,7 @@ function Mp4Recorder(options) {
             width: canvas.width,
             height: canvas.height,
             bitrate: 1e6
-        });
+        }); */
 
         startTime = document.timeline.currentTime;
         startTimestamp = +new Date();
@@ -806,7 +880,7 @@ function Mp4Recorder(options) {
         lastKeyFrame = -Infinity;
         framesGenerated = 0;
 
-        if (videoTrack) {
+        /* if (videoTrack) {
             let videoTrackProcessor = new MediaStreamTrackProcessor({ track: videoTrack });
             let consumer = new WritableStream({
                 write(frame) {
@@ -837,34 +911,7 @@ function Mp4Recorder(options) {
                 }
             });
             videoTrackProcessor.readable.pipeTo(consumer);
-        }
-
-        if (audioTrack) {
-            audioEncoder = new AudioEncoder({
-                output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
-                error: e => console.error(e)
-            });
-            audioEncoder.configure({
-                codec: 'mp4a.40.2',
-                numberOfChannels: 2,
-                sampleRate: audioSampleRate,
-                bitrate: 128000
-            });
-
-            // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
-            let trackProcessor = new MediaStreamTrackProcessor({ track: audioTrack, maxBufferSize: 100 });
-            let consumer = new WritableStream({
-                write(audioData) {
-                    if (!recording) {
-                        audioData.close();
-                        return;
-                    }
-                    audioEncoder.encode(audioData);
-                    audioData.close();
-                }
-            });
-            trackProcessor.readable.pipeTo(consumer);
-        }
+        } */
     };
 
     this.endRecording = async function () {
@@ -873,17 +920,17 @@ function Mp4Recorder(options) {
         videoTrack?.stop();
         audioTrack?.stop();
 
-        await thisInstance.videoEncoder?.flush();
-        await audioEncoder?.flush();
-        muxer.finalize();
+        //await thisInstance.videoEncoder?.flush();
+        //await audioEncoder?.flush();
+        await output.finalize();
         if (options.recording !== false) {
             await checkIfFinalChunkExist();
             await mergeAndSaveAndDownload();
         }
 
-        thisInstance.videoEncoder = null;
-        audioEncoder = null;
-        muxer = null;
+        //thisInstance.videoEncoder = null;
+        //audioEncoder = null;
+        output = null;
         startTime = null;
         startTimestamp = null;
         firstAudioTimestamp = null;
