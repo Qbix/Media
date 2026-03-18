@@ -2289,6 +2289,20 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
             _inputCtx.clearRect(0, 0, _size.width, _size.height);
 
+            if (tool.state.startStreamingTimestamp != null && (Date.now() - tool.state.startStreamingTimestamp) <= 5000) {
+                // 1. Style the text
+                _inputCtx.font = '56px serif';
+                _inputCtx.fillStyle = 'royalblue';
+                _inputCtx.textAlign = 'center';
+
+                // 2. Draw solid text
+                // Parameters: (text, x-coordinate, y-coordinate)
+                _inputCtx.fillText('Connecting...', _size.width / 2, _size.height / 2);
+                _isRendering = false;
+                return;
+            }
+            
+
             for(let i = _activeScene.backgroundSources.length - 1; i >= 0; i--) {
                 if(_activeScene.backgroundSources[i].active == false) continue;
 

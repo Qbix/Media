@@ -1465,6 +1465,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
             stopStreamToEachDestination();
 
             tool.state.rtmpLiveIsActive = false;
+            tool.state.startStreamingTimestamp = null;
             tool.eventDispatcher.dispatch('livestreamingEnded');
 
         } else {
@@ -1631,6 +1632,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                 tool.RTMPSender.startStreaming(rtmpUrlsArr, 'custom', tool.livestreamStream, useMp4Muxer)
                     .then(function () {
                         tool.state.rtmpLiveIsActive = true;
+                        tool.state.startStreamingTimestamp = Date.now();
                         tool.eventDispatcher.dispatch('destinationLiveCreated');
                     });
                 
