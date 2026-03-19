@@ -431,6 +431,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         }
 
         if (service != null && _streamingSocket[service] != null) {
+            _streamingSocket[service].socket.emit('Media/webrtc/endStream');
             _streamingSocket[service].socket.disconnect();
             delete _streamingSocket[service];
 
