@@ -132,8 +132,8 @@
                 });
                 webrtcSignalingLib.event.on('currentAudioinputDeviceChanged', function (device) {
                     tool.updateAudioInputList();
-                    localStorage.setItem("Q.Media.webrtc.audioInputDeviceId", device.deviceId);
-                    localStorage.setItem("Q.Media.webrtc.audioInputGroupId", device.groupId);
+                    //localStorage.setItem("Q.Media.webrtc.audioInputDeviceId", device.deviceId);
+                    //localStorage.setItem("Q.Media.webrtc.audioInputGroupId", device.groupId);
                 });
                 webrtcSignalingLib.event.on('currentAudiooutputDeviceChanged', function (device) {
                     tool.updateAudioOutputList();
@@ -292,10 +292,7 @@
                 var count = 1;
 
                 tool.clearAudioInputList();
-                log('controls: audio current device', tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice());
-
                 tool.webrtcSignalingLib.localMediaControls.audioInputDevices().forEach(function (mediaDevice) {
-                    log('controls: loadAudioInputList', mediaDevice);
                     var radioBtnItem = document.createElement('DIV');
                     radioBtnItem.className = 'webrtc-audio-settings_popup_item';
                     radioBtnItem.dataset.deviceId = mediaDevice.deviceId;
@@ -386,9 +383,7 @@
             },
             updateAudioInputList: function () {
                 var tool = this;
-                log('controls: updateAudioInputList START', tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice());
                 let audioInputIsActive = false;
-                log('controls: updateAudioInputList: current ai device', tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice());
 
                 tool.audioInputListButtons.forEach(function (audioInputItem) {
                     if (tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice() != null && tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice().deviceId == audioInputItem.deviceId) {
@@ -398,7 +393,6 @@
 
                 });
                 if (!audioInputIsActive) {
-                    log('controls: updateAudioInputList: tool.turnOffAudioInputBtn');
                     tool.toggleAudioInputRadioButton(tool.turnOffAudioInputBtn);
                 }
             },
@@ -454,7 +448,6 @@
             },
             loadAudioOutputList: function () {
                 var tool = this;
-                log('controls: loadAudioOutputList START');
                 tool.audioOutputList.innerHTML = '';
                 tool.audioOutputListButtons = [];
 
@@ -469,7 +462,6 @@
                 var count = 1;
 
                 tool.webrtcSignalingLib.localMediaControls.audioOutputDevices().forEach(function (mediaDevice) {
-                    log('controls: loadAudioOutputList', mediaDevice);
                     var radioBtnItem = document.createElement('DIV');
                     radioBtnItem.className = 'webrtc-audio-settings_popup_item';
                     radioBtnItem.dataset.deviceId = mediaDevice.deviceId;

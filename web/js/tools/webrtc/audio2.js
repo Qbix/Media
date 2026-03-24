@@ -134,6 +134,9 @@
         if(options.initStream) {
             tool.state.currentStream = options.initStream;
         }
+        if(options.initAudioOutputDeviceId) {
+            tool.state.currentAudioOutputDeviceId = options.initAudioOutputDeviceId;
+        }
 
         Q.addStylesheet('{{Media}}/css/tools/audio2.css?ts=' + performance.now(), function () {
 
@@ -151,7 +154,7 @@
             onStream: new Q.Event(),
             initStream: null,
             currentStream: null,
-            getUserMediaOnChange: false,
+            getUserMediaOnChange: true,
         },
 
         {
@@ -169,8 +172,6 @@
                 var arrow = document.createElement('DIV');
                 arrow.className = 'Media_webrtc_audio_select_arrow';
                 selectedAudioDevice.appendChild(arrow);
-
-                console.log('tool.audioTool', tool.audioTool)
 
                 var audioDevicesContainer = document.createElement('DIV');
                 audioDevicesContainer.className = 'Media_webrtc_audio_devices';
@@ -256,6 +257,8 @@
                 let tracks = tool.state.currentStream.getAudioTracks();
                 for(let i in tracks) {
                     tracks[i].stop();
+                    //tool.state.initStream may contain both audio and video tracks so we need to remove "ended" tracks from the active stream as this stream will be used by WebRTC app later
+                    tool.state.currentStream.removeTrack(tracks[i]);
                 }
                 tool.state.currentStream = null;
             },
@@ -274,7 +277,7 @@
                     tool.activeOutputItem.setActive(false);
                 }
                 button.setActive(true);
-                tool.selectDropdownSelected.innerHTML = button.label;
+                //tool.selectDropdownSelected.innerHTML = button.label;
                 tool.activeOutputItem = button;
             },
             requestSelectedAudioinput: function () {
@@ -338,7 +341,6 @@
             },
             loadDevicesList: function () {
                 var tool = this;
-                log('contros: loadDevicesList')
                 if(tool.pendingDevicesUpdate) {
                     tool.queueDevicesUpdate = true;
                     return;
@@ -350,11 +352,8 @@
                     const audioInputDevices = e.audioInputDevices
                     const audioOutputDevices = e.audioOutputDevices
                     const fullInfoGranted = e.granted
-                    console.log('audioInputDevices', audioInputDevices, fullInfoGranted)
                     audioInputDevices.forEach(function (mediaDevice, index) {
                         let label = mediaDevice.label;
-                        console.log('mediaDevice.label', mediaDevice.label)
-
                         let inputItem = new ButtonInstance({
                             className: 'Media_webrtc_audio_input_item',
                             label: label || `Audio input ${index + 1}`,
@@ -431,13 +430,22 @@
                                 if(e) e.stopPropagation();
                                 const btnInstance = this;
                                 const radioBtnItem = btnInstance.button;
-                                if (tool.dropDownPopup) tool.dropDownPopup.hide();
+                                if (tool.dropDownPopup) {
+                                    //let user see that it was changed because we show only input devices as selected in our custom "select" list
+                                    setTimeout(function () {
+                                        tool.dropDownPopup.hide();
+                                    }, 100)
+                                }
                                 tool.toggleOutputOption(btnInstance);
+                                tool.state.currentAudioOutputDeviceId = mediaDevice.deviceId;
+                                Q.handle(tool.state.onAudioOutputChange, tool, [mediaDevice.deviceId]);
                                 return;
 
                             }
                         });
-                       
+                        if (tool.state.currentAudioOutputDeviceId && tool.state.currentAudioOutputDeviceId == item.deviceId) {
+                            tool.toggleOutputOption(item);
+                        }
                         tool.audiooutputListEl.insertBefore(item.button, tool.audiooutputListEl.firstChild);
                         tool.outputListButtons.set(item.deviceId ?? Date.now().toString(36) + Math.random().toString(36).replace(/\./g, ""), item);
                     });
@@ -476,7 +484,6 @@
                 tool.audioinputListEl.innerHTML = '';
             },
             getDevicesList: function () {
-                log('getDevicesList');
                 var tool = this;
                 return new Promise(function (resolve, reject) {
                     tool.hasMediaPermissions().then(function (granted) {
@@ -485,7 +492,6 @@
 
                         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
                             navigator.mediaDevices.enumerateDevices().then(function (mediaDevicesList) {
-                                console.log('mediaDevicesList', mediaDevicesList)
                                 for (let i in mediaDevicesList) {
                                     let device = mediaDevicesList[i];
                                     if (device.kind == 'audioinput') {
