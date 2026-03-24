@@ -108,6 +108,7 @@
             show: function (callback, closeCallback) {
                 var tool = this;
                 var usersAvatar = createAvatarElement();
+                var preJoiningAudioOutputDeviceId = tool.state.initAudioOutputDeviceId;
                 var preJoiningStreams = tool.preJoiningStreams = {
                     camera: { kind: 'camera', stream: tool.state.initVideoStream, mediaElement: null },
                     audio: { kind: 'audio', stream: tool.state.initAudioStream, mediaElement: null },
@@ -162,7 +163,6 @@
                             if (preJoiningStreams.audio != null && preJoiningStreams.audio.stream != null) {
                                 tool.audioTool.stopCurrentStream();
                                 tool.audioTool.state.getUserMediaOnChange = false;
-                                log('switchCamera: getUserMedia: 2')
                                 if (preJoiningStreams.audio.mediaElement) preJoiningStreams.audio.mediaElement.remove();
                                 tool.microphoneButton.setActive(false);
                                 preJoiningStreams.audio.stream = null;
@@ -185,6 +185,7 @@
                             'DIV',
                             "Media/webrtc/audio2",
                             {
+                                initAudioOutputDeviceId: tool.state.initAudioOutputDeviceId,
                                 initStream: tool.state.initAudioStream,
                                 onStream: function (stream) {
                                     if(tool.state.canceled) {
@@ -194,6 +195,9 @@
                                     tool.microphoneButton.element.classList.remove('Q_working');
                                     preJoiningStreams.audio.stream = stream;
                                     tool.microphoneButton.setActive(true);
+                                },
+                                onAudioOutputChange : function (deviceId) {
+                                    preJoiningAudioOutputDeviceId = deviceId;
                                 }
                             }
                         ),
@@ -201,7 +205,6 @@
                         function () {
                             tool.audioTool = this;
                             selectedAudioDevice.appendChild(tool.audioTool.element);
-                            console.log('videoTool loaded', this, this.element)
                         }
                     );
                 }
@@ -211,12 +214,10 @@
                         onIcon: _icons.cameraSVG,
                         offIcon: _icons.disabledCameraSVG,
                         handler: function () {
-                            console.log('videoTool loaded 2', tool.videoTool)
                             if (tool.videoTool.isPending) return;
                             if (preJoiningStreams.camera != null && preJoiningStreams.camera.stream != null) {
                                 tool.videoTool.stopCurrentStream();
                                 tool.videoTool.state.getUserMediaOnChange = false;
-                                log('switchCamera: getUserMedia: 2')
                                 if (preJoiningStreams.camera.mediaElement) preJoiningStreams.camera.mediaElement.remove();
                                 tool.cameraButton.setActive(false);
                                 preJoiningStreams.camera.stream = null;
@@ -258,7 +259,6 @@
                         function () {
                             tool.videoTool = this;
                             selectedVideoDevice.appendChild(tool.videoTool.element);
-                            console.log('videoTool loaded', this, this.element)
                         }
                     );
                 }
@@ -294,7 +294,7 @@
 
                     var uniqueById = Array.from(map.values());
 
-                    Q.handle(tool.state.onJoin, null, [uniqueById]);
+                    Q.handle(tool.state.onJoin, null, [uniqueById, preJoiningAudioOutputDeviceId]);
                 });
 
                 function updatePreview() {
@@ -325,8 +325,8 @@
                 }
 
                 function createVideoElement(stream) {
-                    log('createVideoElement', stream);
                     let videoPreview = document.createElement('video');
+                    videoPreview.muted = true;
                     try {
                         videoPreview.srcObject = stream;
 

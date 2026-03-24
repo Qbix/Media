@@ -152,10 +152,9 @@
                 });
 
                 webrtcSignalingLib.event.on('currentVideoinputDeviceChanged', function (device) {
-                    log('currentVideoinputDeviceChanged', device);
                     tool.updateCamerasList();
-                    localStorage.setItem("Q.Media.webrtc.videoInputDeviceId", device.deviceId);
-                    localStorage.setItem("Q.Media.webrtc.videoInputGroupId", device.groupId);
+                    //localStorage.setItem("Q.Media.webrtc.videoInputDeviceId", device.deviceId);
+                    //localStorage.setItem("Q.Media.webrtc.videoInputGroupId", device.groupId);
                 });
                 webrtcSignalingLib.event.on('deviceListUpdated', function () {
                     tool.loadCamerasList();
@@ -495,7 +494,6 @@
             },
             loadCamerasList: function () {
                 var tool = this;
-                log('contros: loadCamerasList')
                 if (tool.webrtcUserInterface.getOptions().audioOnlyMode) return;
                 //location.reload();
 
@@ -503,7 +501,6 @@
 
                 tool.webrtcSignalingLib.localMediaControls.videoInputDevices().forEach(function (mediaDevice, index) {
                     let label = mediaDevice.label;
-                    console.log('mediaDevice.label', mediaDevice.label)
                     if (Q.Users.loggedInUserId() == 'tccezzcp' || Q.Users.loggedInUserId() == 'xbmyvjne') {
                         if (mediaDevice.label == 'NDI Webcam Video 1' || mediaDevice.label == 'NDI Webcam Video 2') {
                             label = 'Front camera';
@@ -531,7 +528,6 @@
                                     for (i = 0; screen = localScreens[i]; i++) {
                                         tool.webrtcUserInterface.screenRendering.updateLocalScreenClasses(screen);
                                     }
-                                    log('controls: tool.toggleRadioButton', cameraItem)
                                     tool.toggleRadioButton(cameraItem);
 
                                     tool.state.controlsTool.updateControlBar();
@@ -577,20 +573,16 @@
             },
             updateCamerasList: function (e) {
                 var tool = this;
-                log('controls: updateCamerasList START');
                 let cameraIsActive = false;
                 tool.cameraListButtons.forEach(function (cameraItem) {
                     let currentCameraDevice = tool.webrtcSignalingLib.localMediaControls.currentCameraDevice();
-                    log('controls: updateCamerasList: currentCameraDevice', currentCameraDevice);
                     if (currentCameraDevice != null && currentCameraDevice.deviceId == cameraItem.deviceId) {
-                        log('controls: updateCamerasList: tool.toggleRadioButton (active)', cameraItem);
                         tool.toggleRadioButton(cameraItem);
                         cameraIsActive = true
                     }
 
                 });
                 if (!cameraIsActive) {
-                    log('controls: updateCamerasList: make active tool.turnOffCameraBtn');
                     tool.toggleRadioButton(tool.turnOffCameraBtn);
                 }
 
@@ -617,7 +609,6 @@
                     }
                 }
 
-                log('controls: tool.toggleRadioButton', buttonObj);
                 if (buttonObj.type == 'camera') {
                     deselectCameraButtons();
                     if (!tool.webrtcUserInterface.getOptions().showScreenSharingInSeparateScreen) {

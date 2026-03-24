@@ -137,7 +137,6 @@
         tool.createList();
         tool.loadCamerasList();
         navigator.mediaDevices.addEventListener("devicechange", function() {
-            console.log('devicechange');
             tool.loadCamerasList();
         });
     },
@@ -147,7 +146,7 @@
             onStream: new Q.Event(),
             initStream: null,
             currentStream: null,
-            getUserMediaOnChange: false,
+            getUserMediaOnChange: true,
         },
 
         {
@@ -234,6 +233,8 @@
                 let tracks = tool.state.currentStream.getVideoTracks();
                 for(let i in tracks) {
                     tracks[i].stop();
+                    //tool.state.initStream may contain both audio and video tracks so we need to remove "ended" tracks from the active stream as this stream will be used by WebRTC app later
+                    tool.state.currentStream.removeTrack(tracks[i]);
                 }
                 tool.state.currentStream = null;
             },
@@ -419,7 +420,6 @@
                 tool.videoinputListEl.innerHTML = '';
             },
             getDevicesList: function () {
-                log('getDevicesList');
                 var tool = this;
                 return new Promise(function (resolve, reject) {
                     tool.hasMediaPermissions().then(function (granted) {
