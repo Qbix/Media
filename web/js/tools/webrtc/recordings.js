@@ -883,7 +883,10 @@
                     a.download = downloadName;
                     document.body.appendChild(a);
                     a.click();
-                    window.URL.revokeObjectURL(url);
+                    setTimeout(() => {
+                        URL.revokeObjectURL(url);
+                        a.remove();
+                    }, 1000);
                 };
 
                 function saveStaticFile(name, fileBlob) {
@@ -1249,52 +1252,27 @@
                                     "-" + dateFormat.getMinutes() +
                                     "-" + dateFormat.getSeconds();
 
-                                if(recordingItem.storage == 'opfs') {
-                                   tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
-                                       fileHandle.getFile().then(function (file) {
-                                           let downloadLink = document.createElement('A');
-                                           downloadLink.style.position = 'absolute';
-                                           downloadLink.style.top = '-999999px';
-                                           downloadLink.href = URL.createObjectURL(file);
-                                           downloadLink.download = downloadName + '.' + recordingItem.format;
-                                           document.body.appendChild(downloadLink);
-                                           downloadLink.click();
-                                       });
-                                   }).catch(function (e) {
+                                if (recordingItem.storage == 'opfs') {
+                                    tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
+                                        fileHandle.getFile().then(function (file) {
+                                            const url = URL.createObjectURL(file);
+                                            let downloadLink = document.createElement('A');
+                                            downloadLink.style.position = 'absolute';
+                                            downloadLink.style.top = '-999999px';
+                                            downloadLink.href = url;
+                                            downloadLink.download = downloadName + '.' + recordingItem.format;
+                                            document.body.appendChild(downloadLink);
+                                            downloadLink.click();
+                                            setTimeout(() => {
+                                                URL.revokeObjectURL(url);
+                                                downloadLink.remove();
+                                            }, 1000);
+                                        });
+                                    }).catch(function (e) {
                                         console.error(e);
-                                   });
+                                    });
                                 } else {
-                                    tool.localRecordingsDB.getByIndex('startTime', recordingItem.startTime, 'recordingsChunks').then(function (chunks) {
-                                        chunks.sort(function(a, b){
-                                            var x = a.timestamp;
-                                            var y = b.timestamp;
-                                            if (x < y) {return -1;}
-                                            if (x > y) {return 1;}
-                                            return 0;
-                                        });
-    
-                                        let allChunks = chunks.map(function (o) {
-                                            return o.buffer;
-                                        });
-                                        
-                                        let blob = new Blob(allChunks/* , {
-                                            type: 'video/webm'
-                                        } */);
-    
-                                        let extension = 'mp4';
-                                        if(recordingItem.codec && recordingItem.codec.includes('mp4')) {
-                                            extension = 'mp4';
-                                        } else if(recordingItem.codec && recordingItem.codec.includes('webm')) {
-                                            extension = 'webm';
-                                        }
-                                        let downloadLink = document.createElement('A');
-                                        downloadLink.style.position = 'absolute';
-                                        downloadLink.style.top = '-999999px';
-                                        downloadLink.href = URL.createObjectURL(blob);
-                                        downloadLink.download = downloadName + '.' + extension;
-                                        document.body.appendChild(downloadLink);
-                                        downloadLink.click();
-                                    })
+                                    tool.downloadFromIndexedDB(recordingItem, downloadName);
                                 }
                             });
     
@@ -1356,7 +1334,46 @@
                     }
                 }
             },
+            downloadFromIndexedDB: function (recordingItem, downloadName) {
+                var tool = this;
+                tool.localRecordingsDB.getByIndex('startTime', recordingItem.startTime, 'recordingsChunks').then(function (chunks) {
+                    chunks.sort(function (a, b) {
+                        var x = a.timestamp;
+                        var y = b.timestamp;
+                        if (x < y) { return -1; }
+                        if (x > y) { return 1; }
+                        return 0;
+                    });
 
+                    let allChunks = chunks.map(function (o) {
+                        return o.buffer;
+                    });
+
+                    let blob = new Blob(allChunks/* , {
+                                            type: 'video/webm'
+                                        } */);
+
+                    let extension = 'mp4';
+                    if (recordingItem.codec && recordingItem.codec.includes('mp4')) {
+                        extension = 'mp4';
+                    } else if (recordingItem.codec && recordingItem.codec.includes('webm')) {
+                        extension = 'webm';
+                    }
+                    const url = URL.createObjectURL(blob);
+                    let downloadLink = document.createElement('A');
+                    downloadLink.style.position = 'absolute';
+                    downloadLink.style.top = '-999999px';
+                    downloadLink.href = url;
+                    downloadLink.download = downloadName + '.' + extension;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+
+                    setTimeout(() => {
+                        URL.revokeObjectURL(url);
+                        downloadLink.remove();
+                    }, 1000);
+                })
+            },
             getLocalRecordings: function () {
                 var tool = this;
                 return new Promise(function (resolve, reject) {

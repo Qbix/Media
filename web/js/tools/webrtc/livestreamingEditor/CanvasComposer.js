@@ -3315,10 +3315,42 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             //drawVideosOnCanvas();
             //audioTimerLoop(drawVideosOnCanvas, 1000 / 60)
 
+            const updatePeriod = 1000 / _fps;
+            let lastTickTime = null;
+            let droppedFramesTotal = 0;
+            let totalFrames = 0;
+
+            /* setInterval(() => {
+                console.log('droppedFramesTotal', droppedFramesTotal, droppedFramesTotal / totalFrames * 100)
+            }, 1000); */
+
+
             if(!_canvasRenderInterval) {
                  log('compositeVideosAndDraw', tool.webrtcSignalingLib.state)
                 _canvasRenderInterval = Q.Media.runWithSpecificFrameRate(function () {
+
+                    const now = performance.now();
+
+                    
+
                     drawVideosOnCanvas();
+
+                    if (lastTickTime === null) {
+                        lastTickTime = now;
+                    } else {
+                        const elapsed = now - lastTickTime;
+                        const framesToProcess = Math.floor(elapsed / updatePeriod);
+
+                        if (framesToProcess > 0) {
+                            // Count dropped frames (everything beyond the first expected frame)
+                            const dropped = Math.max(0, framesToProcess - 1);
+                            droppedFramesTotal += dropped;
+
+                            lastTickTime += framesToProcess * updatePeriod;
+                        }
+                    }
+
+                    totalFrames++;
 
                     if(tool.webrtcSignalingLib.state == 'disconnected' && _canvasRenderInterval != null) {
                         Q.Media.stopRunWithSpecificFrameRate(_canvasRenderInterval);
@@ -5051,7 +5083,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         return codecs;
     }
 
-    function createRecorder(ondataavailable, codecs) {
+    function createRecorder(ondataavailable, options) {
         log('createRecorder START');
 
         if(_canvasMediStream == null) {
@@ -5063,14 +5095,14 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         
         //codecs = getSupportedStreamingCodec();
 
-        if(!codecs) {
+        if(!options.codecs) {
             throw new Error('No supported codecs found.');
         } 
 
         let mediaRecorder = new MediaRecorder(_canvasMediStream.clone(), {
-            mimeType: codecs,
+            mimeType: options.codecs,
             audioBitsPerSecond : 128000,
-            videoBitsPerSecond: 3 * 1024 * 1024
+            videoBitsPerSecond: options.bitrate != null ? options.bitrate : 2 * 1024 * 1024
         });
 
         mediaRecorder.onerror = function (e) {

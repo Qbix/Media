@@ -376,7 +376,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                             if (_streamingSocket[service].connected) {
                                 _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
                             }
-                        }, supportedCodec);
+                        }, { codecs: supportedCodec, bitrate: 2_000_000 });
                     } catch (error) {
                         reject(error);
                         return;
@@ -508,7 +508,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         _localRecorder.startTime = Date.now();
 
         let roomStream = _webrtcUserInterface.roomStream();
-        let metadata = {
+        let metadata = _localRecorder.recordingMetadata = {
             roomKey: roomStream ? roomStream.fields.publisherId + '|' + roomStream.fields.name : '',
             roomStream: roomStream ? {
                 publisherId: roomStream.fields.publisherId,
@@ -565,7 +565,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                         });
                     });
                 });
-            }, codecs);
+            }, { codecs: codecs, bitrate: 2_000_000 });
 
             tool.webrtcSignalingLib.event.dispatch('localRecordingStarted', { participant: tool.webrtcSignalingLib.localParticipant() });
             tool.webrtcSignalingLib.signalingDispatcher.sendDataTrackMessage("localRecordingStarted");
@@ -600,8 +600,22 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
             tool.canvasComposer.stopCaptureCanvas(stopCanvasDrawingAndMixing);
         }
 
+        
+
         if (_localRecorder != null) {
+            let dateFormat = new Date(parseInt(_localRecorder.recordingMetadata.startTime));
+            let downloadName = dateFormat.getDate() +
+                "-" + (dateFormat.getMonth() + 1) +
+                "-" + dateFormat.getFullYear() +
+                "_" + dateFormat.getHours() +
+                "-" + dateFormat.getMinutes() +
+                "-" + dateFormat.getSeconds();
+
+            downloadFromIndexedDB(_localRecorder.recordingMetadata, downloadName);
+
             _localRecorder.chunks = [];
+            _localRecorder.recordingMetadata = null;
+            _localRecorder.startTime = null;
         }
 
         if (_streamingSocket['rec'] && _streamingSocket['rec'].socket && _streamingSocket['rec'].socket.connected) {
@@ -612,6 +626,45 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         tool.webrtcSignalingLib.event.dispatch('localRecordingEnded', { participant: tool.webrtcSignalingLib.localParticipant() });
         tool.webrtcSignalingLib.signalingDispatcher.sendDataTrackMessage("localRecordingEnded");
 
+    }
+
+    function downloadFromIndexedDB(recordingItem, downloadName) {
+        var tool = this;
+        _localRecordingsDB.getByIndex('startTime', recordingItem.startTime, 'recordingsChunks').then(function (chunks) {
+            chunks.sort(function (a, b) {
+                var x = a.timestamp;
+                var y = b.timestamp;
+                if (x < y) { return -1; }
+                if (x > y) { return 1; }
+                return 0;
+            });
+
+            let allChunks = chunks.map(function (o) {
+                return o.buffer;
+            });
+
+            let blob = new Blob(allChunks);
+
+            let extension = 'mp4';
+            if (recordingItem.codec && recordingItem.codec.includes('mp4')) {
+                extension = 'mp4';
+            } else if (recordingItem.codec && recordingItem.codec.includes('webm')) {
+                extension = 'webm';
+            }
+            const url = URL.createObjectURL(blob);
+            let downloadLink = document.createElement('A');
+            downloadLink.style.position = 'absolute';
+            downloadLink.style.top = '-999999px';
+            downloadLink.href = url;
+            downloadLink.download = downloadName + '.' + extension;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+                downloadLink.remove();
+            }, 1000);
+        })
     }
 
     function startMp4LocalRecording() {
@@ -1125,7 +1178,10 @@ function Mp4Recorder(options) {
         a.download = downloadName;
         document.body.appendChild(a);
         a.click();
-        window.URL.revokeObjectURL(url);
+        setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+            a.remove();
+        }, 1000);
     };
 
 
