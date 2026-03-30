@@ -172,7 +172,7 @@
 
                 webrtcSignalingLib.event.on('localRecordingStarted', function (e) {
                     if(e.format == 'mp4') {
-                        renderMp4RecordingStats(e);
+                        //renderMp4RecordingStats(e);
                     } else {
                         
                     }
