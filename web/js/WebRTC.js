@@ -729,7 +729,8 @@
                 sandboxControls.appendChild(addParticipantLink);
 
                 addParticipantLink.addEventListener('click', function () {
-                    //connectFakeParticipant(Q.Media.fakeUsers.get(''));
+                    let randomUser = getRandomMapValue(Q.Media.fakeUsers);
+                    connectFakeParticipant(randomUser);
                 })
 
                 var participantsListCon = _participantsListCon = document.createElement('DIV');
@@ -737,6 +738,22 @@
                 sandboxContainer.appendChild(participantsListCon);
 
                 document.body.appendChild(sandboxContainer);
+            }
+
+            function getRandomMapValue(map) {
+                // Convert the Map values to an array
+                const valuesArray = Array.from(map.values());
+
+                // If the map is empty, return undefined
+                if (valuesArray.length === 0) {
+                    return undefined;
+                }
+
+                // Generate a random index within the array's bounds
+                const randomIndex = Math.floor(Math.random() * valuesArray.length);
+
+                // Return the element at the random index
+                return valuesArray[randomIndex];
             }
 
             function connectFakeParticipant(userData) {
