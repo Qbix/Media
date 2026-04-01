@@ -4787,7 +4787,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             if (audioContext == null || recreate) {
                 log('audioComposer: create AudioContext');
                 audioContext = new AudioContext({
-                    sampleRate: 44100,
+                    //sampleRate: 44100, //commented because of Firefox error: "DOMException: AudioContext.createMediaStreamSource: Connecting AudioNodes from AudioContexts with different sample-rate is currently not supported"
                     latencyHint: 'playback'
                 });
             }

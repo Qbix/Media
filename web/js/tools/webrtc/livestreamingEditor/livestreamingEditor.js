@@ -137,6 +137,7 @@
                     Q.addScript([
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/streamingIcons.js',
                         '{{Media}}/js/tools/webrtc/EventSystem.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/Mp4Recorder.js',
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/RTMPStreaming.js',
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/RTMPSender.js',
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/CanvasComposer.js'
