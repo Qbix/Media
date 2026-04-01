@@ -7611,6 +7611,7 @@
                     import(Q.url('{{Media}}/js/tools/webrtc/mediabunny.mjs')).then((Mediabunny) => {
                         Media.WebRTC.Mediabunny = Mediabunny;
                         Media.WebRTC.Mediabunny.registerUnthrottledTimerWorker(Q.url('{{Media}}/js/tools/webrtc/mediabunnyWorker.js'));
+                        //Media.WebRTC.Mediabunny.registerMediaStreamTrackProcessorWorker(Q.url('{{Media}}/js/tools/webrtc/mediaBunnyTrackProcessorWorker.js'));
                         initConference();
                     })
                 });

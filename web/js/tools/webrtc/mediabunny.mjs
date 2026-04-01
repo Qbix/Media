@@ -28171,6 +28171,9 @@ var initMediaStreamTrackProcessorWorker = () => {
   const url2 = URL.createObjectURL(blob);
   mediaStreamTrackProcessorWorker = new Worker(url2);
 };
+var registerMediaStreamTrackProcessorWorker = (url) => {
+  mediaStreamTrackProcessorWorker = new Worker(url);
+};
 var mediaStreamTrackProcessorIsSupportedInWorkerCache = null;
 var mediaStreamTrackProcessorIsSupportedInWorker = async () => {
   if (mediaStreamTrackProcessorIsSupportedInWorkerCache !== null) {
@@ -29827,5 +29830,6 @@ export {
   getFirstEncodableVideoCodec,
   registerDecoder,
   registerEncoder,
-  registerUnthrottledTimerWorker
+  registerUnthrottledTimerWorker,
+  registerMediaStreamTrackProcessorWorker
 };
