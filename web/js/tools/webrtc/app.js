@@ -188,7 +188,7 @@ Q.Media.WebRTCRoomClient = function app(options){
 
 
 
-    app.event = new EventSystem();
+    app.event = new Q.Media.WebRTC.EventSystem();
 
     /**
      * Contains information about participant
@@ -265,19 +265,46 @@ Q.Media.WebRTCRoomClient = function app(options){
          *
          * @method audioTracks
          * @uses Track
+         * @param {Object|boolean} [options]
+         * @param {boolean} [options.muted]
+         * @param {boolean} [options.enabled]
+         * @param {string} [options.readyState]
          * @return {Array}
          */
-        this.audioTracks = function (activeTracksOnly) {
-            if(activeTracksOnly) {
-                return this.tracks.filter(function (trackObj) {
-                    return trackObj.kind == 'audio' && !(trackObj.mediaStreamTrack.muted == true || trackObj.mediaStreamTrack.enabled == false || trackObj.mediaStreamTrack.readyState == 'ended');
-                });
+        this.audioTracks = function (options = {}) {
+            // Backward compatibility: if boolean true → active tracks only
+            if (typeof options === 'boolean') {
+                if (options === true) {
+                    options = {
+                        muted: false,
+                        enabled: true,
+                        readyState: 'live'
+                    };
+                } else {
+                    options = {};
+                }
             }
 
             return this.tracks.filter(function (trackObj) {
-                return trackObj.kind == 'audio';
+                if (trackObj.kind !== 'audio') return false;
+
+                const track = trackObj.mediaStreamTrack;
+
+                if (options.muted !== undefined && track.muted !== options.muted) {
+                    return false;
+                }
+
+                if (options.enabled !== undefined && track.enabled !== options.enabled) {
+                    return false;
+                }
+
+                if (options.readyState !== undefined && track.readyState !== options.readyState) {
+                    return false;
+                }
+
+                return true;
             });
-        }
+        };
         /**
          * Removes track from participants tracks list and stops sending it to all participants
          *
@@ -397,6 +424,8 @@ Q.Media.WebRTCRoomClient = function app(options){
             }
             return this.access.permissions.indexOf(permissionName) != -1 ? true : false;
         }
+
+        this.eventDispatcher = new Q.Media.WebRTC.EventSystem();
     }
 
     function LocalParticipant() {
@@ -860,6 +889,7 @@ Q.Media.WebRTCRoomClient = function app(options){
 
             }*/
             app.event.dispatch('trackAdded', {participant:participant, track: track});
+            participant.eventDispatcher.dispatch('trackAdded', track);
 
         }
 
@@ -6610,79 +6640,6 @@ Q.Media.WebRTCRoomClient = function app(options){
         app.event.dispatch('disconnected');
         app.event.destroy();
         app.state = 'disconnected';
-    }
-
-
-    /**
-     * Event system of app
-     *
-     * @method app.event
-     * @return {Object}
-     */
-    function EventSystem(){
-
-        var events = {};
-
-        var CustomEvent = function (eventName) {
-
-            this.eventName = eventName;
-            this.callbacks = [];
-
-            this.registerCallback = function(callback) {
-                this.callbacks.push(callback);
-            }
-
-            this.unregisterCallback = function(callback) {
-                const index = this.callbacks.indexOf(callback);
-                if (index > -1) {
-                    this.callbacks.splice(index, 1);
-                }
-            }
-
-            this.fire = function(data) {
-                const callbacks = this.callbacks.slice(0);
-                callbacks.forEach((callback) => {
-                    callback(data, eventName);
-                });
-            }
-        }
-
-        var dispatch = function(eventName, data) {
-            const event = events[eventName];
-            if (event) {
-                event.fire(data);
-            }
-        }
-
-        var on = function(eventName, callback) {
-            let event = events[eventName];
-            if (!event) {
-                event = new CustomEvent(eventName);
-                events[eventName] = event;
-            }
-            event.registerCallback(callback);
-        }
-
-        var off = function(eventName, callback) {
-            const event = events[eventName];
-            if (event && event.callbacks.indexOf(callback) > -1) {
-                event.unregisterCallback(callback);
-                if (event.callbacks.length === 0) {
-                    delete events[eventName];
-                }
-            }
-        }
-
-        var destroy = function () {
-            events = {};
-        }
-
-        return {
-            dispatch:dispatch,
-            on:on,
-            off:off,
-            destroy:destroy
-        }
     }
 
     function determineBrowser(ua) {

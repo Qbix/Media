@@ -67,30 +67,8 @@
             loadIndexedDbAPI: function () {
                 var tool = this;
                 return new Promise(function (resolve, reject) {
-                    Q.addScript([
-                        '{{Media}}/js/tools/webrtc/IndexedDbAPI.js',
-                    ], function () {
-                        tool.localRecordingsDB = Q.Media.WebRTC.indexedDbAPI('localRecodingsDB', {
-                            version: 5,
-                            stores: [
-                                {
-                                    name: 'recordings',
-                                    indexes: [
-                                        {name: 'startTime', unique: false},
-                                        {name: 'roomKey', unique: false},
-                                        {name: 'recordingId', unique: true}
-                                    ]
-                                },
-                                {
-                                    name: 'recordingsChunks',
-                                    indexes: [
-                                        {name: 'startTime', unique: false},
-                                        {name: 'roomKey', unique: false}
-                                    ]
-                                }
-                            ],
-                            
-                        });
+                    Q.Media.WebRTC.livestreaming.initRecordingsDB().then(function (dbApi) {
+                        tool.localRecordingsDB = dbApi;
                         resolve();
                     });
                 });

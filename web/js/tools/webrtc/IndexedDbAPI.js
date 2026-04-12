@@ -57,6 +57,7 @@ Q.Media.WebRTC.indexedDbAPI = function (dbName, options) {
                 };
     
                 request.onerror = (event) => {
+                    console.error(event.target.error);
                     reject(event.target.error);
                 };
     
