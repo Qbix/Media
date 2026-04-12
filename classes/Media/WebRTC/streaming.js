@@ -280,7 +280,7 @@ module.exports = function (io) {
                 //for some reason we cannot stream to youtube using tee muxer and "copy" codec (TLS error), so we need to do multiple output (when c:v is copy) in next way
                 if (encoder == 'copy') {
                     //console.log('STREAM copy', rtmpUrls)
-                    
+                    //rtmpUrls[i] = appDir + (+Date.now()) + '.flv'; //for testing
                     for (let i in rtmpUrls) {
                         params = params.concat([
                             '-pix_fmt', 'yuv420p',

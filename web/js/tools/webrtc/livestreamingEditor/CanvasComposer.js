@@ -4786,7 +4786,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             log('audioComposer: mix', audioContext?.state);
             if (audioContext == null || recreate) {
                 log('audioComposer: create AudioContext');
-                audioContext = new AudioContext({
+                audioContext = Q.Media.WebRTC.audioContext = new AudioContext({
                     //sampleRate: 44100, //commented because of Firefox error: "DOMException: AudioContext.createMediaStreamSource: Connecting AudioNodes from AudioContexts with different sample-rate is currently not supported"
                     latencyHint: 'playback'
                 });
@@ -5062,6 +5062,13 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         return _canvasMediStream;
     }
 
+    function getMediaStream() {
+        if(!_canvasMediStream) {
+            captureStream();
+        }
+        return _canvasMediStream;
+    }
+
     function getSupportedStreamingCodec() {
         var localInfo = tool.webrtcSignalingLib.getLocalInfo();
         var codecs = false;
@@ -5290,9 +5297,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         videoComposer: videoComposer,
         audioComposer: audioComposer,
         captureStream: captureStream,
-        getMediaStream: function() {
-            return _canvasMediStream;
-        },
+        getMediaStream: getMediaStream,
         addDataListener: addDataListener,
         removeDataListener: removeDataListener,
         mediaRecorder: function () {

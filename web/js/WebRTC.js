@@ -7603,6 +7603,8 @@
             } else {
                 log('initWithNodeServer: add app.js');
                 Q.addScript([
+                    '{{Media}}/js/tools/webrtc/IndexedDbAPI.js',
+                    '{{Media}}/js/tools/webrtc/EventSystem.js',
                     "{{Media}}/js/tools/webrtc/app.js",
                     "{{Media}}/js/tools/webrtc/HackTimer.js",
                     "{{Media}}/js/tools/webrtc/RecordRTC.js",
@@ -7861,9 +7863,11 @@
                                 
                                 _waitingRoomStream = stream;
                                 stream.onMessage('Media/webrtc/admit').set(function (message) {
+                                    console.log('message: Media/webrtc/admit')
                                     createOrJoinRoomStream(roomId, asPublisherId);
                                 });
                                 stream.onMessage('Media/webrtc/close').set(function (message) {
+                                    console.log('message: Media/webrtc/admit')
                                     let instructions = JSON.parse(message.instructions)
                                     log('Media/webrtc/close', message)
                                     if(instructions.msg) {
