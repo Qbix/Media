@@ -73,8 +73,6 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
     // ===== EVENTS =====
 
     recognition.addEventListener('speechstart', function () {
-        console.log('recognition speechstart', currentSegment);
-
         speechStartTime = now();
 
         if (!currentSegment) {
@@ -86,18 +84,16 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
     });
 
     recognition.addEventListener('result', function (event) {
-        if(this.state == 'inactive') return; //result events can still fire after you call SpeechRecognition.stop()
+        if(_participant.isLocal && _participant.localMediaControlsState.mic == false) return;
+        if(this.state == 'inactive') return; //result events can still fire after you call SpeechRecognition.stop(), so we should stop adding new captions after recording is stopped
 
         let interimTranscript = "";
-        console.log('recognition result', currentSegment);
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
             const result = event.results[i];
             const text = result[0].transcript;
 
             if (!currentSegment) {
-                console.log('recognition result create segment', speechStartTime);
-
                 currentSegment = new Segment({
                     start: speechStartTime != null ? speechStartTime : now(),
                     text: ""
@@ -105,16 +101,11 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
             }
             
             if (result.isFinal) {
-                console.log('recognition result add segment text 1 1', currentSegment.text, text);
-
                 if(text != null) currentSegment.text += text;
                 currentSegment.end = now();
                 
-                console.log('recognition result add segment text 1 2', currentSegment.text, text);
-
                 if (currentSegment.end != currentSegment.start) {
                     captions.push(currentSegment);
-                    console.log('recognition result add segment', currentSegment);
                     if(options.onSegment) {
                         options.onSegment({
                             formatted: formatTime(currentSegment.start, ',') + " --> " + formatTime(currentSegment.end || now(), ',') + "\n" +  currentSegment.text.trim() + "\n\n",
@@ -127,11 +118,7 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
                 }
                 
             } else {
-                console.log('recognition result add segment text 2 1', currentSegment.text, text);
-
                 interimTranscript += text;
-                console.log('recognition result add segment text 2 2', currentSegment.text, text);
-
             }
         }
 
@@ -146,7 +133,6 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
     });
 
     recognition.addEventListener('speechend', function () {
-        console.log('speechend', currentSegment);
         if (currentSegment) {
             currentSegment.end = now();
             captions.push(currentSegment);
@@ -155,16 +141,17 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
     });
 
     recognition.addEventListener('error', function (event) {
-        console.log("Recognition error:", event.error);
-
         if (options?.onError) {
             options.onError(event);
         }
     });
 
-    recognition.addEventListener('end', function () {
-        console.log("Recognition ended");
+    recognition.addEventListener('start', function (event) {
+        syncWithAudioTracks();
+    });
 
+    recognition.addEventListener('end', function () {
+        _addedTracks = new Map();
         if (options?.autoRestart) {
             try {
                 recognition.start();
@@ -190,7 +177,6 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
         if (!_audioTrack) {
             generateDestination();
         }
-        console.log('syncWithAudioTracks START')
 
         let webrtcAudioTracks = _participant.audioTracks({ readyState: 'live' });
         for (let i in webrtcAudioTracks) {
@@ -199,13 +185,12 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
             const stream = new MediaStream([track.mediaStreamTrack]);
             const source = _audioContext.createMediaStreamSource(stream);
             source.connect(_destinationNode);
-            let newTrackObject = _addedTracks.set(track.id, {
+            let newTrackObject = _addedTracks.set(track.mediaStreamTrack.id, {
                 trackInstance: track,
                 stream: stream,
                 mediaStreamTrack: track.mediaStreamTrack,
                 source: source
             });
-            console.log('syncWithAudioTracks track added', newTrackObject)
 
             track.mediaStreamTrack.addEventListener('ended', syncWithAudioTracks);
         }
@@ -213,7 +198,6 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
         for (const [key, value] of _addedTracks) {
             let trackIsInactive = webrtcAudioTracks.indexOf(value.trackInstance) === -1;
             if (trackIsInactive) {
-                console.log('syncWithAudioTracks track deleted', value)
                 _addedTracks.delete(key);
             }
         }
@@ -254,14 +238,11 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
             throw new Error('Error while starting speech speech recognizer');
 
         }
-        console.log('recognition start', _audioTrack, recognition)
         recognition.start(_audioTrack);
         this.state = 'active';
     };
 
     this.stop = function () {
-        console.log('previousSegment', previousSegment)
-
         stopListenOnTracks()
         recognition.stop()
         

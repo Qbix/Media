@@ -109,13 +109,13 @@ Q.Media.WebRTC.livestreaming.MediabunnyRecorder = function (options) {
 
         videoTrack = mediaStream?.getVideoTracks()[0].clone();
         videoTrack.addEventListener('mute', function () {
-            console.log('videoTrack event MUTE')
+            //console.log('videoTrack event MUTE')
         });
         videoTrack.addEventListener('unmute', function () {
-            console.log('videoTrack event UNMUTE')
+            //console.log('videoTrack event UNMUTE')
         });
         videoTrack.addEventListener('ended', function () {
-            console.log('videoTrack event ENDED')
+            //console.log('videoTrack event ENDED')
         });
         
         if (typeof AudioEncoder !== 'undefined') {
@@ -222,7 +222,6 @@ Q.Media.WebRTC.livestreaming.MediabunnyRecorder = function (options) {
                 console.error(error)
             });
 
-            console.log('videoSource', videoSource)
             output.addVideoTrack(videoSource);
         }
 
@@ -256,7 +255,6 @@ Q.Media.WebRTC.livestreaming.MediabunnyRecorder = function (options) {
             await textSource.add('WEBVTT\n\n');
             thisInstance.WebBVTTPreambleAdded = true;
         }
-        console.log('addSubtitle');
         return await textSource.add(text);
     }
     this.patchCaptions = async function(captions) {
@@ -269,11 +267,8 @@ Q.Media.WebRTC.livestreaming.MediabunnyRecorder = function (options) {
 ` + captions + `
 `;
 
-console.log('patchCaptions', text)
         await textSource.add(text);
-        console.log('patchCaptions 1', text)
         await textSource.close();
-        console.log('patchCaptions 2', text)
         return Promise.resolve();
     }
 
@@ -282,6 +277,7 @@ console.log('patchCaptions', text)
 
         if (videoTrack) videoTrack.stop();
         if (audioTrack) audioTrack.stop();
+        //if (textSource) await textSource.close();
 
         if(!cancel) {
             await output.finalize();
@@ -869,7 +865,7 @@ console.log('patchCaptions', text)
                 if (trackId !== null && handlerType !== null) {
                     if (handlerType === 'vide') tracks[trackId] = 'video';
                     else if (handlerType === 'soun') tracks[trackId] = 'audio';
-                    console.log('track', trackId, '=', tracks[trackId]);
+                    //console.log('track', trackId, '=', tracks[trackId]);
                 }
             }
 
