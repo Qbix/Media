@@ -60,7 +60,7 @@ Q.page("Media/meeting", function () {
 			Q.handle(currentUrl);
         });
     } else {
-        startConference();
+        if(url.searchParams.get("dev") == '') startConference();
     }
 
     if(url.searchParams.get("dev")) {
@@ -88,10 +88,33 @@ Q.page("Media/meeting", function () {
                 //tool.recordingsTool = this;
             }
         ); */
+        let clipeditorContainer = document.createElement('DIV');
+        clipeditorContainer.style.position = 'fixed';
+        clipeditorContainer.style.top = '100px';
+        clipeditorContainer.style.left = '50px';
+        clipeditorContainer.style.width = '1000px';
+        clipeditorContainer.style.height = '600px';
+        clipeditorContainer.style.zIndex = '999999999';
+        clipeditorContainer.style.background = 'white';
+        document.body.appendChild(clipeditorContainer);
+
+        Q.activate(
+            Q.Tool.setUpElement(
+                clipeditorContainer,
+                "Media/webrtc/clipEditor",
+                {
+                    
+                }
+            ),
+            {},
+            function () {
+                //tool.recordingsTool = this;
+            }
+        );
         
 
 
-        setTimeout(function () {
+        /* setTimeout(function () {
             Q.Dialogs.push({
                 title: 'Teleconference scheduler',
                 className: '',
@@ -104,7 +127,7 @@ Q.page("Media/meeting", function () {
     
                 }
             });
-        }, 2000);
+        }, 2000); */
         
         /* Q.activate(
             Q.Tool.setUpElement('DIV', 'Media/webrtc/settings', {

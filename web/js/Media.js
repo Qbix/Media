@@ -110,6 +110,10 @@
 			js: "{{Media}}/js/tools/webrtc/livestreamingEditor/livestreamingEditor.js",
 			css: "{{Media}}/css/tools/livestreamingEditor.css",
 		},
+		"Media/webrtc/clipEditor"  : {
+			js: "{{Media}}/js/tools/webrtc/clipEditor/clipEditorTool.js",
+			css: "{{Media}}/css/tools/clipEditor.css",
+		},
 		"Media/webrtc/livestream"  : "{{Media}}/js/tools/webrtc/livestream.js",
 		"Media/webrtc/callCenter/manager"  : "{{Media}}/js/tools/webrtc/callCenter/manager.js",
 		"Media/webrtc/callCenter/client"  : "{{Media}}/js/tools/webrtc/callCenter/client.js",

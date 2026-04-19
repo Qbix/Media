@@ -477,6 +477,7 @@
                                         }
 
                                         tool.recorder.startRecording({
+                                            subtitles: true,
                                             mediabunnyRecorder: mp4Checkbox.checked && mp4MuxerRecordingSupported,
                                             mediaRecorderCodecs: mediaRecorderCodecs
                                         })
@@ -484,7 +485,10 @@
                                                 try {
                                                     tool.speechRecognizer = new Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer({
                                                         webrtcSignalingLib: tool.webrtcSignalingLib,
-                                                        startTimeSinceOrigin: tool.recorder.startTimeSinceOrigin
+                                                        startTimeSinceOrigin: tool.recorder.startTimeSinceOrigin,
+                                                        onSegment: function (e) {
+                                                            if(e.segment) tool.recorder.addSubtitle(e.formatted);
+                                                        }
                                                     })
                                                     tool.speechRecognizer.start();
                                                 } catch (error) {
@@ -505,15 +509,15 @@
                             }
 
                             function stopRecording() {
-                                return new Promise(function (resolve, reject) {
+                                return new Promise(async function (resolve, reject) {
                                     if (tool.speechRecognizer) {
-                                        console.log('speechRecognizer stopRecording before')
-
+                                        //await tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
                                         tool.recorder.stopRecording()
                                             .then(function (recordingData) {
                                                 if (tool.speechRecognizer) {
                                                     tool.speechRecognizer.stop();
-                                                    tool.speechRecognizer.exportJSON();
+                                                    //tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
+                                                    //tool.speechRecognizer.exportJSON();
                                                     //tool.speechRecognizer.saveToIndexedDB(recordingData.recordingId);
                                                     //console.log('speechRecognizer srt', tool.speechRecognizer.exportWebVTT())
                                                 }

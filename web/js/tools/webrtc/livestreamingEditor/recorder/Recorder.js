@@ -26,7 +26,7 @@ Q.Media.WebRTC.livestreaming.Recorder = function (tool) {
             if (options.mediabunnyRecorder) {              
                 _activeRecorder = new Q.Media.WebRTC.livestreaming.MediabunnyRecorder({
                     livestreamingTool: tool,
-                    //subtitles: true,
+                    subtitles: options.subtitles,
                     recording: true,
                     bitrateMode: 'constant',
                     bitrate: 2_000_000,

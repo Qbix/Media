@@ -19,8 +19,6 @@ Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer = function (options) {
     syncParticipants();
 
     function syncParticipants() {
-        console.log('syncParticipants START')
-
         let participants = webrtcSignalingLib.roomParticipants();
         for (let i in participants) {
             const participant = participants[i];
@@ -29,20 +27,18 @@ Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer = function (options) {
             const userSpeechRecognizer = new Q.Media.WebRTC.livestreaming.UserSpeechRecognizer({
                 autoRestart: true,
                 startTimeSinceOrigin: options.startTimeSinceOrigin,
-                participant: participant
+                participant: participant,
+                onSegment: options.onSegment
             })
 
             let newSpeechRecognizer = speechRecognizers.set(participant, userSpeechRecognizer);
             if(thisInstance.state == 'active') userSpeechRecognizer.start();
-            console.log('syncParticipants recognizer added', newSpeechRecognizer)
         }
 
         for (const [participant, userSpeechRecognizer] of speechRecognizers) {
             let participantOffline = participants.indexOf(participant) === -1;
             if (participantOffline) {
-                console.log('syncWithAudioTracks track deleted', participant)
                 userSpeechRecognizer.stop();
-                //speechRecognizers.delete(participant);
             }
         }
     }
@@ -58,24 +54,53 @@ Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer = function (options) {
     this.stop = function () {
         for (const [participant, userSpeechRecognizer] of speechRecognizers) {
             userSpeechRecognizer.stop();
-            //speechRecognizers.delete(participant);
         }
         this.state = 'inactive';
     }
 
-    this.exportJSON = function () {
+    this.getCaptions = function () {
         let allCaptions = [];
         for (const [participant, userSpeechRecognizer] of speechRecognizers) {
             let userCaptions = userSpeechRecognizer.getCaptions();
             allCaptions = allCaptions.concat(userCaptions);
         }
         allCaptions.sort((a, b) => a.start - b.start);
-
-        console.log('allCaptions', allCaptions)
-        return JSON.stringify(allCaptions);
+        return allCaptions;
     }
+
+    this.exportJSON = function () {
+        
+
+        return JSON.stringify(this.getCaptions());
+    }
+
+    this.exportWebVTT = function () {
+        const captions = this.getCaptions();
+        return captions.map((c, i) => {
+            return (
+                formatTime(c.start, '.') + " --> " + formatTime(c.end || now(), '.') + "\n" +
+                c.text.trim() + "\n"
+            );
+        }).join("\n");
+    };
 
     this.saveToIndexedDB = function () {
 
+    }
+
+    function formatTime(ms, timeSeparator) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const msPart = Math.floor(ms % 1000);
+
+        const s = totalSeconds % 60;
+        const m = Math.floor(totalSeconds / 60) % 60;
+        const h = Math.floor(totalSeconds / 3600);
+
+        return (
+            String(h).padStart(2, '0') + ":" +
+            String(m).padStart(2, '0') + ":" +
+            String(s).padStart(2, '0') + timeSeparator +
+            String(msPart).padStart(3, '0')
+        );
     }
 }
