@@ -14,12 +14,20 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
     const container = this.element = document.createElement('DIV');
     container.className = 'clip-editor-player';
     _mediaPlayer = this.videoPlayer = document.createElement('VIDEO');
+    _mediaPlayer.muted = true;
     _mediaPlayer.controls = true;
     _mediaPlayer.className = 'clip-editor-player-media';
     _mediaPlayer.style.width = '100%';
     _mediaPlayer.style.aspectRatio = '16/9';
     _mediaPlayer.style.background = 'grey';
     container.appendChild(_mediaPlayer);
+
+    _mediaPlayer.addEventListener('timeupdate', function (e) {
+        console.log('mediaPlayer event timeupdate', _mediaPlayer.currentTime);
+        //console.log('mediaPlayer buffered', _mediaPlayer.buffered.start(0), _mediaPlayer.buffered.end(0));
+        
+        
+    })
 
     function appendSegment(data) {
         _segmentsQueue.push(data);
@@ -47,12 +55,21 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
 
         var parser = new Q.Media.WebRTC.clipEditor.FMP4Parser(fileHandle);
 
+        _mediaSource.addEventListener('sourceclose', (e) => {
+            console.error('mediaSource event error', e);
+        });
+
+        _mediaSource.addEventListener('sourceended', () => {
+            console.log('mediaSource event sourceended');
+        });
+        _mediaSource.addEventListener('timeupdate', (e) => {
+            console.log('mediaSource event timeupdate', e);
+        });
         _mediaSource.addEventListener('sourceopen', async () => {
            
-
-            parser.loadInit().then(async function () {
+            parser.init().then(async function () {
                 console.log('PARSED INFO', parser);        // ready
-                parser.loadInit();
+
                 console.log(parser.mimeType);        // ready
                 console.log(parser.initSegment);   // ArrayBuffer of ftyp+moov
                 _sourceBuffer = _mediaSource.addSourceBuffer(parser.mimeType);
@@ -70,39 +87,24 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
                     console.log('processQueue updatestart');
                 }); */
                 _sourceBuffer.addEventListener('abort', (e) => {
-                    console.error('processQueue updateend', e);
+                    console.error('sourceBuffer event abort', e);
                 });
                 _sourceBuffer.addEventListener('error', (e) => {
-                    console.error('processQueue updateend', e);
+                    console.error('sourceBuffer event error', e);
                 });
 
                 /* _mediaSource.addEventListener('updateend', () => {
                     console.log('updateend');
                 }); */
 
-                _mediaSource.addEventListener('error', (e) => {
-                    console.error('SB error', e);
-                });
-
-                _mediaSource.addEventListener('abort', () => {
-                    console.log('abort');
-                });
-
-                _mediaSource.addEventListener('sourceopen', () => {
-                    console.log('sourceopen');
-                });
-
-                _mediaSource.addEventListener('error', (e) => {
-                    console.error('MS error', e);
-                });
                 // step 2 — scan the rest for segment boundaries (optional, lazy)
                 await parser.setCurrentTime();
                 //sourceBuffer.appendBuffer(parser.initSegment);
-                console.log('player: add init segment', parser.initSegment)
+                //console.log('player: add init segment', parser.initSegment)
                 appendSegment(parser.initSegment);
                 //console.log('parser.flatMoofMdatPairs', parser.flatMoofMdatPairs)
 
-                console.log('player: add buffer segments', parser.flatMoofMdatPairs.length)
+                //console.log('player: add buffer segments', parser.flatMoofMdatPairs.length)
                 console.log('player: add buffer time', parser.flatMoofMdatPairs[parser.flatMoofMdatPairs.length - 1].time)
                 for(let i in parser.flatMoofMdatPairs) {
                                     //console.log('player: add buffer time', parser.flatMoofMdatPairs[i].time)

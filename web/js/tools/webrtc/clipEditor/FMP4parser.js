@@ -16,10 +16,13 @@ Q.Media.WebRTC.clipEditor.FMP4Parser = function (file) {
   this._initEnd = 0;
   this.startOffset = 0;
   this.endOffset = null;
-  this.CHUNK_SIZE = 10 * 1024 * 1024; // 1 MB
+  this.CHUNK_SIZE = 1 * 1024 * 1024; // 1 MB
   this.eventDispatcher = new Q.Media.WebRTC.EventSystem();
   this.segmentToTimeMap = new Map();
+  this.sampleToTimeMap = new Map();
   this.flatMoofMdatPairs = [];
+  this.keyframes = [];
+  this.totalDuration;
 }
 
 const MP4Parser = Q.Media.WebRTC.clipEditor.FMP4Parser;
@@ -28,15 +31,40 @@ MP4Parser.prototype.setCurrentTime = async function () {
   var self = this;
 
   const moofs = await self.scanSegments();
+    
+
+
   self.bufferedSegments.push(...moofs);
   return Promise.resolve();
   //self.eventDispatcher.dispatch('read');
   //self.buildSamples();
   //self.scanSegments();
 }
+MP4Parser.prototype.init = async function () {
+  const self = this;
+  await self.loadMfra();
+  await self.loadInit()
 
+  let moofEntires = self?.mfraBoxInfo?.tfras[self.trackIdsInfo.videoTrackId]?.entries;
+    console.log('lastMoofOffset tfras', moofEntires)
+
+  let lastMoofOffset = moofEntires[moofEntires.length - 1].moofOffset;
+  console.log('lastMoofOffset 0', lastMoofOffset)
+  const lastMoofs = await self.scanSegments(lastMoofOffset);
+  console.log('lastMoofOffset 1', lastMoofs)
+  let parsedSamples = lastMoofs[lastMoofs.length - 1].parsed[self.trackIdsInfo.videoTrackId].samples
+  let lastSample = parsedSamples[parsedSamples.length - 1];
+
+  self.totalDuration = lastSample.time + lastSample.duration;
+  console.log('lastMoofOffset duration', self.totalDuration)
+
+  //const parsedMoof = await self._parseFragment(lastMoofs[lastMoofs.length - 1]);
+
+  return true;
+}
 // Read the file chunk by chunk until moov box is fully loaded.
 // Resolves when mimeType and initSegment() are ready.
+
 MP4Parser.prototype.loadInit = function () {
   var view = null;
   var self = this;
@@ -115,6 +143,218 @@ MP4Parser.prototype.loadInit = function () {
   }
 
   return readNextChunk();
+};
+
+//Load mfraand parse to seek instantly without scanning
+MP4Parser.prototype.loadMfra = function () {
+  const self = this;
+
+  return new Promise(async function (resolve, reject) {
+    try {
+      const fileSize = self.file.size;
+
+      // Step 1: read last 32 bytes (safe margin)
+      const tailSize = Math.min(64, fileSize);
+      const tailStart = fileSize - tailSize;
+
+      const buf = await self.file.slice(tailStart, fileSize).arrayBuffer();
+      const bytes = new Uint8Array(buf);
+      const view = new DataView(buf);
+
+      // Step 2: find 'mfro' from the end
+      let mfroOffset = -1;
+
+      for (let i = bytes.length - 16; i >= 0; i--) {
+        const type =
+          String.fromCharCode(
+            bytes[i + 4],
+            bytes[i + 5],
+            bytes[i + 6],
+            bytes[i + 7]
+          );
+
+        if (type === 'mfro') {
+          mfroOffset = i;
+          break;
+        }
+      }
+
+      if (mfroOffset === -1) {
+        console.warn('mfro not found → no mfra');
+        resolve(null);
+        return;
+      }
+
+      // Step 3: read mfra size
+      const mfraSize = view.getUint32(mfroOffset + 12);
+
+      // Step 4: compute mfra position
+      const mfraStart = fileSize - mfraSize;
+
+      // Step 5: load mfra
+      const mfraBuf = await self.file.slice(mfraStart, fileSize).arrayBuffer();
+      const mfraBytes = new Uint8Array(mfraBuf);
+
+      console.log('mfra found at:', mfraStart, 'size:', mfraSize);
+
+      // optional: parse it
+      self.mfraBox = mfraBytes;
+      self.mfraBoxInfo = self.parseMfra(mfraBytes);
+      //self.mfraBoxInfo2 = self.parseBoxes(mfraBytes);
+      console.log('self.mfraBoxInfo', self.mfraBoxInfo)
+      //console.log('self.mfraBoxInfo2', self.mfraBoxInfo2)
+      resolve(mfraBytes);
+
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+MP4Parser.prototype.estimateDuration = function (tfra, timescale) {
+  const last = tfra.entries[tfra.entries.length - 1];
+  return last.time / timescale;
+}
+
+MP4Parser.prototype.scanFragmentsAtPercentOffset = function (percent, direction) {
+
+  var self = this;
+  //if we hat enogh data, stop scanning new segments
+  if (self.currentReadingOffset + self.CHUNK_SIZE <= self.endOffset) {
+    return Promise.resolve(null);
+  }
+  var offset = self.endOffset != null ? self.endOffset : self.initSegmentEnd;
+  if(self.currentReadingOffset > self.endOffset) {
+    offset = self.currentReadingOffset;
+  }
+  var accumulated = new Uint8Array(0);
+  var absoluteBase = offset; // byte offset in the file where accumulation starts
+  console.log('scanSegments START', offset, absoluteBase)
+
+  return new Promise(function (resolve, reject) {
+    function readNextChunk(end) {
+      let moofSegments = [];
+      //let flatMoofMdatPairs = [];
+      var start = offset;
+      var end = end != null ? end : Math.min(start + self.CHUNK_SIZE, self.file.size);
+
+      console.log('readNextChunk START', start, end)
+      console.trace();
+      if (start >= end) return Promise.resolve(); // done
+
+      return self.file.slice(start, end).arrayBuffer().then(async function (chunkBuf) {
+        var chunk = new Uint8Array(chunkBuf);
+        var merged = new Uint8Array(accumulated.byteLength + chunk.byteLength);
+        merged.set(accumulated, 0);
+        merged.set(chunk, accumulated.byteLength);
+        accumulated = merged;
+        offset = end;
+
+        // parse boxes from accumulated, using absoluteBase to get real file offsets
+        var localView = new DataView(accumulated.buffer);
+        var localOffset = 0;
+
+        while (localOffset + 8 <= accumulated.byteLength) {
+          var boxSize = localView.getUint32(localOffset);
+          var boxType = String.fromCharCode(
+            accumulated[localOffset + 4], accumulated[localOffset + 5],
+            accumulated[localOffset + 6], accumulated[localOffset + 7]
+          );
+          var headerSize = 8;
+
+          if (boxSize === 1) {
+            if (localOffset + 16 > accumulated.byteLength) break;
+            var hi = localView.getUint32(localOffset + 8);
+            var lo = localView.getUint32(localOffset + 12);
+            boxSize = hi * 0x100000000 + lo;
+            headerSize = 16;
+          }
+          if (boxSize === 0) boxSize = self.file.size - (absoluteBase + localOffset);
+          if (boxSize < headerSize) break;
+
+          if (localOffset + boxSize > accumulated.byteLength) {
+            //if box is not fully loaded yet, fix end of accumulated so it contains entire box
+            end = end + ((localOffset + boxSize) - accumulated.byteLength);
+            return await readNextChunk(end);
+            break; // box not fully loaded yet
+          }
+
+          var absStart = absoluteBase + localOffset;
+          var absEnd = absStart + boxSize;
+
+          if (boxType === 'moof') {
+            // peek at the next box
+            let moofSegment = { 
+              start: absStart, 
+              end: absEnd,
+              moofBoxData: accumulated.slice(localOffset, localOffset + boxSize),
+              followingMdatSegment: null
+            };
+            var nextLocalOffset = localOffset + boxSize;
+            if (nextLocalOffset + 8 <= accumulated.byteLength) {
+              var nextSize = localView.getUint32(nextLocalOffset);
+              var nextType = String.fromCharCode(
+                accumulated[nextLocalOffset + 4], accumulated[nextLocalOffset + 5],
+                accumulated[nextLocalOffset + 6], accumulated[nextLocalOffset + 7]
+              );
+              if (nextType === 'mdat') {
+                if (nextLocalOffset + nextSize > accumulated.byteLength) {
+                  //if box is not fully loaded yet, fix end of accumulated so it contains entire box
+                  var diff = ((nextLocalOffset + nextSize) - accumulated.byteLength);
+                  end = end + diff;
+                  return await readNextChunk(end);
+                  break; // box not fully loaded yet
+                }
+                var mdatAbsEnd = absoluteBase + nextLocalOffset + nextSize;
+                moofSegment.followingMdatSegment = { 
+                  start: absStart, 
+                  end: mdatAbsEnd,
+                  mdatBoxData: accumulated.slice(nextLocalOffset, nextLocalOffset + nextSize)
+                 };
+                moofSegments.push(moofSegment);
+
+                const fragments = self._parseFragment(moofSegment.moofBoxData, moofSegment.start);
+                //console.log('fragments scanSegments', fragments[self.trackIdsInfo.videoTrackId].samples.length)
+                const moofMdatPair = new Uint8Array(moofSegment.moofBoxData.length + moofSegment.followingMdatSegment.mdatBoxData.length);
+                moofMdatPair.set(moofSegment.moofBoxData, 0);
+                moofMdatPair.set(moofSegment.followingMdatSegment.mdatBoxData, moofSegment.moofBoxData.length);
+                if(!self.segmentToTimeMap.has(moofMdatPair)) {
+                    self.segmentToTimeMap.set(moofMdatPair, moofSegment);
+                    self.flatMoofMdatPairs.push({
+                      data: moofMdatPair,
+                      time: fragments[self.trackIdsInfo.videoTrackId].latestTime
+                    });
+                }
+               
+                localOffset = nextLocalOffset + nextSize;
+                continue;
+              }
+            } else {
+              //if moof+mdat pair is not fully loaded yet, fix end of accumulated so it contains entire these two segments
+              end = end + ((localOffset + boxSize + 8) - accumulated.byteLength);
+              return await readNextChunk(end);
+              break; // need next chunk to see the mdat
+            }
+            //self.segments.push({ start: absStart, end: absEnd });
+          }
+
+          localOffset += boxSize;
+        }
+
+        // trim accumulated to only unprocessed tail
+        accumulated = accumulated.slice(localOffset);
+        absoluteBase += localOffset;
+        self.endOffset = absoluteBase;
+
+        console.log('readNextChunk resolve');
+        resolve(moofSegments);
+        //return readNextChunk();
+      });
+    }
+
+    return readNextChunk();
+  });
+
 };
 
 MP4Parser.prototype.getTimescales = function (moov) {
@@ -277,6 +517,19 @@ MP4Parser.prototype.readUint32 = function (buf, offset) {
   ) >>> 0;
 }
 
+MP4Parser.prototype.readUint64 = function (view, offset) {
+  const hi = view.getUint32(offset);
+  const lo = view.getUint32(offset + 4);
+  return hi * 0x100000000 + lo;
+}
+MP4Parser.prototype._readVariable = function (view, offset, size) {
+  let val = 0;
+  for (let i = 0; i < size; i++) {
+    val = (val << 8) | view.getUint8(offset + i);
+  }
+  return val;
+};
+
 MP4Parser.prototype.readType = function (buf, offset) {
   return String.fromCharCode(
     buf[offset],
@@ -369,25 +622,32 @@ MP4Parser.prototype.parseBoxes = function (buf, start = 0, end = buf.length, dep
 // Scan moof+mdat segments from the region AFTER the init segment.
 // Call this after loadInit() resolves.
 // Reads the remainder of the file in 1MB chunks to build the segment index.
-MP4Parser.prototype.scanSegments = function () {
+MP4Parser.prototype.scanSegments = function (startOffset, endOffset) {
+
   var self = this;
   //if we hat enogh data, stop scanning new segments
   if (self.currentReadingOffset + self.CHUNK_SIZE <= self.endOffset) {
     return Promise.resolve(null);
   }
   var offset = self.endOffset != null ? self.endOffset : self.initSegmentEnd;
+  
   if(self.currentReadingOffset > self.endOffset) {
     offset = self.currentReadingOffset;
   }
   var accumulated = new Uint8Array(0);
-  var absoluteBase = offset; // byte offset in the file where accumulation starts
+  var absoluteBase = self.initSegmentEnd; // byte offset in the file where accumulation starts
+  console.log('scanSegments START', offset, absoluteBase)
 
   return new Promise(function (resolve, reject) {
-    function readNextChunk() {
+    function readNextChunk(end) {
       let moofSegments = [];
       //let flatMoofMdatPairs = [];
-      var start = offset;
-      var end = Math.min(start + self.CHUNK_SIZE, self.file.size);
+      //if there is not specific start passed to scanSegments, use latest endOffset (probably player just buffers data in real-time while playing)
+      var start = startOffset != null ? startOffset : offset;
+      var end = end != null ? end : Math.min(start + self.CHUNK_SIZE, self.file.size);
+
+      console.log('readNextChunk START', start, end)
+      console.trace();
       if (start >= end) return Promise.resolve(); // done
 
       return self.file.slice(start, end).arrayBuffer().then(async function (chunkBuf) {
@@ -423,7 +683,7 @@ MP4Parser.prototype.scanSegments = function () {
           if (localOffset + boxSize > accumulated.byteLength) {
             //if box is not fully loaded yet, fix end of accumulated so it contains entire box
             end = end + ((localOffset + boxSize) - accumulated.byteLength);
-            return await readNextChunk();
+            return await readNextChunk(end);
             break; // box not fully loaded yet
           }
 
@@ -448,8 +708,9 @@ MP4Parser.prototype.scanSegments = function () {
               if (nextType === 'mdat') {
                 if (nextLocalOffset + nextSize > accumulated.byteLength) {
                   //if box is not fully loaded yet, fix end of accumulated so it contains entire box
-                  end = end + ((nextLocalOffset + nextSize) - accumulated.byteLength);
-                  return await readNextChunk();
+                  var diff = ((nextLocalOffset + nextSize) - accumulated.byteLength);
+                  end = end + diff;
+                  return await readNextChunk(end);
                   break; // box not fully loaded yet
                 }
                 var mdatAbsEnd = absoluteBase + nextLocalOffset + nextSize;
@@ -460,8 +721,9 @@ MP4Parser.prototype.scanSegments = function () {
                  };
                 moofSegments.push(moofSegment);
 
-                const fragments = self._parseFragment(moofSegment.moofBoxData, moofSegment.start, self.timescales[self.trackIdsInfo.videoTrackId]);
-                //console.log('fragments scanSegments', fragments[self.trackIdsInfo.videoTrackId])
+                const fragments = self._parseFragment(moofSegment.moofBoxData, moofSegment.start);
+                moofSegment.parsed = fragments;
+                console.log('fragments scanSegments', fragments[self.trackIdsInfo.videoTrackId])
                 const moofMdatPair = new Uint8Array(moofSegment.moofBoxData.length + moofSegment.followingMdatSegment.mdatBoxData.length);
                 moofMdatPair.set(moofSegment.moofBoxData, 0);
                 moofMdatPair.set(moofSegment.followingMdatSegment.mdatBoxData, moofSegment.moofBoxData.length);
@@ -479,7 +741,7 @@ MP4Parser.prototype.scanSegments = function () {
             } else {
               //if moof+mdat pair is not fully loaded yet, fix end of accumulated so it contains entire these two segments
               end = end + ((localOffset + boxSize + 8) - accumulated.byteLength);
-              return await readNextChunk();
+              return await readNextChunk(end);
               break; // need next chunk to see the mdat
             }
             //self.segments.push({ start: absStart, end: absEnd });
@@ -491,7 +753,11 @@ MP4Parser.prototype.scanSegments = function () {
         // trim accumulated to only unprocessed tail
         accumulated = accumulated.slice(localOffset);
         absoluteBase += localOffset;
-        self.endOffset = absoluteBase;
+
+        //if startOffset or endOffset was passed to scanSegments, then we use this function to get custom range of data and we don't need to update endOffset,
+        // otherwise - scanSegments is fired while regular playing video in real-time, so we need to update endOffset
+        if(!startOffset) self.endOffset = absoluteBase;
+        
 
         console.log('readNextChunk resolve');
         resolve(moofSegments);
@@ -499,7 +765,7 @@ MP4Parser.prototype.scanSegments = function () {
       });
     }
 
-    return readNextChunk();
+    return readNextChunk(endOffset);
   });
 
 };
@@ -937,6 +1203,11 @@ MP4Parser.prototype._parseTrun = function (buf) {
     offset += 4;
   }
 
+  if (flags & 0x000004) {
+    firstSampleFlags = view.getUint32(offset);
+    offset += 4;
+  }
+
   const samples = [];
 
   for (let i = 0; i < sampleCount; i++) {
@@ -965,12 +1236,163 @@ MP4Parser.prototype._parseTrun = function (buf) {
     samples.push(sample);
   }
 
-  return { dataOffset, samples };
+  
+  return {
+    dataOffset,
+    firstSampleFlags,
+    samples
+  };
+};
+MP4Parser.prototype._parseSdtp = function (bytes) {
+  const result = [];
+
+  for (let i = 4; i < bytes.length; i++) { // skip version/flags
+    const b = bytes[i];
+    const dependsOn = (b >> 4) & 0x3;
+
+    result.push(dependsOn === 2);
+  }
+
+  return result;
+}
+MP4Parser.prototype.parseMfra = function (bytes) {
+  const self = this;
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+  let offset = 0;
+  const result = { tfras: {} };
+
+  while (offset + 8 <= bytes.length) {
+    let size = view.getUint32(offset);
+    const type = String.fromCharCode(
+      bytes[offset + 4],
+      bytes[offset + 5],
+      bytes[offset + 6],
+      bytes[offset + 7]
+    );
+
+    let headerSize = 8;
+
+    if (size === 1) {
+      size = self.readUint64(view, offset + 8);
+      headerSize = 16;
+    }
+
+    if (type === 'mfra') {
+      // 🔥 IMPORTANT: parse INSIDE mfra
+      const innerStart = offset + headerSize;
+      const innerEnd = offset + size;
+
+      let innerOffset = innerStart;
+
+      while (innerOffset + 8 <= innerEnd) {
+        let innerSize = view.getUint32(innerOffset);
+        const innerType = String.fromCharCode(
+          bytes[innerOffset + 4],
+          bytes[innerOffset + 5],
+          bytes[innerOffset + 6],
+          bytes[innerOffset + 7]
+        );
+
+        let innerHeader = 8;
+
+        if (innerSize === 1) {
+          innerSize = self.readUint64(view, innerOffset + 8);
+          innerHeader = 16;
+        }
+
+        if (innerType === 'tfra') {
+          const tfra = this._parseTfra(bytes, innerOffset, innerSize);
+          //result.tfras.push(tfra);
+          result.tfras[tfra.trackId] = tfra;
+        }
+
+        innerOffset += innerSize;
+      }
+    }
+
+    offset += size;
+  }
+
+  return result;
 };
 
-MP4Parser.prototype._parseFragment = function (moof, moofOffset, timescale) {
+MP4Parser.prototype._parseTfra = function (bytes, start, size) {
+  const self = this;
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+  let offset = start + 8; // skip box header
+
+  const version = view.getUint8(offset);
+  offset += 1;
+
+  const flags =
+    (view.getUint8(offset) << 16) |
+    (view.getUint8(offset + 1) << 8) |
+    view.getUint8(offset + 2);
+  offset += 3;
+
+  const trackId = view.getUint32(offset);
+  offset += 4;
+
+  const tmp = view.getUint32(offset);
+  offset += 4;
+
+  const lengthSizeOfTrafNum = ((tmp >> 4) & 0x3) + 1;
+  const lengthSizeOfTrunNum = ((tmp >> 2) & 0x3) + 1;
+  const lengthSizeOfSampleNum = (tmp & 0x3) + 1;
+
+  const entryCount = view.getUint32(offset);
+  offset += 4;
+
+  const entries = [];
+
+  for (let i = 0; i < entryCount; i++) {
+    let time, moofOffset;
+
+    if (version === 1) {
+      time = self.readUint64(view, offset);
+      offset += 8;
+
+      moofOffset = self.readUint64(view, offset);
+      offset += 8;
+    } else {
+      time = view.getUint32(offset);
+      offset += 4;
+
+      moofOffset = view.getUint32(offset);
+      offset += 4;
+    }
+
+    const trafNumber = this._readVariable(view, offset, lengthSizeOfTrafNum);
+    offset += lengthSizeOfTrafNum;
+
+    const trunNumber = this._readVariable(view, offset, lengthSizeOfTrunNum);
+    offset += lengthSizeOfTrunNum;
+
+    const sampleNumber = this._readVariable(view, offset, lengthSizeOfSampleNum);
+    offset += lengthSizeOfSampleNum;
+
+    entries.push({
+      time,
+      moofOffset,
+      trafNumber,
+      trunNumber,
+      sampleNumber
+    });
+  }
+
+  return {
+    trackId,
+    entries
+  };
+};
+
+MP4Parser.prototype._parseFragment = function (moof, moofOffset) {
+  const self = this;
   //const trafs = this._findBoxes(moof, 'traf');
   const parsed = this.parseBoxes(moof);
+  console.log('_parseFragment', parsed)
   const results = {};
 
   for (const traf of parsed.moof.traf) {
@@ -988,6 +1410,10 @@ MP4Parser.prototype._parseFragment = function (moof, moofOffset, timescale) {
     let time = baseTime;
     let offset = moofOffset + trunData.dataOffset;
 
+    const timescale = self.timescales[tfhdData.trackId]
+
+    let containsKeyframe = false;
+
     for (let i = 0; i < trunData.samples.length; i++) {
       const s = trunData.samples[i];
 
@@ -997,12 +1423,27 @@ MP4Parser.prototype._parseFragment = function (moof, moofOffset, timescale) {
       const size =
         s.size ?? tfhdData.defaultSampleSize;
 
-      const flags =
+      /* const flags =
         s.flags ?? tfhdData.defaultSampleFlags;
+      const isKeyframe = !(flags & 0x10000); */
+      //const flags = s.flags ?? tfhdData.defaultSampleFlags;
 
-      const isKeyframe = !(flags & 0x10000);
+      let flags;
+
+      if (i === 0 && trunData.firstSampleFlags != null) {
+        flags = trunData.firstSampleFlags;
+      } else {
+        flags = s.flags ?? tfhdData.defaultSampleFlags;
+      }
+
+      const dependsOn = (flags >> 24) & 0x3;
+      const isKeyframe = dependsOn === 2;
+     
+      if(!containsKeyframe) containsKeyframe = isKeyframe;    
 
       const sample = {
+        timescale: timescale,
+        rawTime: time,
         time: time / timescale,
         duration: duration / timescale,
         offset,
@@ -1013,13 +1454,20 @@ MP4Parser.prototype._parseFragment = function (moof, moofOffset, timescale) {
       latestTime = sample.time;
       samples.push(sample);
 
+      if(tfhdData.trackId == self.trackIdsInfo.videoTrackId) {
+        self.sampleToTimeMap.set(sample.time, sample)
+      }
+
       time += duration;
       offset += size;
     }
-
+ if(tfhdData.trackId == self.trackIdsInfo.videoTrackId) {
+    console.log('samples', samples.length)
+ }
     results[tfhdData.trackId] = {
       latestTime: latestTime,
       trackId: tfhdData.trackId,
+      containsKeyframe: containsKeyframe,
       samples
     };
   }
