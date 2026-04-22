@@ -33,10 +33,29 @@
     background-size: calc(100% / 70) 50px;
 }
 .clip-editor .clip-editor-timeline .clip-editor-timeline-clip {
-    height: 100%;
+    height: 46px;
     width: 100px;
     border-radius: 5px;
     border: 2px solid #4750ff;
     border-left-width: 10px;
     border-right-width: 10px;
+}
+.clip-editor .clip-editor-ranges-inputs {
+    display: flex;
+}
+.clip-editor .clip-editor-controls input.clip-editor-range-invalid {
+    border: 1px solid red;
+    background-color: #fff5f5 !important;
+}
+.clip-editor .clip-editor-create-clip button {
+    background-color:rgba(169, 169, 182, 0.25);
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+.clip-editor .clip-editor-create-clip button:hover {
+    background-color:rgba(169, 169, 182, 0.50);
 }
