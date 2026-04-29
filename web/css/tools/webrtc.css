@@ -83,6 +83,42 @@
     top: 0;
 }
 
+.Media_webrtc_button {
+    background-color: hsl(0, 0%, 47%);
+    background-image: none;
+    border: 0;
+    border-radius: 6px;
+    box-sizing: border-box;
+    color: #ffffff;
+    font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none #D1D5DB solid;
+    text-decoration-thickness: auto;
+    font-weight: normal;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    position: relative;
+}
+.Media_webrtc_button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    pointer-events: none;
+}
+.Media_webrtc_button:hover::after {
+    border-color: rgb(255 255 255 / 20%);
+}
+.Media_webrtc_button:hover {
+    background-color: hsl(0, 0%, 50%);
+}
 
 .Media_webrtc_desktop-screen .Media_webrtc_conference-control{
     display: flex;
@@ -1057,7 +1093,9 @@
     flex: 1;
     background: black;
     height: 100%;
+    width: 100%;
     max-height: 100%;
+    max-width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1619,6 +1657,8 @@
 .Media_webrtc_desktop-screen .Media_webrtc_conference-control .Media_webrtc_hover .Media_webrtc_popup-box {
     display: flex;
     flex-direction: column;
+    border-radius: 6px;
+    padding-top: 10px;
 }
 .Media_webrtc_desktop-screen .Media_webrtc_conference-control .Media_webrtc_hover .Media_webrtc_popup-box::after{
     content: "";
@@ -1924,220 +1964,6 @@
     justify-content: center;
     align-items: center;
 }
-
-.Media_webrtc_preparing_dialog {
-    z-index: 9999 !important;
-}
-.Media_webrtc_preparing_dialog .Media_webrtc_preparing_dialog_inner{
-    /*display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;*/
-}
-
-.Media_webrtc_preparing_screen {
-    top: 0;
-    left: 0;
-    width:100%;
-    height:100%;
-    z-index: 999;
-    position: absolute;
-    background: white;
-}
-
-.Media_webrtc_preparing_screen .Media_webrtc_close-dialog-sign{
-    width: 35px;
-    height: 35px;
-    font-size: 35px;
-    right: 5px;
-    top: 5px;
-}
-.Media_webrtc_preparing_screen .Media_webrtc_preparing_dialog_inner {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 90%;
-    width: 100%;
-}
-.Media_webrtc_preparing_meeting_info {
-    position: absolute;
-    right: 0;
-    display: flex;
-    padding: 10px;
-}
-.Media_webrtc_preparing_meeting_info .Media_webrtc_preparing_users_info_icon {
-}
-.Media_webrtc_preparing_meeting_info .Media_webrtc_preparing_users_info_icon svg{
-    width:30px;
-    height:27px;
-}
-.Media_webrtc_preparing_meeting_info .Media_webrtc_preparing_users_info_icon svg path,
-.Media_webrtc_preparing_meeting_info .Media_webrtc_preparing_users_info_icon svg ellipse {
-    fill: rgba(0,0,0,0.38);
-}
-.Media_webrtc_preparing_users_num {
-    padding: 5px;
-    background: rgba(0,0,0,0.38);
-    color: rgb(255 255 255 / 70%);
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 27px;
-    font-size: 14px;
-    margin-right: 2px;
-}
-.Media_webrtc_preparing_users_num.Media_webrtc_preparing_meeting_online {
-    background: rgb(59 170 51 / 49%);
-    color: rgb(255 255 255);
-}
-.Media_webrtc_preparing_users_num.Media_webrtc_preparing_meeting_offline {
-    display: none;
-}
-
-.Media_webrtc_preparing_camera-preview {
-    max-height: 100%;
-    height: 351px;
-    max-width: 100%;
-    width: 624px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    /*padding-top: 20px;
-    padding-bottom: 20px;*/
-}
-.Media_webrtc_preparing_camera-preview-avatar-con {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-self: flex-start;
-    overflow: hidden;
-    margin-top:10px;
-}
-.Media_webrtc_preparing_camera-preview img{
-    border-radius: 50%;
-    width: 40%;
-}
-.Media_webrtc_preparing_camera-preview video:nth-last-child(1) {
-    width: 100%;
-}
-.Media_webrtc_preparing_camera-preview video:nth-last-child(2),
-.Media_webrtc_preparing_camera-preview video:nth-last-child(2) ~ video {
-    width: 50%;
-}
-.Media_webrtc_devices_dialog_buttons_con {
-    bottom: 85px;
-    height: 80px;
-    width: 100%;
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    z-index: 999;
-}
-.Media_webrtc_devices_dialog_buttons_inner_con {
-    bottom: 0;
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 15px;
-    /*background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 7px;*/
-}
-.Media_webrtc_prep-switch-mic,
-.Media_webrtc_prep-switch-camera,
-.Media_webrtc_prep-switch-screen {
-    width:50px;
-    height:50px;
-    cursor: pointer;
-}
-.Media_webrtc_prep-switch-mic,
-.Media_webrtc_prep-switch-camera {
-    margin-right:20px;
-}
-.Media_webrtc_prep-switch-mic svg,
-.Media_webrtc_prep-switch-camera svg,
-.Media_webrtc_prep-switch-screen svg{
-    width:100%;
-    height:100%;
-    -webkit-filter: drop-shadow( 3px 3px 2px rgba(0, 0, 0, .7));
-    filter: drop-shadow( 0px 0px 2px rgba(0, 0, 0, .6));
-}
-.Media_webrtc_preparing_active-audio .Media_webrtc_prep-switch-mic svg path,
-.Media_webrtc_preparing_active-audio .Media_webrtc_prep-switch-mic svg polygon,
-.Media_webrtc_preparing_active-audio .Media_webrtc_prep-switch-camera svg path,
-.Media_webrtc_preparing_active-audio .Media_webrtc_prep-switch-camera svg polygon,
-.Media_webrtc_preparing_active-audio .Media_webrtc_prep-switch-screen svg path,
-.Media_webrtc_preparing_active-audio .Media_webrtc_prep-switch-screen svg polygon{
-    fill: rgba(0,0,0,0.38);
-}
-.Media_webrtc_preparing_dialog_inner.Media_webrtc_preparing_dialog_inner_cordova .Media_webrtc_prep-switch-mic svg path,
-.Media_webrtc_preparing_dialog_inner.Media_webrtc_preparing_dialog_inner_cordova .Media_webrtc_prep-switch-mic svg polygon,
-.Media_webrtc_preparing_dialog_inner.Media_webrtc_preparing_dialog_inner_cordova .Media_webrtc_prep-switch-camera svg path,
-.Media_webrtc_preparing_dialog_inner.Media_webrtc_preparing_dialog_inner_cordova .Media_webrtc_prep-switch-camera svg polygon,
-.Media_webrtc_preparing_dialog_inner.Media_webrtc_preparing_dialog_inner_cordova .Media_webrtc_prep-switch-screen svg path,
-.Media_webrtc_preparing_dialog_inner.Media_webrtc_preparing_dialog_inner_cordova .Media_webrtc_prep-switch-screen svg polygon{
-    fill: rgba(255,255,255,0.38);
-}
-.Media_webrtc_join-button-con {
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    padding: 15px;
-    z-index: 999;
-}
-.Q_button.Media_webrtc_join-button {
-    border: 0;
-    margin: 15px;
-    padding: 7px 10px 7px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width:100%;
-    background: #c12236;
-    font-size: 24px;
-}
-
-.Media_webrtc_enable-microphone-btn,
-.Q_touchscreen .Q_button.Media_webrtc_enable-microphone-btn ,
-.Media_webrtc_enable-video-btn,
-.Q_touchscreen .Q_button.Media_webrtc_enable-video-btn {
-    border: 0;
-    margin: 15px;
-    padding: 7px 10px 7px 10px;
-    display: flex;
-    align-items: center;
-    background: #c12236;
-}
-.Media_webrtc_enable-microphone-btn,
-.Q_touchscreen .Q_button.Media_webrtc_enable-microphone-btn,
-.Media_webrtc_enable-video-btn,
-.Q_touchscreen .Q_button.Media_webrtc_enable-video-btn {
-    background: #28a745;
-}
-.Media_webrtc_enable-microphone-btn span,
-.Media_webrtc_enable-video-btn span{
-    margin-left:10px;
-    margin-right:10px;
-}
-
-.Media_webrtc_enable-microphone-btn svg,
-.Media_webrtc_enable-video-btn svg{
-    height: 30px;
-    width: 30px;
-}
-.Media_webrtc_join-now-btn {
-    display: block;
-    clear:both;
-    margin-bottom: 20px;
-}
-
 
 /*request to speak dialogue*/
 .Media_webrtc_request_speak_inner {

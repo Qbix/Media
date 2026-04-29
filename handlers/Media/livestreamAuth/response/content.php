@@ -7,8 +7,8 @@ function Media_livestreamAuth_response_content($params)
     $code = $_GET['code'];
     if ($_SERVER['HTTP_REFERER'] == 'https://accounts.google.com/') {
 
-        $client_id = Q_Config::expect('Media', 'livestream', 'auth', 'google', 'clientId');
-        $client_secret = Q_Config::expect('Media', 'livestream', 'auth', 'google', 'secret');
+        $client_id = Q_Config::expect('Users', 'apps', 'google', 'Fans', 'clientId');
+        $client_secret = Q_Config::expect('Users', 'apps', 'google', 'Fans', 'secret');
         $redirect_uri = 'https://' . $_SERVER['SERVER_NAME'] . '/livestreamAuth';
 
         // The authorization code you received from Google

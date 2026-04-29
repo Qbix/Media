@@ -237,35 +237,26 @@
                     roomItemCon.appendChild(roomItemAvatar);
 
                     let roomItemAvatarTool = document.createElement('DIV');
-                    roomItemAvatarTool.className = 'webrtc-waiting-item-avatar-tool';
+                    roomItemAvatarTool.className = 'webrtc-waiting-item-avatar-icon';
                     roomItemAvatar.appendChild(roomItemAvatarTool);
 
-                    Q.activate(
-                        Q.Tool.setUpElement(
-                            roomItemAvatarTool, // or pass an existing element
-                            "Users/avatar",
-                            {
-                                userId: roomDataObject.webrtcStream.fields.publisherId,
-                                contents: false
-                            }
-                        )
-                    );
-
-
                     let roomItemAvatarText = document.createElement('DIV');
-                    roomItemAvatarText.className = 'webrtc-waiting-item-avatar-texttool';
-
+                    roomItemAvatarText.className = 'webrtc-waiting-item-avatar-text';
                     roomItemAvatar.appendChild(roomItemAvatarText);
-                    Q.activate(
-                        Q.Tool.setUpElement(
-                            roomItemAvatarText, // or pass an existing element
-                            "Users/avatar",
-                            {
-                                userId: roomDataObject.webrtcStream.fields.publisherId,
-                                icon: false
-                            }
-                        )
-                    );
+
+                    Q.Streams.Avatar.get(roomDataObject.webrtcStream.fields.publisherId).then(function (avatar) {
+                        if (!avatar) {
+                            return;
+                        }
+                        let name = avatar.displayName();
+                        let iconUrl = avatar.iconUrl();
+
+                        let avatarImg = document.createElement('IMG');
+                        avatarImg.src = iconUrl;
+                        roomItemAvatarTool.appendChild(avatarImg);
+
+                        roomItemAvatarText.innerHTML = name;
+                    })
 
                     let roomItemButtons = document.createElement('DIV');
                     roomItemButtons.className = 'webrtc-waiting-item-buttons';

@@ -15,7 +15,9 @@
      */
     Q.Tool.define("Media/webrtc/scheduler", function (options) {
         var tool = this;
+        tool.widgetElement = null;
         tool.topicInputEl = null;
+        tool.livestreamInputEl = null;
         tool.startTimePicker = null;
         tool.endTimePicker = null;
         tool.timeZoneSelectEl = null;
@@ -54,8 +56,10 @@
         {
             publisherId: null,
             streamName: null,
-            showSaveButton: false,
+            showSaveButton: null,
             showCancelButton: false,
+            showScheduleLivestreamCheckbox: null,
+            showAttendeesInviteForm: null,
             meetingParams:{
                 topic: null,
                 invitedAttendeesIds: [],
@@ -171,7 +175,7 @@
                 let tool = this;
                 let parentContainer = tool.element;
 
-                let widgetContainer = document.createElement('DIV');
+                let widgetContainer = tool.widgetElement = document.createElement('DIV');
                 widgetContainer.className = 'webrtc-scheduler-widget';
 
                 let topicField = document.createElement('DIV');
@@ -245,40 +249,42 @@
                 // Append the SELECT element to the body or a specific container
                 timezoneField.appendChild(timeZoneSelect); */
 
-                let attendeesField = document.createElement('DIV');
-                attendeesField.className = 'webrtc-scheduler-config webrtc-scheduler-attendees';
-                widgetContainer.appendChild(attendeesField)
-                let attendeesFieldLabel = document.createElement('DIV');
-                attendeesFieldLabel.className = 'webrtc-scheduler-field-label';
-                attendeesFieldLabel.innerHTML = 'Attendees';
-                attendeesField.appendChild(attendeesFieldLabel)
+                if (tool.state.showAttendeesInviteForm !== false) {
+                    let attendeesField = document.createElement('DIV');
+                    attendeesField.className = 'webrtc-scheduler-config webrtc-scheduler-attendees';
+                    widgetContainer.appendChild(attendeesField)
+                    let attendeesFieldLabel = document.createElement('DIV');
+                    attendeesFieldLabel.className = 'webrtc-scheduler-field-label';
+                    attendeesFieldLabel.innerHTML = 'Attendees';
+                    attendeesField.appendChild(attendeesFieldLabel)
 
-                let attendeesFieldInputCon = document.createElement('DIV');
-                attendeesFieldInputCon.className = 'webrtc-scheduler-field-chooser';
-                attendeesField.appendChild(attendeesFieldInputCon)
+                    let attendeesFieldInputCon = document.createElement('DIV');
+                    attendeesFieldInputCon.className = 'webrtc-scheduler-field-chooser';
+                    attendeesField.appendChild(attendeesFieldInputCon)
 
-                var userChooserInput = document.createElement('INPUT');
-                userChooserInput.className = 'text Media_userChooser_input webrtc-scheduler-query';
-                userChooserInput.type = 'text';
-                userChooserInput.name = 'query';
-                userChooserInput.autocomplete = 'off';
-                userChooserInput.placeholder = 'Start typing to find user';
-                attendeesFieldInputCon.appendChild(userChooserInput);
+                    var userChooserInput = document.createElement('INPUT');
+                    userChooserInput.className = 'text Media_userChooser_input webrtc-scheduler-query';
+                    userChooserInput.type = 'text';
+                    userChooserInput.name = 'query';
+                    userChooserInput.autocomplete = 'off';
+                    userChooserInput.placeholder = 'Start typing to find user';
+                    attendeesFieldInputCon.appendChild(userChooserInput);
 
-                var selectedUsers = document.createElement("TABLE");
-                selectedUsers.className = 'webrtc-scheduler-attendees-roles';
-                attendeesField.appendChild(selectedUsers);
-          
+                    var selectedUsers = document.createElement("TABLE");
+                    selectedUsers.className = 'webrtc-scheduler-attendees-roles';
+                    attendeesField.appendChild(selectedUsers);
 
-                Q.activate(
-                    Q.Tool.setUpElement(attendeesFieldInputCon, 'Streams/userChooser', {}),
-                    {},
-                    function () {
-                        this.state.onChoose.set(function (userId, avatar) {
-                            tool.addInvitedUser(userId)
-                        }, tool);
-                    }
-                );
+
+                    Q.activate(
+                        Q.Tool.setUpElement(attendeesFieldInputCon, 'Streams/userChooser', {}),
+                        {},
+                        function () {
+                            this.state.onChoose.set(function (userId, avatar) {
+                                tool.addInvitedUser(userId)
+                            }, tool);
+                        }
+                    );
+                }
 
                 let accessTypeField = document.createElement('DIV');
                 accessTypeField.className = 'webrtc-scheduler-config webrtc-scheduler-accessType';
@@ -334,55 +340,57 @@
                 openFieldInput.addEventListener('click', onAccessTypeChange);
                 trustedFieldInput.addEventListener('click', onAccessTypeChange);
 
-                let scheduleLivestream = document.createElement('DIV');
-                scheduleLivestream.className = 'webrtc-scheduler-config webrtc-scheduler-livestream';
-                widgetContainer.appendChild(scheduleLivestream)
-                let livestreamLabel = document.createElement('LABEL');
-                livestreamLabel.className = 'webrtc-scheduler-field-label';
-                scheduleLivestream.appendChild(livestreamLabel);
-                let livestreamInput = document.createElement('INPUT');
-                livestreamInput.type = 'checkbox';
-                livestreamInput.checked = tool.state.meetingParams.scheduleLivestream;
-                livestreamInput.name = 'scheduleLivestream';
-                livestreamInput.className = 'webrtc-scheduler-scheduleLivestream-input';
-                livestreamLabel.appendChild(livestreamInput);
-                livestreamInput.addEventListener('change', function (e) {
-                    tool.state.meetingParams.scheduleLivestream = e.target.checked;
-                });
+                if (tool.state.showScheduleLivestreamCheckbox !== false) {
+                    let scheduleLivestream = document.createElement('DIV');
+                    scheduleLivestream.className = 'webrtc-scheduler-config webrtc-scheduler-livestream';
+                    widgetContainer.appendChild(scheduleLivestream)
+                    let livestreamLabel = document.createElement('LABEL');
+                    livestreamLabel.className = 'webrtc-scheduler-field-label';
+                    scheduleLivestream.appendChild(livestreamLabel);
+                    let livestreamInput = tool.livestreamInputEl = document.createElement('INPUT');
+                    livestreamInput.type = 'checkbox';
+                    livestreamInput.checked = tool.state.meetingParams.scheduleLivestream;
+                    livestreamInput.name = 'scheduleLivestream';
+                    livestreamInput.className = 'webrtc-scheduler-scheduleLivestream-input';
+                    livestreamLabel.appendChild(livestreamInput);
+                    livestreamInput.addEventListener('change', function (e) {
+                        tool.state.meetingParams.scheduleLivestream = e.target.checked;
+                    });
 
-                let livestreaDesc = document.createElement('DIV');
-                livestreaDesc.className = 'webrtc-scheduler-livestream-desc';
-                livestreamLabel.appendChild(livestreaDesc);
-                let livestreaText = document.createElement('DIV');
-                livestreaText.className = 'webrtc-scheduler-livestream-text';
-                livestreaText.innerHTML = 'Schedule live stream';
-                livestreaDesc.appendChild(livestreaText);
+                    let livestreaDesc = document.createElement('DIV');
+                    livestreaDesc.className = 'webrtc-scheduler-livestream-desc';
+                    livestreamLabel.appendChild(livestreaDesc);
+                    let livestreaText = document.createElement('DIV');
+                    livestreaText.className = 'webrtc-scheduler-livestream-text';
+                    livestreaText.innerHTML = 'Schedule live stream';
+                    livestreaDesc.appendChild(livestreaText);
 
-                tool.getLivestreamStream().then(function(stream) {
-                    if (!stream) return;
-                    let livestreaShare = document.createElement('DIV');
-                    livestreaShare.className = 'webrtc-scheduler-livestream-share';
-                    scheduleLivestream.appendChild(livestreaShare);
-                    let livestreaShareBtn = document.createElement('BUTTON');
-                    livestreaShareBtn.className = 'Q_button';
-                    livestreaShare.appendChild(livestreaShareBtn);
-                    let livestreaShareBtnText = document.createElement('SPAN');
-                    livestreaShareBtnText.className = 'webrtc-scheduler-livestream-share-text';
-                    livestreaShareBtnText.innerHTML = 'Share Livestream';
-                    livestreaShareBtn.appendChild(livestreaShareBtnText);
-                    let livestreaShareBtnIcon = document.createElement('SPAN');
-                    livestreaShareBtnIcon.className = 'webrtc-scheduler-livestream-share-icon';
-                    livestreaShareBtnIcon.innerHTML = _icons.shareIcon;
-                    livestreaShareBtn.appendChild(livestreaShareBtnIcon);
+                    tool.getLivestreamStream().then(function (stream) {
+                        if (!stream) return;
+                        let livestreaShare = document.createElement('DIV');
+                        livestreaShare.className = 'webrtc-scheduler-livestream-share';
+                        scheduleLivestream.appendChild(livestreaShare);
+                        let livestreaShareBtn = document.createElement('BUTTON');
+                        livestreaShareBtn.className = 'Q_button';
+                        livestreaShare.appendChild(livestreaShareBtn);
+                        let livestreaShareBtnText = document.createElement('SPAN');
+                        livestreaShareBtnText.className = 'webrtc-scheduler-livestream-share-text';
+                        livestreaShareBtnText.innerHTML = 'Share Livestream';
+                        livestreaShareBtn.appendChild(livestreaShareBtnText);
+                        let livestreaShareBtnIcon = document.createElement('SPAN');
+                        livestreaShareBtnIcon.className = 'webrtc-scheduler-livestream-share-icon';
+                        livestreaShareBtnIcon.innerHTML = _icons.shareIcon;
+                        livestreaShareBtn.appendChild(livestreaShareBtnIcon);
 
-                    livestreaShareBtn.addEventListener('click', function () {
-                        Q.Streams.invite(stream.fields.publisherId, stream.fields.name, { 
-                            title: 'Share Livestream',
-                            addLabel: [],
-                            addMyLabel: [] 
+                        livestreaShareBtn.addEventListener('click', function () {
+                            Q.Streams.invite(stream.fields.publisherId, stream.fields.name, {
+                                title: 'Share Livestream',
+                                addLabel: [],
+                                addMyLabel: []
+                            });
                         });
                     });
-                });
+                }
 
                 let buttons = document.createElement('DIV');
                 buttons.className = 'webrtc-scheduler-buttons';
@@ -412,7 +420,17 @@
                         //tool.state.meetingParams.endTimeTs = tool.endTimePicker.getTime();
                         //tool.state.meetingParams.timeZoneString = timeZoneSelect.value;
                         tool.state.meetingParams.accessType = trustedFieldInput.checked ? 'trusted' : 'open';
-                        tool.state.meetingParams.scheduleLivestream = livestreamInput.checked;
+                        if(tool.state.showScheduleLivestreamCheckbox !== false && tool.livestreamInputEl) {
+                            tool.state.meetingParams.scheduleLivestream = tool.livestreamInputEl.checked;
+                        } else {
+                            delete tool.state.meetingParams.scheduleLivestream;
+                        }
+                        if(tool.state.showAttendeesInviteForm === false) {
+                            delete tool.state.meetingParams.invitedAttendeesIds;
+                        } else if(tool.state.meetingParams.invitedAttendeesIds && tool.state.meetingParams.invitedAttendeesIds.length === 0) {
+                            //I cannot send empty array to the server as Q.req removed empty arrays so I have to do some workarounds to inform backend that all users were removed  
+                            tool.state.meetingParams.invitedAttendeesIds = 'none';
+                        }
 
                         tool.createOrUpdateWebRTCStream().then(function (response) {
                             okButton.classList.remove('Q_working');
@@ -450,8 +468,14 @@
                     tool.addInvitedUser(Q.Users.loggedInUserId());
                 } */
                 tool.addInvitedUser = function(userId, inviteRow) {             
+                    if (tool.state.showAttendeesInviteForm === false) return;
+
                     if(tool.invitedAttendeesList[userId] != null) {
                         return;
+                    }
+
+                    if(tool.state.meetingParams.invitedAttendeesIds === 'none') {
+                         tool.state.meetingParams.invitedAttendeesIds = [];
                     }
                     tool.state.meetingParams.invitedAttendeesIds.push(userId);
                     

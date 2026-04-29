@@ -315,24 +315,26 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
         saveButtonCon.className = 'live-editor-stream-to-edit-buttons';
         viewContent.appendChild(saveButtonCon);
         
-        var removeDest = document.createElement('DIV');
-        removeDest.className = 'live-editor-stream-to-edit-remove';
-        removeDest.innerHTML = 'Remove destination';
-        saveButtonCon.appendChild(removeDest);
+        if (destinationItem) {
+            var removeDest = document.createElement('DIV');
+            removeDest.className = 'live-editor-stream-to-edit-remove';
+            removeDest.innerHTML = 'Remove destination';
+            saveButtonCon.appendChild(removeDest);
 
-        removeDest.addEventListener('click', function () {
-            saveOrUpdateChannelInDB(destinationItem.channelInfo, true)
-                .then(function () {
-                    return getDestinationsFromDb();
-                }).then(function () {
-                    slideViewRight(_streamingToCustomRtmpSection);
-                    updateDestinationsList();
-                });
+            removeDest.addEventListener('click', function () {
+                saveOrUpdateChannelInDB(destinationItem.channelInfo, true)
+                    .then(function () {
+                        return getDestinationsFromDb();
+                    }).then(function () {
+                        slideViewRight(_streamingToCustomRtmpSection);
+                        updateDestinationsList();
+                    });
 
-        })
+            })
+        }
 
         var saveBtn = document.createElement('BUTTON');
-        saveBtn.className = 'Q_button';
+        saveBtn.className = 'livestream_button';
         saveBtn.innerHTML = 'Save';
         saveButtonCon.appendChild(saveBtn);
 
@@ -604,7 +606,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
             })
 
             var saveButton = document.createElement('BUTTON');
-            saveButton.className = 'Q_button';
+            saveButton.className = 'livestream_button';
             saveButton.innerHTML = 'Save';
             saveButtonCon.appendChild(saveButton);
 
@@ -737,7 +739,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
             })
 
             var saveButton = document.createElement('BUTTON');
-            saveButton.className = 'Q_button';
+            saveButton.className = 'livestream_button';
             saveButton.innerHTML = 'Save';
             saveButtonCon.appendChild(saveButton);
 
@@ -906,7 +908,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
         rtmpStreamingSettings.appendChild(startStreamingBtnCon);
 
         var startStreamingBtn = document.createElement('DIV');
-        startStreamingBtn.className = 'Q_button live-editor-stream-rtmp-go-live';
+        startStreamingBtn.className = 'livestream_button live-editor-stream-rtmp-go-live';
         startStreamingBtnCon.appendChild(startStreamingBtn);
 
         var startStreamingBtnLoader = document.createElement('DIV');
@@ -1463,6 +1465,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
             stopStreamToEachDestination();
 
             tool.state.rtmpLiveIsActive = false;
+            tool.state.startStreamingTimestamp = null;
             tool.eventDispatcher.dispatch('livestreamingEnded');
 
         } else {
@@ -1473,7 +1476,12 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
             }).length;
 
             if(totalLivesToBeCreated === 0) {
-                Q.alert('Please add some destinations before starting livestreaming.');
+                let prevDontPopOnClose = Q.Dialogs.dontPopOnClose;
+                Q.Dialogs.dontPopOnClose = false;
+                Q.alert('Please add some destinations before starting livestreaming.', {
+                    onClose: function () {
+                    }
+                });
                 return;
             }
 
@@ -1624,6 +1632,7 @@ Q.Media.WebRTC.livestreaming.RTMPStreaming = function (tool) {
                 tool.RTMPSender.startStreaming(rtmpUrlsArr, 'custom', tool.livestreamStream, useMp4Muxer)
                     .then(function () {
                         tool.state.rtmpLiveIsActive = true;
+                        tool.state.startStreamingTimestamp = Date.now();
                         tool.eventDispatcher.dispatch('destinationLiveCreated');
                     });
                 

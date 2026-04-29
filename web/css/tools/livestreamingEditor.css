@@ -174,9 +174,10 @@
 .live-editor-dialog-inner button,
 .live-editor-dialog-window button, 
 .webrtc-popup-dialog button,
-.live-editor-dialog button.Q_button,
-.live-editor-dialog .Q_button {
-    background-color: #777777;
+.live-editor-dialog button.livestream_button,
+.live-editor-dialog .livestream_button,
+.livestream_button {
+    background-color: hsl(0, 0%, 47%);
     background-image: none;
     border: 0;
     border-radius: 6px;
@@ -189,11 +190,27 @@
     text-align: center;
     text-decoration: none #D1D5DB solid;
     text-decoration-thickness: auto;
+    font-weight: normal;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    position: relative;
+}
+.livestream_button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    pointer-events: none;
+}
+.livestream_button:hover::after {
+    border-color: rgb(255 255 255 / 20%);
+}
+.livestream_button:hover {
+    background-color: hsl(0, 0%, 50%);
 }
 
 .live-editor-dialog-inner button:hover,
@@ -570,7 +587,7 @@
     background-color: #1e7f4b;
     background-image: none;
     width: 100%;
-    padding: 5px;
+    padding: 10px;
     border: none;
 }
 .live-editor-stream-rtmp .live-editor-stream-rtmp-start .live-editor-stream-rtmp-go-live .live-editor-stream-rtmp-loader {
@@ -656,6 +673,7 @@
     color: white;
     min-width: 500px;
     max-width: 500px;
+    background: #424242;
 }
 
 .view-slider-con .view-slider-view-ctl {
@@ -720,6 +738,9 @@
 }
 .live-editor-stream-to-add .live-editor-stream-to-add-btn {
     cursor: pointer;
+}
+.live-editor-stream-to-add .live-editor-stream-to-add-btn svg path{
+    fill: #ffffff
 }
 .live-editor-stream-rtmp-active .live-editor-stream-to-add .live-editor-stream-to-add-btn {
     pointer-events: none;
@@ -856,7 +877,11 @@
     align-items: center;
     margin-top: 10px;
 }
-.live-editor-stream-to-edit-dest .live-editor-stream-to-edit-buttons .Q_button{
+.live-editor-stream-to-edit-dest .live-editor-stream-to-edit-buttons:has(> .livestream_button:only-child) {
+    justify-content: flex-end;
+}
+
+.live-editor-stream-to-edit-dest .live-editor-stream-to-edit-buttons .livestream_button {
     background: #1e7f4b;
 }
 
@@ -972,17 +997,21 @@
    justify-content: center;
 }
 .live-editor-stream-to-section-rec .live-editor-rec-start-btn {
-    background-color: #1e7f4b; 
+    background-color: hsl(148, 62%, 31%); 
     position: relative;
     display: inline-block;
     padding: 0;
     user-select: none;
 }
-.live-editor-stream-to-section-rec .live-editor-rec-start-btn:active {
-    background-color: #1e7f4b;
+.live-editor-stream-to-section-rec .live-editor-rec-start-btn:active,
+.live-editor-stream-to-section-rec .live-editor-rec-start-btn:hover {
+        background-color: hsl(148, 62%, 34%); 
 }
 .live-editor-stream-to-section-rec .live-editor-rec-start-btn.live-editor-rec-start-btn-active {
-    background-color: #C12236;
+    background-color: hsl(352, 70%, 45%);
+}
+.live-editor-stream-to-section-rec .live-editor-rec-start-btn.live-editor-rec-start-btn-active:hover {
+    background-color: hsl(352, 70%, 48%);
 }
 .live-editor-stream-to-section-rec .live-editor-rec-start-btn-inner {
     position: relative;
@@ -1096,6 +1125,7 @@
 }
 .live-editor-dialog-body .live-editor-sources-layouts-con .live-editor-layouts-list-con .live-editor-custom-select {
     flex: 1;
+    overflow: hidden;
 }
 .live-editor-dialog-body .live-editor-sources-layouts-con .live-editor-layouts-list-con .live-editor-participants-list-config {
     margin-left: 10px;
@@ -1114,6 +1144,10 @@
 
 .live-editor-dialog-body .live-editor-custom-select-selected {
     padding-left:45px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 .live-editor-dialog-body .live-editor-custom-select-selected:before {
     content: ' ';
@@ -1619,7 +1653,8 @@
     align-items: center;
     cursor: pointer;
 }
-.live-editor-sources-item-control .live-editor-sources-item-control-item.live-editor-sources-item-playpause svg{
+.live-editor-sources-item-control .live-editor-sources-item-control-item.live-editor-sources-item-playpause svg,
+.live-editor-sources-item-control .live-editor-sources-item-control-item.live-editor-sources-item-config svg {
     height: 22px;
     width: auto;
 }
@@ -1904,6 +1939,9 @@
     justify-content: center;
     align-items: center;
     background-color: #1e7f4b;
+}
+.live-editor-sources-control .live-editor-sources-control-btn-invite-con .live-editor-sources-control-btn:hover {
+    background-color: hsl(148, 62%, 34%);
 }
 .live-editor-sources-control .live-editor-sources-control-btn-invite-con .live-editor-sources-control-btn-icon {
     display: flex;

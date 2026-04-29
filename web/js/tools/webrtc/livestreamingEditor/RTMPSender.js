@@ -7,7 +7,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
     };
     var _mp4Recorder = null;
     var _mp4Streamer = null;
-
+    var trackIdsInfo;
     loadIndexedDbAPI();
 
     function loadIndexedDbAPI() {
@@ -86,6 +86,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
             log('sender connect:', e)
             streamingInfo.connected = true;
             if (!streamingInfo.chunksSkipped || streamingInfo.chunksSkipped === 0) {
+                log('sender connect: callback')
                 if (callback != null) callback();
             }
         });
@@ -150,21 +151,26 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
     }
 
     function startStreaming(rtmpUrls, service, livestreamStream, useMp4Muxer) {
-        log('startStreaming', rtmpUrls);
+        log('startStreaming', rtmpUrls, useMp4Muxer);
         if (useMp4Muxer) {
+            log('startStreamin 1');
+
             return startStreamingUsingMp4Muxer();
         } else {
+            log('startStreamin 2');
             return startStreamingUsingMediaRecorder();
         }
 
         function startStreamingUsingMp4Muxer() {
+            //console.log('startStreamingUsingMp4Muxer START');
             return new Promise(function (resolve, reject) {
                 connect(rtmpUrls, service, livestreamStream, 'Mp4Muxer', function () {
-                    log('startStreaming connected');
+                    log('startStreaming connected', _mp4Streamer);
 
-                    if (_streamingSocket[service].mediaRecorder) {
+                    if (_streamingSocket[service].mediaRecorder || _mp4Streamer != null) {
                         log('startStreaming: mediaRecorder exists');
                         resolve();
+                        return;
                     }
                     _streamingSocket[service].active = true;
 
@@ -174,13 +180,78 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                     }
                     let roomStream = _webrtcUserInterface.roomStream();
 
+
+                    let videoTrack = mediaStream.getVideoTracks()[0]
+                    videoTrack.addEventListener('mute', function () {
+                        console.log('videoTrack event MUTE')
+                    });
+                    videoTrack.addEventListener('unmute', function () {
+                        console.log('videoTrack event UNMUTE')
+                    });
+                    videoTrack.addEventListener('ended', function () {
+                        console.log('videoTrack event ENDED')
+                    });
                     let audioContext = tool.canvasComposer.audioComposer.getContext();
                     let canvas = tool.canvasComposer.canvas();
 
                     let chunknum = 0;
                     let firstChunks = [];
                     let initSent = false;
-                    _mp4Streamer = new Mp4Recorder({
+                    //let lastChunkTimestamp = Date.now();
+
+                    function sendToSocket(dataObject) {
+                        if (_streamingSocket[service]?.connected) {
+                            _streamingSocket[service].socket.emit('Media/webrtc/videoData', {
+                                payload: new Blob([dataObject.payload]),
+                                lastSequenceNumber: dataObject.lastSequenceNumber,
+                                lastVideoTimestamp: dataObject.lastVideoTimestamp,
+                                lastAudioTimestamp: dataObject.lastAudioTimestamp,
+                            });
+                        } else {
+                            _streamingSocket[service].chunksSkipped++;
+                        }
+                    }
+
+
+
+                    function readBoxSize(uint8Array, offset) {
+                        // Use unsigned right shift to avoid negative numbers from << 24
+                        return ((uint8Array[offset] << 24) |
+                            (uint8Array[offset + 1] << 16) |
+                            (uint8Array[offset + 2] << 8) |
+                            uint8Array[offset + 3]) >>> 0; // >>> 0 forces unsigned 32-bit
+                    }
+
+                    function findBox(uint8Array, boxType) {
+                        let offset = 0;
+                        while (offset + 8 <= uint8Array.length) { // need at least 8 bytes for size+type
+                            const size = readBoxSize(uint8Array, offset);
+                            const type = getStringFromBuffer(uint8Array, offset + 4, 4);
+
+                            if (size < 8) {
+                                console.error(`Invalid box size ${size} at offset ${offset}`);
+                                break; // prevent infinite loop
+                            }
+
+                            if (type === boxType) {
+                                return uint8Array.slice(offset, offset + size);
+                            }
+
+                            offset += size;
+                        }
+                        return null;
+                    }
+
+
+                    function getStringFromBuffer(buffer, start, length) {
+                        return String.fromCharCode.apply(null, buffer.slice(start, start + length));
+                    }
+
+                    _mp4Streamer = new Q.Media.WebRTC.livestreaming.Mp4Recorder({
+                        bitrateMode: 'constant',
+                        bitrate: 4_000_000,
+                        keyFrameInterval: 1,
+                        latencyMode: 'realtime',
                         mediaStream: mediaStream,
                         audioContext: audioContext,
                         canvas: canvas,
@@ -189,32 +260,91 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                         title: roomStream.fields.title,
                         startTime: roomStream.getAttribute('startTime'),
                         recording: false,
-                        onDataAvailable: function (buffer) {
-                            //parseMp4(buffer);
-                            let blob = new Blob([buffer]);
+                        onDataAvailable: function (chunk) {
+                            //console.log('onDataAvailable triggered')
                             if (_streamingSocket[service] == null) return;
-                            
-                            if (_streamingSocket[service].connected) {
-                                _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
-                                /* if(_streamingSocket[service].chunksSkipped != 0) {
 
-                                    let ftypBlob = new Blob([_mp4Streamer.ftypBox]);
-                                    _streamingSocket[service].socket.emit('Media/webrtc/videoData', ftypBlob);
+                            const prev = _mp4Streamer.fragmentBuffer;
+                            //console.log('prev combined size is ', prev.length);
 
-                                    let moovBlob = new Blob([_mp4Streamer.moovBox, buffer]);
-                                    _streamingSocket[service].socket.emit('Media/webrtc/videoData', moovBlob);
+                            const combined = new Uint8Array(prev.length + chunk.length);
+                            combined.set(prev, 0);
+                            combined.set(chunk, prev.length);
+                            _mp4Streamer.fragmentBuffer = combined;
 
-                                    _streamingSocket[service].chunksSkipped = 0;
-                                } else {
-                                    _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
-                                } */
-                            } else {
-                                _streamingSocket[service].chunksSkipped++;
+                            if (!_mp4Streamer.initSegment) {
+                                //console.log('waiting for initSegment...');
+                                return;
                             }
-                            if (chunknum == 0 || chunknum == 1) {
-                                firstChunks[chunknum] = blob;
+
+                            //console.log('current combined size is ', combined.length);
+
+                            const { fragments, lastCompleteEnd } = _mp4Streamer.findAllFragments(combined);
+                            //console.log('current fragments size is ', fragments.length);
+                            //console.log('accumulated fragments ', fragments);
+
+                            if (fragments.length === 0) return;
+
+                            // We have video — send everything we have
+                            const totalFragmentsSize = fragments.reduce((sum, f) => sum + f.moof.length + f.mdat.length, 0);
+                            const needsInit = _mp4Streamer.initSegmentSent !== true;
+                            const initSize = needsInit ? _mp4Streamer.initSegment.length : 0;
+
+                            const payload = new Uint8Array(initSize + totalFragmentsSize);
+                            let writeOffset = 0;
+
+                            if (needsInit) {
+                                payload.set(_mp4Streamer.initSegment, writeOffset);
+                                writeOffset += _mp4Streamer.initSegment.length;
+                                _mp4Streamer.initSegmentSent = true;
+                                _streamingSocket[service].chunksSkipped = 0;
                             }
-                            chunknum++;
+
+                            let lastVideoTimestamp = -Infinity;
+                            let lastAudioTimestamp = -Infinity;
+                            let lastSequenceNumber = -Infinity;
+                            for (const fragment of fragments) {
+                                const info = _mp4Streamer.getFragmentInfo(fragment.moof);
+                                const trackType = _mp4Streamer.trackIdsInfo[info.trackId];
+                                //console.log('sending fragment:', info);
+                                //_mp4Streamer.getTracksInfo(info);
+
+                                payload.set(fragment.moof, writeOffset);
+                                writeOffset += fragment.moof.length;
+                                payload.set(fragment.mdat, writeOffset);
+                                writeOffset += fragment.mdat.length;
+
+                                if (trackType === 'video') _mp4Streamer.lastVideoInfo = info;
+                                else if (trackType === 'audio') _mp4Streamer.lastAudioInfo = info;
+
+                                lastSequenceNumber = Math.max(lastSequenceNumber, info.sequenceNumber);
+                                lastVideoTimestamp = Math.max(lastSequenceNumber, info.tracks[_mp4Streamer.trackIdsInfo.videoTrackId].timestamp);
+                                lastAudioTimestamp = Math.max(lastSequenceNumber, info.tracks[_mp4Streamer.trackIdsInfo.audioTrackId].timestamp);
+
+                                if (info.sequenceNumber >= 2 && info.sequenceNumber <= 5 && !_streamingSocket[service].placeholderSent) {
+                                    //const payload = new Uint8Array(fragment.moof.length + fragment.mdat.length);
+                                    //payload.set(fragment.moof, 0);
+                                    //payload.set(fragment.mdat, fragment.moof.length);
+
+                                    if (_streamingSocket[service]?.connected) {
+                                        _streamingSocket[service].socket.emit('Media/webrtc/offlinePlaceholder', {
+                                            moof: fragment.moof,
+                                            mdat: fragment.mdat,
+                                            timescales: _mp4Streamer.timescales,
+                                            trackIdsInfo: _mp4Streamer.trackIdsInfo,
+                                        });
+                                        _streamingSocket[service].placeholderSent = true;
+                                    }
+                                }
+                            }
+
+                            sendToSocket({
+                                payload: payload,
+                                lastSequenceNumber: lastSequenceNumber,
+                                lastVideoTimestamp: lastVideoTimestamp,
+                                lastAudioTimestamp: lastAudioTimestamp,
+                            });
+                            _mp4Streamer.fragmentBuffer = combined.slice(lastCompleteEnd);
                         }
                     });
 
@@ -246,7 +376,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                             if (_streamingSocket[service].connected) {
                                 _streamingSocket[service].socket.emit('Media/webrtc/videoData', blob);
                             }
-                        }, supportedCodec);
+                        }, { codecs: supportedCodec, bitrate: 2_000_000 });
                     } catch (error) {
                         reject(error);
                         return;
@@ -289,6 +419,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         }
 
         if (service != null && _streamingSocket[service] != null) {
+            _streamingSocket[service].socket.emit('Media/webrtc/endStream');
             _streamingSocket[service].socket.disconnect();
             delete _streamingSocket[service];
 
@@ -377,7 +508,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         _localRecorder.startTime = Date.now();
 
         let roomStream = _webrtcUserInterface.roomStream();
-        let metadata = {
+        let metadata = _localRecorder.recordingMetadata = {
             roomKey: roomStream ? roomStream.fields.publisherId + '|' + roomStream.fields.name : '',
             roomStream: roomStream ? {
                 publisherId: roomStream.fields.publisherId,
@@ -434,7 +565,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                         });
                     });
                 });
-            }, codecs);
+            }, { codecs: codecs, bitrate: 2_000_000 });
 
             tool.webrtcSignalingLib.event.dispatch('localRecordingStarted', { participant: tool.webrtcSignalingLib.localParticipant() });
             tool.webrtcSignalingLib.signalingDispatcher.sendDataTrackMessage("localRecordingStarted");
@@ -469,8 +600,22 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
             tool.canvasComposer.stopCaptureCanvas(stopCanvasDrawingAndMixing);
         }
 
+        
+
         if (_localRecorder != null) {
+            let dateFormat = new Date(parseInt(_localRecorder.recordingMetadata.startTime));
+            let downloadName = dateFormat.getDate() +
+                "-" + (dateFormat.getMonth() + 1) +
+                "-" + dateFormat.getFullYear() +
+                "_" + dateFormat.getHours() +
+                "-" + dateFormat.getMinutes() +
+                "-" + dateFormat.getSeconds();
+
+            downloadFromIndexedDB(_localRecorder.recordingMetadata, downloadName);
+
             _localRecorder.chunks = [];
+            _localRecorder.recordingMetadata = null;
+            _localRecorder.startTime = null;
         }
 
         if (_streamingSocket['rec'] && _streamingSocket['rec'].socket && _streamingSocket['rec'].socket.connected) {
@@ -481,6 +626,45 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         tool.webrtcSignalingLib.event.dispatch('localRecordingEnded', { participant: tool.webrtcSignalingLib.localParticipant() });
         tool.webrtcSignalingLib.signalingDispatcher.sendDataTrackMessage("localRecordingEnded");
 
+    }
+
+    function downloadFromIndexedDB(recordingItem, downloadName) {
+        var tool = this;
+        _localRecordingsDB.getByIndex('startTime', recordingItem.startTime, 'recordingsChunks').then(function (chunks) {
+            chunks.sort(function (a, b) {
+                var x = a.timestamp;
+                var y = b.timestamp;
+                if (x < y) { return -1; }
+                if (x > y) { return 1; }
+                return 0;
+            });
+
+            let allChunks = chunks.map(function (o) {
+                return o.buffer;
+            });
+
+            let blob = new Blob(allChunks);
+
+            let extension = 'mp4';
+            if (recordingItem.codec && recordingItem.codec.includes('mp4')) {
+                extension = 'mp4';
+            } else if (recordingItem.codec && recordingItem.codec.includes('webm')) {
+                extension = 'webm';
+            }
+            const url = URL.createObjectURL(blob);
+            let downloadLink = document.createElement('A');
+            downloadLink.style.position = 'absolute';
+            downloadLink.style.top = '-999999px';
+            downloadLink.href = url;
+            downloadLink.download = downloadName + '.' + extension;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+                downloadLink.remove();
+            }, 1000);
+        })
     }
 
     function startMp4LocalRecording() {
@@ -494,7 +678,12 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         let audioContext = tool.canvasComposer.audioComposer.getContext();
         let canvas = tool.canvasComposer.canvas();
 
-        _mp4Recorder = new Mp4Recorder({
+        _mp4Recorder = new Q.Media.WebRTC.livestreaming.Mp4Recorder({
+            recording: true,
+            bitrateMode: 'constant',
+            bitrate: 2_000_000,
+            keyFrameInterval: 4,
+            latencyMode: 'quality',
             mediaStream: mediaStream,
             audioContext: audioContext,
             canvas: canvas,
@@ -596,443 +785,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
 }
 
 
-function Mp4Recorder(options) {
-    const thisInstance = this;
-    const canvas = options.canvas;
-    const mediaStream = options.mediaStream; //for audio input
-    const audioContext = options.audioContext; //for audio input
-    let _opfsRoot = null;
-    let _tempDir = null;
 
-    this.recordingId = Date.now().toString(36) + Math.random().toString(36).replace(/\./g, "");;
-    let fileName = 'mp4_' + this.recordingId;
-    let chunkHandles = [];
-    let infoFile = null;
-    let chunkCounter = -1;
-
-    let muxer = null;
-    this.videoEncoder = null;
-    this.fps = 0;
-    let audioEncoder = null;
-    let startTime = null;
-    let startTimestamp = null;
-    let recording = false;
-    let audioTrack = null;
-    let videoTrack = null;
-    let audioSampleRate
-    let lastKeyFrame = null;
-    let framesGenerated = 0;
-    let fpsCounter = 0;
-    let fpsCounter2 = 0;
-    let lastFrameTime = 0;
-    this.ftypBox = null;
-    this.moovBox = null;
-
-    function initOpfs() {
-        return new Promise(async function (resolve, reject) {
-            _opfsRoot = await navigator.storage.getDirectory();
-            _tempDir = await _opfsRoot.getDirectoryHandle("temp", {
-                create: true,
-            });
-            resolve();
-        });
-    }
-
-    async function saveTempChunk(arrayBuffer, name) {
-        const draftHandle = await _tempDir.getFileHandle(`${name}`, { create: true });
-        const writable = await draftHandle.createWritable();
-        // Write the contents of the file to the stream.
-        await writable.write(arrayBuffer);
-        // Close the stream, which persists the contents.
-        let closed = await writable.close();
-        return typeof closed === 'undefined' ? draftHandle : null;
-    }
-
-    function saveStaticFile(name, fileBlob) {
-        return new Promise(async function (resolve, reject) {
-            const draftHandle = await _opfsRoot.getFileHandle(name, { create: true }).catch(function (e) {
-                console.error(e)
-            });
-            const writable = await draftHandle.createWritable().catch(function (e) {
-                console.error(e)
-            });
-            // Write the contents of the file to the stream.
-            await writable.write(fileBlob);
-            // Close the stream, which persists the contents.
-            await writable.close();
-
-            resolve();
-        });
-    }
-
-    function findFtypBox(uint8Array) {
-        let offset = 0;
-        while (offset < uint8Array.length) {
-            const size = uint8Array[offset] << 24 |
-                uint8Array[offset + 1] << 16 |
-                uint8Array[offset + 2] << 8 |
-                uint8Array[offset + 3];
-            const type = getStringFromBuffer(uint8Array, offset + 4, 4);
-
-            if (type === 'ftyp') {
-                return uint8Array.slice(offset, offset + size);
-            }
-
-            offset += size;
-        }
-
-        return null;
-    }
-
-    function findMoovBox(uint8Array) {
-        let offset = 0;
-        while (offset < uint8Array.length) {
-            const size = (uint8Array[offset] << 24) |
-                (uint8Array[offset + 1] << 16) |
-                (uint8Array[offset + 2] << 8) |
-                (uint8Array[offset + 3]);
-            const type = getStringFromBuffer(uint8Array, offset + 4, 4);
-
-            if (type === 'moov') {
-                return uint8Array.slice(offset, offset + size);
-            }
-
-            offset += size;
-        }
-
-        return null;
-    }
-
-    function getStringFromBuffer(buffer, start, length) {
-        return String.fromCharCode.apply(null, buffer.slice(start, start + length));
-    }
-
-    this.startRecording = async function () {
-        // Check for VideoEncoder availability
-        if (typeof VideoEncoder === 'undefined') {
-            alert("Looks like your user agent doesn't support VideoEncoder / WebCodecs API yet.");
-            return;
-        }
-        if (!_opfsRoot || !_tempDir) {
-            await initOpfs();
-        }
-
-        videoTrack = mediaStream?.getVideoTracks()[0].clone();
-
-        if (typeof AudioEncoder !== 'undefined') {
-            audioTrack = mediaStream?.getAudioTracks()[0].clone();
-            audioSampleRate = audioContext.sampleRate;
-            if (audioTrack?.getCapabilities().sampleRate) {
-                audioSampleRate = audioTrack?.getCapabilities().sampleRate.max;
-            }
-        } else {
-            console.warn('AudioEncoder not available; no need to acquire a user media audio track.');
-        }
-
-        // Create an MP4 muxer with a video track and maybe an audio track
-        muxer = new Mp4Muxer.Muxer({
-            /* target: new Mp4Muxer.ArrayBufferTarget(), */
-            target: new Mp4Muxer.StreamTarget({
-                onData: async function (buffer) {
-                    if (chunkCounter == -1) {
-                        let info = {
-                            publisherId: options.publisherId,
-                            streamName: options.streamName,
-                            webrtcStarttime: options.startTime,
-                            title: options.title,
-                        }
-                        infoFile = await saveTempChunk(JSON.stringify(info), fileName + '_info')
-                    }
-
-
-                    chunkCounter++;
-                    if (options.recording !== false) {
-                        let chunkHandle = await saveTempChunk(buffer, fileName + '_' + chunkCounter);
-                        if (chunkHandle) chunkHandles.push(chunkHandle);
-                    }
-
-                    if (options.onDataAvailable) {
-                        options.onDataAvailable(buffer);
-                    }
-                }
-
-            }),
-            video: {
-                codec: 'avc',
-                width: canvas.width,
-                height: canvas.height
-            },
-            audio: audioTrack ? {
-                codec: 'aac',
-                sampleRate: audioSampleRate,
-                numberOfChannels: 2
-            } : undefined,
-
-            // Puts metadata to the start of the file. Since we're using ArrayBufferTarget anyway, this makes no difference
-            // to memory footprint.
-            fastStart: 'fragmented',
-
-            // Because we're directly pumping a MediaStreamTrack's data into it, which doesn't start at timestamp = 0
-            firstTimestampBehavior: 'offset'
-        });
-
-        thisInstance.videoEncoder = new VideoEncoder({
-            output: function (chunk, meta) {
-                return muxer.addVideoChunk(chunk, meta)
-            },
-            error: e => console.error(e)
-        });
-        thisInstance.videoEncoder.configure({
-            codec: 'avc1.4d0029',
-            width: canvas.width,
-            height: canvas.height,
-            bitrate: 1e6
-        });
-
-        startTime = document.timeline.currentTime;
-        startTimestamp = +new Date();
-        recording = true;
-        lastKeyFrame = -Infinity;
-        framesGenerated = 0;
-
-        if (videoTrack) {
-            let videoTrackProcessor = new MediaStreamTrackProcessor({ track: videoTrack });
-            let consumer = new WritableStream({
-                write(frame) {
-                    fpsCounter2++
-
-                    if (!recording) {
-                        frame.close();
-                        return;
-                    }
-                    let currentTime = document.timeline.currentTime;
-                    let elapsedTime = currentTime - startTime;
-
-                    framesGenerated++;
-                    fpsCounter++;
-                    // Ensure a video key frame at least every 10 seconds for good scrubbing
-                    let needsKeyFrame = elapsedTime - lastKeyFrame >= 5000;
-                    if (needsKeyFrame) lastKeyFrame = elapsedTime;
-
-                    //fps counter
-                    if (currentTime - lastFrameTime >= 1000) { // Update the FPS counter every second
-                        thisInstance.fps = fpsCounter;
-                        fpsCounter = 0;
-                        lastFrameTime = currentTime;
-                    }
-
-                    thisInstance.videoEncoder.encode(frame, { keyFrame: needsKeyFrame });
-                    frame.close();
-                }
-            });
-            videoTrackProcessor.readable.pipeTo(consumer);
-        }
-
-        if (audioTrack) {
-            audioEncoder = new AudioEncoder({
-                output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
-                error: e => console.error(e)
-            });
-            audioEncoder.configure({
-                codec: 'mp4a.40.2',
-                numberOfChannels: 2,
-                sampleRate: audioSampleRate,
-                bitrate: 128000
-            });
-
-            // Create a MediaStreamTrackProcessor to get AudioData chunks from the audio track
-            let trackProcessor = new MediaStreamTrackProcessor({ track: audioTrack, maxBufferSize: 100 });
-            let consumer = new WritableStream({
-                write(audioData) {
-                    if (!recording) {
-                        audioData.close();
-                        return;
-                    }
-                    audioEncoder.encode(audioData);
-                    audioData.close();
-                }
-            });
-            trackProcessor.readable.pipeTo(consumer);
-        }
-    };
-
-    this.endRecording = async function () {
-        recording = false;
-
-        videoTrack?.stop();
-        audioTrack?.stop();
-
-        await thisInstance.videoEncoder?.flush();
-        await audioEncoder?.flush();
-        muxer.finalize();
-        if (options.recording !== false) {
-            await checkIfFinalChunkExist();
-            await mergeAndSaveAndDownload();
-        }
-
-        thisInstance.videoEncoder = null;
-        audioEncoder = null;
-        muxer = null;
-        startTime = null;
-        startTimestamp = null;
-        firstAudioTimestamp = null;
-        return true;
-    };
-
-    function checkIfFinalChunkExist() {
-        return new Promise(function (resolve) {
-            async function doCheck() {
-                let finalChunkHandle = chunkHandles[chunkHandles.length - 1];
-                let fileBlob = await finalChunkHandle.getFile();
-                containsMfraBox(fileBlob).then(function (result) {
-                    if (result === false) {
-                        setTimeout(doCheck, 100);
-                        return;
-                    }
-
-                    resolve();
-                })
-            }
-
-            doCheck();
-
-        });
-    }
-
-    async function containsMfraBox(blob) {
-        // Read the Blob as an ArrayBuffer
-        const arrayBuffer = await blob.arrayBuffer();
-
-        // Create a DataView to read the binary data
-        const dataView = new DataView(arrayBuffer);
-
-        // Define the mfra box identifier in ASCII
-        const mfraIdentifier = 'mfra';
-
-        // Function to check if current position matches the mfra identifier
-        function matchesMfra(dataView, position) {
-            for (let i = 0; i < mfraIdentifier.length; i++) {
-                if (dataView.getUint8(position + i) !== mfraIdentifier.charCodeAt(i)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        // Iterate through the data to find the mfra identifier
-        for (let i = 0; i < dataView.byteLength - mfraIdentifier.length; i++) {
-            if (matchesMfra(dataView, i)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    async function mergeAndSaveAndDownload() {
-        if (chunkHandles.length == 0) {
-            return;
-        }
-        let chunksToRemove = [...chunkHandles];
-        if (infoFile) {
-            chunksToRemove.push(infoFile);
-        }
-        let info = chunkHandles[0].name.split('_');
-        let format = info[0];
-        let firstChunk = await chunkHandles[0].getFile();
-        let timestamp = firstChunk.lastModified;
-
-        let blobs = [];
-        await retrieveBlobs(chunkHandles, blobs).catch(function (e) {
-            console.error(e)
-        });
-
-        blobs.sort(function (a, b) {
-            return a.lastModified - b.lastModified; // Sorting in descending order
-        });
-
-        let fileBlob = new Blob(blobs);
-        const date = new Date(parseInt(timestamp));
-
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
-        let seconds = date.getSeconds();
-
-        // This arrangement can be altered based on how we want the date's format to appear.
-        let currentDate = `${day}-${month}-${year}-${hours}-${minutes}-${seconds}`;
-        let downloadName = `${currentDate}.${format}`;
-        let fileName = `${thisInstance.recordingId}.${format}`;
-
-        await saveStaticFile(fileName, fileBlob);
-
-        return downloadRecording()
-
-        function downloadRecording() {
-            return new Promise(function (resolve, reject) {
-                function tryDownload() {
-                    _opfsRoot.getFileHandle(fileName)
-                        .then(function (finalFileHandle) {
-                            finalFileHandle.getFile().then(function (finalFile) {
-                                if (finalFile.size != fileBlob.size) { //probably this conditions will never happen
-                                    setTimeout(tryDownload, 200)
-                                    return;
-                                }
-                                downloadBlob(finalFile, downloadName);
-                                removeTempFiles();
-                                resolve();
-                            });
-                        })
-                        .catch(function (e) {
-                            setTimeout(tryDownload, 200)
-                        });
-                }
-
-                tryDownload();
-            });
-        }
-
-        async function retrieveBlobs(tempFilesInfo, blobs) {
-            let handle = tempFilesInfo.shift();
-            let file = await handle.getFile()
-            blobs.push(file);
-            if (tempFilesInfo.length != 0) {
-                return await retrieveBlobs(tempFilesInfo, blobs);
-            } else {
-                return blobs;
-            }
-        }
-
-        async function removeTempFiles() {
-            for (let i in chunksToRemove) {
-                await chunksToRemove[i].remove();
-            }
-        }
-    }
-
-    function downloadBlob(blob, downloadName) {
-        if (!downloadName) {
-            let dateFormat = new Date();
-            downloadName = dateFormat.getDate() +
-                "-" + (dateFormat.getMonth() + 1) +
-                "-" + dateFormat.getFullYear() +
-                "_" + dateFormat.getHours() +
-                "-" + dateFormat.getMinutes() +
-                "-" + dateFormat.getSeconds();
-        }
-
-        let url = window.URL.createObjectURL(blob);
-        let a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = downloadName;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-    };
-}
 
 function log(){}
 if(Q.Media.WebRTCdebugger) {

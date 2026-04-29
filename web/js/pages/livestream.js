@@ -12,9 +12,8 @@ Q.page("Media/livestream", function () {
         streamName = 'Media/webrtc/livestream/' + livestreamId;
     }
 
-    var pageEl = document.getElementById('page');
+    /* var pageEl = document.getElementById('page');
     var livestreamElement = document.createElement('DIV');
-    /* livestreamElement.style.position = 'absolute'; */
     livestreamElement.style.width = '100%';
     livestreamElement.style.height = 'inherit';
     pageEl.appendChild(livestreamElement);
@@ -30,11 +29,11 @@ Q.page("Media/livestream", function () {
         {},
         function () {
             let tool = this;
-            /* document.addEventListener('click', function () {
-                tool.remove();
-            }); */
+           
         }
-    );
+    ); */
+
+    Q.Media.openLivestreamTool(publisherId, streamName, { mode: 'full' })
    
     return function () {
         // code to execute before page starts unloading

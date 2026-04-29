@@ -2,7 +2,7 @@ Q.page("Media/meeting", function () {
     var url = new URL(location.href);
     var roomId = url.searchParams.get("room");
     var inviteToken = url.searchParams.get("Q.Streams.token");
-    var invitingUserId = url.searchParams.get("invitingUserId");
+    var invitingUserId = url.searchParams.get("Q.Streams.invitingUserId");
     var publisherId = url.searchParams.get("publisherId");
 
     if(roomId == null) {
@@ -23,7 +23,7 @@ Q.page("Media/meeting", function () {
             inviteToken:inviteToken,
             invitingUserId:invitingUserId,
             resumeClosed: true,
-            defaultDesktopViewMode: 'maximized',
+            defaultDesktopViewMode: 'maximizedStatic',
             defaultMobileViewMode: 'audio',
             mode: 'node',
             startWith: {video: false, audio: true},

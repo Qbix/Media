@@ -93,13 +93,19 @@
 			js: "{{Media}}/js/tools/webrtc/recordings.js",
 			css: "{{Media}}/css/tools/webrtcRecordings.css"
 		},
+		"Media/webrtc/preparingDialog"  : {
+			js: "{{Media}}/js/tools/webrtc/preparingDialog.js",
+			css: "{{Media}}/css/tools/preparingDialog.css"
+		},
 		"Media/webrtc/controls"  : "{{Media}}/js/tools/webrtc/controls.js",
 		"Media/webrtc/participants"  : "{{Media}}/js/tools/webrtc/participants.js",
 		"Media/webrtc/waitingRoomList"  : "{{Media}}/js/tools/webrtc/waitingRoomList.js",
 		"Media/webrtc/permissionsManager"  : "{{Media}}/js/tools/webrtc/permissionsManager.js",
 		"Media/webrtc/limitsManager"  : "{{Media}}/js/tools/webrtc/limitsManager.js",
 		"Media/webrtc/video"  : "{{Media}}/js/tools/webrtc/video.js",
+		"Media/webrtc/video2"  : "{{Media}}/js/tools/webrtc/video2.js",
 		"Media/webrtc/audio"  : "{{Media}}/js/tools/webrtc/audio.js",
+		"Media/webrtc/audio2"  : "{{Media}}/js/tools/webrtc/audio2.js",
 		"Media/webrtc/livestreaming"  : {
 			js: "{{Media}}/js/tools/webrtc/livestreamingEditor/livestreamingEditor.js",
 			css: "{{Media}}/css/tools/livestreamingEditor.css",
@@ -384,7 +390,8 @@
 		});
 	}
 	
-	Media.openLivestreamTool = function (publisherId, streamName) {
+	Media.openLivestreamTool = function (publisherId, streamName, options) {
+		if(!options) options = {};
 		return new Promise(function (resolve, reject) {
 			let existingLivestreamTools = Q.Tool.byName('Media/webrtc/livestream');
 			let tools = Object.values(existingLivestreamTools)
@@ -410,7 +417,7 @@
 					Q.Tool.setUpElement(livestreamElement, 'Media/webrtc/livestream', {
 						publisherId: publisherId,
 						streamName: streamName,
-						mode: 'compact',
+						mode: options.mode != null ? options.mode : 'compact',
 					}),
 					{},
 					function () {

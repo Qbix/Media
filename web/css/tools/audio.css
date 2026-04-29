@@ -6,12 +6,52 @@
     pointer-events: none;
 }
 
+.webrtc-audio-choose-device-title {
+    padding: 10px 10px 0 10px;
+}
 .webrtc-audio-choose-device {
     padding-top:5px;
     padding: 15px;
     border-bottom: 1px solid #ccc;
 }
- .webrtc-audio-choose-device .webrtc-audio-settings_popup_item {
+.webrtc-audio-choose-input-audio-con {
+    position: relative;
+}
+.webrtc-audio-disabled-msg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+    color: #c12236;
+    font-weight: bold;
+}
+.webrtc-audio-disabled-msg .webrtc-audio-disabled-msg-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #cccccc00;
+    z-index: 0;
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    box-shadow: 0 0 10px 5px rgb(255 255 255 / 30%);
+}
+.webrtc-audio-disabled-msg .webrtc-audio-disabled-msg-text-con {
+    position: relative;
+}
+.webrtc-audio-disabled-msg .webrtc-audio-disabled-msg-text {
+    position: relative;
+    z-index: 1;
+    padding: 10px;
+}
+.webrtc-audio-choose-device .webrtc-audio-settings_popup_item {
     display: flex;
     flex-direction: column;
     justify-content: center;
