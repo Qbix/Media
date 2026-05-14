@@ -60,7 +60,7 @@ Q.page("Media/meeting", function () {
 			Q.handle(currentUrl);
         });
     } else {
-        if(url.searchParams.get("dev") == '') startConference();
+        startConference();
     }
 
     if(url.searchParams.get("dev")) {
