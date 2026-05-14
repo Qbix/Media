@@ -27,7 +27,9 @@
                 return new Promise(function (resolve, reject) {
                     Q.addScript([
                         '{{Media}}/js/tools/webrtc/EventSystem.js',
-                        '{{Media}}/js/tools/webrtc/clipEditor/FMP4parser.js',
+                        '{{Media}}/js/tools/webrtc/clipEditor/MP4Parser/BaseMP4Parser.js',
+                        '{{Media}}/js/tools/webrtc/clipEditor/MP4Parser/RegularMP4parser.js',
+                        '{{Media}}/js/tools/webrtc/clipEditor/MP4Parser/FragmentedMP4parser.js',
                         '{{Media}}/js/tools/webrtc/clipEditor/MediaPlayer.js',
                         '{{Media}}/js/tools/webrtc/clipEditor/ClipEditor.js',
                     ], function () {
