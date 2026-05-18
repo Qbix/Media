@@ -61,6 +61,7 @@ html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
 .Media_clip_tool .Media_clip_player_inner {
     height: 100%;
     flex-basis: 100%;
+    overflow: auto;
 }
 .Media_clip_player_inner .Media_player {
     height: 100%;

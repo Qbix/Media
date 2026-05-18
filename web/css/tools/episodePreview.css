@@ -116,6 +116,10 @@
     float: right;
     font-size: 20px;
     cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999999;
 }
 .Q_mobile .Media_shows_layout {
     margin-top: 0;
