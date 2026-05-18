@@ -8,40 +8,10 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
     var _mp4Recorder = null;
     var _mp4Streamer = null;
     var trackIdsInfo;
-    loadIndexedDbAPI();
 
-    function loadIndexedDbAPI() {
-        return new Promise(function (resolve, reject) {
-            Q.addScript([
-                '{{Media}}/js/tools/webrtc/IndexedDbAPI.js',
-            ], function () {
-                _localRecordingsDB = Q.Media.WebRTC.indexedDbAPI('localRecodingsDB', {
-                    version: 5,
-                    stores: [
-                        {
-                            name: 'recordings',
-                            indexes: [
-                                { name: 'startTime', unique: false },
-                                { name: 'roomKey', unique: false },
-                                { name: 'recordingId', unique: true }
-                            ]
-                        },
-                        {
-                            name: 'recordingsChunks',
-                            indexes: [
-                                { name: 'startTime', unique: false },
-                                { name: 'roomKey', unique: false }
-                            ]
-                        }
-                    ],
-
-                });
-                _localRecordingsDB.init().then(function () {
-                    resolve();
-                });
-            });
-        });
-    }
+    Q.Media.WebRTC.livestreaming.initRecordingsDB().then(function (dbApi) {
+        _localRecordingsDB = dbApi;
+    });
 
     function connect(rtmpUrls, platform, livestreamOrRecordingStream, recorderType, callback) {
         if (typeof io == 'undefined') return;
@@ -175,9 +145,6 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                     _streamingSocket[service].active = true;
 
                     let mediaStream = tool.canvasComposer.getMediaStream();
-                    if (!mediaStream) {
-                        mediaStream = tool.canvasComposer.captureStream();
-                    }
                     let roomStream = _webrtcUserInterface.roomStream();
 
 
@@ -247,14 +214,12 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                         return String.fromCharCode.apply(null, buffer.slice(start, start + length));
                     }
 
-                    _mp4Streamer = new Q.Media.WebRTC.livestreaming.Mp4Recorder({
+                    _mp4Streamer = new Q.Media.WebRTC.livestreaming.MediabunnyRecorder({
                         bitrateMode: 'constant',
                         bitrate: 4_000_000,
                         keyFrameInterval: 1,
                         latencyMode: 'realtime',
-                        mediaStream: mediaStream,
-                        audioContext: audioContext,
-                        canvas: canvas,
+                        livestreamingTool: tool,
                         publisherId: roomStream.fields.publisherId,
                         streamName: roomStream.fields.name,
                         title: roomStream.fields.title,
@@ -395,7 +360,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         log('endStreaming', service);
 
         if (_mp4Streamer) {
-            _mp4Streamer.endRecording().then(function () {
+            _mp4Streamer.stopRecording().then(function () {
 
             });
             _mp4Streamer = null;
@@ -678,7 +643,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
         let audioContext = tool.canvasComposer.audioComposer.getContext();
         let canvas = tool.canvasComposer.canvas();
 
-        _mp4Recorder = new Q.Media.WebRTC.livestreaming.Mp4Recorder({
+        _mp4Recorder = new Q.Media.WebRTC.livestreaming.MediabunnyRecorder({
             recording: true,
             bitrateMode: 'constant',
             bitrate: 2_000_000,
@@ -726,7 +691,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
             return;
         }
         let notice = tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.processingRecording", tool.text), true);
-        _mp4Recorder.endRecording().then(function () {
+        _mp4Recorder.stopRecording().then(function () {
             setTimeout(function () {
                 notice.remove();
             }, 2000);

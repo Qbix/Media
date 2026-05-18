@@ -1633,7 +1633,9 @@
                     xPositionsOrder: tool.state.xPositionsOrder,
                     yPositionsOrder: tool.state.yPositionsOrder,
                     toolId: tool.id,
-                    onStateChanged: tool.state.onStateChanged
+                    onStateChanged: tool.state.onStateChanged,
+                    pointerEvent: tool.state.pointerEvent,
+                    position: tool.state.position
                 })
             },
             getPopupElement: function () {

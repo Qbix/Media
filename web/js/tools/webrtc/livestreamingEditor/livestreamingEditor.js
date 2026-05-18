@@ -105,8 +105,9 @@
             tool.livestreamingEditor = null;           
 
             tool.importChildModules().then(function () {
-                tool.eventDispatcher = Q.Media.WebRTC.EventSystem();
-                tool.RTMPSender = Q.Media.WebRTC.livestreaming.RTMPSender(tool);
+                tool.eventDispatcher = new Q.Media.WebRTC.EventSystem();
+                tool.RTMPSender = new Q.Media.WebRTC.livestreaming.RTMPSender(tool);
+                tool.recorder = new Q.Media.WebRTC.livestreaming.Recorder(tool);
                 tool.canvasComposer = Q.Media.WebRTC.livestreaming.CanvasComposer(tool);
                 tool.declareOrRefreshEventHandlers();
 
@@ -123,7 +124,7 @@
             p2pBroadcastIsActive: false,
             fbLiveIsActive: false,
             rtmpLiveIsActive: false,
-            localRecordingIsActive: { sendingToServer: false },
+            localRecording: { sendingToServer: false },
             googleClientId: null,
             facebookAppId: null,
             usePopups: true, //use popups instead of dialogs when starting/stopping livestream or recording
@@ -136,11 +137,14 @@
                 return new Promise(function (resolve, reject) {
                     Q.addScript([
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/streamingIcons.js',
-                        '{{Media}}/js/tools/webrtc/EventSystem.js',
-                        '{{Media}}/js/tools/webrtc/livestreamingEditor/Mp4Recorder.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/recorder/MediabunnyRecorder.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/recorder/NativeRecorder.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/recorder/Recorder.js',
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/RTMPStreaming.js',
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/RTMPSender.js',
-                        '{{Media}}/js/tools/webrtc/livestreamingEditor/CanvasComposer.js'
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/CanvasComposer.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/UserSpeechRecognizer.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/RoomSpeechRecognizer.js'
                     ], function () {
                         tool.icons = Q.Media.WebRTC.livestreaming.streamingIcons;
                         resolve();
@@ -248,6 +252,12 @@
                         fields: {}
                     });
                 });
+            },
+            stopRenderingIfInactive: function () {
+                if (!tool.RTMPSender.isStreaming() && !tool.recorder.isRecording() && !tool.state.p2pBroadcastIsActive) {
+                    //tool.canvasComposer.videoComposer.stop();
+                    tool.canvasComposer.stopCaptureCanvas(true); //if there is no active streaming or recording, then turn canvas rendering off to save CPU resources
+                }
             },
             create: function() {
                 if(this.livestreamingEditor != null) return this.livestreamingEditor;
@@ -433,93 +443,137 @@
                                 }
                             );
 
-                            /* sendChunksCheckbox.addEventListener('click', function () {
-                                if(sendChunksCheckbox.checked && tool.RTMPSender.isStreaming()) {
-                                    console.error('You cannot both send recording\'s video to the cloud and stream to RTMP endpoint.');
-                                    sendChunksCheckbox.checked = false;
-                                }
-                            }) */
-
                             startButtonTextCon.addEventListener('click', function () {
-                                startLocRecordingBtn.classList.add('Q_working');
 
-                                if(!tool.state.localRecordingIsActive.active && !tool.state.localRecordingIsPending) {
-                                    tool.state.localRecordingIsPending = true;
-                                    
-                                    /* if(sendChunksCheckbox.checked) {
-                                        createRecordingStream().then(function (recordingStream) {
-                                            startRecording(recordingStream).then(function () {
-                                                startLocRecordingBtn.classList.remove('Q_working');
-                                                startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
-                                                tool.state.localRecordingIsPending = false;
-                                            });
+                                if(tool.state.localRecording.state != 'active') {
+                                    updateRecordingState('pending');
+                                    startRecording()
+                                        .then(function () {
+                                            updateRecordingState('active');
+                                        })
+                                        .catch(function (error) {
+                                            tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStartingRecording", tool.text) || 'Error while starting recording');
+                                            updateRecordingState('inactive');
+                                            console.error(error);
                                         });
-                                    } else { */
-                                        startRecording().then(function () {
-                                            startLocRecordingBtn.classList.remove('Q_working');
-                                            startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
-                                            tool.state.localRecordingIsPending = false;
-                                        });
-                                    //}
+
                                 } else {
+                                    updateRecordingState('pending');
                                     stopRecording().then(function () {
-                                        startLocRecordingBtn.classList.remove('Q_working');
-                                        startLocRecordingBtn.classList.remove('live-editor-rec-start-btn-active');
+                                        updateRecordingState('inactive');
                                     });
                                 }
                                
                             })
-                            /* if (localInfo.browserName && localInfo.browserName.toLowerCase() == 'safari') {
-                                if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
-                                    codecs = 'video/mp4;codecs=h264';
-                                }
-                            } else {
-                                
-                            } */
-                            function startRecording(recordingStream) {
+
+                            function startRecording() {
                                 return new Promise(function (resolve, reject) {
-                                    _localRecordingTimer = new Timer(startButtonTimer);
-                                    _localRecordingTimer.start();
-                                    if(mp4Checkbox.checked && mp4MuxerRecordingSupported) {
-                                        tool.RTMPSender.startMp4LocalRecording(recordingStream);
-                                    } else if(mp4Checkbox.checked && (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264'))) {
-                                        let codecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
-                                        tool.RTMPSender.startLocalRecording(recordingStream, codecs);
-                                    } else if(webmCheckbox.checked && (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264'))) {
-                                        let codecs = MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
-                                        tool.RTMPSender.startLocalRecording(recordingStream, codecs);
+                                    try {
+                                        let mediaRecorderCodecs;
+                                        if (mp4Checkbox.checked && (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264'))) {
+                                            mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
+                                        } else if (webmCheckbox.checked && (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264'))) {
+                                            mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
+                                        }
+
+                                        tool.recorder.startRecording({
+                                            subtitles: false, //disabled for now due to bug of 100% cpu usage
+                                            mediabunnyRecorder: mp4Checkbox.checked && mp4MuxerRecordingSupported,
+                                            mediaRecorderCodecs: mediaRecorderCodecs
+                                        })
+                                            .then(function () {
+                                                try {
+                                                    tool.speechRecognizer = new Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer({
+                                                        webrtcSignalingLib: tool.webrtcSignalingLib,
+                                                        startTimeSinceOrigin: tool.recorder.startTimeSinceOrigin,
+                                                        onSegment: function (e) {
+                                                            //console.log('speechRecognizer onSegment')
+                                                            //if(e.segment) tool.recorder.addSubtitle(e.formatted);
+                                                        }
+                                                    })
+                                                    tool.speechRecognizer.start();
+                                                } catch (error) {
+                                                    tool.recorder.cancelRecording();
+                                                    return reject(error);
+                                                }
+                                                resolve();
+                                            })
+                                            .catch(function (error) {
+                                                reject(error);
+                                                return;
+                                            });
+                                    } catch (error) {
+                                        reject(error);
+                                        return;
                                     }
-    
-                                    startButtonText.innerHTML = 'Stop Recording';
-                                    startButtonTimer.innerHTML = '';
-                                    showLiveIndicator('rec');
-                                    tool.state.localRecordingIsActive.active = true;
-                                    tool.state.localRecordingIsActive.sendingToServer = recordingStream ? true : false;
-                                    resolve();
                                 });
                             }
 
                             function stopRecording() {
-                                return new Promise(function (resolve, reject) {
+                                return new Promise(async function (resolve, reject) {
+                                    if (tool.speechRecognizer) {
+                                        //await tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
+                                        tool.recorder.stopRecording()
+                                            .then(function (recordingData) {
+                                                if (tool.speechRecognizer) {
+                                                    tool.speechRecognizer.stop();
+                                                    //tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
+                                                    //console.log('speechRecognizer srt', tool.speechRecognizer.exportJSON())
+                                                }
+
+                                                resolve();
+                                            })
+                                            .catch(function () {
+                                                tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
+                                                resolve();
+                                            });
+
+                                    } else {
+
+                                        tool.recorder.stopRecording()
+                                            .then(function (recordingData) {
+                                                resolve();
+                                            })
+                                            .catch(function () {
+                                                tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
+                                                resolve();
+                                            });;
+                                    }
+                                });
+                            }
+
+                            function updateRecordingState(state) {
+                                tool.state.localRecording.state = state;
+                                updateRecordingUI();
+                            }
+
+                            function updateRecordingUI() {
+                                if (tool.state.localRecording.state == 'pending') {
+                                    startLocRecordingBtn.classList.add('Q_working');
+                                } else if (tool.state.localRecording.state == 'active') {
+                                    startLocRecordingBtn.classList.remove('Q_working');
+                                    startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
+                                    startButtonText.innerHTML = 'Stop Recording';
+                                    startButtonTimer.innerHTML = '';
+                                    showLiveIndicator('rec');
+                                    tool.state.localRecording.active = true;
+                                    //tool.state.localRecording.sendingToServer = recordingStream ? true : false;
+                                    tool.state.localRecording.pending = false;
+                                    _localRecordingTimer = new Timer(startButtonTimer);
+                                    _localRecordingTimer.start();
+                                } else { //inactive
+                                    startLocRecordingBtn.classList.remove('Q_working');
+                                    startLocRecordingBtn.classList.remove('live-editor-rec-start-btn-active');
+                                    startButtonText.innerHTML = 'Start Recording';
+                                    startButtonTimer.innerHTML = '';
+                                    updateSourcesControlPanel();
+                                    hideLiveIndicator('rec');
+
                                     if(_localRecordingTimer) {
                                         _localRecordingTimer.stop();
                                         _localRecordingTimer = null;
                                     }
-                                    if(mp4Checkbox.checked && mp4MuxerRecordingSupported) {
-                                        tool.RTMPSender.stopMp4LocalRecording();
-                                    } else {
-                                        tool.RTMPSender.stopLocalRecording();
-                                    }
-    
-                                    startButtonText.innerHTML = 'Start Recording';
-                                    startButtonTimer.innerHTML = '';
-    
-                                    tool.state.localRecordingIsActive.active = false;
-                                    updateSourcesControlPanel();
-                                    hideLiveIndicator('rec');
-                                    resolve();
-                                });
-                                
+                                }
                             }
 
                             function createRecordingStream() {
