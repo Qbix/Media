@@ -6,6 +6,7 @@ Q.Media.WebRTC.clipEditor.RegularMP4Parser = function (file, options) {
     this.ftypBox = null;
     this.moovBox = null;
     this.parsedMoovBox = null;
+    this.parsedOriginalMoovBox = null;
     this.bufferedSegments = [];
     this.timescales = null;
     this.trackIdsInfo = null;
@@ -65,6 +66,8 @@ Q.Media.WebRTC.clipEditor.RegularMP4Parser = function (file, options) {
                             co64: 0x636F3634,
                         nmhd: 0x6E6D6864,
             udta: 0x75647461,
+            mvex: 0x6D766578,
+                trex: 0x74726578,
         mdat: 0x6D646174,
 
         //fragmented mp4 box
@@ -83,6 +86,8 @@ Q.Media.WebRTC.clipEditor.RegularMP4Parser = function (file, options) {
     this.BOX_PATHS = {
         [self.BOX.ftyp]: [self.BOX.ftyp],
         [self.BOX.moov]: [self.BOX.moov],
+        [self.BOX.mvex]: [self.BOX.moov, self.BOX.mvex],
+        [self.BOX.trex]: [self.BOX.moov, self.BOX.mvex, self.BOX.trex],
         [self.BOX.trak]: [self.BOX.moov, self.BOX.trak],
         [self.BOX.mdia]: [self.BOX.moov, self.BOX.trak, self.BOX.mdia],
         [self.BOX.minf]: [self.BOX.moov, self.BOX.trak, self.BOX.mdia, self.BOX.minf],
@@ -232,7 +237,7 @@ RegularMP4Parser.prototype.setCurrentTime = async function (time, fetchSessionIn
         return false;
     }
     self.segmentToTimeMap.clear();
-    const keyFrameToBufferFrom = self.findSampleAtTime(time);
+    const keyFrameToBufferFrom = self.findSampleAtTime(time, self.keyframeSamples);
     fetchSessionInfo.startKeyframe = keyFrameToBufferFrom;
     await self.updateCurrentTime(keyFrameToBufferFrom.time, keyFrameToBufferFrom.fileOffset, { fetchSessionInfo: fetchSessionInfo, abortIsNotAllowed: true });
     return keyFrameToBufferFrom;
@@ -247,7 +252,7 @@ RegularMP4Parser.prototype.createFragmentAtTime = async function ({
     // --------------------------------------------------
     // 1. Find start sample (nearest previous keyframe)
     // --------------------------------------------------
-    const startKeyframe = self.findSampleAtTime(timeSec);
+    const startKeyframe = self.findSampleAtTime(timeSec, self.keyframeSamples);
     console.log('startKeyframe', startKeyframe);
     const startIndex = startKeyframe.index;
     // --------------------------------------------------
@@ -340,8 +345,20 @@ RegularMP4Parser.prototype.createFragmentAtKeyframeIndex = async function ({
     }
     console.log('createFragmentAtTime start end', startIndex, endIndex, samples.length);
 
-    const fragmentSamples = samples.slice(startIndex, endIndex);
+    const fragmentVideoSamples = samples.slice(startIndex, endIndex);
     const sequenceNumber = startIndex + 1;
+
+    const startAudioSample = self.findSampleAtTime(startKeyframe.time, self.audioSamples);
+    const endAudioSample = self.findSampleAtTime(samples[endIndex].time, self.audioSamples);
+    const fragmentAudioSamples = self.audioSamples.slice(startAudioSample.index, endAudioSample.index);
+
+    const fragmentSamples = fragmentVideoSamples.concat(fragmentAudioSamples);
+
+    fragmentSamples.sort((a, b) => a.commonTime - b.commonTime);
+
+    console.log('createFragmentAtTime sorted', fragmentSamples);
+
+
     // --------------------------------------------------
     // 3. Build mdat ranges (merge contiguous)
     // --------------------------------------------------
@@ -369,8 +386,8 @@ RegularMP4Parser.prototype.createFragmentAtKeyframeIndex = async function ({
     // --------------------------------------------------
     const moof = self.buildMoof({
         samples: fragmentSamples,
-        baseMediaDecodeTime: fragmentSamples[0].dts,
-        trackId,
+        videoSamples: fragmentVideoSamples,
+        audioSamples: fragmentAudioSamples,
         sequenceNumber
     });
 
@@ -381,40 +398,96 @@ RegularMP4Parser.prototype.createFragmentAtKeyframeIndex = async function ({
 
     console.log('createFragmentAtTime start mdatRanges', mdatRanges);
 
-    var accumulated = new Uint8Array(moof.byteLength + totalMdatSize);
-    accumulated.set(moof, 0);
+    var mediaBytes = new Uint8Array(totalMdatSize);
     for (let i in mdatRanges) {
-        const { fragmentBytes } = await self.readChunk(mdatRanges[i].offset, mdatRanges[i].size);
-        var merged = new Uint8Array(accumulated.byteLength + fragmentBytes.byteLength);
-        merged.set(accumulated, accumulated.byteLength);
-        merged.set(fragmentBytes, accumulated.byteLength);
-        accumulated = merged;
+        const { bytes } = await self.readChunk(mdatRanges[i].offset, mdatRanges[i].size);
+        var merged = new Uint8Array(mediaBytes.byteLength + bytes.byteLength);
+        merged.set(mediaBytes, 0);
+        merged.set(bytes, mediaBytes.byteLength);
+        mediaBytes = merged;
     }
+
+    const mdat = self.createBox("mdat", [
+        mediaBytes
+    ]);
+
+    var moofMdatPair = new Uint8Array(moof.byteLength + mdat.byteLength);
+    moofMdatPair.set(moof, 0);
+    moofMdatPair.set(mdat, moof.byteLength);
+
+    let viewww = new DataView(moofMdatPair.buffer);
+    console.log('moofMdatPair parsed', self.parseBoxes(viewww));
 
     return {
         moof,
         mdatRanges,
-        moofMdatPair: accumulated
+        moofMdatPair: moofMdatPair
     };
 }
 
 RegularMP4Parser.prototype.buildMoof = function ({
     samples,
-    baseMediaDecodeTime,
-    trackId,
+    videoSamples,
+    audioSamples,
     sequenceNumber
 }) {
 
-    console.log('buildMoof start end', samples, baseMediaDecodeTime, trackId, sequenceNumber);
+    console.log('buildMoof start end', samples, videoSamples, audioSamples, sequenceNumber);
     const self = this;
-    const sampleCount = samples.length;
 
     // --------------------------------------------------
     // mfhd
     // --------------------------------------------------
     const mfhd = self.createMfhdBox(sequenceNumber);
-  
 
+    const baseVideoMediaDecodeTime = videoSamples[0].dts;
+    const baseAudioMediaDecodeTime = audioSamples[0].dts;
+  
+    const videoTrafBox = self.createTrafBox(videoSamples, self.trackIdsInfo.videoTrackId, baseVideoMediaDecodeTime);
+    const audioTrafBox = self.createTrafBox(audioSamples, self.trackIdsInfo.audioTrackId, baseAudioMediaDecodeTime);
+
+    // --------------------------------------------------
+    // moof
+    // --------------------------------------------------
+    const moof = self.createBox("moof", [
+        mfhd,
+        videoTrafBox,
+        audioTrafBox
+    ]);
+
+    let currentOffset = moof.byteLength + 8;
+    let videoDataOffset;
+    let audioDataOffset;
+    for(let s in samples) {
+        if(videoDataOffset == null && samples[s].trackId === self.trackIdsInfo.videoTrackId) {
+            videoDataOffset = currentOffset;
+        }
+        if(audioDataOffset == null && samples[s].trackId === self.trackIdsInfo.audioTrackId) {
+            audioDataOffset = currentOffset;
+        }
+
+        if(videoDataOffset != null && audioDataOffset != null) {
+            console.log('buildMoof break')
+
+            break;
+        }
+        currentOffset += samples[s].size;
+    }
+
+    console.log('buildMoof dataOffset', videoDataOffset, audioDataOffset)
+    console.log('buildMoof parsed moof', self.parseBoxes(moof))
+    // --------------------------------------------------
+    // Patch data_offset
+    // --------------------------------------------------
+    self.patchTrunDataOffset(moof, self.trackIdsInfo.videoTrackId, videoDataOffset);
+    self.patchTrunDataOffset(moof, self.trackIdsInfo.audioTrackId, audioDataOffset);
+    
+
+    return moof;
+};
+
+RegularMP4Parser.prototype.createTrafBox = function (samples, trackId, baseMediaDecodeTime) {
+    const self = this;
     // --------------------------------------------------
     // tfhd (default-base-is-moof)
     // --------------------------------------------------
@@ -455,7 +528,7 @@ RegularMP4Parser.prototype.buildMoof = function ({
 
     const trun = self.createBox("trun", [
         self.fullBoxHeader(0, TRUN_FLAGS),
-        uint32(sampleCount),
+        uint32(samples.length),
         uint32(0), // patched later
         ...trunEntries
     ]);
@@ -469,24 +542,6 @@ RegularMP4Parser.prototype.buildMoof = function ({
         trun
     ]);
 
-    // --------------------------------------------------
-    // moof
-    // --------------------------------------------------
-    const moof = self.createBox("moof", [
-        mfhd,
-        traf
-    ]);
-
-    
-    // --------------------------------------------------
-    // Patch data_offset
-    // --------------------------------------------------
-    const dataOffset = moof.byteLength + 8; // mdat header
-    self.patchTrunDataOffset(moof, dataOffset);
-
-    let viewww = new DataView(moof.buffer);
-    console.log('moof 2', self.parseBoxes(viewww));
-    
     function uint32(v) {
         const arr = new Uint8Array(4);
         new DataView(arr.buffer).setUint32(0, v);
@@ -501,9 +556,8 @@ RegularMP4Parser.prototype.buildMoof = function ({
         return arr;
     }
 
-
-    return moof;
-};
+    return traf;
+}
 
 /**
  * Creates an mfhd (Movie Fragment Header) box.
@@ -570,39 +624,294 @@ RegularMP4Parser.prototype.fullBoxHeader = function (version, flags) {
     return arr;
 }
 
-RegularMP4Parser.prototype.patchTrunDataOffset = function (moof, value) {
-    const view = new DataView(moof.buffer);
+/**
+ * Patches trun.data_offset for a specific track.
+ *
+ * @param {Uint8Array} moof
+ * Complete moof box bytes.
+ *
+ * @param {number} trackId
+ * Track ID whose trun should be patched.
+ *
+ * @param {number} value
+ * New trun.data_offset value.
+ */
+RegularMP4Parser.prototype.patchTrunDataOffset = function (
+    moof,
+    trackId,
+    value
+) {
 
-    // naive scan for "trun"
-    for (let i = 0; i < moof.length - 8; i++) {
-        if (
-            moof[i + 4] === 0x74 && // t
-            moof[i + 5] === 0x72 && // r
-            moof[i + 6] === 0x75 && // u
-            moof[i + 7] === 0x6E    // n
-        ) {
-            const trunStart = i;
+    const view = new DataView(
+        moof.buffer,
+        moof.byteOffset,
+        moof.byteLength
+    );
 
-            // skip:
-            // size (4)
-            // type (4)
-            // version+flags (4)
-            // sampleCount (4)
-            const dataOffsetPos = trunStart + 16;
+    // --------------------------------------------------
+    // Verify root box = moof
+    // --------------------------------------------------
 
-            view.setUint32(dataOffsetPos, value);
-            return;
+    const rootType =
+        String.fromCharCode(
+            moof[4],
+            moof[5],
+            moof[6],
+            moof[7]
+        );
+
+    if (rootType !== "moof") {
+        throw new Error("Expected moof box");
+    }
+    
+    const moofSize = view.getUint32(0);
+
+    // --------------------------------------------------
+    // Scan moof children
+    // --------------------------------------------------
+
+    let pos = 8;
+
+    while (pos < moofSize - 8) {
+
+        const boxSize = view.getUint32(pos);
+
+        const type =
+            String.fromCharCode(
+                moof[pos + 4],
+                moof[pos + 5],
+                moof[pos + 6],
+                moof[pos + 7]
+            );
+console.log('patchTrunDataOffset type', type)
+        // --------------------------------------------------
+        // traf
+        // --------------------------------------------------
+
+        if (type === "traf") {
+
+            const trafStart = pos;
+            const trafEnd = trafStart + boxSize;
+
+            let trafPos = trafStart + 8;
+
+            let currentTrackId = null;
+            let trunPos = null;
+
+            // ----------------------------------------------
+            // Scan traf children
+            // ----------------------------------------------
+
+            while (trafPos < trafEnd - 8) {
+
+                const childSize =
+                    view.getUint32(trafPos);
+
+                const childType =
+                    String.fromCharCode(
+                        moof[trafPos + 4],
+                        moof[trafPos + 5],
+                        moof[trafPos + 6],
+                        moof[trafPos + 7]
+                    );
+
+console.log('patchTrunDataOffset childType', childType)
+                // ------------------------------------------
+                // tfhd
+                // ------------------------------------------
+
+                if (childType === "tfhd") {
+
+                    currentTrackId = view.getUint32(trafPos + 12);
+                }
+console.log('patchTrunDataOffset currentTrackId', currentTrackId)
+
+                // ------------------------------------------
+                // trun
+                // ------------------------------------------
+
+                if (childType === "trun") {
+
+                    trunPos = trafPos;
+                }
+
+                trafPos += childSize;
+            }
+
+            // ----------------------------------------------
+            // Patch matching track
+            // ----------------------------------------------
+
+            if (
+                currentTrackId === trackId &&
+                trunPos !== null
+            ) {
+
+                // trun:
+                // size(4)
+                // type(4)
+                // version+flags(4)
+                // sampleCount(4)
+                // dataOffset(4)
+
+                const dataOffsetPos = trunPos + 16;
+
+                view.setUint32(
+                    dataOffsetPos,
+                    value
+                );
+
+                return;
+            }
         }
+
+        pos += boxSize;
     }
 
-    throw new Error("trun not found");
+    throw new Error(
+        `trun for trackId=${trackId} not found`
+    );
+};
+
+RegularMP4Parser.prototype.createFragmentedMoovBox = function () {
+    // 1. Build your trex boxes
+    const trexes = [];
+    for(let i in this.trackIdsInfo.array) {
+        const track = this.trackIdsInfo.array[i];
+        const trex = this.createTrexBox({ trackId: track.trackId });
+        trexes.push(trex);
+    }
+
+    // 2. Wrap them into an mvex container
+    const mvexBox = this.createMvexBox([...trexes]);
+    console.log('createFragmentedMoovBox mvex', trexes)
+    let moovCopy = new Uint8Array(this.originalMoovBox.bytes);
+    // 3. Patch your existing moov binary array
+    const readyToStreamMoov = this.patchMoovWithMvex(moovCopy, mvexBox);
+
+    return readyToStreamMoov;
 }
+
+/**
+ * Creates a trex (Track Extends) box.
+ * @param {Object} config - Configuration options for the track defaults.
+ * @param {number} config.trackId - The ID of the track (e.g., 1 for video, 2 for audio).
+ * @param {number} [config.defaultSampleDescriptionIndex=1] - Index of the sample description.
+ * @param {number} [config.defaultSampleDuration=0] - Default duration of samples.
+ * @param {number} [config.defaultSampleSize=0] - Default size of samples (0 if variable, like video).
+ * @param {number} [config.defaultSampleFlags=0] - Default flags for samples.
+ * @returns {Uint8Array} The complete trex box.
+ */
+RegularMP4Parser.prototype.createTrexBox = function (config) {
+    const size = 32;
+    const buffer = new Uint8Array(size);
+    const view = new DataView(buffer.buffer);
+
+    // [Offset 0] Size: 32 bytes
+    view.setUint32(0, size);
+
+    // [Offset 4] Type: 'trex'
+    view.setUint32(4, 0x74726578);
+
+    // [Offset 8] Version (0) & Flags (0)
+    view.setUint32(8, 0);
+
+    // [Offset 12] Track ID
+    view.setUint32(12, config.trackId);
+
+    // [Offset 16] Default Sample Description Index
+    view.setUint32(16, config.defaultSampleDescriptionIndex ?? 1);
+
+    // [Offset 20] Default Sample Duration
+    view.setUint32(20, config.defaultSampleDuration ?? 0);
+
+    // [Offset 24] Default Sample Size
+    view.setUint32(24, config.defaultSampleSize ?? 0);
+
+    // [Offset 28] Default Sample Flags
+    view.setUint32(28, config.defaultSampleFlags ?? 0);
+
+    return buffer;
+}
+
+/**
+ * Patches an existing moov box by appending an mvex box and updating the size.
+ * @param {Uint8Array} originalMoov - The original moov box binary data.
+ * @param {Uint8Array} mvexBox - The pre-built mvex box (containing trex boxes).
+ * @returns {Uint8Array} The newly expanded and patched moov box.
+ */
+RegularMP4Parser.prototype.patchMoovWithMvex = function (originalMoov, mvexBox) {
+    const originalView = new DataView(originalMoov.buffer, originalMoov.byteOffset, originalMoov.byteLength);
+    
+    // Verify we are actually looking at a moov box
+    const boxType = originalView.getUint32(4);
+    if (boxType !== 0x6D6F6F76) { // 'moov'
+        throw new Error("Provided buffer is not a valid 'moov' box.");
+    }
+
+    // Calculate new total size
+    const originalSize = originalView.getUint32(0);
+    const newSize = originalSize + mvexBox.byteLength;
+
+    // Allocate the new buffer
+    const patchedMoov = new Uint8Array(newSize);
+
+    // 1. Copy the original moov contents completely
+    patchedMoov.set(originalMoov, 0);
+
+    // 2. Append the mvex box to the end
+    patchedMoov.set(mvexBox, originalSize);
+
+    // 3. Update the 4-byte Size header of the moov box (at offset 0)
+    const patchedView = new DataView(patchedMoov.buffer, patchedMoov.byteOffset, patchedMoov.byteLength);
+    patchedView.setUint32(0, newSize);
+
+    const patchedSize = patchedView.getUint32(0);
+
+    console.log('patchMoovWithMvex size', originalSize, patchedSize);
+    return patchedMoov;
+}
+
+/**
+ * Helper function to wrap trex boxes inside a container mvex box.
+ * @param {Uint8Array[]} trexBoxes - Array of pre-built trex boxes.
+ * @returns {Uint8Array} Complete mvex box.
+ */
+RegularMP4Parser.prototype.createMvexBox = function (trexBoxes) {
+    // Total size = 8 bytes (Size + Type) + combined size of all child trex boxes
+    const childrenSize = trexBoxes.reduce((sum, box) => sum + box.byteLength, 0);
+    const totalSize = 8 + childrenSize;
+
+    const mvex = new Uint8Array(totalSize);
+    const view = new DataView(mvex.buffer);
+
+    // Write Header
+    view.setUint32(0, totalSize);
+    view.setUint32(4, 0x6D766578); // 'mvex'
+
+    // Write Children
+    let offset = 8;
+    for (const trex of trexBoxes) {
+        mvex.set(trex, offset);
+        offset += trex.byteLength;
+    }
+
+    return mvex;
+}
+
+
+// Example usage for an audio track (where every sample has fixed duration/flags):
+/* const audioTrex = createTrexBox({
+    trackId: 2,
+    defaultSampleDuration: 1024, // common for AAC
+    defaultSampleFlags: 0x02000000 // typically marks samples as sync/keyframes
+}); */
 
 RegularMP4Parser.prototype.createClip = async function (startTime, endTime) {
     console.log('createClip START', startTime, endTime)
     const self = this;
-    const startKeyframe = self.findSampleAtTime(startTime);
-    const endTimeKeyframe = self.findSampleAtTime(endTime);
+    const startKeyframe = self.findSampleAtTime(startTime, self.keyframeSamples);
+    const endTimeKeyframe = self.findSampleAtTime(endTime, self.keyframeSamples);
 
     const mediaData = await self.scanSegments(startKeyframe.moofOffset, endTimeKeyframe.moofOffset, { regularFetch: false });
     console.log('createClip mediaData', mediaData)
@@ -951,50 +1260,64 @@ RegularMP4Parser.prototype.loadInit = async function () {
     console.log('loadInit ftypOffset', ftypOffset, self.ftypBox, self.parseBoxes(self.ftypBox.view))
 
     let moovOffset = await self.findBoxOffsetInFile(self.BOX.moov);
-    self.moovBox = await self.readChunk(moovOffset.offset, moovOffset.size);
-    console.log('loadInit moovOffset', moovOffset, self.moovBox, self.parseBoxes(self.moovBox.view))
+    self.originalMoovBox = await self.readChunk(moovOffset.offset, moovOffset.size);
+    console.log('loadInit moovOffset', moovOffset, self.originalMoovBox, self.parseBoxes(self.originalMoovBox.view))
 
-    const init = new Uint8Array(self.ftypBox.bytes.length + self.moovBox.bytes.length);
+    const init = new Uint8Array(self.ftypBox.bytes.length + self.originalMoovBox.bytes.length);
     init.set(self.ftypBox.bytes, 0);
-    init.set(self.moovBox.bytes, self.ftypBox.bytes.length);
-    self.initSegment = init;
-    self.initSegmentEnd = init.length;
+    init.set(self.originalMoovBox.bytes, self.ftypBox.bytes.length);
+    self.originalInitSegment = init;
+    //self.initSegmentEnd = init.length;
 
-    console.log('loadInit initSegment', self.initSegment, self.parseBoxes(self.initSegment))
 
     //let buffer = await self.file.arrayBuffer();
     //console.log('parsedMoov 1', buffer)
     //self.moovBox = await self.findBox(new Uint8Array(buffer), 'moov');
-    console.log('parsedMoov 2', self.moovBox)
-    let parsed = self.parseBoxes(self.moovBox.view);
-    self.parsedMoovBox = parsed.moov;
-    console.log('parsedMoov 3', self.parsedMoovBox)
-    self.timescales = self.getTimescales(self.moovBox.bytes);
-    self.trackIdsInfo = self.getTrackInfo(self.moovBox.bytes);
-    self._extractMime(self.moovBox.bytes);
+    console.log('parsedMoov 2', self.originalMoovBox)
+    let parsed = self.parseBoxes(self.originalMoovBox.view);
+    self.parsedOriginalMoovBox = parsed.moov;
+    console.log('parsedMoov 3', self.parsedOriginalMoovBox)
+    self.timescales = self.getTimescales(self.originalMoovBox.bytes);
+    self.trackIdsInfo = self.getTrackInfo(self.originalMoovBox.bytes);
+    self._extractMime(self.originalMoovBox.bytes);
     
     let traks = {};
-    for (let i in self.parsedMoovBox.trak) {
-        const trak = self.parsedMoovBox.trak[i];
+    for (let i in self.parsedOriginalMoovBox.trak) {
+        const trak = self.parsedOriginalMoovBox.trak[i];
         traks[trak.tkhd.trackId] = trak;
     }
-    self.parsedMoovBox.trak = traks;
-    self.keyframesSampleNumbers = self.parsedMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stss?.sampleNumbers;
-    self.chunkOffsets = self.parsedMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stco?.chunkOffsets;
-    self.sampleSizes = self.parsedMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stsz?.entrySizes;
-    self.sampleToChunk = self.parsedMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stsc?.entries;
+    
+    self.parsedOriginalMoovBox.trak = traks;
+    self.keyframesSampleNumbers = self.parsedOriginalMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stss?.sampleNumbers;
+    self.chunkOffsets = self.parsedOriginalMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stco?.chunkOffsets;
+    self.sampleSizes = self.parsedOriginalMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stsz?.entrySizes;
+    self.sampleToChunk = self.parsedOriginalMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl?.stsc?.entries;
     console.log('lastMoofOffset parsedMoov', self.timescales, self.trackIdsInfo)
     console.log('lastMoofOffset self.keyframesSampleNumbers', self.keyframesSampleNumbers)
     console.log('lastMoofOffset self.chunkOffsets', self.chunkOffsets)
     console.log('lastMoofOffset self.sampleSizes', self.sampleSizes)
     console.log('lastMoofOffset self.sampleToChunk', self.sampleToChunk)
-    console.log('lastMoofOffset 1111', self.parsedMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl)
+    console.log('lastMoofOffset 1111', self.parsedOriginalMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl)
 
-    let sampleTable = self.buildSampleTable(self.parsedMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl, self.trackIdsInfo.videoTrackId);
+
+    self.fragmentedMoovBox = self.createFragmentedMoovBox();
+    console.log('loadInit self.fragmentedMoovBox', self.fragmentedMoovBox)
+
+    const fragmentedInit = new Uint8Array(self.ftypBox.bytes.length + self.fragmentedMoovBox.length);
+    fragmentedInit.set(self.ftypBox.bytes, 0);
+    fragmentedInit.set(self.fragmentedMoovBox, self.ftypBox.bytes.length);
+    self.initSegment = fragmentedInit;
+
+    console.log('loadInit initSegment', self.initSegment, self.parseBoxes(self.initSegment))
+
+
+    let sampleTable = self.buildSampleTable(self.parsedOriginalMoovBox?.trak[self.trackIdsInfo.videoTrackId]?.mdia?.minf?.stbl, self.trackIdsInfo.videoTrackId);
+    let audioSampleTable = self.buildSampleTable(self.parsedOriginalMoovBox?.trak[self.trackIdsInfo.audioTrackId]?.mdia?.minf?.stbl, self.trackIdsInfo.audioTrackId);
     self.samples = sampleTable.samples;
+    self.audioSamples = audioSampleTable.samples;
     self.keyframeSamples = sampleTable.keyframeSamples;
     
-    console.log('lastMoofOffset samples', sampleTable)
+    console.log('lastMoofOffset samples', sampleTable, audioSampleTable)
     
 
     //let moovOffset = await self.findBoxOffsetInFile(self.BOX.moov);
@@ -1116,16 +1439,18 @@ RegularMP4Parser.prototype.buildSampleTable = function ({ stsz, stsc, stco, stts
     // --------------------------------------------------
     for (let i = 0; i < sampleCount; i++) {
         samples[i] = {
+            trackId: trackId,
             index: i,
             size: sizes[i],
             dts: dts[i],
             pts: pts[i],
             time: dts[i] / self.timescales[trackId],
+            commonTime: dts[i] * 1000000 / self.timescales[trackId],
             duration: duration[i],
             chunkIndex: sampleToChunk[i],
             offsetInChunk: offsetInChunk[i],
             fileOffset: fileOffsets[i],
-            isKeyframe: self.keyframesSampleNumbers.has(i)
+            isKeyframe: trackId === self.trackIdsInfo.videoTrackId ? self.keyframesSampleNumbers.has(i) : null,
         };
 
         if(samples[i].isKeyframe){
@@ -1534,6 +1859,7 @@ RegularMP4Parser.prototype.getTrackInfo = function (moov) {
                     );
                 }
             }
+                    console.log('tracks.textTrackId handlerType', handlerType)
 
             if (trackId !== null && handlerType !== null) {
                 if (handlerType === 'vide') {
@@ -1545,6 +1871,9 @@ RegularMP4Parser.prototype.getTrackInfo = function (moov) {
                 } else if (handlerType === 'text') {
                     tracks.textTrackId = trackId;
                     tracks.array.push({ trackId: trackId, type: 'text' });
+                } else if (handlerType === 'tmcd') {
+                    tracks.tmcdTrackId = trackId;
+                    tracks.array.push({ trackId: trackId, type: 'tmcd' });
                 }
 
                 //console.log('track', trackId, '=', tracks[trackId]);
@@ -2051,11 +2380,11 @@ RegularMP4Parser.prototype.getStringFromBuffer = function (buffer, start, length
     return String.fromCharCode.apply(null, buffer.slice(start, start + length));
 }
 
-RegularMP4Parser.prototype.findSampleAtTime = function (time) {
+RegularMP4Parser.prototype.findSampleAtTime = function (time, samples) {
     const self = this;
     //const trackId = this.trackIdsInfo.videoTrackId;
 
-    const entries = self.keyframeSamples;
+    const entries = samples;
 
     // --- Binary search: find last entry with entry.time <= time ---
     let left = 0;

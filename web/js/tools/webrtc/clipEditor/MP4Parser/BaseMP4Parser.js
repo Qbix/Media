@@ -195,6 +195,7 @@ BaseMP4Parser.prototype.parseBoxes = function (view, start = 0, end = view.byteL
  
     const CONTAINERS = new Set([ //These boxes contain children:
         self.BOX.moov, 
+            self.BOX.mvex, 
             self.BOX.trak, 
                 self.BOX.edts,     
                 self.BOX.mdia,
@@ -222,6 +223,8 @@ BaseMP4Parser.prototype.parseBoxes = function (view, start = 0, end = view.byteL
                             [self.BOX.stsz, 'parseStszBox'],
                             [self.BOX.stco, 'parseStcoBox'],
                             [self.BOX.co64, null],
+            //self.BOX.mvex
+                [self.BOX.trex, 'parseTrexBox'],
         //self.BOX.moof
             [self.BOX.mfhd, 'parseMfhdBox'],
             //self.BOX.traf,
@@ -269,8 +272,8 @@ BaseMP4Parser.prototype.parseBoxes = function (view, start = 0, end = view.byteL
         console.log('box type check', self.BOX_TYPE[type], readableType2, "level " + depth)
         console.log('box type check hex', boxNameToUint32Hex(readableType2))
 
-        console.log('box type', type, type == self.BOX.moov)
-        console.log('box size', size, size == 1, size2, size2 == 1, size3, size3 == 1, typeof size);
+        console.log('box type box type', readableType)
+        console.log('box size box size', size);
 
         let headerSize = 8;
 
@@ -337,7 +340,7 @@ BaseMP4Parser.prototype.parseBoxes = function (view, start = 0, end = view.byteL
             }
 
         } else if (LEAF_BOXES.has(type) && LEAF_BOXES.get(type) !== null) {
-            console.log('parseBoxes parse leaf 1', readableType)
+            console.log('parseBoxes parse leaf 1', readableType, LEAF_BOXES.get(type))
             let parsed = self[LEAF_BOXES.get(type)](view, offset);
             if (referenceKey != null) {
                 result[readableType][referenceKey] = Object.assign({}, result[readableType][referenceKey], parsed);
@@ -1331,7 +1334,107 @@ BaseMP4Parser.prototype.parseTkhdBox = function (view, offset = 0) {
     };
 }
 
+/**
+ * Parses an MP4 `trex` (Track Extends Box).
+ *
+ * The function expects that:
+ * - `view` already contains the raw bytes of the entire `trex` box
+ * - including the 8-byte MP4 box header:
+ *     size (4 bytes)
+ *     type (4 bytes)
+ *
+ * Box structure:
+ *
+ * aligned(8) class TrackExtendsBox extends FullBox('trex', 0, 0) {
+ *     unsigned int(32) track_ID;
+ *     unsigned int(32) default_sample_description_index;
+ *     unsigned int(32) default_sample_duration;
+ *     unsigned int(32) default_sample_size;
+ *     unsigned int(32) default_sample_flags;
+ * }
+ *
+ * @param {DataView} view
+ * A DataView containing the raw bytes of the entire `trex` box.
+ *
+ * @param {number} [offset=0]
+ * Byte offset inside the DataView where the `trex` box begins.
+ *
+ * @returns {Object}
+ * Parsed `trex` box fields.
+ */
+BaseMP4Parser.prototype.parseTrexBox = function (view, offset = 0) {
 
+    let pos = offset;
+
+    // --------------------------------------------------
+    // MP4 box header
+    // --------------------------------------------------
+
+    // Total size of the box in bytes
+    const size = view.getUint32(pos);
+    pos += 4;
+
+    // Box type ('trex')
+    const type = String.fromCharCode(
+        view.getUint8(pos),
+        view.getUint8(pos + 1),
+        view.getUint8(pos + 2),
+        view.getUint8(pos + 3)
+    );
+    pos += 4;
+
+    // --------------------------------------------------
+    // FullBox header
+    // --------------------------------------------------
+
+    // Version (usually 0)
+    const version = view.getUint8(pos);
+    pos += 1;
+
+    // Flags (24-bit integer)
+    const flags =
+        (view.getUint8(pos) << 16) |
+        (view.getUint8(pos + 1) << 8) |
+        (view.getUint8(pos + 2));
+    pos += 3;
+
+    // --------------------------------------------------
+    // trex fields
+    // --------------------------------------------------
+
+    // Track ID this trex applies to
+    const trackId = view.getUint32(pos);
+    pos += 4;
+
+    // Default sample description index
+    const defaultSampleDescriptionIndex = view.getUint32(pos);
+    pos += 4;
+
+    // Default sample duration
+    const defaultSampleDuration = view.getUint32(pos);
+    pos += 4;
+
+    // Default sample size
+    const defaultSampleSize = view.getUint32(pos);
+    pos += 4;
+
+    // Default sample flags
+    const defaultSampleFlags = view.getUint32(pos);
+    pos += 4;
+
+    return {
+        size,
+        type,
+        version,
+        flags,
+
+        trackId,
+        defaultSampleDescriptionIndex,
+        defaultSampleDuration,
+        defaultSampleSize,
+        defaultSampleFlags
+    };
+}
 
 
 BaseMP4Parser.prototype.fourcc = function (offset) {
