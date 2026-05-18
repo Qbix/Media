@@ -1,0 +1,597 @@
+.Media_clipEditor_page .Media_webrtc_clipEditor_tool {
+    background: white;
+    width: 100%;
+    height: 100%;
+}
+.clip-editor {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+.clip-editor .clip-editor-main {
+    width: 75%;
+}
+.clip-editor .clip-editor-clips {
+    width: 25%;
+    border-left: 1px dashed #888;
+    position: relative;
+}
+.clip-editor .clip-editor-clips .clip-editor-clips-list {
+    position: relative;
+    padding: 10px;
+    overflow: auto;
+    height: 100%;
+    z-index: 1;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-title {
+    /* text-overflow: ellipsis; */
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons {
+    display: flex;
+    width: 100%;
+    margin-top:10px;
+    align-items: center;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-button {
+    display: flex;
+    width: 100%;
+}
+
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-button {
+    align-items: center;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    display: flex;
+    font-family: Phantomsans, sans-serif;
+    font-size: 16px;
+    justify-content: center;
+    line-height: 1em;
+    max-width: 100%;
+    /* min-width: 140px; */
+    padding: 10px 15px;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+    background-size: 150% 150%;
+    transition: background-position, background-size 0.3s ease;
+}
+
+
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-button:active,
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-button:hover {
+    /* background-position: right center; */
+    background-size: 300% 300%;
+    outline: 0;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-download,
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-play {
+    width: 24px;
+    height: 24px;
+    margin-right:10px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-download:hover,
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-play:hover {
+    opacity: 1;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-share-con {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+.clip-editor .clip-editor-clips .clip-editor-ai-clip-buttons .clip-editor-ai-clip-share-con .clip-editor-ai-clip-share {
+    width: 100px;
+}
+.clip-editor .clip-editor-clips .clip-editor-clips-status {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+    font-weight: bold;
+    font-size: 18px;
+    z-index: 0;
+}
+
+.clip-editor .clip-editor-clips .clip-editor-clips-status  .clip-editor-clips-stage {
+    margin-right: 10px;
+}
+
+.clip-editor .clip-editor-clips .clip-editor-clips-status  .clip-editor-clips-loader {
+  width: 60px;
+  height: 40px;
+  position: relative;
+  display: inline-block;
+  --base-color: #ffffff;
+}
+.clip-editor .clip-editor-clips .clip-editor-clips-status  .clip-editor-clips-loader::before {
+  content: '';  
+  left: 0;
+  top: 0;
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #888;
+  background-image: radial-gradient(circle 8px at 18px 18px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 18px 0px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 0px 18px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 36px 18px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 18px 36px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 30px 5px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 30px 5px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 30px 30px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 5px 30px, var(--base-color) 100%, transparent 0), radial-gradient(circle 4px at 5px 5px, var(--base-color) 100%, transparent 0);
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  animation: clipsRotationBack 3s linear infinite;
+}
+.clip-editor .clip-editor-clips .clip-editor-clips-status  .clip-editor-clips-loader::after {
+  content: '';  
+  left: 35px;
+  top: 15px;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #888;
+  background-image: radial-gradient(circle 5px at 12px 12px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 12px 0px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 0px 12px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 24px 12px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 12px 24px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 20px 3px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 20px 3px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 20px 20px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 3px 20px, var(--base-color) 100%, transparent 0), radial-gradient(circle 2.5px at 3px 3px, var(--base-color) 100%, transparent 0);
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  animation: clipsRotationBack 4s linear infinite reverse;
+}
+@keyframes clipsRotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}  
+
+.clip-editor-hidden {
+    display: none !important;
+}
+
+.clip-editor .clip-editor-editor {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.clip-editor .clip-editor-editor .clip-editor-player {
+    min-height: 0;
+}
+.clip-editor .clip-editor-editor .clip-editor-player .clip-editor-player-view {
+    height: 100%;
+}
+.clip-editor .clip-editor-editor .clip-editor-player .clip-editor-player-view .clip-editor-player {
+    height: 100%;
+}
+.clip-editor .clip-editor-editor .clip-editor-player .clip-editor-player-view .clip-editor-player video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: grey;
+    max-height: 100%;
+    background: #f0f0f0;
+    border-radius: 5px;
+}
+.clip-editor .clip-editor-editor .clip-editor-edit-area {
+
+}
+
+.clip-editor .clip-editor-player-picker {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.clip-editor .clip-editor-drop-zone {
+  width: 420px;
+  height: 220px;
+  margin: 60px auto;
+  border: 5px dashed #888;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 18px Arial, sans-serif;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+  transition: .2s ease;
+}
+.clip-editor .clip-editor-drop-zone svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+.clip-editor .clip-editor-drop-zone svg path {
+    stroke: #888;
+}
+
+.clip-editor .clip-editor-drop-zone.clip-editor-dragover {
+  border-color: #2d7ff9;
+  background: #eef5ff;
+  color: #2d7ff9;
+}
+
+.clip-editor .clip-editor-timeline {
+    position: relative;
+    background-color: #e8f9fd;
+    height: 46px;
+    border-radius: 5px;
+    border: 1px solid #cacbdc;
+
+    /* background-image:
+    repeating-linear-gradient(
+      to right,
+      #ccc 0,
+      #ccc 1px,
+      transparent 1px,
+      transparent 50px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      #ccc 0,
+      #ccc 1px,
+      transparent 1px,
+      transparent 50px
+    ); */
+
+    background-image:
+    linear-gradient(#ccc 1px, transparent 1px),
+    linear-gradient(to right, #ccc 1px, transparent 1px);
+
+
+    background-size: calc(100% / 70) 50px;
+}
+.clip-editor .clip-editor-timeline-buttons {
+    padding: 10px;
+    margin: 10px 0 5px 0;
+    background: #00000017;
+    border-radius: 5px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.clip-editor .clip-editor-timeline-buttons svg path,
+.clip-editor .clip-editor-timeline-buttons svg polygon,
+.clip-editor .clip-editor-timeline-buttons svg rect {
+    fill: #000000a3;
+}
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-volume {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-volume .clip-editor-timeline-volume-icon {
+    display: flex;
+    align-items: center;
+}
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-volume .clip-editor-timeline-volume-input {
+    position: absolute;
+    margin-left: 25px;
+    height: 100%;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-volume input {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 5px;
+  background: #7279ff;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  overflow: visible;
+  padding: 0;
+}
+
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-volume:hover input {
+  opacity: 1;
+}
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-volume input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 8px;
+  height: 25px;
+  border-radius: 3px;
+  background: #4750ff;
+  cursor: pointer;
+}
+
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-volume input::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #4750ff;
+  cursor: pointer;
+}
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-timer {
+    display: flex;
+    width: 60px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-button {
+    height: 24px;
+    width: 24px;
+}
+.clip-editor .clip-editor-timeline-buttons .clip-editor-timeline-button svg{
+    max-width: 100%;
+    max-height: 100%;
+}
+.clip-editor .clip-editor-timeline .clip-editor-timeline-clip {
+    position: relative;
+    height: 46px;
+    /* width: 100px; */
+    /* height: calc(100% - 4px); */
+    /* height: 44px; */
+    /* border-radius: 5px; */
+    border: 2px solid #4750ff;
+    border-left-width: 0;
+    border-right-width: 0;
+    /* box-sizing: content-box; */
+}
+
+.clip-editor .clip-editor-timeline .clip-editor-timeline-clip::before,
+.clip-editor .clip-editor-timeline .clip-editor-timeline-clip::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  width: 10px;
+  height: 46px;
+  background: #4750ff;
+}
+
+/* Left side */
+.clip-editor .clip-editor-timeline .clip-editor-timeline-clip::before {
+  left: -10px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+/* Right side */
+.clip-editor .clip-editor-timeline .clip-editor-timeline-clip::after {
+  right: -10px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.clip-editor .clip-editor-timeline .clip-editor-timeline-clip-handle {
+    position: absolute;
+    height: 46px;
+    width: 8px;
+    border-radius: 2px;
+    background: black;
+    cursor: col-resize;
+    top: -2px !important;
+    z-index: 999999;
+}
+.clip-editor .clip-editor-ranges {
+    display: flex;
+    margin-top: 15px;
+}
+
+.clip-editor .clip-editor-ranges-inputs {
+    display: flex;
+}
+.clip-editor .clip-editor-ranges-inputs .clip-editor-range-start,
+.clip-editor .clip-editor-ranges-inputs .clip-editor-range-end {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.clip-editor .clip-editor-ranges-inputs .clip-editor-range-end {
+    margin-left: 30px;
+}
+.clip-editor .clip-editor-ranges-inputs .clip-editor-range-start-label,
+.clip-editor .clip-editor-ranges-inputs .clip-editor-range-end-label {
+    margin-right: 5px;
+}
+
+.clip-editor .clip-editor-create-clip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 30px;
+}
+
+.clip-editor .clip-editor-ai-clip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    justify-content: flex-end;
+}
+.clip-editor .clip-editor-ai-clip button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.clip-editor .clip-editor-button-icon {
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+}
+
+.clip-editor .clip-editor-controls input.clip-editor-range-invalid {
+    border: 1px solid red;
+    background-color: #fff5f5 !important;
+}
+.clip-editor .clip-editor-ranges button {
+    background-color:rgba(169, 169, 182, 0.25);
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+.clip-editor .clip-editor-ranges svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+.clip-editor .clip-editor-ranges svg path{
+    fill:white;
+}
+.clip-editor .clip-editor-ranges button:hover {
+    background-color:rgba(169, 169, 182, 0.50);
+}
+.clip-editor .clip-editor-result-clips {
+    position: fixed;
+    top: 100px;
+    left: 100px;
+}
+.clip-editor .clip-editor-result-clips .clip-editor-clip-item {
+    max-width: 200px;
+    background-color: rgba(169, 169, 182, 0.50);
+    padding: 10px;
+    border-radius: 10px;
+}
+.clip-editor .clip-editor-result-clips .clip-editor-clip-item .clip-editor-clip-title {
+    max-width: 200px;
+}
+
+.clip-editor .clip-editor-ai-clip button,
+.clip-editor .clip-editor-result-clips .clip-editor-clip-share {
+    align-items: center;
+    background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    display: flex;
+    font-family: Phantomsans, sans-serif;
+    font-size: 20px;
+    justify-content: center;
+    line-height: 1em;
+    max-width: 100%;
+    /* min-width: 140px; */
+    padding: 10px 15px;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+    background-size: 150% 150%;
+    transition: background-position, background-size 0.3s ease;
+}
+
+
+.clip-editor .clip-editor-ai-clip button:active,
+.clip-editor .clip-editor-ai-clip button:hover,
+.clip-editor .clip-editor-result-clips .clip-editor-clip-share:active,
+.clip-editor .clip-editor-result-clips .clip-editor-clip-share:hover {
+    /* background-position: right center; */
+    background-size: 300% 300%;
+    outline: 0;
+}
+
+
+
+.media-upload-popup {
+    background-color: transparent !important;
+    white-space: normal;
+}
+.clip-editor-progress-bar-popup .clip-editor-progress-box {
+    background: #e7e7e7;
+    padding: 15px;
+    border-radius: 10px !important;
+    white-space: normal;
+}
+.clip-editor-progress-bar-status {
+    border-bottom: 1px dashed #9bbaca;
+    padding-bottom: 3px;
+}
+.clip-editor-progress-bar-text {
+    padding: 10px 0;
+}
+.clip-editor-progress-bar {
+    box-shadow: 0px 0px 5px 0px rgba(120,212,255,1);
+    height: 20px;
+    margin-bottom: 10px;
+    outline: thin solid #b9dcff;
+    background-color: #ffffff;
+    position: relative;
+    width: 100%;
+}
+.clip-editor-progress-el {
+    height: 100%;
+    margin-bottom: 10px;
+    outline: thin solid #727272;
+    background-color:#f0f8ff;
+    position: relative;
+    width: 100%;
+
+    /* background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); */
+    background: #45caff;
+    background: linear-gradient(90deg,rgba(69, 202, 255, 1) 0%, rgba(5, 93, 255, 1) 50%, rgba(201, 83, 237, 1) 100%);
+    background-size: 400% 400%;
+    /* Make background larger */
+    animation: clip-editor-progress-gradient 5s ease infinite;
+}
+
+
+@keyframes clip-editor-progress-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.clip-editor-close-dialog-sign {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    font-size: 25px;
+    right: 0;
+    color: #979797;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.clip-editor-progress-bar span{
+    color:white;
+    background-color: #979797;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0px;
+    padding-right: 5px;
+}

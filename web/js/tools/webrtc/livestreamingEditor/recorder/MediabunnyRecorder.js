@@ -1,13 +1,13 @@
 
-Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
+Q.Media.WebRTC.livestreaming.MediabunnyRecorder = function (options) {
     const thisInstance = this;
-    const canvas = options.canvas;
-    const mediaStream = options.mediaStream;
-    const audioContext = options.audioContext;
+
     const bitrateMode = options.bitrateMode ? options.bitrateMode : 'constant';
     const bitrate = options.bitrate ? options.bitrate : 1_000_000;
     const keyFrameInterval = options.keyFrameInterval ? options.keyFrameInterval : 5;
     const latencyMode = options.latencyMode ? options.latencyMode : "quality";
+    const livestreamingTool = options.livestreamingTool;
+
     let _opfsRoot = null;
     let _tempDir = null;
 
@@ -16,24 +16,20 @@ Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
     let chunkHandles = [];
     let infoFile = null;
     let chunkCounter = -1;
+    let _recorderState = null;
+    let _localRecordingsDB;
 
     let output = null;
     let chunks = [];
-    //this.videoEncoder = null;
-    this.fps = 0;
-    //let audioEncoder = null;
-    let startTime = null;
-    let startTimestamp = null;
-    let recording = false;
+ 
+    this.startTimeSinceOrigin = null;
+    this.inProgress = false;
+    this.recording = options.recording;
+    let mediaStream = null;
     let audioTrack = null;
     let videoTrack = null;
-    let audioSampleRate
-    let lastKeyFrame = null;
-    let framesGenerated = 0;
-    let fpsCounter = 0;
-    let fpsCounter2 = 0;
-    let lastFrameTime = 0;
-    this.recording = options.recording;
+    let textSource = null;
+
     this.ftypBox = null;
     this.moovBox = null;
     this.timescales = null;
@@ -89,39 +85,68 @@ Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
         if (!_opfsRoot || !_tempDir) {
             await initOpfs();
         }
+        if (!_localRecordingsDB) {
+            _localRecordingsDB = await Q.Media.WebRTC.livestreaming.initRecordingsDB();
+        }
+
+        mediaStream = livestreamingTool.canvasComposer.getMediaStream();
+
+        _recorderState = {
+            recordingId: thisInstance.recordingId,
+            roomKey: options.publisherId && options.streamName ? options.publisherId + '|' + options.streamName : '',
+            roomStream: options.publisherId ? {
+                publisherId: options.publisherId,
+                name: options.streamName,
+                title: options.title,
+                startTime: options.startTime
+            } : 'undefined',
+            startTime: +new Date(),
+            format: 'mp4',
+            storage: 'opfs',
+        }
+
+        await _localRecordingsDB.save(_recorderState, 'recordings');
 
         videoTrack = mediaStream?.getVideoTracks()[0].clone();
         videoTrack.addEventListener('mute', function () {
-            console.log('videoTrack event MUTE')
+            //console.log('videoTrack event MUTE')
         });
         videoTrack.addEventListener('unmute', function () {
-            console.log('videoTrack event UNMUTE')
+            //console.log('videoTrack event UNMUTE')
         });
         videoTrack.addEventListener('ended', function () {
-            console.log('videoTrack event ENDED')
+            //console.log('videoTrack event ENDED')
         });
+        
         if (typeof AudioEncoder !== 'undefined') {
             audioTrack = mediaStream?.getAudioTracks()[0].clone();
-            audioSampleRate = audioContext.sampleRate;
-            if (audioTrack?.getCapabilities().sampleRate) {
-                audioSampleRate = audioTrack?.getCapabilities().sampleRate.max;
-            }
         } else {
             console.warn('AudioEncoder not available; no need to acquire a user media audio track.');
         }
         let lastChunkTimestamp = Date.now();
 
         output = new Mediabunny.Output({
-            format: new Mediabunny.Mp4OutputFormat({ fastStart: "fragmented" }),
+            format: new Mediabunny.Mp4OutputFormat({ 
+                fastStart: "fragmented",
+                /* onMoof: function (e) {
+                    if(!thisInstance.trackIdsInfo) return;
+                    const info = thisInstance.getFragmentInfo(e);
+                    thisInstance.latestTimestamp = info.tracks[thisInstance.trackIdsInfo.videoTrackId].timestamp + info.tracks[thisInstance.trackIdsInfo.videoTrackId].fragmentDuration;
+                    console.log('onMoof', info)
+                    console.log('thisInstance.latestTimestamp', thisInstance.latestTimestamp)
+                } */
+            }),
             target: new Mediabunny.StreamTarget(
                 new WritableStream({
                     async write(chunk) {
+                        //console.log('onDataAvailable')
+
                         /* let nowTs = Date.now();
                         let secondsSinceLastChunk = (nowTs - lastChunkTimestamp) / 1000;
                         lastChunkTimestamp = nowTs;
                         console.log('onDataAvailable chunk', secondsSinceLastChunk) */
 
-                        if (!thisInstance.recording) {
+                        //if (!thisInstance.recording) {
                             if (thisInstance.ftypBox == null) {
                                 const ftypBox = findBox(chunk.data, 'ftyp');
                                 thisInstance.ftypBox = ftypBox;
@@ -145,9 +170,9 @@ Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
 
                                 // Strip ftyp+moov from the front before passing to onDataAvailable
                                 const headerSize = thisInstance.ftypBox.length + thisInstance.moovBox.length;
-                                chunk = { ...chunk, data: chunk.data.slice(headerSize) };
+                                if (!thisInstance.recording) chunk = { ...chunk, data: chunk.data.slice(headerSize) };
                             }
-                        }
+                       // }
 
                         if (chunkCounter == -1) {
                             let info = {
@@ -193,6 +218,9 @@ Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
                 keyFrameInterval: keyFrameInterval,
                 latencyMode: latencyMode
             });
+            videoSource.errorPromise.catch(function(error) {
+                console.error(error)
+            });
 
             output.addVideoTrack(videoSource);
         }
@@ -200,45 +228,75 @@ Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
         if (audioTrack) {
             // Add the audio track, with the media stream track as the source
             const audioSource = new Mediabunny.MediaStreamAudioTrackSource(audioTrack, {
-                //codec: 'aac',
-                codec: 'opus',
+                codec: 'aac',
                 bitrate: Mediabunny.QUALITY_MEDIUM,
             });
-            //audioSource.errorPromise.catch(cancelRecording); // Make sure errors are bubbled up
+            audioSource.errorPromise.catch(function(error) {
+                console.error(error)
+            });
 
             output.addAudioTrack(audioSource);
+        }
+        if (options.subtitles) {
+            textSource = new Q.Media.WebRTC.Mediabunny.TextSubtitleSource('webvtt');
+            
+            output.addSubtitleTrack(textSource);
         }
 
         await output.start();
 
-        startTime = document.timeline.currentTime;
-        startTimestamp = +new Date();
-        recording = true;
-        lastKeyFrame = -Infinity;
-        framesGenerated = 0;
+        this.startTimeSinceOrigin = performance.now();
+
+        this.inProgress = true;
     };
 
-    this.endRecording = async function () {
-        recording = false;
+    this.addSubtitle = async function(text) {
+        if(!thisInstance.WebBVTTPreambleAdded) {
+            await textSource.add('WEBVTT\n\n');
+            thisInstance.WebBVTTPreambleAdded = true;
+        }
+        return await textSource.add(text);
+    }
+    this.patchCaptions = async function(captions) {
+        if(!textSource) {
+            return Promise.reject('Text source was not added at the beginning of recording');
+        }
+        const text = 
+`WEBVTT
 
-        videoTrack?.stop();
-        audioTrack?.stop();
+` + captions + `
+`;
 
-        //await thisInstance.videoEncoder?.flush();
-        //await audioEncoder?.flush();
-        await output.finalize();
-        if (options.recording !== false) {
-            await checkIfFinalChunkExist();
-            await mergeAndSaveAndDownload();
+        await textSource.add(text);
+        await textSource.close();
+        return Promise.resolve();
+    }
+
+    this.stopRecording = async function (cancel) {
+        this.inProgress = false;
+
+        if (videoTrack) videoTrack.stop();
+        if (audioTrack) audioTrack.stop();
+        //if (textSource) await textSource.close();
+
+        if(!cancel) {
+            await output.finalize();
+            if (options.recording !== false) {
+                await checkIfFinalChunkExist();
+                await mergeAndSaveAndDownload();
+            }
+        } else {
+            await output.cancel();
         }
 
-        //thisInstance.videoEncoder = null;
-        //audioEncoder = null;
+        let returnState = _recorderState;
+        _recorderState = null;
         output = null;
-        startTime = null;
-        startTimestamp = null;
-        firstAudioTimestamp = null;
-        return true;
+        this.startTimeSinceOrigin = null;
+        return returnState;
+    };
+    this.cancelRecording = function () {
+        return this.stopRecording(true);
     };
 
     function checkIfFinalChunkExist() {
@@ -498,7 +556,9 @@ Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
             fragments.push({
                 moof: moof.data,
                 mdat: mdat.data,
-                fragmentEnd: mdat.offset + mdat.size
+                fragmentEnd: mdat.offset + mdat.size,
+                timestamp: info.timestamp,
+                fragmentDuration: info.fragmentDuration
             });
         }
 
@@ -805,7 +865,7 @@ Q.Media.WebRTC.livestreaming.Mp4Recorder = function (options) {
                 if (trackId !== null && handlerType !== null) {
                     if (handlerType === 'vide') tracks[trackId] = 'video';
                     else if (handlerType === 'soun') tracks[trackId] = 'audio';
-                    console.log('track', trackId, '=', tracks[trackId]);
+                    //console.log('track', trackId, '=', tracks[trackId]);
                 }
             }
 
