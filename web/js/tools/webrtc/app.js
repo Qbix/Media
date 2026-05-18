@@ -311,8 +311,6 @@ Q.Media.WebRTCRoomClient = function app(options){
          * @method remove
          */
         this.remove = function () {
-            console.log('participant: remove');
-            console.trace();
             app.event.dispatch('participantRemoved', this);
 
             for(let t = this.tracks.length - 1; t >= 0; t--){
@@ -4350,7 +4348,6 @@ Q.Media.WebRTCRoomClient = function app(options){
                     }
                 }
 
-                console.log('audioOutputGroupIds', audioOutputGroupIds)
                 updateCurrentVideoInputDevice();
                 updateCurrentAudioInputDevice();
                 detectFrontCameraDevice();

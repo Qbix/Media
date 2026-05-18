@@ -477,7 +477,7 @@
                                         }
 
                                         tool.recorder.startRecording({
-                                            subtitles: true,
+                                            subtitles: false, //disabled for now due to bug of 100% cpu usage
                                             mediabunnyRecorder: mp4Checkbox.checked && mp4MuxerRecordingSupported,
                                             mediaRecorderCodecs: mediaRecorderCodecs
                                         })
@@ -487,7 +487,8 @@
                                                         webrtcSignalingLib: tool.webrtcSignalingLib,
                                                         startTimeSinceOrigin: tool.recorder.startTimeSinceOrigin,
                                                         onSegment: function (e) {
-                                                            if(e.segment) tool.recorder.addSubtitle(e.formatted);
+                                                            //console.log('speechRecognizer onSegment')
+                                                            //if(e.segment) tool.recorder.addSubtitle(e.formatted);
                                                         }
                                                     })
                                                     tool.speechRecognizer.start();
@@ -517,9 +518,7 @@
                                                 if (tool.speechRecognizer) {
                                                     tool.speechRecognizer.stop();
                                                     //tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
-                                                    //tool.speechRecognizer.exportJSON();
-                                                    //tool.speechRecognizer.saveToIndexedDB(recordingData.recordingId);
-                                                    //console.log('speechRecognizer srt', tool.speechRecognizer.exportWebVTT())
+                                                    //console.log('speechRecognizer srt', tool.speechRecognizer.exportJSON())
                                                 }
 
                                                 resolve();

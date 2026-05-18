@@ -2282,7 +2282,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         function drawVideosOnCanvas() {
             if(!_isActive) return;
             if (_isRendering) {
-                console.log('skip frame')
+                //console.log('skip frame')
                 return;
             }
             _isRendering = true;

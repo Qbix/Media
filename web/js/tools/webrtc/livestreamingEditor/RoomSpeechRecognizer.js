@@ -69,8 +69,6 @@ Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer = function (options) {
     }
 
     this.exportJSON = function () {
-        
-
         return JSON.stringify(this.getCaptions());
     }
 
