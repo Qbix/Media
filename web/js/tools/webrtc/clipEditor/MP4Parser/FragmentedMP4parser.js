@@ -82,6 +82,7 @@ Q.Media.WebRTC.clipEditor.FragmentedMP4parser = function (file, options) {
     this.BOX_PATHS = {
         [self.BOX.ftyp]: [self.BOX.ftyp],
         [self.BOX.moov]: [self.BOX.moov],
+        [self.BOX.mvex]: [self.BOX.moov, self.BOX.mvex],
         [self.BOX.trak]: [self.BOX.moov, self.BOX.trak],
         [self.BOX.mdia]: [self.BOX.moov, self.BOX.trak, self.BOX.mdia],
         [self.BOX.minf]: [self.BOX.moov, self.BOX.trak, self.BOX.mdia, self.BOX.minf],
@@ -1153,6 +1154,7 @@ FragmentedMP4parser.prototype.loadInit = async function () {
 
     let parsedMoov = self.parseBoxes(self.moovBox.view);
     self.parsedMoovBox = parsedMoov.moov;
+    console.log('parsedMoovBox', self.parsedMoovBox)
 
     const init = new Uint8Array(self.ftypBox.bytes.length + self.moovBox.bytes.length);
     init.set(self.ftypBox.bytes, 0);

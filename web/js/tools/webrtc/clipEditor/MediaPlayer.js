@@ -75,7 +75,8 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
         console.log('mediaPlayer event ended START', e);
     })
     _mediaPlayer.addEventListener('error', async function (e) {
-        console.error('mediaPlayer event error START', e);
+        console.error('mediaPlayer event error START', e, _mediaPlayer.error);
+        console.log('mediaPlayer event', _mediaPlayer.error);
     })
     _mediaPlayer.addEventListener('stalled', async function (e) {
         console.log('mediaPlayer event stalled START', e);
@@ -91,7 +92,7 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
             return Promise.reject('Fetch sessions do not match');
         }
         //allow adding only init fragments that were produced during setTime method
-
+        //if(!fragment.initSegment) return
         _segmentsQueue.push(fragment);
         processQueue();
         return Promise.resolve();
@@ -235,6 +236,7 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
 
                 return appendSegment({
                     data: _parser.initSegment,
+                    initSegment: true,
                     setTimeFragment: true,
                     fetchSessionId: fetchSessionObject.sessionId
                 });
@@ -265,7 +267,7 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
                         try {
                             await addInitSegment(fetchSessionObject);
                         } catch (error) {
-                            //console.error('Error while adding init fragment');
+                            console.error(error.message);
 
                             return reject(error.message);
                         }
@@ -384,8 +386,8 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
             _mediaPlayer.src = URL.createObjectURL(_mediaSource);
             console.log('file: ' + fileHandle.name + ' (' + fmtBytes(fileHandle.size) + ')', 'info');
 
+            _parser = thisInstance.parser = new Q.Media.WebRTC.clipEditor.FragmentedMP4parser(fileHandle, {
             //_parser = thisInstance.parser = new Q.Media.WebRTC.clipEditor.RegularMP4Parser(fileHandle, {
-            _parser = thisInstance.parser = new Q.Media.WebRTC.clipEditor.RegularMP4Parser(fileHandle, {
                 onFragment: function (moofMdatPair) {
                     console.log('mediaSource event onFragment', moofMdatPair);
                     //console.trace();
@@ -475,7 +477,9 @@ Q.Media.WebRTC.clipEditor.MediaPlayer = function () {
                          //processQueue();
                     } */
                     //_parser.updateCurrentTime(0)
-                    _mediaPlayer.play();
+                    /* _mediaPlayer.play().catch(function (e) {
+                        console.error(e)
+                    }); */
 
                     resolve();
                 })
