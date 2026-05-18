@@ -4,7 +4,7 @@ function Media_after_Streams_create_Media_episode ($params) {
 	$video = $episode->getAttribute("video");
 	$audio = $episode->getAttribute("audio");
 	$duration = (int)Q::ifset($video, "duration", 0) * 1000;
-	$weight = time();
+	$weight = $episode->getAttribute("publishTime") ?: time();
 	$communityId = Users::communityId();
 
 	// relate to Media/episodes if not related
@@ -13,8 +13,8 @@ function Media_after_Streams_create_Media_episode ($params) {
 		"toPublisherId" => $communityId,
 		"toStreamName" => $episodesStreamName,
 		"type" => $episode->type,
-		"fromPublisherId" => $clip->publisherId,
-		"fromStreamName" => $clip->name
+		"fromPublisherId" => $episode->publisherId,
+		"fromStreamName" => $episode->name
 	))->limit(1)->fetchDbRow())) {
 		$episode->relateTo((object)array("publisherId" => $communityId, "name" => $episodesStreamName), $episode->type, $communityId, array(
 			'skipAccess' => true,
@@ -25,7 +25,7 @@ function Media_after_Streams_create_Media_episode ($params) {
 	// relate to main chats category
 	$episode->relateTo((object)array("publisherId" => $communityId, "name" => "Streams/chats/main"), $episode->type, $communityId, array(
 		'skipAccess' => true,
-		'weight' => time()
+		'weight' => $weight
 	));
 
 	if (!$video || !$duration) {
