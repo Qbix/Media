@@ -1349,7 +1349,7 @@
             }
 
             _layoutEvents.on('layoutRendered', function (e) {
-                console.log('layoutRendered event', e.viewMode)
+                //console.log('layoutRendered event', e.viewMode)
                 if(e.viewMode == 'audio') {
                     lockScreenResizingAndDragging();
                 } else if(e.viewMode == 'minimized') {
@@ -2677,8 +2677,8 @@
                 /* if(layoutState.currentMode == modeName) {
                     return;
                 } */
-                console.log('switchScreensMode START', modeName, layoutState.currentMode)
-                console.trace();
+                //console.log('switchScreensMode START', modeName, layoutState.currentMode)
+                //console.trace();
                 layoutState.previousScreensMode = layoutState.currentMode;
                 layoutState.currentMode = modeName;
                 layoutState.currentModeChangedByUser = changedByUserInteraction !== false;
@@ -2745,7 +2745,7 @@
             }
 
             function switchToPreviousScreensMode() {
-                console.log('switchToPreviousScreensMode', layoutState.previousScreensMode)
+                //console.log('switchToPreviousScreensMode', layoutState.previousScreensMode)
                 if(layoutState.previousScreensMode != null) {
                     switchScreensMode(layoutState.previousScreensMode);
                 }
@@ -6931,7 +6931,7 @@
                             screensharingTrack = tracks[i];
                         }
                     }
-                    console.log('checkIfScreensharingTrackAdded', screensharingTrack);
+                    //console.log('checkIfScreensharingTrackAdded', screensharingTrack);
                     if(!screensharingTrack) {
                         return false;
                     }
@@ -7842,12 +7842,6 @@
 
                 var createOrJoinRoomStream = function (roomId, asPublisherId) {
                     log('createRoomStream START', roomId, asPublisherId)
-                    try {
-                        var err = (new Error);
-                        console.log(err.stack);
-                    } catch (e) {
-        
-                    }
                     Q.req("Media/webrtc", ["room"], function (err, response) {
                         var msg = Q.firstErrorMessage(err, response && response.errors);
 
@@ -7975,7 +7969,7 @@
 
                 let rememberedVideoDeviceId = localStorage.getItem("Q.Media.webrtc.videoInputDeviceId");
                 rememberedVideoDeviceId = rememberedVideoDeviceId != 'false' ? rememberedVideoDeviceId : false;
-                console.log('startConference rememberedVideoDeviceId', rememberedVideoDeviceId, localStorage.getItem("Q.Media.webrtc.videoInputDeviceId"))
+                //console.log('startConference rememberedVideoDeviceId', rememberedVideoDeviceId, localStorage.getItem("Q.Media.webrtc.videoInputDeviceId"))
 
                 if(rememberedVideoDeviceId !== false && rememberedVideoDeviceId !== null) {
                     videoConstraints = {deviceId: { exact: rememberedVideoDeviceId }}

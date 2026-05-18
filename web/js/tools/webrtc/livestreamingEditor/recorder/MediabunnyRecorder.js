@@ -139,7 +139,7 @@ Q.Media.WebRTC.livestreaming.MediabunnyRecorder = function (options) {
             target: new Mediabunny.StreamTarget(
                 new WritableStream({
                     async write(chunk) {
-                        console.log('onDataAvailable')
+                        //console.log('onDataAvailable')
 
                         /* let nowTs = Date.now();
                         let secondsSinceLastChunk = (nowTs - lastChunkTimestamp) / 1000;

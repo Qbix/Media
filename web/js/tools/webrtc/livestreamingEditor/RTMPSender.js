@@ -226,7 +226,7 @@ Q.Media.WebRTC.livestreaming.RTMPSender = function (tool) {
                         startTime: roomStream.getAttribute('startTime'),
                         recording: false,
                         onDataAvailable: function (chunk) {
-                            console.log('onDataAvailable triggered')
+                            //console.log('onDataAvailable triggered')
                             if (_streamingSocket[service] == null) return;
 
                             const prev = _mp4Streamer.fragmentBuffer;
