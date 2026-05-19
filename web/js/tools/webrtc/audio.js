@@ -59,7 +59,9 @@
         _controlsToolIcons = tool.state.controlsTool.getIcons();
 
         tool.audioinputListEl = null;
+        tool.audioinputList = null;
         tool.audioOutputListEl = null;
+        tool.audioOutputList = null;
         tool.audioOutputListButtons = [];
         tool.audioInputListButtons = [];
         tool.turnOffAudioInputBtn = null;
@@ -130,8 +132,8 @@
                 });
                 webrtcSignalingLib.event.on('currentAudioinputDeviceChanged', function (device) {
                     tool.updateAudioInputList();
-                    localStorage.setItem("Q.Media.webrtc.audioInputDeviceId", device.deviceId);
-                    localStorage.setItem("Q.Media.webrtc.audioInputGroupId", device.groupId);
+                    //localStorage.setItem("Q.Media.webrtc.audioInputDeviceId", device.deviceId);
+                    //localStorage.setItem("Q.Media.webrtc.audioInputGroupId", device.groupId);
                 });
                 webrtcSignalingLib.event.on('currentAudiooutputDeviceChanged', function (device) {
                     tool.updateAudioOutputList();
@@ -164,13 +166,40 @@
                 }, tool);
             },
             updateUIAccordingAccess: function () {
-                var tool = this;
-                var localParticipant = tool.webrtcSignalingLib.localParticipant();
+                let tool = this;
+                let localParticipant = tool.webrtcSignalingLib.localParticipant();
 
                 if(localParticipant.hasPermission('mic')) {
-                    tool.audioinputListEl.classList.remove('webrtc-audio-disabled');
+                    tool.audioinputList.classList.remove('webrtc-audio-disabled');
+                    hideMessage();
                 } else {
-                    tool.audioinputListEl.classList.add('webrtc-audio-disabled');
+                    tool.audioinputList.classList.add('webrtc-audio-disabled');
+                    showMessage();
+                }
+
+                function showMessage() {
+                    let existingMessage = tool.audioinputListEl.querySelector('.webrtc-audio-disabled-msg');
+                    if (existingMessage) return;
+                    let msg = document.createElement('DIV');
+                    msg.className = 'webrtc-audio-disabled-msg';
+                    tool.audioinputListEl.appendChild(msg);
+                    let msgTextCon = document.createElement('DIV');
+                    msgTextCon.className = 'webrtc-audio-disabled-msg-text-con';
+                    msg.appendChild(msgTextCon);
+                    let msgBg = document.createElement('DIV');
+                    msgBg.className = 'webrtc-audio-disabled-msg-bg';
+                    msgTextCon.appendChild(msgBg);
+                    let msgText = document.createElement('DIV');
+                    msgText.className = 'webrtc-audio-disabled-msg-text';
+                    msgText.innerHTML = Q.getObject("webrtc.notices.micNotAllowed", tool.text);
+                    msgTextCon.appendChild(msgText);
+                }
+
+                function hideMessage() {
+                    let existingMessage = tool.audioinputListEl.querySelector('.webrtc-audio-disabled-msg');
+                    if (existingMessage) {
+                        existingMessage.remove();
+                    }
                 }
             },
             createAudioInputList: function () {
@@ -180,14 +209,17 @@
 
                 let inputListTilte = document.createElement('DIV');
                 inputListTilte.className = 'webrtc-audio-choose-device-title';
-                inputListTilte.innerHTML = Q.getObject("webrtc.audioSettings.microphone", tool.text);;
+                inputListTilte.innerHTML = Q.getObject("webrtc.audioSettings.inputDevices", tool.text);
+                audioinputListCon.appendChild(inputListTilte);
 
                 var audioinputList = document.createElement('DIV');
                 audioinputList.className = 'webrtc-audio-choose-device webrtc-audio-choose-audio-device';
+                audioinputListCon.appendChild(audioinputList);
 
                 var turnOffradioBtnItem = document.createElement('DIV');
                 turnOffradioBtnItem.className = 'webrtc-audio-settings_popup_item webrtc-audio-turn_video_off';
                 turnOffradioBtnItem.dataset.deviceId = 'off';
+                audioinputList.appendChild(turnOffradioBtnItem);
                 var textLabelCon = document.createElement('SPAN');
                 textLabelCon.className = 'webrtc-audio-settings_popup_item_text webrtc-audio-turn_video_off_text';
                 var textLabel = document.createTextNode(Q.getObject("webrtc.settingsPopup.micIsTurnedOff", tool.text));
@@ -219,13 +251,11 @@
                     tool.toggleAudioInputRadioButton(tool.turnOffAudioInputBtn);
                 }
 
-                audioinputList.appendChild(turnOffradioBtnItem);
-                audioinputListCon.appendChild(inputListTilte);
-                audioinputListCon.appendChild(audioinputList);
 
                 turnOffradioBtnItem.addEventListener('mouseup', tool.turnOffAudioInputBtn.handler)
 
-                tool.audioinputListEl = audioinputList;
+                tool.audioinputListEl = audioinputListCon;
+                tool.audioinputList = audioinputList;
                 return audioinputListCon;
             },
             toggleAudioInputRadioButton: function (buttonObj) {
@@ -262,10 +292,7 @@
                 var count = 1;
 
                 tool.clearAudioInputList();
-                log('controls: audio current device', tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice());
-
                 tool.webrtcSignalingLib.localMediaControls.audioInputDevices().forEach(function (mediaDevice) {
-                    log('controls: loadAudioInputList', mediaDevice);
                     var radioBtnItem = document.createElement('DIV');
                     radioBtnItem.className = 'webrtc-audio-settings_popup_item';
                     radioBtnItem.dataset.deviceId = mediaDevice.deviceId;
@@ -280,7 +307,7 @@
                     textLabelCon.appendChild(textLabel);
                     radioBtnItem.appendChild(textLabelCon);
                     radioBtnItem.appendChild(checkmark);
-                    tool.audioinputListEl.insertBefore(radioBtnItem, tool.audioinputListEl.firstChild);
+                    tool.audioinputList.insertBefore(radioBtnItem, tool.audioinputList.firstChild);
 
                     var audioInputItem = new ButtonInstance({
                         buttonEl: radioBtnItem,
@@ -300,8 +327,10 @@
                                     if (radioBtnItem.classList.contains('Q_working')) radioBtnItem.classList.remove('Q_working');
                                     tool.state.controlsTool.updateControlBar();
                                 }, function (e) {
+                                    tool.toggleAudioInputRadioButton(tool.turnOffAudioInputBtn);
+
                                     if (radioBtnItem.classList.contains('Q_working')) radioBtnItem.classList.remove('Q_working');
-                                    if (_isiOSCordova) tool.showIosPermissionsInstructions('Audio');
+                                    if (_isiOSCordova) Q.Media.WebRTC.showIosPermissionsInstructions('Audio');
                                 })
                             }
 
@@ -354,9 +383,7 @@
             },
             updateAudioInputList: function () {
                 var tool = this;
-                log('controls: updateAudioInputList START', tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice());
                 let audioInputIsActive = false;
-                log('controls: updateAudioInputList: current ai device', tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice());
 
                 tool.audioInputListButtons.forEach(function (audioInputItem) {
                     if (tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice() != null && tool.webrtcSignalingLib.localMediaControls.currentAudioInputDevice().deviceId == audioInputItem.deviceId) {
@@ -366,7 +393,6 @@
 
                 });
                 if (!audioInputIsActive) {
-                    log('controls: updateAudioInputList: tool.turnOffAudioInputBtn');
                     tool.toggleAudioInputRadioButton(tool.turnOffAudioInputBtn);
                 }
             },
@@ -386,16 +412,15 @@
 
                 let outputListTilte = document.createElement('DIV');
                 outputListTilte.className = 'webrtc-audio-choose-device-title';
-                outputListTilte.innerHTML = Q.getObject("webrtc.audioSettings.speakers", tool.text);
+                outputListTilte.innerHTML = Q.getObject("webrtc.audioSettings.outputDevices", tool.text);
+                audioOutputListCon.appendChild(outputListTilte);
 
                 var audioOutputList = document.createElement('DIV');
                 audioOutputList.className = 'webrtc-audio-choose-device webrtc-audio-choose-output-audio';
-
-                audioOutputListCon.appendChild(outputListTilte);
                 audioOutputListCon.appendChild(audioOutputList);
 
-
-                tool.audioOutputListEl = audioOutputList;
+                tool.audioOutputListEl = audioOutputListCon;
+                tool.audioOutputList = audioOutputList;
                 return audioOutputListCon;
             },
             toggleAudioOutputRadioButton: function (buttonObj) {
@@ -423,22 +448,20 @@
             },
             loadAudioOutputList: function () {
                 var tool = this;
-                log('controls: loadAudioOutputList START');
-                tool.audioOutputListEl.innerHTML = '';
+                tool.audioOutputList.innerHTML = '';
                 tool.audioOutputListButtons = [];
 
                 if (!tool.checkIfSetSinkIdIsSupported()) {
                     var alertNoticeCon = document.createElement('DIV');
                     alertNoticeCon.className = 'webrtc-audio-notice_alert';
                     alertNoticeCon.innerHTML = "Selecting output device is not supported in your browser";
-                    tool.audioOutputListEl.appendChild(alertNoticeCon);
+                    tool.audioOutputList.appendChild(alertNoticeCon);
                     return;
                 }
 
                 var count = 1;
 
                 tool.webrtcSignalingLib.localMediaControls.audioOutputDevices().forEach(function (mediaDevice) {
-                    log('controls: loadAudioOutputList', mediaDevice);
                     var radioBtnItem = document.createElement('DIV');
                     radioBtnItem.className = 'webrtc-audio-settings_popup_item';
                     radioBtnItem.dataset.deviceId = mediaDevice.deviceId;
@@ -452,7 +475,7 @@
                     textLabelCon.appendChild(textLabel);
                     radioBtnItem.appendChild(textLabelCon);
                     radioBtnItem.appendChild(checkmark);
-                    tool.audioOutputListEl.insertBefore(radioBtnItem, tool.audioOutputListEl.firstChild);
+                    tool.audioOutputList.insertBefore(radioBtnItem, tool.audioOutputList.firstChild);
 
                     var audioOutputItem = new ButtonInstance({
                         buttonEl: radioBtnItem,
@@ -468,7 +491,7 @@
                             tool.webrtcSignalingLib.localMediaControls.toggleAudioOutputs(mediaDevice, function () {
                                 tool.state.controlsTool.updateControlBar();
                             }, function (e) {
-                                if (_isiOSCordova) tool.showIosPermissionsInstructions('Audio');
+                                if (_isiOSCordova) Q.Media.WebRTC.showIosPermissionsInstructions('Audio');
                             })
 
                         }

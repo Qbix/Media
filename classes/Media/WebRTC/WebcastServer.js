@@ -207,7 +207,7 @@ function WebcastServer(socket) {
     }
 
     function log() {
-        if(_debug === false) return;
+       // if(_debug === false) return;
         var args = arguments
 
         args = Array.prototype.slice.call(args);
@@ -553,6 +553,8 @@ function WebcastServer(socket) {
             });*/
 
             localParticipant.removeFromRoom();
+            log('WEBCAST DISCONNECT localParticipant', localParticipant.role);
+
             if (localParticipant.role != 'publisher') {
                 for (let r in localParticipant.receivers) {
                     findDonor(localParticipant.receivers[r])
@@ -604,6 +606,8 @@ function WebcastServer(socket) {
 
                     //post Media/livestream/stop message to livestream stream
                     Q.plugins.Streams.fetchOne(socket.livestreamStreamData.publisherId, socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName, function (err, stream) {
+                        log('Media/livestream/stop fetchOne');
+
                         if (err || !stream) {
                             console.log('No livestream stream found with next publisherId and streamName', socket.livestreamStreamData.publisherId, socket.livestreamStreamData.streamName);
                             return;
@@ -611,6 +615,7 @@ function WebcastServer(socket) {
         
                         stream.setAttribute('p2pRoom', '');
                         let otherLives = stream.getAttribute('lives');
+                        log('Media/livestream/stop fetchOne, otherLives', otherLives);
                         //do not send Media/livestream/stop message when rtmp lives are active
                         if(!otherLives || (Array.isArray(otherLives) && otherLives.length == 0)) {
                             Q.plugins.Media.WebRTC.postLivestreamStartOrStopMessage('Media/livestream/stop', {
@@ -634,7 +639,7 @@ function WebcastServer(socket) {
                                 }
                             }); */
                         }
-                        //stream.save();
+                        stream.save();
                         
                     });
                 

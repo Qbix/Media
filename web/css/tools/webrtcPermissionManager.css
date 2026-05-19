@@ -10,6 +10,13 @@
     padding: 10px;
     max-width: 100%;
 }
+.webrtc-permissions-container table {
+    width: 100%;
+    table-layout: fixed;
+}
+.webrtc-permissions-container tr{
+    width: 100%;
+}
 .webrtc-permissions-container th{
     text-align: center;
 }
@@ -18,6 +25,10 @@
 }
 .webrtc-permissions-container td.webrtc-permissions-item-box {
     text-align: center;
+}
+.webrtc-permissions-container th svg {
+    max-width: 24px;
+    max-height: 24px;
 }
 .webrtc-permissions-item-controls-reset {
     cursor: pointer;

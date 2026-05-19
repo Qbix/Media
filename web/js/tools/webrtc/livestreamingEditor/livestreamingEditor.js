@@ -105,8 +105,9 @@
             tool.livestreamingEditor = null;           
 
             tool.importChildModules().then(function () {
-                tool.eventDispatcher = Q.Media.WebRTC.EventSystem();
-                tool.RTMPSender = Q.Media.WebRTC.livestreaming.RTMPSender(tool);
+                tool.eventDispatcher = new Q.Media.WebRTC.EventSystem();
+                tool.RTMPSender = new Q.Media.WebRTC.livestreaming.RTMPSender(tool);
+                tool.recorder = new Q.Media.WebRTC.livestreaming.Recorder(tool);
                 tool.canvasComposer = Q.Media.WebRTC.livestreaming.CanvasComposer(tool);
                 tool.declareOrRefreshEventHandlers();
 
@@ -123,7 +124,7 @@
             p2pBroadcastIsActive: false,
             fbLiveIsActive: false,
             rtmpLiveIsActive: false,
-            localRecordingIsActive: { sendingToServer: false },
+            localRecording: { sendingToServer: false },
             googleClientId: null,
             facebookAppId: null,
             usePopups: true, //use popups instead of dialogs when starting/stopping livestream or recording
@@ -136,10 +137,14 @@
                 return new Promise(function (resolve, reject) {
                     Q.addScript([
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/streamingIcons.js',
-                        '{{Media}}/js/tools/webrtc/EventSystem.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/recorder/MediabunnyRecorder.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/recorder/NativeRecorder.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/recorder/Recorder.js',
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/RTMPStreaming.js',
                         '{{Media}}/js/tools/webrtc/livestreamingEditor/RTMPSender.js',
-                        '{{Media}}/js/tools/webrtc/livestreamingEditor/CanvasComposer.js'
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/CanvasComposer.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/UserSpeechRecognizer.js',
+                        '{{Media}}/js/tools/webrtc/livestreamingEditor/RoomSpeechRecognizer.js'
                     ], function () {
                         tool.icons = Q.Media.WebRTC.livestreaming.streamingIcons;
                         resolve();
@@ -172,7 +177,7 @@
 
                 webrtcSignalingLib.event.on('localRecordingStarted', function (e) {
                     if(e.format == 'mp4') {
-                        renderMp4RecordingStats(e);
+                        //renderMp4RecordingStats(e);
                     } else {
                         
                     }
@@ -247,6 +252,12 @@
                         fields: {}
                     });
                 });
+            },
+            stopRenderingIfInactive: function () {
+                if (!tool.RTMPSender.isStreaming() && !tool.recorder.isRecording() && !tool.state.p2pBroadcastIsActive) {
+                    //tool.canvasComposer.videoComposer.stop();
+                    tool.canvasComposer.stopCaptureCanvas(true); //if there is no active streaming or recording, then turn canvas rendering off to save CPU resources
+                }
             },
             create: function() {
                 if(this.livestreamingEditor != null) return this.livestreamingEditor;
@@ -341,7 +352,7 @@
                             recordingButtons.appendChild(startLocalRecBtn);
 
                             var startLocRecordingBtn = document.createElement('DIV');
-                            startLocRecordingBtn.className = 'Q_button live-editor-rec-start-btn';
+                            startLocRecordingBtn.className = 'live-editor-rec-start-btn livestream_button';
                             startLocalRecBtn.appendChild(startLocRecordingBtn);
 
                             var startLocRecordingBtnInner = document.createElement('DIV');
@@ -374,7 +385,7 @@
                             recordingButtons.appendChild(recordingsContainer);
 
                             var getRecordingsBtn = document.createElement('BUTTON');
-                            getRecordingsBtn.className = 'Q_button';
+                            getRecordingsBtn.className = 'livestream_button';
                             getRecordingsBtn.innerHTML = 'Show Recordings';
                             recordingsContainer.appendChild(getRecordingsBtn);
 
@@ -432,93 +443,137 @@
                                 }
                             );
 
-                            /* sendChunksCheckbox.addEventListener('click', function () {
-                                if(sendChunksCheckbox.checked && tool.RTMPSender.isStreaming()) {
-                                    console.error('You cannot both send recording\'s video to the cloud and stream to RTMP endpoint.');
-                                    sendChunksCheckbox.checked = false;
-                                }
-                            }) */
-
                             startButtonTextCon.addEventListener('click', function () {
-                                startLocRecordingBtn.classList.add('Q_working');
 
-                                if(!tool.state.localRecordingIsActive.active && !tool.state.localRecordingIsPending) {
-                                    tool.state.localRecordingIsPending = true;
-                                    
-                                    /* if(sendChunksCheckbox.checked) {
-                                        createRecordingStream().then(function (recordingStream) {
-                                            startRecording(recordingStream).then(function () {
-                                                startLocRecordingBtn.classList.remove('Q_working');
-                                                startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
-                                                tool.state.localRecordingIsPending = false;
-                                            });
+                                if(tool.state.localRecording.state != 'active') {
+                                    updateRecordingState('pending');
+                                    startRecording()
+                                        .then(function () {
+                                            updateRecordingState('active');
+                                        })
+                                        .catch(function (error) {
+                                            tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStartingRecording", tool.text) || 'Error while starting recording');
+                                            updateRecordingState('inactive');
+                                            console.error(error);
                                         });
-                                    } else { */
-                                        startRecording().then(function () {
-                                            startLocRecordingBtn.classList.remove('Q_working');
-                                            startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
-                                            tool.state.localRecordingIsPending = false;
-                                        });
-                                    //}
+
                                 } else {
+                                    updateRecordingState('pending');
                                     stopRecording().then(function () {
-                                        startLocRecordingBtn.classList.remove('Q_working');
-                                        startLocRecordingBtn.classList.remove('live-editor-rec-start-btn-active');
+                                        updateRecordingState('inactive');
                                     });
                                 }
                                
                             })
-                            /* if (localInfo.browserName && localInfo.browserName.toLowerCase() == 'safari') {
-                                if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264')) {
-                                    codecs = 'video/mp4;codecs=h264';
-                                }
-                            } else {
-                                
-                            } */
-                            function startRecording(recordingStream) {
+
+                            function startRecording() {
                                 return new Promise(function (resolve, reject) {
-                                    _localRecordingTimer = new Timer(startButtonTimer);
-                                    _localRecordingTimer.start();
-                                    if(mp4Checkbox.checked && mp4MuxerRecordingSupported) {
-                                        tool.RTMPSender.startMp4LocalRecording(recordingStream);
-                                    } else if(mp4Checkbox.checked && (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264'))) {
-                                        let codecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
-                                        tool.RTMPSender.startLocalRecording(recordingStream, codecs);
-                                    } else if(webmCheckbox.checked && (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264'))) {
-                                        let codecs = MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
-                                        tool.RTMPSender.startLocalRecording(recordingStream, codecs);
+                                    try {
+                                        let mediaRecorderCodecs;
+                                        if (mp4Checkbox.checked && (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264'))) {
+                                            mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
+                                        } else if (webmCheckbox.checked && (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264'))) {
+                                            mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
+                                        }
+
+                                        tool.recorder.startRecording({
+                                            subtitles: false, //disabled for now due to bug of 100% cpu usage
+                                            mediabunnyRecorder: mp4Checkbox.checked && mp4MuxerRecordingSupported,
+                                            mediaRecorderCodecs: mediaRecorderCodecs
+                                        })
+                                            .then(function () {
+                                                try {
+                                                    tool.speechRecognizer = new Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer({
+                                                        webrtcSignalingLib: tool.webrtcSignalingLib,
+                                                        startTimeSinceOrigin: tool.recorder.startTimeSinceOrigin,
+                                                        onSegment: function (e) {
+                                                            //console.log('speechRecognizer onSegment')
+                                                            //if(e.segment) tool.recorder.addSubtitle(e.formatted);
+                                                        }
+                                                    })
+                                                    tool.speechRecognizer.start();
+                                                } catch (error) {
+                                                    tool.recorder.cancelRecording();
+                                                    return reject(error);
+                                                }
+                                                resolve();
+                                            })
+                                            .catch(function (error) {
+                                                reject(error);
+                                                return;
+                                            });
+                                    } catch (error) {
+                                        reject(error);
+                                        return;
                                     }
-    
-                                    startButtonText.innerHTML = 'Stop Recording';
-                                    startButtonTimer.innerHTML = '';
-                                    showLiveIndicator('rec');
-                                    tool.state.localRecordingIsActive.active = true;
-                                    tool.state.localRecordingIsActive.sendingToServer = recordingStream ? true : false;
-                                    resolve();
                                 });
                             }
 
                             function stopRecording() {
-                                return new Promise(function (resolve, reject) {
+                                return new Promise(async function (resolve, reject) {
+                                    if (tool.speechRecognizer) {
+                                        //await tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
+                                        tool.recorder.stopRecording()
+                                            .then(function (recordingData) {
+                                                if (tool.speechRecognizer) {
+                                                    tool.speechRecognizer.stop();
+                                                    //tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
+                                                    //console.log('speechRecognizer srt', tool.speechRecognizer.exportJSON())
+                                                }
+
+                                                resolve();
+                                            })
+                                            .catch(function () {
+                                                tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
+                                                resolve();
+                                            });
+
+                                    } else {
+
+                                        tool.recorder.stopRecording()
+                                            .then(function (recordingData) {
+                                                resolve();
+                                            })
+                                            .catch(function () {
+                                                tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
+                                                resolve();
+                                            });;
+                                    }
+                                });
+                            }
+
+                            function updateRecordingState(state) {
+                                tool.state.localRecording.state = state;
+                                updateRecordingUI();
+                            }
+
+                            function updateRecordingUI() {
+                                if (tool.state.localRecording.state == 'pending') {
+                                    startLocRecordingBtn.classList.add('Q_working');
+                                } else if (tool.state.localRecording.state == 'active') {
+                                    startLocRecordingBtn.classList.remove('Q_working');
+                                    startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
+                                    startButtonText.innerHTML = 'Stop Recording';
+                                    startButtonTimer.innerHTML = '';
+                                    showLiveIndicator('rec');
+                                    tool.state.localRecording.active = true;
+                                    //tool.state.localRecording.sendingToServer = recordingStream ? true : false;
+                                    tool.state.localRecording.pending = false;
+                                    _localRecordingTimer = new Timer(startButtonTimer);
+                                    _localRecordingTimer.start();
+                                } else { //inactive
+                                    startLocRecordingBtn.classList.remove('Q_working');
+                                    startLocRecordingBtn.classList.remove('live-editor-rec-start-btn-active');
+                                    startButtonText.innerHTML = 'Start Recording';
+                                    startButtonTimer.innerHTML = '';
+                                    updateSourcesControlPanel();
+                                    hideLiveIndicator('rec');
+
                                     if(_localRecordingTimer) {
                                         _localRecordingTimer.stop();
                                         _localRecordingTimer = null;
                                     }
-                                    if(mp4Checkbox.checked && mp4MuxerRecordingSupported) {
-                                        tool.RTMPSender.stopMp4LocalRecording();
-                                    } else {
-                                        tool.RTMPSender.stopLocalRecording();
-                                    }
-    
-                                    startButtonText.innerHTML = 'Start Recording';
-                                    startButtonTimer.innerHTML = '';
-    
-                                    tool.state.localRecordingIsActive.active = false;
-                                    updateSourcesControlPanel();
-                                    hideLiveIndicator('rec');
-                                    resolve();
-                                });
-                                
+                                }
                             }
 
                             function createRecordingStream() {
@@ -633,7 +688,7 @@
 
                             var startBroadcastingBtn = document.createElement('BUTTON');
                             startBroadcastingBtn.type = 'button';
-                            startBroadcastingBtn.className = 'Q_button';
+                            startBroadcastingBtn.className = 'livestream_button';
                             startBroadcastingBtn.innerHTML = Q.getObject("webrtc.settingsPopup.start", tool.text);
                             startBroadcastingBtnCon.appendChild(startBroadcastingBtn);
 
@@ -674,7 +729,7 @@
 
                             var stopBroadcastingBtn = document.createElement('BUTTON');
                             stopBroadcastingBtn.type = 'button';
-                            stopBroadcastingBtn.className = 'Q_button';
+                            stopBroadcastingBtn.className = 'livestream_button';
                             stopBroadcastingBtn.innerHTML = Q.getObject("webrtc.settingsPopup.stop", tool.text);
                             stopBroadcastingBtnCon.appendChild(stopBroadcastingBtn);
 
@@ -684,7 +739,7 @@
 
                             var shareBroadcastingBtn = document.createElement('BUTTON');
                             shareBroadcastingBtn.type = 'button';
-                            shareBroadcastingBtn.className = 'Q_button';
+                            shareBroadcastingBtn.className = 'livestream_button';
                             shareBroadcastingBtnCon.appendChild(shareBroadcastingBtn);
                             var shareBroadcastingBtnIcon = document.createElement('SPAN');
                             shareBroadcastingBtnIcon.className = 'live-editor-stream-to-section-p2p-share-icon';
@@ -711,7 +766,7 @@
                                             var turnCredentials = response.slots.room.turnCredentials;
                                             var socketServer = response.slots.room.socketServer;
 
-                                            _broadcastClient = window.WebRTCWebcastClient({
+                                            _broadcastClient = tool.broadcastClient = window.WebRTCWebcastClient({
                                                 mode: 'node',
                                                 role: 'publisher',
                                                 nodeServer: socketServer,
@@ -747,6 +802,7 @@
                                                 tool.webrtcSignalingLib.event.dispatch('webcastEnded', { participant: tool.webrtcSignalingLib.localParticipant() });
 
                                                 tool.state.p2pBroadcastIsActive = false;
+                                                _broadcastClient = tool.broadcastClient = null;
                                             });
 
                                         }, {
@@ -778,10 +834,14 @@
                             })
                             shareBroadcastingBtn.addEventListener('click', function () {
                                 if(tool.livestreamStream) {
+                                    let oldSendBy = Q.Streams.Dialogs.invite.options.sendBy;
+                                    Q.Streams.Dialogs.invite.options.sendBy = null;
                                     Q.Streams.invite(tool.livestreamStream.fields.publisherId, tool.livestreamStream.fields.name, { 
                                         title: 'Share Livestream',
                                         addLabel: [],
                                         addMyLabel: [] 
+                                    }, function() {
+                                        Q.Streams.Dialogs.invite.options.sendBy = oldSendBy;
                                     });
                                 }
                             })
@@ -796,7 +856,7 @@
                         }
 
                         return {
-                            getSection: getSection,
+                            getSection: getSection
                         }
                     }())
 
@@ -1130,7 +1190,8 @@
                             _sourcesColumnEl.appendChild(_activeScene.sourcesInterface.createSourcesCol());
 
                             let sceneIndex = _scenesList.indexOf(sceneItem);
-                            if(sceneIndex != -1 && _layoutsList[sceneIndex]) { //set default webrtc layout
+                            if(sceneIndex != -1 && _layoutsList[sceneIndex] && !_layoutsList[sceneIndex].inited) { //set default webrtc layout
+                                _layoutsList[sceneIndex].inited = true;
                                 sceneItem.sourcesInterface.selectLayout(_layoutsList[sceneIndex].key, true);
                             }
                         }
@@ -2012,8 +2073,20 @@
                                     content: [_audioTool.audioOutputListEl, _audioTool.audioinputListEl]
                                 })
                             //}
-                            sourceInstance.microphoneBtnIcon = microphoneBtnIcon;
-                                            
+                            sourceInstance.microphoneBtnIcon = microphoneBtnIcon;          
+                        }
+
+                        if (source.sourceType == 'video' || source.sourceType == 'audio') {
+                            let configBtnCon = document.createElement('DIV');
+                            configBtnCon.className = 'live-editor-sources-item-control-item live-editor-sources-item-config';
+                            configBtnCon.innerHTML = tool.icons.settings;
+                            itemElControl.appendChild(configBtnCon);
+
+                            configBtnCon.addEventListener('click', function () {
+                                let settingsDialogEl = optionsColumn.getSettingsDialog();
+                                showSpecificControls(settingsDialogEl);
+                            })
+
                         }
 
                         if (source.sourceType == 'video') {
@@ -3448,112 +3521,115 @@
                                 files = tgt.files;
 
                             if (FileReader && files && files.length) {
-                                let file = files[0], mime = file.type;
-                                let reader = new  FileReader();
-                                reader.readAsArrayBuffer(file);
-                                reader.addEventListener('loadstart', loadStartHandler);
-                                reader.addEventListener('load', loadHandler);
-                                reader.addEventListener('loadend', loadEndHandler);
-                                reader.addEventListener('progress', updateProgress);
-                                reader.addEventListener('error', errorHandler);
-                                reader.addEventListener('abort', abortHandler);
+                                for (let i = 0; i < files.length; i++) {
+                                    let file = files[i], mime = file.type;
+                                    let reader = new FileReader();
+                                    reader.readAsArrayBuffer(file);
+                                    reader.addEventListener('loadstart', loadStartHandler);
+                                    reader.addEventListener('load', loadHandler);
+                                    reader.addEventListener('loadend', loadEndHandler);
+                                    reader.addEventListener('progress', updateProgress);
+                                    reader.addEventListener('error', errorHandler);
+                                    reader.addEventListener('abort', abortHandler);
 
-                                var loadProgressBar = new ProgressBar();
-                                loadProgressBar.show();
+                                    let loadProgressBar = new ProgressBar();
+                                    loadProgressBar.show();
 
-                                function loadHandler(e) {
-                                    // The file reader gives us an ArrayBuffer:
-                                    let buffer = e.target.result;
+                                    function loadHandler(e) {
+                                        // The file reader gives us an ArrayBuffer:
+                                        let buffer = e.target.result;
 
-                                    // We have to convert the buffer to a blob:
-                                    let videoBlob = new Blob([new Uint8Array(buffer)], { type: mime });
+                                        // We have to convert the buffer to a blob:
+                                        let videoBlob = new Blob([new Uint8Array(buffer)], { type: mime });
 
-                                    // The blob gives us a URL to the video file:
-                                    let url = window.URL.createObjectURL(videoBlob);
+                                        // The blob gives us a URL to the video file:
+                                        let url = window.URL.createObjectURL(videoBlob);
 
-                                    tool.canvasComposer.videoComposer.addSource({
-                                        sourceType: 'video',
-                                        title: files[0].name,
-                                        url: url,
-                                    },
-                                    null, 
-                                    function () {
-                                        loadProgressBar.updateTextStatus('loaded');
-                                        loadProgressBar.hide();
-                                    }, 
-                                    function (e) {
-                                        loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">' + e.message + '</span>');
-                                    });
+                                        tool.canvasComposer.videoComposer.addSource({
+                                            sourceType: 'video',
+                                            title: files[i].name,
+                                            url: url,
+                                        },
+                                            null,
+                                            function () {
+                                                loadProgressBar.updateTextStatus('loaded');
+                                                loadProgressBar.hide();
+                                            },
+                                            function (e) {
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">' + e.message + '</span>');
+                                            });
 
-                                    loadProgressBar.updateProgress(100);
+                                        loadProgressBar.updateProgress(100);
 
 
-                                }
+                                    }
 
-                                function loadStartHandler(evt) {
+                                    function loadStartHandler(evt) {
 
-                                }
+                                    }
 
-                                function loadEndHandler(evt) {
+                                    function loadEndHandler(evt) {
 
-                                }
+                                    }
 
-                                function abortHandler(evt) {
-                                    loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File read cancelled</span>');
-                                }
+                                    function abortHandler(evt) {
+                                        loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File read cancelled</span>');
+                                    }
 
-                                function errorHandler(evt) {
-                                    log('errorHandler',  evt.target.error)
+                                    function errorHandler(evt) {
+                                        log('errorHandler', evt.target.error)
 
-                                    switch (evt.target.error.code) {
-                                        case evt.target.error.NOT_FOUND_ERR:
-                                            loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File Not Found!</span>');
-                                            break;
-                                        case evt.target.error.NOT_READABLE_ERR:
-                                            loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File is not readable</span>');
-                                            break;
-                                        case evt.target.error.ABORT_ERR:
-                                            break; // noop
-                                        default:
-                                            loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">An error occurred reading this file.</span>');
-                                    };
-                                }
+                                        switch (evt.target.error.code) {
+                                            case evt.target.error.NOT_FOUND_ERR:
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File Not Found!</span>');
+                                                break;
+                                            case evt.target.error.NOT_READABLE_ERR:
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">File is not readable</span>');
+                                                break;
+                                            case evt.target.error.ABORT_ERR:
+                                                break; // noop
+                                            default:
+                                                loadProgressBar.updateTextStatus('<span style="color:#ff9f9f;">An error occurred reading this file.</span>');
+                                        };
+                                    }
 
-                                function updateProgress(evt) {
-                                    // evt is an ProgressEvent.
-                                    if (evt.lengthComputable) {
-                                        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-                                        // Increase the progress bar length.
-                                        if (percentLoaded < 100) {
-                                            loadProgressBar.updateProgress(percentLoaded);
+                                    function updateProgress(evt) {
+                                        // evt is an ProgressEvent.
+                                        if (evt.lengthComputable) {
+                                            let percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+                                            // Increase the progress bar length.
+                                            if (percentLoaded < 100) {
+                                                loadProgressBar.updateProgress(percentLoaded);
+                                            }
                                         }
                                     }
                                 }
 
+
                                 function ProgressBar() {
-                                    var _progrssBarPopup = null;
-                                    var _barProggressEl = null;
-                                    var _progressText = null;
-                                    var _isHidden = true;
-                                    var _barWidth = 300;
-                                    var _barheight = 100;
+                                    let _progrssBarPopup = null;
+                                    let _barProggressEl = null;
+                                    let _progressText = null;
+                                    let _isHidden = true;
+                                    let _barWidth = 300;
+                                    let _barheight = 100;
 
                                     log('createProgressBar')
-                                    var dialog=document.createElement('DIV');
+                                    let dialog=document.createElement('DIV');
                                     dialog.className = 'live-editor-progress-bar-popup';
                                     dialog.style.width = _barWidth + 'px';
                                     dialog.style.height = _barheight + 'px';
                                     _progrssBarPopup = dialog;
 
-                                    var dialogInner=document.createElement('DIV');
+                                    let dialogInner=document.createElement('DIV');
                                     dialogInner.className = 'live-editor-progress-bar-popup-inner';
-                                    var boxContent=document.createElement('DIV');
+                                    let boxContent=document.createElement('DIV');
                                     boxContent.className = 'live-editor-streaming-box live-editor-box';
-                                    var boxContentText = _progressText = document.createElement('DIV');
+                                    let boxContentText = _progressText = document.createElement('DIV');
                                     boxContentText.innerHTML = 'loading...';
-                                    var progressBar = document.createElement('DIV');
+                                    let progressBar = document.createElement('DIV');
                                     progressBar.className = 'live-editor-progress-bar';
-                                    var progressEl = _barProggressEl = document.createElement('SPAN');
+                                    let progressEl = _barProggressEl = document.createElement('SPAN');
                                     progressEl.className = 'live-editor-progress-el';
 
 
@@ -3561,10 +3637,10 @@
                                     boxContent.appendChild(boxContentText);
                                     boxContent.appendChild(progressBar);
 
-                                    var close=document.createElement('div');
+                                    let close=document.createElement('div');
                                     close.className = 'live-editor-close-dialog-sign';
-                                    close.innerHTML = '&#10005;';
-                                    var popupinstance = this;
+                                    //close.innerHTML = '&#10005;';
+                                    let popupinstance = this;
                                     close.addEventListener('click', function() {
                                         popupinstance.hide();
                                     });
@@ -3574,9 +3650,9 @@
                                     dialog.appendChild(dialogInner);
 
                                     this.show = function() {
-                                        var boxRect = activeDialog.dialogEl.getBoundingClientRect();
-                                        var x = (boxRect.width / 2) - (_barWidth / 2);
-                                        var y = (boxRect.height / 2) - (_barheight / 2);
+                                        let boxRect = activeDialog.dialogEl.getBoundingClientRect();
+                                        let x = (boxRect.width / 2) - (_barWidth / 2);
+                                        let y = (boxRect.height / 2) - (_barheight / 2);
                                         _progrssBarPopup.style.top = y + 'px';
                                         _progrssBarPopup.style.left = x + 'px';
                                         activeDialog.dialogEl.appendChild(_progrssBarPopup);
@@ -4357,7 +4433,7 @@
                         sourcesColumnControl.appendChild(inviteBtnCon);
 
                         var inviteBtn = document.createElement('DIV');
-                        inviteBtn.className = 'live-editor-sources-control-btn live-editor-sources-control-btn-invite';
+                        inviteBtn.className = 'livestream_button live-editor-sources-control-btn live-editor-sources-control-btn-invite';
                         inviteBtnCon.appendChild(inviteBtn);
                         var inviteBtnIcon = document.createElement('DIV');
                         inviteBtnIcon.className = 'live-editor-sources-control-btn-icon';
@@ -4691,6 +4767,7 @@
                         videoItemInput.type = 'file';
                         videoItemInput.name = 'fileVideoSource';
                         videoItemInput.accept = 'video/mp4, video/*';
+                        videoItemInput.multiple = true;
                         boxContent.appendChild(videoItemInput);
 
                         videoItemInput.addEventListener('change', function (e) {
@@ -6341,12 +6418,12 @@
                                 outerHorizontalMarginsCon.appendChild(outerHorizontalMarginsInput);
                                 dialogBodyInner.appendChild(outerHorizontalMarginsCon);
 
-                                outerHorizontalMarginsInput.addEventListener('input', function () {
+                                outerHorizontalMarginsInput.addEventListener('input', function (e) {
                                     if(isNaN(parseFloat(outerHorizontalMarginsInput.value))) {
                                         return;
                                     }
                                     webrtcGroupSource.sourceInstance.params.tiledLayoutOuterHorizontalMargins = outerHorizontalMarginsInput.value != '' ? outerHorizontalMarginsInput.value : 0;
-                                    updateWebrtcRect();
+                                    updateWebrtcRect(e);
                                 });
 
                                 var outerVerticalMarginsCon = document.createElement('DIV');
@@ -6363,12 +6440,12 @@
                                 outerVerticalMarginsCon.appendChild(outerVerticalMarginsInput);
                                 dialogBodyInner.appendChild(outerVerticalMarginsCon);
 
-                                outerVerticalMarginsInput.addEventListener('input', function () {
+                                outerVerticalMarginsInput.addEventListener('input', function (e) {
                                     if(isNaN(parseFloat(outerVerticalMarginsInput.value))) {
                                         return;
                                     }
                                     webrtcGroupSource.sourceInstance.params.tiledLayoutOuterVerticalMargins = outerVerticalMarginsInput.value != '' ? outerVerticalMarginsInput.value : 0;
-                                    updateWebrtcRect();
+                                    updateWebrtcRect(e);
                                 });
 
                                 var innerMarginsCon = document.createElement('DIV');
@@ -6385,12 +6462,12 @@
                                 innerMarginsCon.appendChild(innerMarginsInput);
                                 dialogBodyInner.appendChild(innerMarginsCon);
 
-                                innerMarginsInput.addEventListener('input', function () {
+                                innerMarginsInput.addEventListener('input', function (e) {
                                     if(isNaN(parseFloat(innerMarginsInput.value))) {
                                         return;
                                     }
                                     webrtcGroupSource.sourceInstance.params.tiledLayoutInnerMargins = innerMarginsInput.value != '' ? innerMarginsInput.value : 0;
-                                    updateWebrtcRect();
+                                    updateWebrtcRect(e);
                                 });
                             }
 
@@ -9377,7 +9454,7 @@
                     title.className = 'live-editor-specific-controls-title';
                     activeDialog.specificControls.appendChild(title);
                     let backButton = document.createElement('DIV');
-                    backButton.className = 'Q_button';
+                    backButton.className = 'livestream_button';
                     backButton.innerHTML = 'Back';
                     title.appendChild(backButton);
                     let titleText = document.createElement('DIV');
@@ -9575,6 +9652,10 @@
                     generalControls.className = 'live-editor-general-controls';
                     streamingControls.appendChild(generalControls);
 
+                    var specificControls = document.createElement('DIV');
+                    specificControls.className = 'live-editor-specific-controls';
+                    streamingControls.appendChild(specificControls);
+
                     var scenesColumn = scenesInterface.createScenesCol();
                     generalControls.appendChild(scenesColumn);
 
@@ -9696,7 +9777,8 @@
                     return {
                         dialogEl: dialog,
                         previewBoxEl: previewBoxBodyInner,
-                        previewBoxParent: previewBoxBody
+                        previewBoxParent: previewBoxBody,
+                        specificControls: specificControls
                     }
                 }
 

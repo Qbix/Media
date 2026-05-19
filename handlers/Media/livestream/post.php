@@ -19,17 +19,17 @@ function Media_livestream_post($params = array())
 	$params = array_merge($_REQUEST, $params);
 	$loggedInUserId = Users::loggedInUser(true)->id;
 
+	$streamName = Q::ifset($params, 'streamName', null);
+    $publisherId = Q::ifset($params, 'publisherId', null);
+
 	$response = [];
 
 	if (Q_Request::slotName('createLivestreamStream')) {
 		$publisherId = Q::ifset($params, 'publisherId', $loggedInUserId);
-		$streamName = Q::ifset($params, 'streamName', null);
 		$response['livestreamStream'] = Media_Livestream::createOrUpdateLivestreamStream($publisherId, $streamName, null);
 
 		Q_Response::setSlot("createLivestreamStream", $response);
 	} else if (Q_Request::slotName('updateReminders')) {
-		$publisherId = Q::ifset($params, 'publisherId', null);
-		$streamName = Q::ifset($params, 'streamName', null);
 		$action = Q::ifset($params, 'action', null);
 		$reminderTime = Q::ifset($params, 'reminderTime', null);
 
@@ -41,8 +41,6 @@ function Media_livestream_post($params = array())
 
 		Q_Response::setSlot("updateReminders", $response);
 	} else if (Q_Request::slotName('setReminderOnLivestreamStart')) {
-		$publisherId = Q::ifset($params, 'publisherId', null);
-		$streamName = Q::ifset($params, 'streamName', null);
 		$action = Q::ifset($params, 'action', 'unset');
 
 		if(!$publisherId || !$streamName || !$action) {
@@ -69,53 +67,44 @@ function Media_livestream_post($params = array())
 
 		Q_Response::setSlot("createOrUpdateChannel", $response);
 		
-	} else if(Q_Request::slotName('joinLivestreamAsListener')) {
+	} else if(Q_Request::slotName('joinLivestreamAudience')) {
         if (!$loggedInUserId) {
             throw new Users_Exception_NotAuthorized();
         }
-        $streamName = Q::ifset($params, 'streamName', null);
-        $publisherId = Q::ifset($params, 'publisherId', null);
         $usersSocketId = Q::ifset($params, 'socketId', null);
       
         if(!$streamName || !$publisherId || !$usersSocketId) {
             throw new Exception('streamName, publisherId, usersSocketId are required');
         }
 
-		$streamToJoin = Streams_Stream::fetch(null, $publisherId, $streamName);
-		$streamToJoin->join(['extra' => json_encode(['listener' => 'yes'])]);
+		Media_Livestream::joinAudience($publisherId, $streamName, $usersSocketId);       
 
-        Q_Utils::sendToNode(array(
-			"Q/method" => "Users/addEventListener",
-			"socketId" => $usersSocketId,
-			"userId" => $loggedInUserId,
-			"eventName" => 'disconnect',
-			"handlerToExecute" => 'Media/livestream',
-			"data" => array(
-				"cmd" => 'leaveStream',
-				"publisherId" => $publisherId,
-				"streamName" => $streamName
-			),
-		));
+		return Q_Response::setSlot("joinLivestreamAudience", $response);  
+    } else if(Q_Request::slotName('leaveLivestreamAsListener')) {
+        if (!$loggedInUserId) {
+            throw new Users_Exception_NotAuthorized();
+        }
 
-		return Q_Response::setSlot("joinLivestreamAsListener", $response);  
+        if(!$streamName || !$publisherId) {
+            throw new Exception('streamName, publisherId are required');
+        }
+
+        Media_Livestream::leaveAudience($publisherId, $streamName);
+
+		return Q_Response::setSlot("leaveLivestreamAsListener", $response);  
     } else if(Q_Request::slotName('data')) {
         //this is requests which were sent by node.js when some event was fired (client.on('disconnect'), for example)
         $cmd = Q::ifset($params, 'cmd', null);
-        $streamName = Q::ifset($params, 'streamName', null);
-        $publisherId = Q::ifset($params, 'publisherId', $loggedInUserId);
 
         if($cmd == 'leaveStream') {
-            //this slot is used to handle disconnection of user (closing the tab) in livestream widget tool
-            $streamToLeave = Streams_Stream::fetch(null, $publisherId, $streamName);
-    
-            if(!is_null($streamToLeave)) {
-				$streamToLeave->leave();
+			if (!$streamName || !$publisherId) {
+				throw new Exception('streamName, publisherId are required');
+			}
 
-               /*  $listeningParticipant = $streamToLeave->getParticipant();
-				$listeningParticipant->settExtra('listener', 'no'); */
-            }
-    
-            return Q_Response::setSlot('data', ['cmd'=> $cmd, 'publisherId' => $publisherId, 'streamName' => $streamName]);
-        }
-    }
+			//this slot is used to handle disconnection of user (closing the tab) in livestream widget tool
+			Media_Livestream::leaveAudience($publisherId, $streamName);
+
+			return Q_Response::setSlot('data', ['cmd' => $cmd, 'publisherId' => $publisherId, 'streamName' => $streamName]);
+		}
+	}
 }

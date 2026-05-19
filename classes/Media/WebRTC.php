@@ -106,13 +106,23 @@ abstract class Media_WebRTC
             $publisherId = $webrtcStream->fields['publisherId'];
             $streamName = $webrtcStream->fields['name'];
         }
+        if (array_key_exists('endTimeTs', $meetingParams)) {
+            $webrtcStream->setAttribute('scheduledStartTime', $meetingParams['startTimeTs']);
+        }
+        if (array_key_exists('endTimeTs', $meetingParams)) {
+            $webrtcStream->setAttribute('scheduledEndTime', $meetingParams['endTimeTs']);
+        }
+        if (array_key_exists('timeZoneString', $meetingParams)) {
+            $webrtcStream->setAttribute('timeZoneString', $meetingParams['timeZoneString']);
+        }
+        if (array_key_exists('accessType', $meetingParams)) {
+            $webrtcStream->setAttribute('accessType', $meetingParams['accessType']);
+        }
+        if (array_key_exists('scheduleLivestream', $meetingParams)) {
+            $webrtcStream->setAttribute('scheduleLivestream', $meetingParams['scheduleLivestream']);
+        }
 
-        $webrtcStream->setAttribute('scheduledStartTime', $meetingParams['startTimeTs']);
-        $webrtcStream->setAttribute('scheduledEndTime', $meetingParams['endTimeTs']);
-        $webrtcStream->setAttribute('timeZoneString', $meetingParams['timeZoneString']);
-        $webrtcStream->setAttribute('accessType', $meetingParams['accessType']);
-        $webrtcStream->setAttribute('scheduleLivestream', $meetingParams['scheduleLivestream']);
-        if(!empty($meetingParams['topic'])) {
+        if(array_key_exists('topic', $meetingParams) && !empty($meetingParams['topic'])) {
             $webrtcStream->title = $meetingParams['topic'];
         }
 
@@ -120,6 +130,18 @@ abstract class Media_WebRTC
             $webrtcStream->adminLevel = 0;
             $webrtcStream->writeLevel = 0;
             $webrtcStream->readLevel = 0;
+
+            //if webrtc call in currently in progress, then give its active participants regular access
+            $participants = $webrtcStream->getParticipants(array(
+                "state" => "participating"
+            ));
+
+            foreach ($participants as $participant) {
+                if($publisherId == $participant->fields['userId']) {
+                    continue;
+                }
+                self::admitUserToRoom($publisherId, $streamName, null, $participant->fields['userId']);
+            }
         } else if($meetingParams['accessType'] == 'open') {
             $webrtcStream->readLevel = Streams::$READ_LEVEL['max'];
             $webrtcStream->writeLevel = Streams::$WRITE_LEVEL['relate'];
@@ -129,64 +151,70 @@ abstract class Media_WebRTC
         $webrtcStream->changed();
         $webrtcStream->save();
 
-        $invites = Streams_Invite::select()->where(
-            array(
-                'streamName' => $streamName,
-                'publisherId' => $publisherId,
-                'invitingUserId' => Users::loggedInUser(true)->id,
-                'userId !=' => ''
-            ))->fetchDbRows();
+        if (array_key_exists('invitedAttendeesIds', $meetingParams)) {
+            $invites = Streams_Invite::select()->where(
+                array(
+                    'streamName' => $streamName,
+                    'publisherId' => $publisherId,
+                    'invitingUserId' => Users::loggedInUser(true)->id,
+                    'userId !=' => ''
+                )
+            )->fetchDbRows();
+           
+            if($meetingParams['invitedAttendeesIds'] === 'none') { //all invited users were removed via webrtc scheduler tool
+                $usersToInvite = [];
+            } else {
+                $usersToInvite = $meetingParams['invitedAttendeesIds'];
+            }
 
-        $usersToInvite = $meetingParams['invitedAttendeesIds'] ? $meetingParams['invitedAttendeesIds'] : [];
+            //remove invites for users who were removed from "attendees" AND remove redundant (duplicate) invites just in case
+            $groupedByUserId = [];
+            foreach ($invites as $item) {
+                $groupedByUserId[$item->fields['userId']][] = $item;
+            }
+            $mostRecentTimes = [];
+            foreach ($groupedByUserId as $id => $items) {
+                usort($items, function ($a, $b) {
+                    return strtotime($b->fields['insertedTime']) - strtotime($a->fields['insertedTime']);
+                });
+                $mostRecentTimes[$id] = $items[0]->fields['insertedTime'];
+            }
 
-        //remove invites for users who were removed from "attendees" AND remove redundant (duplicate) invites just in case
-        $groupedByUserId = [];
-        foreach ($invites as $item) {
-            $groupedByUserId[$item->fields['userId']][] = $item;
-        }
-        $mostRecentTimes = [];
-        foreach ($groupedByUserId as $id => $items) {
-            usort($items, function ($a, $b) {
-                return strtotime($b->fields['insertedTime']) - strtotime($a->fields['insertedTime']);
+            $invitesToRemove = array_filter($invites, function ($item) use ($mostRecentTimes, $usersToInvite) {
+                return $item->fields['insertedTime'] !== $mostRecentTimes[$item->fields['userId']] || array_search($item->fields['userId'], $usersToInvite) === false;
             });
-            $mostRecentTimes[$id] = $items[0]->fields['insertedTime'];
-        }
 
-        $invitesToRemove = array_filter($invites, function ($item) use ($mostRecentTimes, $usersToInvite) {
-            return $item->fields['insertedTime'] !== $mostRecentTimes[$item->fields['userId']] || array_search($item->fields['userId'], $usersToInvite) === false;
-        });
-
-        foreach ($invitesToRemove as $item) {
-            $item->remove();
-            $access = new Streams_Access();
-            $access->publisherId = $publisherId;
-            $access->streamName = $streamName;
-            $access->ofUserId = $item->fields['userId'];
-            if($access->retrieve()) {
-                $access->remove();
-            }
-            if(!empty($item->fields['userId'])) {
-                Media_WebRTC::cancelAccessToRoom($publisherId, $streamName, $item->fields['userId']);
-            }
-        }
-
-        //skip existing invites and invites and send invites only to users who was not previously invited
-        $newInvites = array_filter($usersToInvite, function ($userId) use ($invites) {
-            foreach ($invites as $invite) {
-                if ($invite->fields['userId'] == $userId) {
-                    return false;
+            foreach ($invitesToRemove as $item) {
+                $item->remove();
+                $access = new Streams_Access();
+                $access->publisherId = $publisherId;
+                $access->streamName = $streamName;
+                $access->ofUserId = $item->fields['userId'];
+                if ($access->retrieve()) {
+                    $access->remove();
+                }
+                if (!empty($item->fields['userId'])) {
+                    Media_WebRTC::cancelAccessToRoom($publisherId, $streamName, $item->fields['userId']);
                 }
             }
-            return true;
-        });
 
-        if (count($newInvites) !== 0) {
-            $uri = Q_Uri::url("Media/meeting");
-            $webrtcStream->invite(['userId' => $newInvites], ['appUrl' => $uri, 'readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20]);
+            //skip existing invites and send invites only to users who was not previously invited
+            $newInvites = array_filter($usersToInvite, function ($userId) use ($invites) {
+                foreach ($invites as $invite) {
+                    if ($invite->fields['userId'] == $userId) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (count($newInvites) !== 0) {
+                $uri = Q_Uri::url("Media/meeting");
+                $webrtcStream->invite(['userId' => $newInvites], ['appUrl' => $uri, 'readLevel' => 40, 'writeLevel' => 23, 'adminLevel' => 20]);
+            }
         }
 
         if(filter_var($meetingParams['scheduleLivestream'], FILTER_VALIDATE_BOOLEAN) === true) {
-            
             $response['livestreamStream'] = Media_Livestream::createOrUpdateLivestreamStream($publisherId, $streamName, !is_null($meetingParams['startTimeTs']) && !empty($meetingParams['startTimeTs']) ? $meetingParams['startTimeTs'] / 1000 : null);
         }
 
@@ -443,19 +471,21 @@ abstract class Media_WebRTC
         $access->adminLevel = Streams::$ADMIN_LEVEL['invite'];
         $access->save();
 
-        $waitingRoomStream = Streams_Stream::fetch($userIdToAdmit, $userIdToAdmit, $waitingRoomStreamName);
+        if ($waitingRoomStreamName) {
+            $waitingRoomStream = Streams_Stream::fetch($userIdToAdmit, $userIdToAdmit, $waitingRoomStreamName);
 
-        //print_r($waitingRoomStream);die;
-        if (!is_null($waitingRoomStream)) {
-            $waitingRoomStream->setAttribute('status', 'accepted');    
-            //$waitingRoomStream->close($userIdToAdmit);
-            $waitingRoomStream->changed();
-            //$waitingRoomStream->save();
+            //print_r($waitingRoomStream);die;
+            if (!is_null($waitingRoomStream)) {
+                $waitingRoomStream->setAttribute('status', 'accepted');
+                //$waitingRoomStream->close($userIdToAdmit);
+                $waitingRoomStream->changed();
+                //$waitingRoomStream->save();
 
-            $waitingRoomStream->post($userIdToAdmit, array(
-                'type' => 'Media/webrtc/admit',
-                'instructions' => ['msg' => 'You will be joined to the room now']
-            ));
+                $waitingRoomStream->post($userIdToAdmit, array(
+                    'type' => 'Media/webrtc/admit',
+                    'instructions' => ['msg' => 'You will be joined to the room now']
+                ));
+            }
         }
     }
 
@@ -512,7 +542,7 @@ abstract class Media_WebRTC
     static function closeWaitingRoom($publisherId, $streamName, $waitingRoomStreamName, $waitingRoomUserId) {
         $webrtcStream = Streams_Stream::fetch(Users::loggedInUser(true)->id, $publisherId, $streamName);
         if(!$webrtcStream->testAdminLevel('manage')) {
-            throw new Users_Exception_Authorized();
+            throw new Users_Exception_NotAuthorized();
         }
 
         $waitingRoomStream = Streams_Stream::fetch($waitingRoomUserId, $waitingRoomUserId, $waitingRoomStreamName);
