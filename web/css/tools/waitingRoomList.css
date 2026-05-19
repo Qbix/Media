@@ -9,6 +9,7 @@
 
 .webrtc-waiting-item {
   display: flex;
+  justify-content: space-between;
 }
 
 .webrtc-waiting-item-avatar-con {
@@ -16,11 +17,17 @@
   justify-content: center;
   align-items: center;
 }
+.webrtc-waiting-item-avatar-con img {
+  border-radius: 50%;
+}
+.webrtc-waiting-item-avatar-text {
+  margin-left: 5px;
+}
 
 .webrtc-waiting-item-buttons {
   display: flex;
-  position: absolute;
-  right: 10px;
+  margin-right: 10px;
+  align-items: center;
 }
 
 .webrtc-waiting-button {

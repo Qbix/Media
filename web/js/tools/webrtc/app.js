@@ -188,7 +188,7 @@ Q.Media.WebRTCRoomClient = function app(options){
 
 
 
-    app.event = new EventSystem();
+    app.event = new Q.Media.WebRTC.EventSystem();
 
     /**
      * Contains information about participant
@@ -265,26 +265,52 @@ Q.Media.WebRTCRoomClient = function app(options){
          *
          * @method audioTracks
          * @uses Track
+         * @param {Object|boolean} [options]
+         * @param {boolean} [options.muted]
+         * @param {boolean} [options.enabled]
+         * @param {string} [options.readyState]
          * @return {Array}
          */
-        this.audioTracks = function (activeTracksOnly) {
-            if(activeTracksOnly) {
-                return this.tracks.filter(function (trackObj) {
-                    return trackObj.kind == 'audio' && !(trackObj.mediaStreamTrack.muted == true || trackObj.mediaStreamTrack.enabled == false || trackObj.mediaStreamTrack.readyState == 'ended');
-                });
+        this.audioTracks = function (options = {}) {
+            // Backward compatibility: if boolean true → active tracks only
+            if (typeof options === 'boolean') {
+                if (options === true) {
+                    options = {
+                        muted: false,
+                        enabled: true,
+                        readyState: 'live'
+                    };
+                } else {
+                    options = {};
+                }
             }
 
             return this.tracks.filter(function (trackObj) {
-                return trackObj.kind == 'audio';
+                if (trackObj.kind !== 'audio') return false;
+
+                const track = trackObj.mediaStreamTrack;
+
+                if (options.muted !== undefined && track.muted !== options.muted) {
+                    return false;
+                }
+
+                if (options.enabled !== undefined && track.enabled !== options.enabled) {
+                    return false;
+                }
+
+                if (options.readyState !== undefined && track.readyState !== options.readyState) {
+                    return false;
+                }
+
+                return true;
             });
-        }
+        };
         /**
          * Removes track from participants tracks list and stops sending it to all participants
          *
          * @method remove
          */
         this.remove = function () {
-            log('participant: remove');
             app.event.dispatch('participantRemoved', this);
 
             for(let t = this.tracks.length - 1; t >= 0; t--){
@@ -396,6 +422,8 @@ Q.Media.WebRTCRoomClient = function app(options){
             }
             return this.access.permissions.indexOf(permissionName) != -1 ? true : false;
         }
+
+        this.eventDispatcher = new Q.Media.WebRTC.EventSystem();
     }
 
     function LocalParticipant() {
@@ -859,6 +887,7 @@ Q.Media.WebRTCRoomClient = function app(options){
 
             }*/
             app.event.dispatch('trackAdded', {participant:participant, track: track});
+            participant.eventDispatcher.dispatch('trackAdded', track);
 
         }
 
@@ -2078,6 +2107,7 @@ Q.Media.WebRTCRoomClient = function app(options){
 
                 }).catch(function (error) {
                     console.warn(error)
+                    app.signalingDispatcher.sendDataTrackMessage("remoteScreensharingFailed");
                     if(failureCallback) failureCallback();
                 });
             }
@@ -4227,6 +4257,7 @@ Q.Media.WebRTCRoomClient = function app(options){
             socketParticipantConnected: socketParticipantConnected,
             participantConnected: participantConnected, //for testing purposes
             participantDisconnected: participantDisconnected, //for testing purposes
+            rawTrackSubscribed: rawTrackSubscribed, //for testing purposes
         }
     }())
 
@@ -4257,15 +4288,30 @@ Q.Media.WebRTCRoomClient = function app(options){
             audioOutputDevices = [];
             
             let audioInputGroupIds = [];
-            let audioOutputGroupIds = [];
+            let audioOutputGroupIds = {};
             if(mediaDevicesList != null && typeof reload == 'undefined') {
 
                 var i, device;
                 for (i = 0; device = mediaDevicesList[i]; i++) {
                     log('loadDevicesList: ' + device.kind);
-                    log('loadDevicesList: ', device);
+                    log('loadDevicesList: label', device);
                     if (device.kind.indexOf('video') != -1) {
-                        videoInputDevices.push(device);
+                    
+
+                        if(Q.Users.loggedInUserId() == 'xbmyvjne') {
+                            log('loadDevicesList: video label', device.label);
+                            if (device.label == 'NDI Webcam Video 1') {
+                                videoInputDevices.push(device);
+                            }
+                        } else if(Q.Users.loggedInUserId() == 'tccezzcp') {
+                            log('loadDevicesList: video label', device.label);
+                            if (device.label == 'NDI Webcam Video 2') {
+                                videoInputDevices.push(device);
+                            }
+                        } else {
+                             videoInputDevices.push(device);
+                        }
+                       
                     }
                     if (device.kind == 'audioinput') {
                         if(audioInputGroupIds.indexOf(device.groupId) != -1) {
@@ -4274,29 +4320,40 @@ Q.Media.WebRTCRoomClient = function app(options){
                         audioInputDevices.push(device);
                         audioInputGroupIds.push(device.groupId);
                     } else if (device.kind == 'audiooutput') {
-                        if(audioOutputGroupIds.indexOf(device.groupId) != -1) {
-                            continue;
+                        log('loadDevicesList: au 1');
+
+                        if(audioOutputGroupIds[device.groupId] != null) {
+                            audioOutputGroupIds[device.groupId].push(device);
+                            //continue; disable for now as user can choose output in preparing window that can be ignored by this "continue;"
                         }
+                        log('loadDevicesList: au 2', device.deviceId.toLowerCase(), options.sinkId);
                         if(device.deviceId.toLowerCase() == 'default' || device.label.toLowerCase() == 'default') {
                             defaultAudioOutputDevice = device;
                         }
                         if(currentAudioOutputDevice == null && (options.sinkId && device.deviceId.toLowerCase() == options.sinkId)) {
-                            currentAudioOutputDevice = device;
+                            log('loadDevicesList: au 3', device.deviceId.toLowerCase(), options.sinkId);
+
+                            setCurrentAudioOutputDevice(device);
 
                             app.event.dispatch('currentAudiooutputDeviceChanged', currentAudioOutputDevice);
                         }
+                        
                         audioOutputDevices.push(device);
-                        audioOutputGroupIds.push(device.groupId);
+                        if(!audioOutputGroupIds[device.groupId]) {
+                            audioOutputGroupIds[device.groupId] = [];
+                        }
+                        audioOutputGroupIds[device.groupId].push(device);
                     } else if (device.kind.indexOf('audio') != -1) {
                         audioInputDevices.push(device);
                     }
                 }
+
                 updateCurrentVideoInputDevice();
                 updateCurrentAudioInputDevice();
                 detectFrontCameraDevice();
 
                 if(!currentAudioOutputDevice && defaultAudioOutputDevice) {
-                    currentAudioOutputDevice = defaultAudioOutputDevice;
+                    setCurrentAudioOutputDevice(defaultAudioOutputDevice);
                 }
 
                 app.event.dispatch('deviceListUpdated');
@@ -4336,6 +4393,9 @@ Q.Media.WebRTCRoomClient = function app(options){
                                 cameraDeviceIsActive = true;
                                 if(currentCameraDevice != device) {
                                     currentCameraDevice = device;
+                                    log('updateCurrentVideoInputDevice: video:currentCameraDevice 2');
+                                    localStorage.setItem("Q.Media.webrtc.videoInputDeviceId", currentCameraDevice.deviceId);
+                                    localStorage.setItem("Q.Media.webrtc.videoInputGroupId", currentCameraDevice.groupId);
                                     app.event.dispatch('currentVideoinputDeviceChanged', currentCameraDevice);
                                 }
                             }
@@ -4367,8 +4427,15 @@ Q.Media.WebRTCRoomClient = function app(options){
                     if (!(typeof cordova != 'undefined' && _isiOS && options.useCordovaPlugins)) {
                         if (mediaStreamTrack.enabled == true
                             && ((typeof mediaStreamTrack.getSettings != 'undefined' && (mediaStreamTrack.getSettings().deviceId == device.deviceId || mediaStreamTrack.getSettings().label == device.label)) || mediaStreamTrack.label == device.label)) {
+                            log('updateCurrentAudioInputDevice: audio: currentAudioInputDevice', currentAudioInputDevice);
+
                             if(currentAudioInputDevice != device) {
+                                log('updateCurrentAudioInputDevice: audio: currentAudioInputDevice trigger', currentAudioInputDevice);
+
                                 currentAudioInputDevice = device;
+
+                                localStorage.setItem("Q.Media.webrtc.audioInputDeviceId", currentAudioInputDevice.deviceId);
+                                localStorage.setItem("Q.Media.webrtc.audioInputGroupId", currentAudioInputDevice.groupId);
                                 app.event.dispatch('currentAudioinputDeviceChanged', currentAudioInputDevice);
                             }
                         }
@@ -4612,7 +4679,7 @@ Q.Media.WebRTCRoomClient = function app(options){
                     app.mediaManager.attachTrack(trackToAttach, localParticipant);
                     app.localMediaControls.enableVideo();
                     app.event.dispatch('cameraToggled');
-                    if(callback) callback();
+                    if (callback) callback();
                 }
 
                 if(camera != null && camera.deviceId != null && camera.deviceId != '') {
@@ -4628,6 +4695,8 @@ Q.Media.WebRTCRoomClient = function app(options){
                 } else {
                     updateCurrentVideoInputDevice(deviceToSwitch);
                 }
+
+               
             }
 
             function requestCameraStream(localCallback) {
@@ -4848,6 +4917,14 @@ Q.Media.WebRTCRoomClient = function app(options){
             //}
         }
 
+        function setCurrentAudioOutputDevice(outputDevice) {
+            currentAudioOutputDevice = outputDevice;
+            if(outputDevice) {
+                localStorage.setItem("Q.Media.webrtc.audioOutputDeviceId", outputDevice.deviceId);
+                localStorage.setItem("Q.Media.webrtc.audioOutputGroupId", outputDevice.groupId);
+            }
+        }
+
         function toggleAudioOutputs(outputDevice) {
 
             for(let p in roomParticipants) {
@@ -4871,7 +4948,7 @@ Q.Media.WebRTCRoomClient = function app(options){
                         });
                 }
             }
-            currentAudioOutputDevice = outputDevice;
+            setCurrentAudioOutputDevice(outputDevice);
             app.event.dispatch('currentAudiooutputDeviceChanged', currentAudioOutputDevice);
         }
 
@@ -6560,79 +6637,6 @@ Q.Media.WebRTCRoomClient = function app(options){
         app.event.dispatch('disconnected');
         app.event.destroy();
         app.state = 'disconnected';
-    }
-
-
-    /**
-     * Event system of app
-     *
-     * @method app.event
-     * @return {Object}
-     */
-    function EventSystem(){
-
-        var events = {};
-
-        var CustomEvent = function (eventName) {
-
-            this.eventName = eventName;
-            this.callbacks = [];
-
-            this.registerCallback = function(callback) {
-                this.callbacks.push(callback);
-            }
-
-            this.unregisterCallback = function(callback) {
-                const index = this.callbacks.indexOf(callback);
-                if (index > -1) {
-                    this.callbacks.splice(index, 1);
-                }
-            }
-
-            this.fire = function(data) {
-                const callbacks = this.callbacks.slice(0);
-                callbacks.forEach((callback) => {
-                    callback(data, eventName);
-                });
-            }
-        }
-
-        var dispatch = function(eventName, data) {
-            const event = events[eventName];
-            if (event) {
-                event.fire(data);
-            }
-        }
-
-        var on = function(eventName, callback) {
-            let event = events[eventName];
-            if (!event) {
-                event = new CustomEvent(eventName);
-                events[eventName] = event;
-            }
-            event.registerCallback(callback);
-        }
-
-        var off = function(eventName, callback) {
-            const event = events[eventName];
-            if (event && event.callbacks.indexOf(callback) > -1) {
-                event.unregisterCallback(callback);
-                if (event.callbacks.length === 0) {
-                    delete events[eventName];
-                }
-            }
-        }
-
-        var destroy = function () {
-            events = {};
-        }
-
-        return {
-            dispatch:dispatch,
-            on:on,
-            off:off,
-            destroy:destroy
-        }
     }
 
     function determineBrowser(ua) {

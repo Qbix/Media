@@ -123,6 +123,127 @@ abstract class Media_Livestream
         return $destinationStream;
     }
 
+	static function joinAudience($publisherId, $streamName, $usersSocketId)
+	{
+		$loggedInUserId = Users::loggedInUser(true)->id;
+		$streamToJoin = Streams_Stream::fetch(null, $publisherId, $streamName);
+		$participant = $streamToJoin->getParticipant();
+		$firstTime = false;
+		if (is_null($participant)) {
+			$firstTime = true;
+			$streamToJoin->join(['extra' => json_encode(['listener' => 'yes'])]);
+		} else {
+			$isListener = $participant->getExtra('listener');
+			if (is_null($isListener) || $isListener != 'yes') {
+				$firstTime = true;
+				$participant->setExtra('listener', 'yes');
+				$participant->save();
+			}
+		}
+
+		if ($firstTime) {
+			/* $currentAudienceNumber = $streamToJoin->getAttribute('audience');
+			$newAudienceNumber = intval($currentAudienceNumber) + 1;
+			$streamToJoin->setAttribute('audience'); */
+			try {
+				/* I use direct updating to avoid lost-update race condition while regular read -> increment-> write (if multiple requests update the same record at the same time) */
+
+				$query = Streams_Stream::update()
+					->set(array(
+						'attributes' => new Db_Expression("JSON_SET(
+								attributes,
+								'$.audience',
+								CAST(
+									COALESCE(
+										NULLIF(JSON_UNQUOTE(JSON_EXTRACT(attributes, '$.audience')), ''),
+										'0'
+									) AS UNSIGNED
+								) + 1
+							)"),
+					))->where(['publisherId' => $publisherId, 'name' => $streamName])
+					->commit();
+
+				$query->execute();
+
+				/* $tableName = Streams_Stream::table();
+				$db = Streams_Stream::db();
+				$db->rawQuery(
+					"UPDATE $tableName
+						SET attributes = JSON_SET(
+								attributes,
+								'$.audience',
+								CAST(
+									COALESCE(
+										NULLIF(JSON_UNQUOTE(JSON_EXTRACT(attributes, '$.audience')), ''),
+										'0'
+									) AS UNSIGNED
+								) + 1
+							) 
+						WHERE publisherId = ? AND name = ?",
+					[$publisherId, $streamName]
+				)
+					->execute(); */
+				Q_Utils::sendToNode(array(
+					"Q/method" => "Users/addEventListener",
+					"socketId" => $usersSocketId,
+					"userId" => $loggedInUserId,
+					"eventName" => 'disconnect',
+					"handlerToExecute" => 'Media/livestream',
+					"data" => array(
+						"cmd" => 'leaveStream',
+						"publisherId" => $publisherId,
+						"streamName" => $streamName
+					),
+				));
+			} catch (Exception $e) {
+				throw new Exception("Error while updating audience counter");
+			}
+		}
+	}
+
+	static function leaveAudience($publisherId, $streamName)
+	{
+		$streamToLeave = Streams_Stream::fetch(null, $publisherId, $streamName);
+
+		if (!is_null($streamToLeave)) {
+			//$streamToLeave->leave();
+
+			$listeningParticipant = $streamToLeave->getParticipant();
+			$listeningParticipant->setExtra('listener', 'no');
+			$listeningParticipant->save();
+
+			try {
+				/* I use direct updating to avoid lost-update race condition while regular read -> increment-> write (if multiple requests update the same record at the same time) */
+
+				$query = Streams_Stream::update()
+					->set([
+						'attributes' => new Db_Expression("
+							JSON_SET(
+								attributes,
+								'$.audience',
+								GREATEST(
+									CAST(
+										COALESCE(
+											NULLIF(JSON_UNQUOTE(JSON_EXTRACT(attributes, '$.audience')), ''),
+											'0'
+										) AS UNSIGNED
+									) - 1,
+									0
+								)
+							)
+						"),
+					])
+					->where(['publisherId' => $publisherId, 'name' => $streamName])
+					->commit();
+
+				$query->execute();
+				$streamToLeave->changed();
+			} catch (Exception $e) {
+				throw new Exception("Error while updating audience counter");
+			}
+		}
+	}
+
 	static function updateReminders($publisherId, $streamName, $reminderTime, $action) {
         $livestreamStream = Streams_Stream::fetch($publisherId, $publisherId, $streamName);
 

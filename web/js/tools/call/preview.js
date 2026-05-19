@@ -286,7 +286,7 @@
                             acceptButton.style.display = '';
                             callButton.style.display = '';
 
-                            if(tool.state.guestWaitingRoom.screenRendering.getActiveViewMode() == 'audio') moveVisualizationToMainContainer();
+                            if(tool.state.guestWaitingRoom.screenRendering.layoutState.currentScreensMode == tool.state.guestWaitingRoom.screenRendering.modes.audio) moveVisualizationToMainContainer();
                             tool.stream.post({
                                 type: 'Media/calls/interviewing',
                                 content: 'ended',

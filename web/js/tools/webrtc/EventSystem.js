@@ -21,7 +21,7 @@ Q.Media.WebRTC.EventSystem = function() {
         this.fire = function (data) {
             const callbacks = this.callbacks.slice(0);
             callbacks.forEach((callback) => {
-                callback(data);
+                callback(data, eventName);
             });
         }
     }

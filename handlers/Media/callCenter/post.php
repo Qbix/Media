@@ -158,7 +158,7 @@ function Media_callCenter_post($params = array())
             throw new Exception('Another manager is interviewing or already accepted this call');
         }
 
-        $access = new Streams_Access();
+        /* $access = new Streams_Access();
         $access->publisherId = $liveShowRoom['publisherId'];
         $access->streamName = $liveShowRoom['streamName'];
         $access->ofUserId = $waitingRoom['publisherId'];
@@ -167,7 +167,8 @@ function Media_callCenter_post($params = array())
             $access->writeLevel = Streams::$WRITE_LEVEL['relate'];
             $access->adminLevel = Streams::$ADMIN_LEVEL['invite'];
             $access->save();
-        }
+        } */
+        Media_WebRTC::admitUserToRoom($liveShowRoom['publisherId'], $liveShowRoom['streamName'], null, $waitingRoom['publisherId']);
     
         $waitingRoomStream->post($publisherId, array(
             'type' => 'Media/webrtc/accepted',
