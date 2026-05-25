@@ -1,0 +1,75 @@
+/* Media/chart/chat tool styles */
+
+/* ── Composer dialog ─────────────────────────────────────────────────────── */
+
+.Media_chart_composer_dialog .Q_dialog_content {
+    padding: 12px 16px 20px;
+}
+
+/* Reuses .Media_card_composer_row — loaded by Media/card/chat.css */
+/* Additional chart-specific overrides below */
+
+.Media_chart_composer textarea[name=items_raw],
+.Media_chart_composer textarea[name=series_raw] {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+    font-size: 13px;
+    min-height: 120px;
+    /* Each line = one data row — monospace makes alignment visible */
+}
+
+/* Hint line under the data textarea */
+.Media_chart_composer .Media_chart_composer_hint {
+    font-size: 11px;
+    opacity: 0.45;
+    margin-top: 3px;
+    line-height: 1.4;
+}
+
+/* ── Preview in chat bubble ──────────────────────────────────────────────── */
+
+.Streams_chat_bubble .Media_chart_preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.18);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.Streams_chat_bubble .Media_chart_preview:hover {
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.Streams_chat_bubble .Media_chart_preview_type {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    white-space: nowrap;
+}
+
+.Streams_chat_bubble .Media_chart_preview_title {
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Tiny sparkline preview rendered inside the chat bubble */
+.Streams_chat_bubble .Media_chart_preview_spark {
+    width: 48px;
+    height: 24px;
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+/* ── + menu items ─────────────────────────────────────────────────────────── */
+
+.Streams_chat_addon.Media_chart_chat_bar  .Streams_chat_addon_title:before { content: '📊 '; }
+.Streams_chat_addon.Media_chart_chat_line .Streams_chat_addon_title:before { content: '📈 '; }
