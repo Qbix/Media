@@ -1,0 +1,98 @@
+{
+  "Q": {
+    "routes@start": {
+      "clip/:clipId": {
+        "module": "Media",
+        "action": "clip"
+      },
+      "clip/:publisherId/:clipId": {
+        "module": "Media",
+        "action": "clip"
+      },
+      "clip/:publisherId/:episodeDate/:clipTime": {
+        "module": "Media",
+        "action": "clip"
+      },
+      "clips": {
+        "module": "Media",
+        "action": "clips"
+      },
+      "livestream/:publisherId/:livestreamId": {
+        "module": "Media",
+        "action": "livestream"
+      },
+      "livestream/:publisherId/:livestreamId[]": {
+        "module": "Media",
+        "action": "livestream"
+      },
+      "meeting": {
+        "module": "Media",
+        "action": "meeting"
+      },
+      "livestreamAuth": {
+        "module": "Media",
+        "action": "livestreamAuth"
+      },
+      "games": {
+        "module": "Media",
+        "action": "games"
+      },
+      "games/:publisherId/:clipId": {
+        "module": "Media",
+        "action": "games"
+      },
+      "callCenter": {
+        "module": "Media",
+        "action": "callCenter"
+      },
+      "feeds": {
+        "module": "Media",
+        "action": "feeds"
+      },
+      "feed/:feedId": {
+        "module": "Media",
+        "action": "feed"
+      },
+      "newFeed": {
+        "module": "Media",
+        "action": "newFeed"
+      },
+      "presentation/:calendarId": {
+        "module": "Media",
+        "action": "presentation"
+      },
+      "presentation/:communityId/:calendarId": {
+        "module": "Media",
+        "action": "presentation"
+      },
+      "presentation/:calendarId/control": {
+        "module": "Media",
+        "action": "control"
+      },
+      "presentation/:communityId/:calendarId/control": {
+        "module": "Media",
+        "action": "control"
+      },
+      "channels": {
+        "module": "Media",
+        "action": "channels"
+      },
+      "channels/:publisherId": {
+        "module": "Media",
+        "action": "channels"
+      },
+      "channel": {
+        "module": "Media",
+        "action": "channel"
+      },
+      "channel/:publisherId": {
+        "module": "Media",
+        "action": "channel"
+      },
+      "channel/:publisherId/:channelId": {
+        "module": "Media",
+        "action": "channel"
+      }
+    }
+  }
+}
