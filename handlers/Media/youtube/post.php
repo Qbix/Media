@@ -14,7 +14,7 @@
  *   @param {string} $_REQUEST.closeManually If true, stream is not closed automatically by node.js
  * @return {void}
  */
-function Media_clipEditor_post($params = array())
+function Media_youtube_post($params = array())
 {
     $params = array_merge($_REQUEST, $params);
     $communityId = Q::ifset($_REQUEST, 'communityId', Users::communityId());
@@ -90,11 +90,7 @@ function Media_clipEditor_post($params = array())
             if (!move_uploaded_file($_FILES["fileToProcess"]["tmp_name"], $targetFile)) {
                 throw new Exception('Upload failed');
             } else {
-                $appUrl = Q_Config::expect('Q', 'web', 'appRootUrl');
-                $loggetInUserId = Users::loggedInUser(true)->id;
-                $name = pathinfo($newName, PATHINFO_FILENAME);
-                $webhook = "$appUrl/Media/clipEditor/webhook?publisher=$loggetInUserId&name=$name";
-                $stream = AI_ClipGenerator::createStream($targetFile, $fileName, $newName, 'Media/ai/clips/' . $uniqueName, $webhook);
+                $stream = AI_ClipGenerator::createStream($targetFile, $fileName, $newName, 'Media/ai/clips/' . $uniqueName);
                 $stream->join(['subscribed' => true]);
             }
         }

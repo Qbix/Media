@@ -30,16 +30,19 @@ echo '<div class="Media_shows_layout"><a href="' . $url . '">' . ($layout == 'ca
 
 echo Q::tool('Streams/related', array(
 	"stream" => $episodesStream,
-	"relationType" => ['Media/episode/youtube'],
+	"relationType" => 'Media/episode/youtube',
 	"realtime" => true,
 	"sortable" => false,
 	"closeable" => false,
 	"editable" => false,
 	"infinitescroll" => true,
     "toolName" => 'Media/episode/preview',
+    "onInvoke" => 'asd',
 	"previewOptions" => array(
         //"closeable" => true,
         //"editable" => false,
+        "onInvoke" => 'asd',
+        "toolName" => 'Media/episode/preview',
         "expandable" => array("expanded" => false) // this for Media/episodes/preview
     ),
 	"specificOptions" => array(
@@ -47,7 +50,6 @@ echo Q::tool('Streams/related', array(
     ),
 
 	"relatedOptions" => array(
-        "ascending" => true,
         "limit" => $limit,
         "offset" => $offset,
         "withParticipant" => false
