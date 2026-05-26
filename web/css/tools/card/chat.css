@@ -1,0 +1,164 @@
+/* Media/card/chat tool styles */
+
+/* ── Composer dialog ─────────────────────────────────────────────────────── */
+
+.Media_card_composer_dialog .Q_dialog_content {
+    padding: 12px 16px 20px;
+}
+
+.Media_card_composer_row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.Media_card_composer_row label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.55;
+}
+
+.Media_card_composer_row input[type=text],
+.Media_card_composer_row textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: 38px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.4;
+    background: var(--Q-input-bg, rgba(255,255,255,0.06));
+    color: var(--Q-input-color, #e8e6e0);
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+}
+
+.Media_card_composer_row textarea {
+    height: auto;
+    min-height: 72px;
+    resize: vertical;
+}
+
+.Media_card_composer_row input[type=text]:focus,
+.Media_card_composer_row textarea:focus {
+    outline: none;
+    border-color: rgba(232, 197, 71, 0.6);
+    box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.08);
+}
+
+/* ── Preview in chat bubble ──────────────────────────────────────────────── */
+
+/* Card previews in the chat stream */
+.Streams_chat_bubble .Media_card_preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.Streams_chat_bubble .Media_card_preview:hover {
+    background: rgba(124, 58, 237, 0.15);
+}
+
+.Streams_chat_bubble .Media_card_preview_type {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    white-space: nowrap;
+}
+
+.Streams_chat_bubble .Media_card_preview_title {
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── + menu items ─────────────────────────────────────────────────────────── */
+
+.Streams_chat_addon.Media_card_chat_stat    .Streams_chat_addon_title:before { content: '📊 '; }
+.Streams_chat_addon.Media_card_chat_glossary .Streams_chat_addon_title:before { content: '📖 '; }
+.Streams_chat_addon.Media_card_chat_quote    .Streams_chat_addon_title:before { content: '💬 '; }
+.Streams_chat_addon.Media_card_chat_profile  .Streams_chat_addon_title:before { content: '👤 '; }
+.Streams_chat_addon.Media_card_chat_article  .Streams_chat_addon_title:before { content: '📰 '; }
+.Streams_chat_addon.Media_card_chat_comparison .Streams_chat_addon_title:before { content: '⚖️ '; }
+
+/* ── AI card previews in Streams/chat ──────────────────────────────────── */
+
+.Media_card_chat_preview {
+    display:        flex;
+    align-items:    center;
+    gap:            8px;
+    padding:        8px 10px;
+    background:     rgba(59,130,246,0.08);
+    border:         1px solid rgba(59,130,246,0.25);
+    border-radius:  8px;
+    cursor:         pointer;
+    margin:         4px 0;
+    transition:     background 0.15s;
+}
+.Media_card_chat_preview:hover {
+    background:     rgba(59,130,246,0.16);
+}
+.Media_card_chat_thumb {
+    width:          36px;
+    height:         36px;
+    object-fit:     cover;
+    border-radius:  4px;
+    flex-shrink:    0;
+}
+.Media_card_chat_icon   { font-size: 18px; flex-shrink: 0; }
+.Media_card_chat_type   { font-size: 11px; color: #64748b; text-transform: uppercase;
+                          letter-spacing: 0.05em; flex-shrink: 0; }
+.Media_card_chat_summary { flex: 1; font-size: 13px; color: #e2e8f0;
+                            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.Media_card_chat_replay {
+    flex-shrink:    0;
+    padding:        3px 10px;
+    font-size:      12px;
+    background:     #3b82f6;
+    color:          #fff;
+    border:         none;
+    border-radius:  5px;
+    cursor:         pointer;
+}
+.Media_card_chat_replay:hover { background: #2563eb; }
+
+/* Mode toggle buttons */
+.Media_control_modes {
+    display:    flex;
+    gap:        6px;
+    padding:    6px 8px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+.Media_control_mode_btn {
+    flex:           1;
+    padding:        5px 8px;
+    font-size:      11px;
+    border:         1px solid rgba(255,255,255,0.2);
+    border-radius:  5px;
+    background:     rgba(255,255,255,0.04);
+    color:          #64748b;
+    cursor:         pointer;
+    transition:     all 0.15s;
+}
+.Media_control_mode_btn.active {
+    background: rgba(59,130,246,0.2);
+    border-color: rgba(59,130,246,0.5);
+    color: #93c5fd;
+}

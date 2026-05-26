@@ -1,0 +1,28 @@
+/* Fullscreen presentation mode (f=1 query parameter)
+   Applied when the presentation page is the bare screenshare/projector target.
+   No nav, no footer, no chrome — just the tool at 100vw × 100vh. */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+}
+
+.Media_presentation_fullscreen_body {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh; /* iOS dynamic viewport */
+    overflow: hidden;
+}
+
+.Media_presentation_fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 0;
+}

@@ -19,6 +19,9 @@
 		['Q.Tool.define', 'Q.Template.set'],
 		'Media/', ["Media/content"]
 	);
+	Q.Text.addFor(['Q.Media.ClientClassifier'],
+    	'Streams/', ['Streams/controlPhrases']
+	);
 	Q.Tool.define({
 		"Media/presentation": {
 			js: "{{Media}}/js/tools/presentation.js",
@@ -123,7 +126,33 @@
 		"Media/calls/call": "{{Media}}/js/tools/call.js",
 		"Games/teams": "{{Media}}/js/tools/games/teams.js",
 		"Games/quickdraw": "{{Media}}/js/tools/games/quickdraw.js",
-		"Media/whiteboard": "{{Media}}/js/tools/games/whiteboard.js"
+		"Media/whiteboard": "{{Media}}/js/tools/games/whiteboard.js",
+
+
+
+		// Presentation card wrappers
+		"Media/presentation/card/glossary":   { js: "{{Media}}/js/tools/presentation/card/glossary.js",   css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+		"Media/presentation/card/stat":       { js: "{{Media}}/js/tools/presentation/card/stat.js",       css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+		"Media/presentation/card/profile":    { js: "{{Media}}/js/tools/presentation/card/profile.js",    css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+		"Media/presentation/card/quote":      { js: "{{Media}}/js/tools/presentation/card/quote.js",      css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+		"Media/presentation/card/article":    { js: "{{Media}}/js/tools/presentation/card/article.js",    css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+		"Media/presentation/card/comparison": { js: "{{Media}}/js/tools/presentation/card/comparison.js", css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+		"Media/presentation/card/slide":      { js: "{{Media}}/js/tools/presentation/card/slide.js",      css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+
+		// Presentation chart wrappers
+		"Media/presentation/chart/bar":  { js: "{{Media}}/js/tools/presentation/chart/bar.js",  css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+		"Media/presentation/chart/line": { js: "{{Media}}/js/tools/presentation/chart/line.js", css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
+
+		// B-roll gallery
+		"Media/presentation/gallery": { js: "{{Media}}/js/tools/presentation/gallery.js", css: "{{Media}}/css/tools/presentation.css" },
+
+		// classifier
+		"Media/presentation/client-classifier": { js: "{{Media}}/js/tools/presentation/client-classifier.js" },
+
+		// Chat composer extensions
+		"Media/card/chat":  { js: "{{Media}}/js/tools/card/chat.js",  css: "{{Media}}/css/tools/card/chat.css" },
+		"Media/chart/chat": { js: "{{Media}}/js/tools/chart/chat.js", css: ["{{Media}}/css/tools/card/chat.css","{{Media}}/css/tools/chart/chat.css"] }
+
 	});
 
 	var Media = Q.Media = Q.plugins.Media = {
@@ -211,7 +240,8 @@
 	};
 
 	Media.Presentation = {
-		pages: {}
+		pages: {},
+		onShowTool: new Q.Event()
 	};
 
 	Media.Presentation.Slide = {
@@ -266,6 +296,33 @@
 	Q.Tool.define.options('Q/columns', columnsOptions);
 	Q.Tool.define.options('Streams/chat', {
 		handleTheirOwnClicks: ["Media/webrtc/preview"]
+	});
+	Q.Tool.define.options('Media/presentation', {
+		displayTools: {
+			'Media/card/glossary':   'Media/presentation/card/glossary',
+			'Media/card/stat':       'Media/presentation/card/stat',
+			'Media/card/profile':    'Media/presentation/card/profile',
+			'Media/card/quote':      'Media/presentation/card/quote',
+			'Media/card/article':    'Media/presentation/card/article',
+			'Media/card/comparison': 'Media/presentation/card/comparison',
+			'Media/chart/bar':       'Media/presentation/chart/bar',
+			'Media/chart/line':      'Media/presentation/chart/line',
+			'Media/card/slide':  	 'Media/presentation/card/slide',
+			'Media/card/map':        'Places/directions',
+			'Media/gallery':         'Media/presentation/gallery'
+		}
+	});
+	Q.Tool.define.options('Streams/chat', {
+		messageTypes: {
+			'Media/presentation/card/show': {
+				html: function (message) {
+					if (typeof Media_card_chat_messageHandler !== 'function') return null;
+					var result = null;
+					Media_card_chat_messageHandler(message, function (html) { result = html; });
+					return result;
+				}
+			}
+		}
 	});
 
 	Q.Streams.Tool.highlightPreviews('Media/episode');
@@ -449,7 +506,7 @@
 		}
 	}, 'Media');
 
-	Q.Streams.Chat.extensions.push('Media/webrtc/chat');
+	Q.Streams.Chat.extensions.push('Media/webrtc/chat', 'Media/card/chat', 'Media/chart/chat');
 
 	Q.Template.set('Media/chat/webrtc/available',
 		'<div class="Streams_chat_webrtc_available">'+

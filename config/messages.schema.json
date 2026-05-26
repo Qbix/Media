@@ -1,0 +1,1122 @@
+{
+  "_comment": "Message and ephemeral protocol for Media/presentation. Messages are durable (written to DB, queryable, part of the recording). Ephemerals are live fan-out only (no DB write, display/animation only). Clients wire BOTH for backward compatibility: stream.onMessage('type', handler) + stream.onEphemeral('type', handler). The AI plugin reads this file to build the LLM system prompt.",
+  "_format": "messages: informational events with record value. ephemerals: display/animation-only, no record value. visualization_types: what the LLM can propose as a card/chart/graph/table.",
+  "messages": {
+    "Media/presentation/start": {
+      "description": "A presentation session has started.",
+      "instructions": {
+        "role": "host|participant|script",
+        "lang": "string",
+        "mode": "live|text|script|tts"
+      },
+      "whoEmits": "socket.js on AI/transcription/session/start"
+    },
+    "Media/presentation/end": {
+      "description": "A presentation session has ended.",
+      "instructions": {
+        "relSec": "number",
+        "transcriptMessageCount": "integer"
+      },
+      "whoEmits": "socket.js on disconnect"
+    },
+    "Media/presentation/slide": {
+      "description": "Host advanced to a specific slide.",
+      "instructions": {
+        "index": "integer (0-based)",
+        "relSec": "number"
+      },
+      "example": {
+        "index": 3,
+        "relSec": 142.4
+      },
+      "whoEmits": "ControlClassifier via stream proxy, or client directly"
+    },
+    "Media/presentation/card/show": {
+      "description": "A visualization card was committed and appeared on screen.",
+      "instructions": {
+        "visualizationType": "stat|glossary|quote|profile|article|comparison|bar_chart|line_chart|map|graph|table",
+        "visualizationData": "object matching the visualization_types schema",
+        "streamType": "Media/card/stat etc.",
+        "proposalId": "string",
+        "relSec": "number"
+      },
+      "whoEmits": "socket.js _commitProposal"
+    },
+    "Media/presentation/reaction": {
+      "description": "Audience reaction count at a moment in the presentation. content field holds the emoji. Presentation reactions are from people engaged with the content. Livestream reactions (Media/livestream/reaction) are from broadcast viewers.",
+      "content": "emoji character e.g. \ud83d\udd25",
+      "instructions": {
+        "emoji": "string",
+        "count": "integer",
+        "relSec": "number"
+      },
+      "example": {
+        "emoji": "\ud83d\udd25",
+        "count": 7,
+        "relSec": 183.1
+      },
+      "whoEmits": "control.js on reaction button tap"
+    },
+    "Media/presentation/transcript": {
+      "description": "A final utterance from the speaker. isFinal is always true for messages (interim results are socket-only). Accumulated messages form the full transcript. VTT export is generated from these messages on demand.",
+      "content": "utterance text",
+      "instructions": {
+        "speaker": "userId",
+        "relSec": "number",
+        "isFinal": true,
+        "confidence": "0\u20131 float"
+      },
+      "whoEmits": "socket.js _onTranscript via TranscriptEmitter"
+    },
+    "Media/presentation/topic": {
+      "description": "The LLM pipeline detected a topic shift. Used for clip cutting and recording chapter markers.",
+      "instructions": {
+        "from": "string",
+        "to": "string",
+        "relSec": "number"
+      },
+      "example": {
+        "from": "AI investment",
+        "to": "autonomous vehicles",
+        "relSec": 240.0
+      },
+      "whoEmits": "socket.js _processChunk onTopicChange"
+    },
+    "Media/presentation/tool/show": {
+      "description": "A generated Q.Tool.define() tool was committed and activated on screen.",
+      "instructions": {
+        "toolName": "AI/generated/chess-board etc.",
+        "relSec": "number"
+      },
+      "whoEmits": "socket.js when AI/tool/generated is committed"
+    },
+    "Media/presentation/access": {
+      "description": "Access was granted or revoked on the presentation stream by voice command.",
+      "instructions": {
+        "targetUserId": "string",
+        "level": "ephemeral|contribute|post|edit",
+        "action": "grant|revoke",
+        "relSec": "number"
+      },
+      "whoEmits": "AI/stream/command PHP handler"
+    },
+    "Media/presentation/graph/update": {
+      "description": "Add, remove, or replace nodes and edges in a force-directed graph visualization. action='set' replaces the whole graph. action='add' or 'remove' animates the delta. The force simulation rebalances after every mutation.",
+      "instructions": {
+        "action": "set|add|remove",
+        "nodes": [
+          {
+            "id": "string",
+            "type": "person|company|concept|stat",
+            "label": "string",
+            "imageUrl": "string (optional)",
+            "value": "number (optional, drives node size)"
+          }
+        ],
+        "edges": [
+          {
+            "from": "id",
+            "to": "id",
+            "label": "string (optional)",
+            "weight": "number (optional)"
+          }
+        ]
+      },
+      "example": {
+        "action": "set",
+        "nodes": [
+          {
+            "id": "anthropic",
+            "type": "company",
+            "label": "Anthropic"
+          },
+          {
+            "id": "openai",
+            "type": "company",
+            "label": "OpenAI"
+          },
+          {
+            "id": "llm",
+            "type": "concept",
+            "label": "LLMs"
+          }
+        ],
+        "edges": [
+          {
+            "from": "anthropic",
+            "to": "llm",
+            "label": "builds"
+          },
+          {
+            "from": "openai",
+            "to": "llm",
+            "label": "builds"
+          }
+        ]
+      },
+      "whoEmits": "AI Pipeline (proposed), ControlClassifier (voice mutations)"
+    },
+    "Media/presentation/table/update": {
+      "description": "Add, remove, or update rows/columns in a data table visualization. action='set' replaces the whole table. addRow/removeRow/addCol/removeCol animate the specific change. updateCell flashes the changed cell.",
+      "instructions": {
+        "action": "set|addRow|removeRow|addCol|removeCol|updateCell",
+        "headers": [
+          "string"
+        ],
+        "rows": [
+          [
+            "cell value"
+          ]
+        ],
+        "highlight": [
+          "rowIndex (optional, highlights rows in amber)"
+        ],
+        "rowIndex": "integer (for removeRow/updateCell)",
+        "colIndex": "integer (for removeCol/updateCell)",
+        "value": "string (for updateCell)"
+      },
+      "example": {
+        "action": "set",
+        "headers": [
+          "Company",
+          "Valuation",
+          "Founded"
+        ],
+        "rows": [
+          [
+            "Anthropic",
+            "$61B",
+            "2021"
+          ],
+          [
+            "OpenAI",
+            "$157B",
+            "2015"
+          ]
+        ]
+      },
+      "whoEmits": "AI Pipeline (proposed), ControlClassifier (voice mutations)"
+    },
+    "Media/presentation/reveal": {
+      "description": "Progressive reveal index within the current slide or card.",
+      "instructions": {
+        "index": "integer (0=header, 1=+body, 2=full)",
+        "relSec": "number"
+      },
+      "whoEmits": "ControlClassifier"
+    },
+    "Media/presentation/pin": {
+      "description": "Pin a stream alongside the main presentation area. The pinned area is subdivided intelligently for N pinned items. Implicitly opens the pinned area (resize ratio 0.35) if currently closed.",
+      "instructions": {
+        "publisherId": "string",
+        "streamName": "string",
+        "size": "0\u20131 float, fraction of tool given to pinned area (optional, overrides auto)",
+        "position": "integer index in pinned area (optional, appends by default)",
+        "duration": "ms for resize animation (optional, overrides tool default)"
+      },
+      "example": {
+        "publisherId": "abc123",
+        "streamName": "Media/slide/intro"
+      },
+      "whoEmits": "host control page, AI pipeline, server"
+    },
+    "Media/presentation/unpin": {
+      "description": "Unpin a previously pinned stream. If no pinned items remain, implicitly closes the pinned area (resize ratio 0).",
+      "instructions": {
+        "publisherId": "string",
+        "streamName": "string",
+        "duration": "ms (optional)"
+      },
+      "whoEmits": "host control page, AI pipeline, server"
+    },
+    "Media/presentation/resize": {
+      "description": "Set the fraction of the tool given to the pinned area. ratio=0 collapses pinned area. ratio=1 expands pinned area to full tool. ratio=0.5 gives equal space to main and pinned areas.",
+      "instructions": {
+        "ratio": "0\u20131 float",
+        "duration": "ms for animation (optional, default: tool.state.resize.duration = 500)"
+      },
+      "example": {
+        "ratio": 0.5,
+        "duration": 400
+      },
+      "whoEmits": "host control page, AI pipeline, server"
+    },
+    "Media/presentation/reorder": {
+      "description": "Reorder pinned items. items is an array of 'publisherId\\tstreamName' keys in the desired order.",
+      "instructions": {
+        "items": [
+          "publisherId\\tstreamName key string"
+        ]
+      },
+      "example": {
+        "items": [
+          "abc\tMedia/slide/intro",
+          "abc\tMedia/slide/chart"
+        ]
+      },
+      "whoEmits": "host control page, reorder() method"
+    },
+    "Media/slide/build": {
+      "description": "Trigger build-in of one or more elements in a Media/slide tool. Fires on elements with data-build=N in the slide HTML. index=0 or omitted means build all in sequence. Negative index hides elements (build out).",
+      "instructions": {
+        "index": "integer \u2014 specific data-build value to show, or omit for next in sequence",
+        "effect": "dissolve|rise|slide \u2014 overrides element's own data-build-effect",
+        "duration": "ms per element",
+        "all": "boolean \u2014 if true, build all elements immediately"
+      },
+      "example": {
+        "index": 2,
+        "effect": "dissolve",
+        "duration": 300
+      },
+      "whoEmits": "buildIn() method, AI pipeline, server"
+    }
+  },
+  "ephemerals": {
+    "Media/presentation/reaction/burst": {
+      "description": "Floating emoji animation trigger. No DB write. Fires alongside the durable Media/presentation/reaction message. Clients render the floating animation on this; query the message for history.",
+      "payload": {
+        "emoji": "string",
+        "count": "integer"
+      },
+      "whoEmits": "control.js on reaction tap, alongside the message post"
+    },
+    "Streams/gallery/transition": {
+      "description": "Trigger a gallery crossfade to the next image. Display only.",
+      "payload": {},
+      "whoEmits": "gallery.js autoplay timer"
+    },
+    "Q/style": {
+      "description": "CSS variable update. Injects a scoped <style> tag. No record value \u2014 purely visual state. Sent as a stream ephemeral so ALL screens receive it (shared ?f=1, audience phones, host pane). Clients call Q.handle(Q.Socket.onEvent('Q/style'), tool, [payload]).",
+      "payload": {
+        "elementId": "string (optional, targets specific tool element)",
+        "selector": "CSS selector (default '*')",
+        "vars": "object of --CSS-variable \u2192 value",
+        "rules": "object of CSS property \u2192 value",
+        "css": "arbitrary CSS string (for @keyframes, pseudo-elements)"
+      },
+      "whoEmits": "toolCssUpdate.js"
+    },
+    "AI/tool/generated": {
+      "description": "Host preview of a newly generated Q.Tool.define() tool. Sent socket-only to the host before approval. After approval, a Media/presentation/tool/show message is posted.",
+      "payload": {
+        "toolName": "AI/generated/slug",
+        "code": "Q.Tool.define(...) source string"
+      },
+      "whoEmits": "toolGenerate.js via Users.Socket.emitToUser (host only)"
+    },
+    "Streams/slide": {
+      "description": "[LEGACY] Use Media/presentation/slide message instead. Kept for backward compatibility with existing clients.",
+      "payload": {
+        "slideIndex": "integer"
+      },
+      "whoEmits": "ControlClassifier (legacy path)"
+    },
+    "Streams/reveal": {
+      "description": "[LEGACY] Use Media/presentation/reveal message instead.",
+      "payload": {
+        "revealIndex": "integer"
+      },
+      "whoEmits": "ControlClassifier (legacy path)"
+    },
+    "Streams/highlight": {
+      "description": "Spotlight a specific element. Still ephemeral \u2014 no record value.",
+      "payload": {
+        "elementId": "string"
+      },
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/zoom": {
+      "description": "Zoom the current content. Still ephemeral \u2014 display state only.",
+      "payload": {
+        "scale": "number"
+      },
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/play": {
+      "description": "Play video.",
+      "payload": {},
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/pause": {
+      "description": "Pause video.",
+      "payload": {},
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/seek": {
+      "description": "Seek video.",
+      "payload": {
+        "pos": "seconds"
+      },
+      "whoEmits": "ControlClassifier"
+    },
+    "Q/scroll": {
+      "description": "Scroll the presentation.",
+      "payload": {
+        "direction": "up|down|top|bottom"
+      },
+      "whoEmits": "ControlClassifier"
+    },
+    "Q/fullscreen": {
+      "description": "Toggle fullscreen.",
+      "payload": {
+        "on": "boolean"
+      },
+      "whoEmits": "ControlClassifier"
+    },
+    "Q/audio": {
+      "description": "Play an audio clip.",
+      "payload": {
+        "url": "string"
+      },
+      "whoEmits": "AI pipeline"
+    },
+    "Q/redirect": {
+      "description": "Navigate to a URL.",
+      "payload": {
+        "url": "string"
+      },
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/gallery/images": {
+      "description": "Replace gallery image set.",
+      "payload": {
+        "images": [
+          {
+            "src": "string",
+            "caption": "string"
+          }
+        ]
+      },
+      "whoEmits": "imageGenerate.js"
+    },
+    "Streams/gallery/add": {
+      "description": "Add one image to gallery.",
+      "payload": {
+        "images": [
+          {
+            "src": "string",
+            "caption": "string"
+          }
+        ]
+      },
+      "whoEmits": "imageGenerate.js"
+    },
+    "Streams/gallery/remove": {
+      "description": "Remove current gallery image.",
+      "payload": {},
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/gallery/query": {
+      "description": "Fetch Pexels images for query string.",
+      "payload": {
+        "query": "string"
+      },
+      "whoEmits": "Pipeline._emitGalleryQuery"
+    },
+    "Streams/gallery/next": {
+      "description": "Advance gallery to next image.",
+      "payload": {},
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/gallery/pause": {
+      "description": "Pause gallery autoplay.",
+      "payload": {},
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/gallery/resume": {
+      "description": "Resume gallery autoplay.",
+      "payload": {},
+      "whoEmits": "ControlClassifier"
+    },
+    "Streams/gallery/caption": {
+      "description": "Set/remove current image caption.",
+      "payload": {
+        "text": "string"
+      },
+      "whoEmits": "ControlClassifier"
+    }
+  },
+  "visualizationTypes": {
+    "_comment": "When the LLM proposes a visualization, it returns one of these types plus the fields below. The AI plugin maps these to Qbix stream types and creates the stream.",
+    "stat": {
+      "streamType": "Media/card/stat",
+      "description": "A single metric with label, optional unit, delta, and source.",
+      "fields": {
+        "value": {
+          "type": "string|number",
+          "required": true,
+          "description": "The number. e.g. '312' or '$4.2T'."
+        },
+        "unit": {
+          "type": "string",
+          "required": false,
+          "description": "Unit suffix e.g. 'B', '%', 'M'."
+        },
+        "label": {
+          "type": "string",
+          "required": true,
+          "description": "What the number measures."
+        },
+        "delta": {
+          "type": "string",
+          "required": false,
+          "description": "Change from prior period e.g. '+18%'."
+        },
+        "deltaPositive": {
+          "type": "boolean",
+          "required": false,
+          "description": "true=green, false=red, omit=neutral."
+        },
+        "source": {
+          "type": "string",
+          "required": false
+        },
+        "url": {
+          "type": "string",
+          "required": false
+        },
+        "imageUrl": {
+          "required": false,
+          "type": "string",
+          "description": "Image URL from web search results (article thumbnail, Wikipedia image, etc.). Use onerror gracefully."
+        },
+        "imageCredit": {
+          "required": false,
+          "type": "string",
+          "description": "Source attribution e.g. \"Reuters\" or \"Wikipedia\""
+        }
+      },
+      "example": {
+        "value": "4.2",
+        "unit": "T",
+        "label": "Global AI investment 2024",
+        "delta": "+23%",
+        "deltaPositive": true,
+        "source": "Bloomberg"
+      }
+    },
+    "glossary": {
+      "streamType": "Media/card/glossary",
+      "description": "Define a term with an optional usage example.",
+      "fields": {
+        "term": {
+          "type": "string",
+          "required": true
+        },
+        "definition": {
+          "type": "string",
+          "required": true
+        },
+        "context": {
+          "type": "string",
+          "required": false,
+          "description": "One-sentence usage example."
+        },
+        "source": {
+          "type": "string",
+          "required": false
+        },
+        "url": {
+          "type": "string",
+          "required": false
+        }
+      },
+      "example": {
+        "term": "LIDAR",
+        "definition": "Light Detection and Ranging \u2014 uses laser pulses to measure distances.",
+        "context": "Used in autonomous vehicle perception stacks."
+      }
+    },
+    "quote": {
+      "streamType": "Media/card/quote",
+      "description": "A pull quote with attribution.",
+      "fields": {
+        "quote": {
+          "type": "string",
+          "required": true,
+          "description": "The quote text. Do not include surrounding quotation marks."
+        },
+        "speaker": {
+          "type": "string",
+          "required": false
+        },
+        "source": {
+          "type": "string",
+          "required": false
+        },
+        "url": {
+          "type": "string",
+          "required": false
+        },
+        "imageUrl": {
+          "required": false,
+          "type": "string",
+          "description": "Image URL from web search (person photo, article hero, etc.)"
+        },
+        "imageCredit": {
+          "required": false,
+          "type": "string",
+          "description": "Image source attribution"
+        }
+      },
+      "example": {
+        "quote": "Move fast and break things.",
+        "speaker": "Mark Zuckerberg",
+        "source": "Facebook internal memo"
+      }
+    },
+    "profile": {
+      "streamType": "Media/card/profile",
+      "description": "Person or entity profile. Uses Qbix Users/avatar if userId is known; otherwise renders from explicit fields.",
+      "fields": {
+        "name": {
+          "type": "string",
+          "required": false,
+          "description": "Display name (when no userId)."
+        },
+        "handle": {
+          "type": "string",
+          "required": false,
+          "description": "Social handle e.g. '@karpathy'."
+        },
+        "bio": {
+          "type": "string",
+          "required": false
+        },
+        "iconUrl": {
+          "type": "string",
+          "required": false,
+          "description": "Avatar image URL."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "required": false,
+          "description": "Topic tags e.g. ['AI', 'robotics']."
+        },
+        "source": {
+          "type": "string",
+          "required": false
+        },
+        "url": {
+          "type": "string",
+          "required": false
+        },
+        "imageUrl": {
+          "required": false,
+          "type": "string",
+          "description": "Image URL from web search (person photo, article hero, etc.)"
+        },
+        "imageCredit": {
+          "required": false,
+          "type": "string",
+          "description": "Image source attribution"
+        }
+      },
+      "example": {
+        "name": "Andrej Karpathy",
+        "handle": "@karpathy",
+        "bio": "AI researcher, former Tesla AI director.",
+        "tags": [
+          "AI",
+          "deep learning",
+          "autonomous vehicles"
+        ]
+      }
+    },
+    "article": {
+      "streamType": "Media/card/article",
+      "description": "News article or content reference with headline and key claim.",
+      "fields": {
+        "title": {
+          "type": "string",
+          "required": true,
+          "description": "Headline."
+        },
+        "publication": {
+          "type": "string",
+          "required": false
+        },
+        "keyClaim": {
+          "type": "string",
+          "required": false,
+          "description": "The key factual claim in 1-2 sentences."
+        },
+        "url": {
+          "type": "string",
+          "required": false
+        },
+        "imageUrl": {
+          "type": "string",
+          "required": false
+        },
+        "date": {
+          "type": "string",
+          "required": false,
+          "description": "e.g. 'May 2026'."
+        }
+      },
+      "example": {
+        "title": "Global AI investment hits $4.2T",
+        "publication": "Bloomberg",
+        "keyClaim": "Investment in AI infrastructure doubled year-over-year, led by hyperscaler capex.",
+        "date": "Q1 2026"
+      }
+    },
+    "comparison": {
+      "streamType": "Media/card/comparison",
+      "description": "Two-column comparison of entities, metrics, or options.",
+      "fields": {
+        "left": {
+          "type": "object",
+          "required": true,
+          "description": "{ label, value } \u2014 left column."
+        },
+        "right": {
+          "type": "object",
+          "required": true,
+          "description": "{ label, value } \u2014 right column."
+        },
+        "rows": {
+          "type": "array",
+          "required": false,
+          "description": "Comparison rows: [{ label, left, right, delta? }, ...]."
+        },
+        "leftImageUrl": {
+          "required": false,
+          "type": "string",
+          "description": "Image URL for the left entity"
+        },
+        "rightImageUrl": {
+          "required": false,
+          "type": "string",
+          "description": "Image URL for the right entity"
+        }
+      },
+      "example": {
+        "left": {
+          "label": "OpenAI",
+          "value": "$157B"
+        },
+        "right": {
+          "label": "Anthropic",
+          "value": "$61B"
+        },
+        "rows": [
+          {
+            "label": "Founded",
+            "left": "2015",
+            "right": "2021"
+          },
+          {
+            "label": "Employees",
+            "left": "3,000",
+            "right": "700"
+          }
+        ]
+      }
+    },
+    "barChart": {
+      "streamType": "Media/chart/bar",
+      "description": "Horizontal ranked bar chart. Values are normalized to the max \u2014 no axis needed.",
+      "fields": {
+        "title": {
+          "type": "string",
+          "required": false
+        },
+        "unit": {
+          "type": "string",
+          "required": false,
+          "description": "Unit suffix appended to value labels e.g. 'B', '%'."
+        },
+        "items": {
+          "type": "array",
+          "required": true,
+          "description": "[{ label, value, color? }, ...]. Values must be numbers."
+        },
+        "source": {
+          "type": "string",
+          "required": false
+        },
+        "url": {
+          "type": "string",
+          "required": false
+        }
+      },
+      "example": {
+        "title": "AI company valuations 2025",
+        "unit": "B",
+        "items": [
+          {
+            "label": "Microsoft",
+            "value": 3000
+          },
+          {
+            "label": "Google",
+            "value": 2100
+          },
+          {
+            "label": "OpenAI",
+            "value": 157
+          }
+        ]
+      }
+    },
+    "lineChart": {
+      "streamType": "Media/chart/line",
+      "description": "Time-series line chart with one or more series.",
+      "fields": {
+        "title": {
+          "type": "string",
+          "required": false
+        },
+        "xLabel": {
+          "type": "string",
+          "required": false
+        },
+        "yLabel": {
+          "type": "string",
+          "required": false
+        },
+        "unit": {
+          "type": "string",
+          "required": false,
+          "description": "Unit appended to Y-axis labels."
+        },
+        "series": {
+          "type": "array",
+          "required": true,
+          "description": "[{ label, data: [{x, y}, ...], color? }, ...]. x and y must be numbers."
+        },
+        "source": {
+          "type": "string",
+          "required": false
+        },
+        "url": {
+          "type": "string",
+          "required": false
+        }
+      },
+      "example": {
+        "title": "AI investment by year",
+        "xLabel": "Year",
+        "yLabel": "USD B",
+        "series": [
+          {
+            "label": "Total",
+            "data": [
+              {
+                "x": 2020,
+                "y": 22
+              },
+              {
+                "x": 2021,
+                "y": 68
+              },
+              {
+                "x": 2022,
+                "y": 115
+              },
+              {
+                "x": 2023,
+                "y": 189
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "map": {
+      "streamType": "Media/card/map",
+      "description": "Directions card with Google Maps and/or Apple Maps embed. Only emit this if the AI pipeline has confirmed the requesting user has read access to the destination. Embed resolved coordinates \u2014 never a reference to the private location stream.",
+      "fields": {
+        "destination": {
+          "type": "string",
+          "required": true,
+          "description": "Address or 'lat,lng' string."
+        },
+        "destinationName": {
+          "type": "string",
+          "required": false,
+          "description": "Human-readable name shown in header."
+        },
+        "lat": {
+          "type": "number",
+          "required": false,
+          "description": "Resolved latitude (preferred over address string)."
+        },
+        "lng": {
+          "type": "number",
+          "required": false,
+          "description": "Resolved longitude."
+        },
+        "origin": {
+          "type": "string",
+          "required": false,
+          "description": "Origin address, 'lat,lng', or 'current' (geolocation). Default: 'current'."
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "driving",
+            "walking",
+            "transit",
+            "bicycling"
+          ],
+          "required": false
+        },
+        "zoom": {
+          "type": "integer",
+          "required": false,
+          "default": 14
+        }
+      },
+      "example": {
+        "destinationName": "Bob's house",
+        "lat": 40.7128,
+        "lng": -74.006,
+        "mode": "driving"
+      }
+    },
+    "graph": {
+      "streamType": "Media/visualization/graph",
+      "description": "Force-directed node-edge graph. Nodes repel, edges attract. Nodes bounce and rebalance as you add/remove them. Use for relationship maps, org charts, concept webs, 'who knows who'.",
+      "messageType": "Media/presentation/graph/update",
+      "nodeTypes": {
+        "person": "Avatar circle with photo + name. Use imageUrl for the photo.",
+        "company": "Logo circle + company name.",
+        "concept": "Label pill, no image.",
+        "stat": "Number in ring + label below."
+      },
+      "fields": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "set",
+            "add",
+            "remove"
+          ],
+          "required": true
+        },
+        "nodes": {
+          "type": "array",
+          "description": "[{ id, type, label, imageUrl?, value? }]",
+          "required": false
+        },
+        "edges": {
+          "type": "array",
+          "description": "[{ from, to, label?, weight? }]",
+          "required": false
+        }
+      },
+      "example": {
+        "action": "set",
+        "nodes": [
+          {
+            "id": "anthropic",
+            "type": "company",
+            "label": "Anthropic"
+          },
+          {
+            "id": "openai",
+            "type": "company",
+            "label": "OpenAI"
+          },
+          {
+            "id": "claude",
+            "type": "concept",
+            "label": "Claude"
+          }
+        ],
+        "edges": [
+          {
+            "from": "anthropic",
+            "to": "claude",
+            "label": "built"
+          }
+        ]
+      }
+    },
+    "table": {
+      "streamType": "Media/visualization/table",
+      "description": "Animated data table with add/remove row and column support. Rows and columns animate in/out with slide transitions. Use for comparisons, rankings, schedules, data grids.",
+      "messageType": "Media/presentation/table/update",
+      "fields": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "set",
+            "addRow",
+            "removeRow",
+            "addCol",
+            "removeCol",
+            "updateCell"
+          ],
+          "required": true
+        },
+        "headers": {
+          "type": "array",
+          "description": "Column header strings",
+          "required": false
+        },
+        "rows": {
+          "type": "array",
+          "description": "Array of row arrays (cells as strings)",
+          "required": false
+        },
+        "highlight": {
+          "type": "array",
+          "description": "Row indices to highlight in amber",
+          "required": false
+        }
+      },
+      "example": {
+        "action": "set",
+        "headers": [
+          "Company",
+          "Valuation",
+          "Founded",
+          "Model"
+        ],
+        "rows": [
+          {
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/.../440px-...jpg",
+            "cells": [
+              "Anthropic",
+              "$61B",
+              "2021",
+              "Claude"
+            ]
+          },
+          {
+            "image": null,
+            "cells": [
+              "OpenAI",
+              "$157B",
+              "2015",
+              "GPT-4"
+            ]
+          },
+          {
+            "image": null,
+            "cells": [
+              "Google",
+              "$2T",
+              "1998",
+              "Gemini"
+            ]
+          }
+        ],
+        "highlight": [
+          0
+        ]
+      }
+    },
+    "slide": {
+      "description": "AI-composed HTML slide with optional build-in animations. Use when you have an image from web search AND want layout control, or for news stories with hero image + text, or multiple images side by side. Write full HTML + inline <style> scoped to .Media_presentation_slide_tool. Embed images with <img src=\"URL\" onerror=\"this.style.display='none'\">. Animate elements with data-build=\"N\" data-build-effect=\"rise|dissolve|slideLeft|slideRight|scale\".",
+      "example": {
+        "html": "<style>.Media_presentation_slide_tool{display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding:2.5rem;background:#111;color:#fff}</style><img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/YannLeCun.jpg/440px-YannLeCun.jpg\" style=\"width:100%;border-radius:8px;object-fit:cover;height:280px\" data-build=\"1\" data-build-effect=\"dissolve\" onerror=\"this.style.display='none'\"><div data-build=\"2\" data-build-effect=\"rise\"><h1 style=\"margin:0 0 .5rem;font-size:2rem\">Yann LeCun</h1><p style=\"color:#aaa;line-height:1.6\">Chief AI Scientist at Meta. Creator of convolutional networks. Critic of LLMs as path to AGI.</p></div>",
+        "buildAuto": true,
+        "buildStagger": 500,
+        "credit": "Wikipedia / Meta"
+      },
+      "streamType": "slide",
+      "fields": {
+        "html": {
+          "required": true,
+          "type": "string",
+          "description": "Full HTML + optional inline <style> scoped to .Media_presentation_slide_tool. Embed images with <img src=\"URL\" onerror=\"this.style.display='none'\">. Animate elements with data-build=\"N\" data-build-effect=\"rise|dissolve|slideLeft|slideRight|scale\"."
+        },
+        "buildAuto": {
+          "required": false,
+          "type": "boolean",
+          "description": "Auto-fire all build-in animations after card appears"
+        },
+        "buildStagger": {
+          "required": false,
+          "type": "number",
+          "description": "Ms between build steps (default 500)"
+        },
+        "credit": {
+          "required": false,
+          "type": "string",
+          "description": "Attribution string shown bottom-right e.g. \"Reuters / Wikipedia\""
+        }
+      }
+    }
+  },
+  "toolTypes": {
+    "_comment": "Existing Qbix tools the LLM can activate on the canvas. Only propose a toolType when the session user has readLevel >= content on the required stream. The Pipeline checks access before including toolTypes in the prompt. Add this section to the prompt only when intent classification suggests tool/show routing.",
+    "Streams/related": {
+      "description": "Grid of preview cards for streams related to a given stream. Use when the speaker references a collection \u2014 clips, participants, products, questions, topics \u2014 that is stored as related streams.",
+      "requires": "publisherId and streamName of the category stream",
+      "options": {
+        "publisherId": "required",
+        "streamName": "required",
+        "relationType": "optional \u2014 filter by relation type e.g. 'Media/presentation/tool'",
+        "isCategory": "boolean \u2014 true = show streams related TO this one (default true)",
+        "relatedOptions": "{ limit, offset, ascending }"
+      },
+      "exampleTrigger": "show me the related clips",
+      "accessNote": "readLevel >= content on the stream"
+    },
+    "Streams/tree": {
+      "description": "Hierarchical tree view of nested related streams. Use for org charts, category hierarchies, topic trees.",
+      "requires": "publisherId and streamName",
+      "options": {
+        "publisherId": "required",
+        "streamName": "required"
+      },
+      "exampleTrigger": "show me the topic hierarchy"
+    },
+    "Streams/chat": {
+      "description": "Live chat tool for a stream. Use when switching to Q&A mode, audience questions, or showing the conversation thread for the current stream.",
+      "requires": "publisherId and streamName",
+      "options": {
+        "publisherId": "required",
+        "streamName": "required"
+      },
+      "exampleTrigger": "open the Q&A",
+      "accessNote": "writeLevel >= post on the stream to send messages"
+    },
+    "Streams/participants": {
+      "description": "Shows current participants in a stream with avatars. Use when the speaker references who is in the room or call.",
+      "requires": "publisherId and streamName",
+      "options": {
+        "publisherId": "required",
+        "streamName": "required"
+      },
+      "exampleTrigger": "show who's here"
+    },
+    "Streams/activity": {
+      "description": "Activity feed \u2014 recent messages and events on a stream. Use for showing what has happened recently in a community or channel.",
+      "requires": "publisherId and streamName",
+      "options": {
+        "publisherId": "required",
+        "streamName": "required"
+      },
+      "exampleTrigger": "show recent activity"
+    },
+    "Streams/image/album": {
+      "description": "Photo album showing images related to a stream. Use when the speaker wants to show a gallery of photos.",
+      "requires": "publisherId and streamName of an album stream",
+      "options": {
+        "publisherId": "required",
+        "streamName": "required"
+      },
+      "exampleTrigger": "show the photos from this event"
+    },
+    "Media/presentation/audio": {
+      "description": "Audio player for a presentation stream. Supports play/pause/seek via Streams/play and Streams/pause ephemerals. Use when the speaker wants to play an audio recording.",
+      "requires": "publisherId and streamName of a stream with an audio file",
+      "options": {
+        "publisherId": "required",
+        "streamName": "required"
+      },
+      "exampleTrigger": "play the recording"
+    }
+  }
+}

@@ -1,0 +1,145 @@
+{
+    "_comment": "Spanish control commands for Media/commands.",
+    "control": {
+        "Next": "Siguiente",
+        "Prev": "Anterior",
+        "First": "Primera diapositiva",
+        "Last": "Última diapositiva",
+        "Play": "Reproducir",
+        "Pause": "Pausar",
+        "Seek": "Ir a...",
+        "GalleryNext": "Siguiente imagen",
+        "GalleryPause": "Pausar fondo",
+        "GalleryResume": "Continuar fondo",
+        "Highlight": "Resaltar...",
+        "ZoomIn": "Acercar",
+        "ZoomOut": "Alejar",
+        "ZoomReset": "Restablecer zoom",
+        "ScrollDown": "Desplazar abajo",
+        "ScrollUp": "Desplazar arriba",
+        "ScrollTop": "Inicio de página",
+        "ScrollBottom": "Final de página",
+        "RevealNext": "Revelar",
+        "Fullscreen": "Pantalla completa"
+    },
+    "patterns": {
+        "SlideNext": [
+            "siguiente diapositiva",
+            "siguiente",
+            "avanzar",
+            "adelante",
+            "próxima",
+            "la siguiente",
+            "/^siguiente$/"
+        ],
+        "SlidePrev": [
+            "diapositiva anterior",
+            "atrás",
+            "regresar",
+            "anterior",
+            "volver",
+            "/^atrás$/"
+        ],
+        "SlideFirst": [
+            "primera diapositiva",
+            "al principio",
+            "desde el inicio",
+            "empezar de nuevo"
+        ],
+        "SlideLast": [
+            "última diapositiva",
+            "al final",
+            "diapositiva final"
+        ],
+        "VideoPlay": [
+            "reproducir",
+            "play",
+            "iniciar video",
+            "continuar",
+            "/^reproducir$/"
+        ],
+        "VideoPause": [
+            "pausar",
+            "pausa",
+            "detener video",
+            "/^pausar$/"
+        ],
+        "VideoSeek": [
+            "ir a",
+            "saltar a",
+            "avanzar hasta",
+            "retroceder hasta"
+        ],
+        "GalleryNext": [
+            "siguiente imagen",
+            "otra imagen",
+            "cambiar fondo"
+        ],
+        "GalleryPause": [
+            "pausar fondo",
+            "detener fondo",
+            "congelar imágenes"
+        ],
+        "GalleryResume": [
+            "continuar fondo",
+            "reanudar fondo"
+        ],
+        "Highlight": [
+            "resaltar",
+            "señalar",
+            "mostrar",
+            "marcar",
+            "enfatizar"
+        ],
+        "ZoomIn": [
+            "acercar",
+            "zoom in",
+            "más grande",
+            "ampliar",
+            "agrandar"
+        ],
+        "ZoomOut": [
+            "alejar",
+            "zoom out",
+            "más pequeño",
+            "reducir"
+        ],
+        "ZoomReset": [
+            "restablecer zoom",
+            "tamaño normal",
+            "ajustar pantalla"
+        ],
+        "ScrollDown": [
+            "desplazar abajo",
+            "bajar",
+            "más abajo",
+            "continuar abajo"
+        ],
+        "ScrollUp": [
+            "desplazar arriba",
+            "subir",
+            "más arriba"
+        ],
+        "ScrollTop": [
+            "ir arriba del todo",
+            "inicio de página",
+            "parte superior"
+        ],
+        "ScrollBottom": [
+            "ir abajo del todo",
+            "final de página",
+            "parte inferior"
+        ],
+        "RevealNext": [
+            "revelar",
+            "mostrar más",
+            "siguiente punto",
+            "continuar"
+        ],
+        "Fullscreen": [
+            "pantalla completa",
+            "maximizar",
+            "pantalla llena"
+        ]
+    }
+}

@@ -58,12 +58,14 @@
 			"feed/:feedId": { "module": "Media", "action": "feed" },
 			"newFeed": {"module": "Media", "action": "newFeed"},
 			"presentation/:calendarId": {"module": "Media", "action": "presentation"},
+			"presentation/:calendarId/control": { "module": "Media", "action": "control" },
 			"presentation/:communityId/:calendarId": {"module": "Media", "action": "presentation"},
+			"presentation/:communityId/:calendarId/control": { "module": "Media", "action": "control" },
 			"channels": {"module": "Media", "action": "channels"},
 			"channels/:publisherId": {"module": "Media", "action": "channels"},
 			"channel": {"module": "Media", "action": "channel"},
 			"channel/:publisherId": {"module": "Media", "action": "channel"},
-			"channel/:publisherId/:channelId": {"module": "Media", "action": "channel"},
+			"channel/:publisherId/:channelId": {"module": "Media", "action": "channel"}
 		},
 		"web": {
 			"contentSecurityPolicy": {
@@ -198,12 +200,54 @@
 					"title": "Presentation",
 					"icon": "{{Media}}/img/icons/Media/presentation",
 					"readLevel": 40,
-					"writeLevel": 0,
+					"writeLevel": 16,
 					"adminLevel": 10
 				},
 				"ephemerals": {
-					"Media/presentation/show": {}
-				}
+					"Media/presentation/show": {},
+                    "Media/presentation/reaction/burst": {},
+                    "Media/presentation/graph/update":   {},
+                    "Media/presentation/table/update":   {},
+                    "Streams/gallery/query":             {},
+                    "Streams/gallery/images":            {},
+                    "Streams/gallery/next":              {},
+                    "Streams/gallery/pause":             {},
+                    "Streams/gallery/resume":            {},
+                    "Streams/gallery/add":               {},
+                    "Streams/gallery/caption":           {},
+                    "Streams/gallery/remove":            {},
+                    "Streams/gallery/transition":        {},
+                    "Streams/slide":                     {},
+                    "Streams/play":                      {},
+                    "Streams/pause":                     {},
+                    "Streams/seek":                      {},
+                    "Streams/reveal":                    {},
+                    "Streams/zoom":                      {},
+                    "Streams/highlight":                 {},
+                    "Q/style":                           {},
+                    "Q/scroll":                          {},
+                    "Q/fullscreen":                      {},
+                    "AI/tool/generated":                 {},
+                    "Media/slide/build":                 {}
+                },
+                "messages": {
+					"Media/presentation/show": {},
+                    "Media/presentation/start":       {},
+                    "Media/presentation/end":         {},
+                    "Media/presentation/slide":       {},
+                    "Media/presentation/card/show":   {},
+                    "Media/presentation/reaction":    {},
+                    "Media/presentation/transcript":  {},
+                    "Media/presentation/topic":       {},
+                    "Media/presentation/tool/show":   {},
+                    "Media/presentation/access":      {},
+                    "Media/presentation/graph/update":{},
+                    "Media/presentation/table/update":{},
+                    "Media/presentation/pin":         {},
+                    "Media/presentation/unpin":       {},
+                    "Media/presentation/resize":      {},
+                    "Media/presentation/reorder":     {}
+                }
 			},
 			"Media/presentation/slide": {
 				"emoji": "🌠",
