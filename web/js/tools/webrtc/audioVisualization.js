@@ -25,7 +25,6 @@
 			onCreate: new Q.Event(),
 			onUpdate: new Q.Event(),
 			onRefresh: new Q.Event(),
-			onRender: new Q.Event(),
             info:{
                 average: 0
             }
