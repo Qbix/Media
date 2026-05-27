@@ -35,6 +35,7 @@ function Media_presentation_response_content($params)
     Q_Response::setScriptData('Q.Media.pages.presentation', @compact(
         'calendar', 'presentation', 'show', 'mode'
     ));
+    Q_Response::addScript('{{Media}}/js/pages/presentation.js');
     Q_Response::addScript('{{Media}}/js/tools/presentation.js');
     Q_Response::addStylesheet('{{Media}}/css/tools/presentation.css');
     Q_Response::addStylesheet('{{Q}}/css/tools/cards.css');
