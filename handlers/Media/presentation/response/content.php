@@ -1,59 +1,50 @@
 <?php
-/**
- * Renders the content slot for the Media/presentation page.
- *
- * Route: presentation/:calendarId
- *        presentation/:communityId/:calendarId
- *
- * Query parameters:
- *   f=1   Fullscreen mode — strips the layout entirely (no nav, no footer,
- *         no chrome). The presentation tool fills 100vw × 100vh.
- *         Use this when screensharing, casting, or projecting.
- *         Equivalent to "naked page": echoes HTML and returns false.
- *
- * Normal mode (no f=1): returns the HTML string for embedding in the
- * app layout. The presentation tool still fills its container.
- *
- * @return {string|false} HTML for content slot, or false to skip layout (f=1)
- */
-function Media_presentation_response_content()
+
+function Media_presentation_response_content($params)
 {
-    $uri         = Q_Request::uri();
-    $calendarId  = $uri->calendarId;
-    $communityId = isset($uri->communityId) ? $uri->communityId : null;
-    $publisherId = $communityId ?: Q::app();
-    $fullscreen  = Q_Request::get('f', false) === '1'
-                || Q_Request::get('f', false) === true;
-
-    if (!$calendarId) {
-        throw new Q_Exception_RequiredField(array('field' => 'calendarId'));
-    }
-
-    $streamName = 'Media/presentation/' . $calendarId;
-
-    try {
-        $stream = Streams_Stream::fetch(null, $publisherId, $streamName, true);
-    } catch (Exception $e) {
-        throw new Q_Exception_MissingRow(array(
-            'table'    => 'presentation stream',
-            'criteria' => "$publisherId / $streamName"
+    $uri = Q_Dispatcher::uri();
+    $calendarId = $uri->calendarId ? $uri->calendarId : 'main';
+    $communityId = $uri->communityId ? $uri->communityId : Users::currentCommunityId(true);
+    $calendar = array(
+        'publisherId' => $communityId,
+        'streamName' => "Calendars/calendar/$calendarId",
+        'calendarId' => $calendarId
+    );
+    $fullscreen  = in_array(Q::ifset($_REQUEST, 'f', false), array('1', true), true);
+    $publisherId = $communityId;
+    $streamName = "Calendars/calendar/$calendarId";
+    $stream = Streams_Stream::fetch(null, $publisherId, $streamName, true);
+    $presentation = Q::take($_REQUEST, array('p', 's', 'nf'), Q::$null, array(
+        'p' => 'publisherId',
+        's' => 'streamName',
+        'nf' => 'noFullscreen'
+    ));
+    if (!empty($_REQUEST['show'])) {
+        $show = Q::take($_REQUEST['show'], array('p', 's'), Q::$null, array(
+            'p' => 'publisherId',
+            's' => 'streamName'
         ));
     }
-
     if (!$stream->testReadLevel('content')) {
         throw new Users_Exception_NotAuthorized();
     }
-
     $isHost = $stream->testWriteLevel('edit');
-    $lang   = Q_Request::language() ?: 'en-US';
-
-    // Background gallery: enabled if the stream has a backgroundGallery attribute
-    $bgGallery = $stream->getAttribute('backgroundGallery');
-
+    $mode = Q::ifset($_REQUEST, 'm', 'broadcast');
+    $values = array('b' => 'broadcast', 'p' => 'participant');
+    $mode = Q::ifset($values, $mode, $mode);
+    Q_Response::setScriptData('Q.Media.pages.presentation', @compact(
+        'calendar', 'presentation', 'show', 'mode'
+    ));
     Q_Response::addScript('{{Media}}/js/tools/presentation.js');
     Q_Response::addStylesheet('{{Media}}/css/tools/presentation.css');
     Q_Response::addStylesheet('{{Q}}/css/tools/cards.css');
 
+    $langs   = Q_Request::languages();
+    $lang = 'en-US';
+    if ($langs) {
+        $lang = $langs[0][0] . '-' . $langs[0][1];
+    }
+    $bgGallery = $stream->getAttribute('backgroundGallery');
     $vars = array(
         'publisherId'       => $publisherId,
         'streamName'        => $streamName,
