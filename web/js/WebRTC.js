@@ -2068,7 +2068,7 @@
                                 source: track.stream,
                                 format:'html',
                                 shape: 'bars',
-                                onRender: function (average) {
+                                onRefresh: function (average) {
                                     participant.voiceMeterAverage = average
                                 },
                                 size: {
