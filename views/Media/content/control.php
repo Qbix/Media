@@ -5,7 +5,7 @@
  * Activates the Media/presentation/control tool.
  */
 
-$toolAttrs = Q_Html::tag_attr(array(
+$toolAttrs = Q_Html::attributes(array(
     'data-publisherId'       => $publisherId,
     'data-streamName'        => $streamName,
     'data-isHost'            => $isHost ? 'true' : 'false',
