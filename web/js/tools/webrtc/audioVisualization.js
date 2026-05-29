@@ -579,7 +579,7 @@
                             var freqData = new Uint8Array(bufferLength);
                             tool.analyser.getByteFrequencyData(freqData);
                             tool.state.info.average = getAverage(freqData);
-                            Q.handle(state.onRender, tool, [tool.state.info.average]);
+                            Q.handle(state.onRefresh, tool, [tool.state.info.average]);
                             
                             let levels = [];
                             for (let index in visualization.soundBars) {
@@ -616,7 +616,7 @@
                             _isRendering = false;
                             _visualizationContainer.className = 'visualization-container-0-0-0';
                             tool.state.info.average = -1;
-                            Q.handle(state.onRender, tool, [tool.state.info.average]);
+                            Q.handle(state.onRefresh, tool, [tool.state.info.average]);
                         }
                     }
 
@@ -711,7 +711,7 @@
                             var freqData = new Uint8Array(bufferLength);
                             tool.analyser.getByteFrequencyData(freqData);
                             let audioLevel = tool.state.info.average = getAverage(freqData);
-                            Q.handle(state.onRender, tool, [tool.state.info.average]);
+                            Q.handle(state.onRefresh, tool, [tool.state.info.average]);
                             if (audioLevel > minAudioLevelThreshold) {
                                 // Apply logarithmic scaling to the audio level
                                 const scaledAudioLevel = Math.log10(1 + audioLevel) / Math.log10(1 + maxAudioLevel);
@@ -755,7 +755,7 @@
                             _isRendering = false;
                             _visualizationContainer.className = 'visualization-container-0-0-0';
                             tool.state.info.average = -1;
-                            Q.handle(state.onRender, tool, [tool.state.info.average]);
+                            Q.handle(state.onRefresh, tool, [tool.state.info.average]);
                         }
                     }
 

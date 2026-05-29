@@ -2103,7 +2103,7 @@
                                 source: track.stream,
                                 format:'html',
                                 shape: 'circles',
-                                onRender: function (average) {
+                                onRefresh: function (average) {
                                     participant.voiceMeterAverage = average
                                 },
                                 size: {
