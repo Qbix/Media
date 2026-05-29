@@ -5582,7 +5582,7 @@ function MultiStreamRecorder(arrayOfMediaStreams, options) {
      * Add extra media-streams to existing recordings.
      * @method
      * @memberof MultiStreamRecorder
-     * @param {MediaStreams} mediaStreams - Array of MediaStreams
+     * @param {Array<MediaStream>} mediaStreams - Array of MediaStreams
      * @example
      * recorder.addStreams([newAudioStream, newVideoStream]);
      */
@@ -5612,7 +5612,7 @@ function MultiStreamRecorder(arrayOfMediaStreams, options) {
      * Reset videos during live recording. Replace old videos e.g. replace cameras with full-screen.
      * @method
      * @memberof MultiStreamRecorder
-     * @param {MediaStreams} mediaStreams - Array of MediaStreams
+     * @param {Array<MediaStream>} mediaStreams - Array of MediaStreams
      * @example
      * recorder.resetVideoStreams([newVideo1, newVideo2]);
      */
