@@ -1785,30 +1785,29 @@
                                 return;
                             }
                             if ( this !== e.target && 
-                                ( /textarea|select/i.test( e.target.nodeName ) ||
-                                    e.target.type === "text" || e.target.type === "number" || e.target.type === "password" || e.target.type === "search" || e.target.type === "tel" || e.target.type === "url") ) {
+                                (/textarea|select/i.test(e.target.nodeName) ||
+                                    e.target.type === "text" || e.target.type === "number" || e.target.type === "password" || e.target.type === "search" || e.target.type === "tel" || e.target.type === "url")) {
                                 return;
                             }
 
-                            if(e.shiftKey) { //select layout by shift+1,2,3... combination
-                                let mapping = {'!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&': '7', '*': '8', '(': '9'}
+                            if (e.shiftKey) { //select scene by 1,2,3,4... keys
+                                let mapping = { '!': '1', '@': '2', '#': '3', '$': '4', '%': '5', '^': '6', '&': '7', '*': '8', '(': '9' }
 
-                                if(mapping[e.key] && ['1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(mapping[e.key]) != -1) {
-                                    let layoutToActivate = _layoutsList[parseInt(mapping[e.key]) - 1];
-                                    if(layoutToActivate) {
-                                        _activeScene.sourcesInterface.selectLayout(layoutToActivate.key, true);
-                                    }
-                                }
-                               
-                            } else { //select scene by 1,2,3,4... keys
-                                if(['1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(e.key) != -1) {
-                                    let sceneToActivate = _scenesList[parseInt(e.key) - 1];
-                                    if(sceneToActivate) {
+                                if (mapping[e.key] && ['1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(mapping[e.key]) != -1) {
+                                    let sceneToActivate = _scenesList[parseInt(mapping[e.key]) - 1];
+                                    if (sceneToActivate) {
                                         selectScene(sceneToActivate);
                                     }
                                 }
+                            } else { //select layout by shift+1,2,3... combination
+                                if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(e.key) != -1) {
+                                    let layoutToActivate = _layoutsList[parseInt(e.key) - 1];
+                                    if (layoutToActivate) {
+                                        _activeScene.sourcesInterface.selectLayout(layoutToActivate.key, true);
+                                    }
+                                }
                             }
-                            
+
                         });
                     }
                     defineShortcuts();
