@@ -90,6 +90,7 @@
          * @param {String} [_options.relate.publisherId] publisherId of a stream to which roomStream will be related.
          * @param {String} [_options.relate.streamName] streamName of a stream to which roomStream will be related.
          * @param {Boolean} [_options.useRelatedTo] if true, instead of create new stream use last related webrtc stream (_options.relate should be filled)
+         * @param {Boolean} [_options.presentationUrl] a url that will be opened when a user clicks the "Share {{hostName}} in a new window" option in the popup with cameras
          */
         var _options = {
             startWith: {
@@ -137,10 +138,17 @@
             defaultMobileViewMode:null,
             writeLevel:23,
             relate: {},
-            useRelatedTo: false
+            useRelatedTo: false,
+            presentationUrl: null
         };
 
         overrideDefaultOptions(options);
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if(urlParams.has('presentationUrl')) {
+            _options.presentationUrl = urlParams.get('presentationUrl');
+        } 
 
         var webrtcSignalingLib;
         var _waitingRoomStream;
