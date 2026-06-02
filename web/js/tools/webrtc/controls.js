@@ -2345,6 +2345,11 @@
                             onToolLoaded: function () {                                
                                 tool.livestreamingEditorTool.get().then(function(livestreamingEditor){
                                     tool.livestreamingEditor = livestreamingEditor;
+
+                                    var options = tool.webrtcRoomInstance.getOptions();
+                                    if(options && options.openLivestreamingOnStart === true) {
+                                        tool.livestreamingEditor.show();
+                                    }
                 
                                     if (imageBgLink) {
                                         tool.livestreamingEditor.sourcesInterface.visualSources.addBackground(imageBgLink, { type: 'image' });
