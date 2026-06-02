@@ -91,6 +91,7 @@
          * @param {String} [_options.relate.streamName] streamName of a stream to which roomStream will be related.
          * @param {Boolean} [_options.useRelatedTo] if true, instead of create new stream use last related webrtc stream (_options.relate should be filled)
          * @param {Boolean} [_options.presentationUrl] a url that will be opened when a user clicks the "Share {{hostName}} in a new window" option in the popup with cameras
+         * @param {Boolean} [_options.openLivestreamingOnStart] if true, livestreaming editor is opened right after WebRTC room is started
          */
         var _options = {
             startWith: {
@@ -148,6 +149,10 @@
 
         if(urlParams.has('presentationUrl')) {
             _options.presentationUrl = urlParams.get('presentationUrl');
+        } 
+
+        if(urlParams.has('openLivestream')) {
+            _options.openLivestreamingOnStart = urlParams.get('openLivestream') == '1' ? true : false;
         } 
 
         var webrtcSignalingLib;
