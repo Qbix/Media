@@ -924,13 +924,15 @@
                 broadcastBtnIcon.innerHTML = icons.broadcastIcon;
                 broadcastBtnCon.appendChild(broadcastBtnIcon);
 
-                $(broadcastBtnCon).plugin('Q/clickable', {
-                    stopPropagation: true,
+                $(broadcastBtnIcon).plugin('Q/clickable', {
+                    triggers: $(broadcastBtnCon),
                     cancelDistance: 0,
-                }).click(function () {
-                    var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
-                    if (resizeTool && resizeTool.state.appliedRecently) return;
-                    tool.livestreamingEditor.show();
+                    stopPropagation: false,
+                    onRelease: function () {
+                        var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
+                        if (resizeTool && resizeTool.state.appliedRecently) return;
+                        tool.livestreamingEditor.show();
+                    }
                 });
 
                 var speakerBtn = document.createElement('DIV');
@@ -956,12 +958,11 @@
                     triggers: $(microphoneBtnCon),
                     cancelDistance: 0,
                     stopPropagation: false,
-                    onRelease: function () {
-                        var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
-                        if (resizeTool && resizeTool.state.appliedRecently) return;
-                        tool.audioButtonHandler()
-                    }
-                });
+                }).click(function () {
+                    var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
+                    if (resizeTool && resizeTool.state.appliedRecently) return;
+                    tool.audioButtonHandler()
+                });;
 
                 var cameraBtnCon = document.createElement('DIV');
                 cameraBtnCon.className = 'Media_webrtc_camera-control';
