@@ -149,11 +149,7 @@
 
         if(urlParams.has('presentationUrl')) {
             _options.presentationUrl = urlParams.get('presentationUrl');
-        } 
-
-        if(urlParams.has('openLivestream')) {
-            _options.openLivestreamingOnStart = urlParams.get('openLivestream') == '1' ? true : false;
-        } 
+        }
 
         var webrtcSignalingLib;
         var _waitingRoomStream;
