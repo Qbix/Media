@@ -214,11 +214,11 @@ Q.Tool.define("Media/card/chat", ["Streams/chat"], function (options) {
 // Clicking a card preview replays it on the canvas.
 // This handler is registered via Media.patch.js Q.Tool.define.options('Streams/chat').
 //
-// Called by Streams/chat with: (message, onRender)
+// Called by Streams/chat with: (message, onRefresh)
 //   message.fields.instructions — JSON with { visualizationType, visualizationData, streamType }
-//   onRender(html)              — pass rendered HTML back to Streams/chat
+//   onRefresh(html)              — pass rendered HTML back to Streams/chat
 
-Media_card_chat_messageHandler = function (message, onRender) {
+Media_card_chat_messageHandler = function (message, onRefrsh) {
     var instr = {};
     try { instr = JSON.parse(message.fields.instructions || '{}'); } catch (e) {}
 
@@ -269,7 +269,7 @@ Media_card_chat_messageHandler = function (message, onRender) {
         + '<button class="Media_card_chat_replay" type="button">▶ Show</button>'
         + '</div>';
 
-    onRender(html);
+    onRefresh(html);
 };
 
 // Event delegation for replay button clicks — wired once per page load
