@@ -306,7 +306,7 @@ class Media_YoutubeClipGenerator
         $totalDuration = $videoInfo['duration'];
         $audioLanguage = isset($audioInfo['language']) ? $audioInfo['language'] : 'en';
 
-        if (!isset($existingSubs) || $options['recreateSubs'] === true) {
+        if (!isset($existingSubs) || (isset($options['recreateSubs']) && $options['recreateSubs'] === true)) {
             try {
                 $subsFiles = self::retrieveCaptions($url, $videoId, $audioLanguage);
             } catch (Exception $e) {
@@ -323,15 +323,17 @@ class Media_YoutubeClipGenerator
         }
 
 
-        if (!isset($existingSummary) || $options['recreateSummary'] === true) {
+        if (!isset($existingSummary) || (isset($options['recreateSummary']) && $options['recreateSummary'] === true)) {
             $subsFiles = $episodeStream->getAttribute('subs');
             $rawVtt = file_get_contents($serverPath . $subsFiles[0]);
+
             try {
                 $summaryPath = self::summarize($rawVtt, $videoId);
             } catch (Exception $e) {
                 $episodeStream->setAttribute('clipsState', 'summarizeError');
                 $episodeStream->save();
                 Q::log($e);
+                print_r($e);
                 throw new Exception("Failed to make a summary");
             }
 
@@ -347,6 +349,8 @@ class Media_YoutubeClipGenerator
         $speakers = array();
         $clipStreams = array();
         foreach ($segments as $index => $segment) {
+            echo "Creating clip ... \n";
+            set_time_limit(0);
             if($segment['speakers'] != '') {
                 $speakers[] = $segment['speakers'];
             }
@@ -359,17 +363,25 @@ class Media_YoutubeClipGenerator
             
             $name = $episodeStream->name . '_' . $startInS . '_' . $endInS;
 
-            $existingEpisode = Streams::fetchOne($episodeStream->publisherId, $episodeStream->publisherId, $name);
-
-            if(isset($existingEpisode)) {
-                continue;
-            }
+            $existingClip = Streams::fetchOne($episodeStream->publisherId, $episodeStream->publisherId, $name);
 
             $title = $segment['title'];
+            $content = $segment['summary'];
+            if(isset($segment['keywords']) && !empty($segment['keywords'])) $content = $content . "\n\n\n" . $segment['keywords'];
+            $content = self::trimAtLastSeparator($content, 4095);
+
+            if(isset($existingClip)) {
+                echo "Clips exists. Updating ... \n";
+                //$existingClip->title = $title;
+                $existingClip->content = $content;
+                $existingClip->save();
+                continue;
+            }
 
             $clipStream = Streams::create($episodeStream->publisherId, $episodeStream->publisherId, "Media/clip", array(
                 "name" => $name,
                 "title" => $title,
+                "content" => $content,
                 "icon" => $episodeStream->icon,
                 "attributes" => array(
                     "video" => array(
@@ -392,6 +404,29 @@ class Media_YoutubeClipGenerator
             'clipStreams' => $clipStreams,
             'speakers' => $speakers
         );
+    }
+
+    static function trimAtLastSeparator(string $text, int $maxLength = 4095): string
+    {
+        if (mb_strlen($text) <= $maxLength) {
+            return $text;
+        }
+
+        $truncated = mb_substr($text, 0, $maxLength);
+
+        $lastComma = mb_strrpos($truncated, ',');
+        $lastDot   = mb_strrpos($truncated, '.');
+
+        $lastSeparator = max(
+            $lastComma !== false ? $lastComma : -1,
+            $lastDot !== false ? $lastDot : -1
+        );
+
+        if ($lastSeparator !== -1) {
+            return mb_substr($truncated, 0, $lastSeparator);
+        }
+
+        return $truncated;
     }
 
     static function getSpeakersFromSummary($episodeStream)
@@ -509,6 +544,52 @@ EOF;
         $response = $LLM->executeModel($prompt, compact('text'));
         
         return $response;
+    }
+
+    function generateKeywords($text, $options = array())
+    {
+        if (!isset($options['temperature'])) {
+            $options['temperature'] = 0;
+        }
+        if (!isset($options['max_tokens'])) {
+            $options['max_tokens'] = 1000;
+        }
+
+        if (!trim($text)) {
+            return array();
+        }
+
+        $instructions = <<<HEREDOC
+    You are a language model tasked with extracting structured summaries for indexing, using clearly labeled XML-style tags.
+
+    Output exactly these sections:
+    <keywords> one line, max 400 characters
+
+    Rules:
+    - No extra text
+    - No markdown
+    - No explanations
+
+    Text to process:
+    $text
+HEREDOC;
+        $LLM = new AI_LLM_Openai();
+        $raw = $LLM->executeModel($instructions, compact('text'), $options);
+        $content = is_array($raw)
+            ? json_encode($raw)
+            : (string)$raw;
+
+        $content = trim(preg_replace('/^```.*?\n|\n```$/s', '', $content));
+
+        preg_match('/<keywords>(.*?)<\/keywords>/s', $content, $k);
+
+        $keywordsString = trim(isset($k[1]) ? $k[1] : '');
+
+        $keywords = $keywordsString !== ''
+            ? preg_split('/\s*,\s*/', $keywordsString)
+            : array();
+
+        return compact('keywords');
     }
 
     static function retrieveCaptions($url, $videoId, $language = "en")
@@ -752,7 +833,8 @@ EOF;
             }
 
             $keywordsResponse = $LLM->keywords($chunkResult['keywords'] ?? []);
-            $keywords = Q::ifset($keywordsResponse, "output", "output", 0, "content", 0, "text", []);
+            $parsedRespose = json_decode($keywordsResponse, true);
+            $keywords = Q::ifset($parsedRespose, "output", 0, "content", 0, "text", []);
 
             $s = floor($start / 1000);
             $hms = Q_Utils::secondsToHMS($s);
