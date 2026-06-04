@@ -90,7 +90,11 @@ function Media_clipEditor_post($params = array())
             if (!move_uploaded_file($_FILES["fileToProcess"]["tmp_name"], $targetFile)) {
                 throw new Exception('Upload failed');
             } else {
-                $stream = AI_ClipGenerator::createStream($targetFile, $fileName, $newName, 'Media/ai/clips/' . $uniqueName);
+                $appUrl = Q_Config::expect('Q', 'web', 'appRootUrl');
+                $loggetInUserId = Users::loggedInUser(true)->id;
+                $name = pathinfo($newName, PATHINFO_FILENAME);
+                $webhook = "$appUrl/Media/clipEditor/webhook?publisher=$loggetInUserId&name=$name";
+                $stream = AI_ClipGenerator::createStream($targetFile, $fileName, $newName, 'Media/ai/clips/' . $uniqueName, $webhook);
                 $stream->join(['subscribed' => true]);
             }
         }
