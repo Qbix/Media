@@ -196,6 +196,8 @@
             "dialogTitle": "Video Settings",
             "webCamera": "Web Camera",
             "screenSharing": "Screen Sharing",
+            "shareNewWindow": "Share {{hostName}} in a new window",
+            "startShareNewWindow": "Start Screen Sharing",
             "shareAnotherScreen": "Share another screen",
             "turnOffCameras": "Turn off camera",
             "turnOffVideo": "Turn off camera\/screen sharing",

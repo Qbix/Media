@@ -4616,6 +4616,9 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 audio.muted = false;
                 audio.loop = getOptions().liveStreaming && getOptions().liveStreaming.loopAudio ? getOptions().liveStreaming.loopAudio : true;
                 audio.src = newSource.url;
+                audio.addEventListener('error', function (e) {
+                    Q.alert('Error while loading the file');
+                });
 
                 document.body.appendChild(audio);
 

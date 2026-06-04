@@ -348,7 +348,7 @@
                         if (!btnInstance.button.classList.contains('Q_working')) btnInstance.button.classList.add('Q_working');
 
                         var turnScreensharingOn = function () {
-                            tool.webrtcSignalingLib.screenSharing.startShareScreen(function () {
+                            tool.webrtcSignalingLib.screenSharing.startShareScreen(null, function () {
                                 if (btnInstance.button.classList.contains('Q_working')) btnInstance.button.classList.remove('Q_working');
                                 Q.Dialogs.pop();
                                 tool.toggleRadioButton(btnInstance);
@@ -379,6 +379,96 @@
                     }
                 });
 
+                let urlToOpen = tool.webrtcUserInterface.getOptions().presentationUrl;
+                if(urlToOpen && urlToOpen.indexOf('http') !== 0) urlToOpen = 'http://' + urlToOpen;
+                
+                let hostnameToOpen = '';
+                try {
+                    if (urlToOpen) {
+                        hostnameToOpen = new URL(urlToOpen).hostname.replace(/^www\./, '');
+                    }
+                } catch (e) {
+                    urlToOpen = null;
+                }
+
+                tool.startScreenNewWindowBtn = new ButtonInstance({
+                    className: 'webrtc-video-settings_popup_screen_item',
+                    label: (Q.getObject("webrtc.settingsPopup.shareNewWindow", tool.text) || 'Share {{hostName}} in a new window').interpolate({ hostName: hostnameToOpen }),
+                    type: 'screen',
+                    icon: _controlsToolIcons.screen,
+                    deviceId: 'screen',
+                    handler: function (e) {
+                        var btnInstance = this;
+                        btnInstance.button.classList.add('Q_working');
+
+                        
+                        var turnScreensharingOn = function () {
+                            window.open(urlToOpen, '_blank', "popup,toolbar=yes,menubar=yes,resizable=yes,width=800,height=600");
+
+                            const dialogContent = document.createElement('DIV');
+                            dialogContent.className = 'Media_webrtc_start_screen_content';
+                            dialogContent.style.display = 'flex';
+                            dialogContent.style.justifyContent = 'center';
+                            dialogContent.style.padding = '10px';
+                            const startButton = document.createElement('BUTTON');
+                            startButton.className = 'Q_button';
+                            startButton.innerHTML = Q.getObject("webrtc.settingsPopup.startShareNewWindow", tool.text);
+                            dialogContent.appendChild(startButton);
+                            startButton.addEventListener('click', function () {
+                                tool.webrtcSignalingLib.screenSharing.startShareScreen({
+                                    video: { 
+                                        displaySurface: 'browser',
+                                        preferCurrentTab: false,
+                                        surfaceSwitching: "include",
+                                        selfBrowserSurface: "exclude",
+                                    },
+                                    audio: true
+                                }, function () {
+                                    btnInstance.button.classList.remove('Q_working');
+                                    Q.Dialogs.pop();
+                                    tool.toggleRadioButton(btnInstance);
+                                    tool.state.controlsTool.closeAllDialogs();
+                                    tool.state.controlsTool.updateControlBar();
+                                }, function () {
+                                    btnInstance.button.classList.remove('Q_working');
+
+                                    var currentCameraDevice = tool.webrtcSignalingLib.localMediaControls.currentCameraDevice();
+                                    if (currentCameraDevice != null) {
+                                        var btnToSwitchOn = tool.cameraListButtons.filter(function (cameraBtn) {
+                                            return cameraBtn.deviceId == currentCameraDevice.deviceId;
+                                        })[0];
+                                        if (btnToSwitchOn != null) tool.toggleRadioButton(btnToSwitchOn);
+                                    } else tool.toggleRadioButton(tool.turnOffCameraBtn);
+
+                                    tool.state.controlsTool.updateControlBar();
+                                });
+                            });
+
+                            let dialog = Q.Dialogs.push({
+                                title: Q.getObject("webrtc.settingsPopup.startShareNewWindow", tool.text),
+                                content: dialogContent,
+                                className: 'Media_webrtc_dialog_start_screen_content',
+                                onClose: function () {
+                                    btnInstance.button.classList.remove('Q_working');
+                                }
+                            });
+
+
+                        }
+
+                        if (tool.webrtcSignalingLib.limits && (tool.webrtcSignalingLib.limits.video || tool.webrtcSignalingLib.limits.audio)) {
+                            tool.webrtcSignalingLib.localMediaControls.canITurnCameraOn().then(function (result) {
+                                turnScreensharingOn();
+                            })
+                                .catch(function () {
+                                    btnInstance.button.classList.remove('Q_working');
+                                });
+                        } else {
+                            turnScreensharingOn();
+                        }
+                    }
+                });
+
                 tool.startAnotherScreenSharingBtn = new ButtonInstance({
                     type: 'shareAnotherScreen',
                     className: 'webrtc-video-video_anotherScreen',
@@ -387,7 +477,7 @@
                     deviceId: 'screen',
                     handler: function () {
                         var turnScreensharingOn = function () {
-                            tool.webrtcSignalingLib.screenSharing.startShareScreen(function () {
+                            tool.webrtcSignalingLib.screenSharing.startShareScreen(null, function () {
                                 Q.Dialogs.pop();
                                 tool.toggleRadioButton(tool.startScreenSharingBtn);
                                 tool.state.controlsTool.closeAllDialogs();
@@ -438,7 +528,7 @@
                     deviceId: 'screen',
                     handler: function (e) {
                         var btnInstance = this;
-                        tool.webrtcSignalingLib.screenSharing.startShareScreen(function () {
+                        tool.webrtcSignalingLib.screenSharing.startShareScreen(null, function () {
                             Q.Dialogs.pop();
                             tool.toggleRadioButton(btnInstance);
                             tool.state.controlsTool.closeAllDialogs();
@@ -482,6 +572,7 @@
 
                 videoinputList.appendChild(tool.turnOnCameraBtn.button);
                 if (!Q.info.useTouchEvents) videoinputList.appendChild(tool.startScreenSharingBtn.button);
+                if (!Q.info.useTouchEvents && urlToOpen) videoinputList.appendChild(tool.startScreenNewWindowBtn.button);
                 if (!Q.info.useTouchEvents) videoinputList.appendChild(tool.startAnotherScreenSharingBtn.button);
                 if (tool.webrtcUserInterface.getOptions().showScreenSharingInSeparateScreen && !Q.info.useTouchEvents) videoinputList.appendChild(tool.stopScreenSharingBtn.button);
                 if ((Q.info.useTouchEvents) && typeof cordova != 'undefined') videoinputList.appendChild(tool.startMobileScreenSharingBtn.button);
@@ -639,6 +730,7 @@
                     tool.startScreenSharingBtn.switchToRegularState();
                     tool.startAnotherScreenSharingBtn.hide();
                     tool.stopScreenSharingBtn.hide();
+                    tool.startScreenNewWindowBtn.switchToRegularState();
                 } else if (buttonObj.type == 'off') {
                     deselectCameraButtons();
                     if (!tool.webrtcUserInterface.getOptions().showScreenSharingInSeparateScreen) {

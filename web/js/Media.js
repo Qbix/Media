@@ -489,6 +489,23 @@
 		});
 	}
 
+    Media.startWebRTCRoom = function (options) {
+        var WebConference = Q.Media.WebRTC({
+            element: document.body,
+            roomId: options.streamName,
+            roomPublisherId: options.publisherId,
+            resumeClosed: true,
+            defaultDesktopViewMode: 'maximizedStatic',
+            defaultMobileViewMode: 'audio',
+            mode: 'node',
+            startWith: {video: false, audio: true},
+            audioOnlyMode: false,
+            openLivestreamingOnStart: options.openLivestreamingOnStart
+        });
+
+		WebConference.start();
+    }
+
 	Q.page('', function () {
 		var fsc = Q.first(document.getElementsByClassName('Media_fullscreen_capable'));
 		if (fsc instanceof Element) {
@@ -505,6 +522,59 @@
 			});
 		}
 	}, 'Media');
+
+	Q.page('', function () {
+        var url = new URL(location.href);
+        if (url.searchParams.has("Q.Media.livestream")) {
+            var livestream = url.searchParams.get("Q.Media.livestream");
+            var decodedData;
+            try {
+                decodedData = decodeURIComponent(livestream);
+            } catch (e) {
+                console.warn('Invalid livestream parameter');
+                return;
+            }
+            var webrtcStreamInfo = decodedData.split('\t');
+            var publisherId = webrtcStreamInfo[0];
+            var streamName = webrtcStreamInfo[1];
+
+            if (!publisherId || !streamName) {
+                console.warn('Q.Media.livestream does not contain publisherId or/and streamName');
+                return;
+            }
+
+            if(streamName.indexOf('Media/webrtc') !== 0) streamName = 'Media/webrtc/' + streamName;
+                
+            if (!Q.Users.loggedInUser) {
+                var currentUrl = window.location.href;
+                Q.Users.login({
+                    successUrl: currentUrl
+                });
+
+                Q.Users.onComplete.setOnce(function () {
+                    Q.handle(currentUrl);
+                });
+            } else {
+                if(Q.Media.WebRTCRooms != null && Q.Media.WebRTCRooms.length != 0) {                   
+                    for(var r in Q.Media.WebRTCRooms) {
+                        let streamOfRoom = Q.Media.WebRTCRooms[r].roomStream();
+                        if(streamOfRoom.fields.publisherId == publisherId && streamOfRoom.fields.name == streamName) {
+                            console.warn('Prevented connecting to the same room')
+                            return;
+                        }
+                    }
+                }
+
+                Media.startWebRTCRoom({
+                    publisherId: publisherId,
+                    streamName: streamName,
+                    openLivestreamingOnStart: true
+                });
+            }
+        }
+
+        
+	}, 'Media-livestream-start');
 
 	Q.Streams.Chat.extensions.push('Media/webrtc/chat', 'Media/card/chat', 'Media/chart/chat');
 

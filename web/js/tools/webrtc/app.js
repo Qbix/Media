@@ -2021,7 +2021,7 @@ Q.Media.WebRTCRoomClient = function app(options){
             return isChrome || isFirefox;
         }
 
-        function startShareScreen(successCallback, failureCallback) {
+        function startShareScreen(params, successCallback, failureCallback) {
             app.signalingDispatcher.sendDataTrackMessage("remoteScreensharingStarting");
 
             if(_isMobile && typeof cordova != 'undefined') {
@@ -2062,7 +2062,7 @@ Q.Media.WebRTCRoomClient = function app(options){
                 });
             } else if(!_isMobile) {
 
-                getUserScreen().then(function (stream) {
+                getUserScreen(params).then(function (stream) {
                     var videoTrack = stream.getVideoTracks()[0];
 
                     if(!options.showScreenSharingInSeparateScreen) app.localMediaControls.disableVideo('camera');
@@ -2167,15 +2167,19 @@ Q.Media.WebRTCRoomClient = function app(options){
 
         }
 
-        function getUserScreen() {
+        function getUserScreen(params) {
             if (!canScreenShare()) {
-                return;
+                return Promise.reject(new Error('Screen sharing not supported'));
+            }
+
+            if(!params) {
+                params = {video: true, audio: true};
             }
 
             if(navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
 
                 if(navigator.mediaDevices.getDisplayMedia) {
-                    return navigator.mediaDevices.getDisplayMedia({video: true, audio: true});
+                    return navigator.mediaDevices.getDisplayMedia(params);
                 }
                 else if(navigator.getDisplayMedia) {
                     return navigator.getDisplayMedia({video: true, audio: true})

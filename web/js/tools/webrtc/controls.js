@@ -924,6 +924,17 @@
                 broadcastBtnIcon.innerHTML = icons.broadcastIcon;
                 broadcastBtnCon.appendChild(broadcastBtnIcon);
 
+                $(broadcastBtnIcon).plugin('Q/clickable', {
+                    triggers: $(broadcastBtnCon),
+                    cancelDistance: 0,
+                    stopPropagation: false,
+                    onRelease: function () {
+                        var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
+                        if (resizeTool && resizeTool.state.appliedRecently) return;
+                        tool.livestreamingEditor.show();
+                    }
+                });
+
                 var speakerBtn = document.createElement('DIV');
                 speakerBtn.className = 'Media_webrtc_controls_icon Media_webrtc_speaker-control-btn';
                 speakerBtn.innerHTML = icons.enabledSpeaker;
@@ -943,6 +954,16 @@
                 micCountdownBadge.className = 'Media_webrtc_mic-countdown';
                 microphoneBtnCon.appendChild(micCountdownBadge);
 
+                $(microphoneBtnIcon).plugin('Q/clickable', {
+                    triggers: $(microphoneBtnCon),
+                    cancelDistance: 0,
+                    stopPropagation: false,
+                }).click(function () {
+                    var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
+                    if (resizeTool && resizeTool.state.appliedRecently) return;
+                    tool.audioButtonHandler()
+                });;
+
                 var cameraBtnCon = document.createElement('DIV');
                 cameraBtnCon.className = 'Media_webrtc_camera-control';
                 if(!tool.webrtcRoomInstance.getOptions().audioOnlyMode) controlBarCon.appendChild(cameraBtnCon);
@@ -956,6 +977,16 @@
                 var countdownBadge = document.createElement('DIV');
                 countdownBadge.className = 'Media_webrtc_camera-countdown';
                 cameraBtnCon.appendChild(countdownBadge);
+
+                $(cameraBtnIcon).plugin('Q/clickable', {
+                    triggers: $(cameraBtnCon),
+                    cancelDistance: 0,
+                    stopPropagation: false,
+                }).click(function () {
+                    var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
+                    if (resizeTool && resizeTool.state.appliedRecently) return;
+                    tool.cameraButtonHandler();
+                });
 
                 var textChatBtnCon = document.createElement('DIV');
                 textChatBtnCon.className = 'Media_webrtc_text-chat-btn';
@@ -971,7 +1002,7 @@
                 textChatCounterBadge.className = 'Media_webrtc_text-chat-counter Media_webrtc_hidden';
                 textChatBtnCon.appendChild(textChatCounterBadge);
                 var textChatCounterBadgeSpan = document.createElement('SPAN');
-                textChatCounterBadge.appendChild(textChatCounterBadgeSpan);
+                textChatCounterBadge.appendChild(textChatCounterBadgeSpan);    
 
                 var usersBtnCon = document.createElement('DIV');
                 usersBtnCon.className = 'Media_webrtc_manage-users-btn';
@@ -994,6 +1025,12 @@
                 mediaRequestsCountdownBadge.className = 'Media_webrtc_requests-countdown';
                 usersBtnCon.appendChild(mediaRequestsCountdownBadge);
 
+                $(usersBtnIcon).plugin('Q/clickable', {
+                    triggers: $(usersBtnCon),
+                    stopPropagation: false,
+                    cancelDistance: 0,
+                });
+
                 if (!tool.webrtcRoomInstance.getOptions().disconnectBtnInParticipants) {
                     var disconnectBtnCon = document.createElement('DIV');
                     disconnectBtnCon.className = 'Media_webrtc_manage-users-btn';
@@ -1005,6 +1042,15 @@
                     disconnectBtnIcon.className = 'Media_webrtc_controls_icon Media_webrtc_disconnect-btn-icon';
                     disconnectBtnIcon.innerHTML = icons.disconnectIcon;
                     disconnectBtn.appendChild(disconnectBtnIcon);
+
+                    $(disconnectBtnIcon).plugin('Q/clickable', {
+                        triggers: $(disconnectBtnCon),
+                        stopPropagation: false,
+                        cancelDistance: 0,
+                    }).click(function () {
+                        Q.Dialogs.pop();
+                        tool.webrtcRoomInstance.stop(null, null, true);
+                    });
                 }
 
                 tool.controlBar = controlBar;
@@ -1014,6 +1060,7 @@
                 tool.microphoneBtn = microphoneBtn;
                 tool.microphoneBtnIcon = microphoneBtnIcon;
                 tool.textChatBtn = textChatBtn;
+                tool.textChatBtnIcon = textChatBtnIcon;
                 tool.broadcastBtn = broadcastBtn;
                 tool.usersBtn = usersBtn;
                 tool.usersBtnIcon = usersBtnIcon;
@@ -1027,35 +1074,11 @@
 
                 Q.Streams.Message.Total.setUpElement(textChatCounterBadgeSpan, roomStream.fields.publisherId, roomStream.fields.name, 'Streams/chat/message', tool);
 
-
-                cameraBtn.addEventListener('touchend', function () {
-                    var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
-                    if (resizeTool && resizeTool.state.appliedRecently) return;
-                    tool.cameraButtonHandler()
-                })
-
                 speakerBtn.addEventListener('mouseup', function () {
                     var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
                     if (resizeTool && resizeTool.state.appliedRecently) return;
                     tool.toggleAudioOutputSpeaker();
                 })
-                microphoneBtn.addEventListener('mouseup', function () {
-                    var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
-                    if (resizeTool && resizeTool.state.appliedRecently) return;
-                    tool.audioButtonHandler()
-                })
-                broadcastBtn.addEventListener('mouseup', function () {
-                    var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
-                    if (resizeTool && resizeTool.state.appliedRecently) return;
-                    tool.livestreamingEditor.show();
-                })
-
-                if (disconnectBtn) {
-                    disconnectBtn.addEventListener('mouseup', function () {
-                        Q.Dialogs.pop();
-                        tool.webrtcRoomInstance.stop(null, null, true);
-                    })
-                }
 
                 if(callback) callback(controlBar);
                 return controlBar;
@@ -1066,7 +1089,7 @@
                 function createPopup() {
                     
                     var chatBox = document.createElement('DIV');
-                    chatBox.className = 'Media_webrtc_popup-chat-box  Media_webrtc_popup-box';
+                    chatBox.className = 'Media_webrtc_popup-chat-box Media_webrtc_popup-box';
 
                     if (!Q.info.useTouchEvents) {
                         tool.textChatBtn.parentNode.appendChild(chatBox);
@@ -1136,14 +1159,31 @@
 
                     if (Q.info.useTouchEvents) {
 
-                        tool.textChatBtn.addEventListener('click', function (e) {
+                        $(tool.textChatBtnIcon).plugin('Q/clickable', {
+                            triggers: $(tool.textChatBtn),
+                            stopPropagation: false,
+                            cancelDistance: 0,
+                        }).click(function () {
                             var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
                             if (resizeTool && resizeTool.state.appliedRecently) return;
                             if (tool.textChat.chatTool == null) initChat();
                             tool.textChat.show();
                         });
 
+                        /* tool.textChatBtn.addEventListener('click', function (e) {
+                            var resizeTool = Q.Tool.from(tool.element.firstChild, "Q/resize");
+                            if (resizeTool && resizeTool.state.appliedRecently) return;
+                            if (tool.textChat.chatTool == null) initChat();
+                            tool.textChat.show();
+                        }); */
+
                     } else {
+                        $(tool.textChatBtnIcon).plugin('Q/clickable', {
+                            triggers: $(tool.textChatBtn),
+                            stopPropagation: false,
+                            cancelDistance: 0,
+                        });     
+
                         tool.textChatBtn.addEventListener('mouseenter', function (e) {
                             tool.hideAllPopups();
                             if (tool.textChat.chatTool == null) initChat();
@@ -2306,6 +2346,11 @@
                             onToolLoaded: function () {                                
                                 tool.livestreamingEditorTool.get().then(function(livestreamingEditor){
                                     tool.livestreamingEditor = livestreamingEditor;
+
+                                    var options = tool.webrtcRoomInstance.getOptions();
+                                    if(options && options.openLivestreamingOnStart === true) {
+                                        tool.livestreamingEditor.show();
+                                    }
                 
                                     if (imageBgLink) {
                                         tool.livestreamingEditor.sourcesInterface.visualSources.addBackground(imageBgLink, { type: 'image' });
