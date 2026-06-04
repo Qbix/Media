@@ -903,7 +903,7 @@
 }
 .Media_webrtc_mobile-screen .Media_webrtc_chat-participant-name .Media_webrtc_participant-name-text .Users_avatar_tool{
     display: block;
-    line-height: 1;
+    line-height: 30px;
 }
 .Media_webrtc_mobile-screen .Media_webrtc_chat-participant-name .Media_webrtc_participant-name-text .Users_avatar_name{
     max-width: 100%;
