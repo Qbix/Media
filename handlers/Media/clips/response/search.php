@@ -20,7 +20,7 @@ function Media_clips_response_search($params = array()) {
             "MATCH(title, content) AGAINST ($searchTerm)"
         ))
         ->where(array(
-            'type' => 'Media/episode'
+            'type' => 'Media/clip'
         ))
         ->orderBy(new Db_Expression('score'), false)
         ->fetchDbRows();
