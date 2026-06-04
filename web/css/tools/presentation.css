@@ -121,6 +121,9 @@
     max-height: 100%;
     object-fit: contain;
 }
+.Media_presentation_tool .Media_presentation_question_screen {
+    overflow: auto;
+}
 .Media_presentation_tool .Media_presentation_question_screen .Media_presentation_hero {
     width: 80%;
     height: auto;
@@ -140,6 +143,9 @@
 .Media_presentation_tool .Media_presentation_question_screen.Media_presentation_question_showAnswers .Streams_related_answers {
     opacity: 1;
     max-height: 1000px;
+}
+.Media_presentation_tool .Media_presentation_question_screen .Streams_related_answers {
+    font-size: 10px;
 }
 .Media_presentation_tool .Media_presentation_question_screen.Media_presentation_question_showAnswers .Media_presentation_question_scanQR {
     display: none;
