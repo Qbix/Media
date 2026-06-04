@@ -30,7 +30,7 @@
             }
 
             if (requestId !== tool.searchRequestId) {
-                return; // stale response
+                return;
             }
 
             var streams = results.result.map(function (item) {
@@ -38,10 +38,15 @@
             });
 
             if(streams.length == 0) {
-                tool.updateSearchResultsElement('notFound', 'No results for "' + query + '"', );
+                if(tool.searchInProgress) {
+                    tool.updateSearchResultsElement('notFound', 'No results for "' + query + '"');
+                } else {
+                    tool.updateSearchResultsElement('regular');
+                }
                 return;
             }
 
+            tool.searchInProgress = false;
             tool.updateSearchResultsElement('found');
             tool.hideOrShowMainClipList('hide'); 
 
@@ -137,14 +142,14 @@
                 if (searchInput.value.trim() === '' || searchInput.value.trim().length < 3) {
                     tool.updateSearchResultsElement('invalid');
                     tool.hideOrShowMainClipList('show');
+                    tool.searchInProgress = false;
                     return;
                 }
 
+                tool.searchInProgress = true;
                 tool.updateSearchResultsElement('loading');
                 tool.hideOrShowMainClipList('hide');
                 let resutls = tool.sendSearchRequest(searchInput.value);
-
-
             })
 
             let searchStateIcons = document.createElement('DIV');
