@@ -64,6 +64,11 @@
 			js: "{{Media}}/js/tools/clip/preview.js",
 			css: "{{Media}}/css/tools/episodePreview.css"
 		},
+		"Media/clip/search": {
+			js: "{{Media}}/js/tools/clipSearch.js",
+			css: "{{Media}}/css/tools/clipSearch.css",
+			text: ["Streams/content", "Media/content"]
+		},
 		"Media/episode": {
 			js: "{{Media}}/js/tools/episode.js",
 			css: "{{Media}}/css/tools/episode.css"
