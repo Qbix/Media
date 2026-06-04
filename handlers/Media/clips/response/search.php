@@ -23,6 +23,7 @@ function Media_clips_response_search($params = array()) {
             'type' => 'Media/clip'
         ))
         ->orderBy(new Db_Expression('score'), false)
+        ->limit(100) //TODO: refactor into pagination/load more
         ->fetchDbRows();
 
     return Q_Response::setSlot("search", array(
