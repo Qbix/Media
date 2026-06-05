@@ -1663,7 +1663,7 @@
 
             if(_options.minimizeOnPageSwitching) {
                 Q.Page.onActivate('').set(function(){
-                    if(layoutState.currentMode == 'minimizedStatic') return;
+                    if(layoutState.currentScreensMode == 'minimizedStatic') return;
                     switchScreensMode('minimizedStatic');
                 }, 'Media.WebRTC');
             }
@@ -1676,9 +1676,9 @@
                 if(webrtcSignalingLib == null) return;
                 log('updateLayout, current mode is ', viewMode);
 
-                log('updateLayout, roomScreens', layoutState.defaultScreensMode, layoutState.currentMode, roomScreens.length);
+                log('updateLayout, roomScreens', layoutState.defaultScreensMode, layoutState.currentScreensMode, roomScreens.length);
 
-                if(!layoutState.currentMode) {
+                if(!layoutState.currentScreensMode) {
                     log('updateLayout, roomScreens 111', roomScreens.length);
 
                     switchScreensMode(layoutState.defaultScreensMode);
@@ -2077,7 +2077,7 @@
                                 source: track.stream,
                                 format:'html',
                                 shape: 'bars',
-                                onRefresh: function (average) {
+                                onRender: function (average) {
                                     participant.voiceMeterAverage = average
                                 },
                                 size: {
@@ -2112,7 +2112,7 @@
                                 source: track.stream,
                                 format:'html',
                                 shape: 'circles',
-                                onRefresh: function (average) {
+                                onRender: function (average) {
                                     participant.voiceMeterAverage = average
                                 },
                                 size: {
@@ -2600,11 +2600,11 @@
              */
             function toggleViewModeByScreenClick(e) {
                 log('toggleViewModeByScreenClick')
-                log('toggleViewModeByScreenClick: current layoutState.currentMode', layoutState.currentMode)
+                log('toggleViewModeByScreenClick: current layoutState.currentScreensMode', layoutState.currentScreensMode)
                 /* var resizeTool = Q.Tool.from(roomScreens[s].screenEl, "Q/resize");
                 if(resizeTool.state.active === false) return; */
                 
-                if(layoutState.currentMode == 'audio' || layoutState.currentMode == 'squaresView') return;
+                if(layoutState.currentScreensMode == 'audio' || layoutState.currentScreensMode == 'squaresView') return;
 
                 e.stopImmediatePropagation();
                 e.preventDefault();
@@ -2628,14 +2628,14 @@
                 log('toggleViewModeByScreenClick 0')
 
                 if (activeScreen) {
-                    if (!activeScreen.screenEl.contains(e.target) && (layoutState.currentMode == 'maximizedStatic')) {
+                    if (!activeScreen.screenEl.contains(e.target) && (layoutState.currentScreensMode == 'maximizedStatic')) {
                         log('toggleViewModeByScreenClick 1')
 
                         tappedScreen.screenEl.style.zIndex = '';
 
                         switchScreensMode('maximizedStatic', tappedScreen);
                         return;
-                    } else if (!activeScreen.screenEl.contains(e.target) && (layoutState.currentMode == 'fullScreen')) {
+                    } else if (!activeScreen.screenEl.contains(e.target) && (layoutState.currentScreensMode == 'fullScreen')) {
                         log('toggleViewModeByScreenClick 2')
 
                         tappedScreen.screenEl.style.zIndex = '';
@@ -2651,14 +2651,14 @@
                         return;
                     }
                 } else {
-                    if ((layoutState.currentMode == 'tiledView')) {
+                    if ((layoutState.currentScreensMode == 'tiledView')) {
                         log('toggleViewModeByScreenClick 4')
 
                         tappedScreen.screenEl.style.zIndex = '';
 
                         switchScreensMode('maximizedStatic', tappedScreen);
                         return;
-                    } else if ((layoutState.currentMode == 'minimizedStatic')) {
+                    } else if ((layoutState.currentScreensMode == 'minimizedStatic')) {
                         log('toggleViewModeByScreenClick 5')
 
                         tappedScreen.screenEl.style.zIndex = '';
@@ -2683,13 +2683,13 @@
              * @returns 
              */
             function switchScreensMode(modeName, screenToSetActive, changedByUserInteraction) {
-                /* if(layoutState.currentMode == modeName) {
+                /* if(layoutState.currentScreensMode == modeName) {
                     return;
                 } */
-                //console.log('switchScreensMode START', modeName, layoutState.currentMode)
+                //console.log('switchScreensMode START', modeName, layoutState.currentScreensMode)
                 //console.trace();
-                layoutState.previousScreensMode = layoutState.currentMode;
-                layoutState.currentMode = modeName;
+                layoutState.previousScreensMode = layoutState.currentScreensMode;
+                layoutState.currentScreensMode = modeName;
                 layoutState.currentModeChangedByUser = changedByUserInteraction !== false;
 
                 if (modeName != 'loudest' && modeName != 'loudestExceptMe') {
