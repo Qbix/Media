@@ -253,9 +253,14 @@ class ControlClassifier {
         }
 
         // Fall through to Q.handlers for plugin-defined commands.
+        // Look up under Media/commands first (Media owns these by design —
+        // slide search, presentation navigation, etc.) and fall back to
+        // AI/commands for legacy registrations from before the split.
         if (this.Q) {
-            const handlerPath = this.Q.Config
-                && this.Q.Config.get(['AI', 'commands', intent, 'handler'], null);
+            const handlerPath = this.Q.Config && (
+                   this.Q.Config.get(['Media', 'commands', intent, 'handler'], null)
+                || this.Q.Config.get(['AI',    'commands', intent, 'handler'], null)
+            );
             if (handlerPath && this.Q.handlers) {
                 const parts = handlerPath.replace(/\//g, '.').split('.');
                 let fn = this.Q.handlers;
