@@ -44,9 +44,19 @@ Q.Tool.define("Media/presentation/card/profile", function (options) {
             Q.activate(tool.element, function () {
                 tool.element.forEachTool('Q/card/profile', function () {
                     var cardTool = this;
-                    stream.onEphemeral('Streams/reveal').set(function (e) {
-                        if (e && e.revealIndex != null) cardTool.reveal && cardTool.reveal(e.revealIndex);
-                    }, tool);
+                    // Listen for the durable Media/presentation/reveal message
+                    // instead of the legacy Streams/reveal ephemeral. The
+                    // message carries the reveal index inside its JSON
+                    // instructions field.
+                    if (stream.onMessage) {
+                        stream.onMessage('Media/presentation/reveal', function (msg) {
+                            var instr = {};
+                            try { instr = JSON.parse(msg.instructions || '{}'); } catch (e) {}
+                            if (instr.index != null && cardTool.reveal) {
+                                cardTool.reveal(instr.index);
+                            }
+                        });
+                    }
                 }, tool);
             });
         });

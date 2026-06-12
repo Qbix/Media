@@ -80,7 +80,20 @@
                             });
                         }
                         stream.onEphemeral('Streams/scroll').set(_scroll, tool);
-                        stream.onEphemeral('Streams/slide').set(_slide, tool);
+                        // Listen for the durable Media/presentation/slide
+                        // message instead of the legacy Streams/slide
+                        // ephemeral. Parse the JSON instructions field and
+                        // call _slide with the shape it already expects
+                        // ({ slideIndex }).
+                        if (stream.onMessage) {
+                            stream.onMessage('Media/presentation/slide', function (msg) {
+                                var instr = {};
+                                try { instr = JSON.parse(msg.instructions || '{}'); } catch (e) {}
+                                if (instr.index != null) {
+                                    _slide({ slideIndex: instr.index });
+                                }
+                            });
+                        }
                     }, tool);
                 }, tool);
 

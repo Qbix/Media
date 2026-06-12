@@ -721,13 +721,29 @@ Q.Tool.define("Media/presentation", function(options) {
 
     /**
      * Navigate to a specific slide index.
+     * Routes through the canonical Media/presentation/command socket
+     * event, which AI._navCommand picks up server-side and posts the
+     * durable Media/presentation/slide message + VTT cue. All clients
+     * listening on onMessage('Media/presentation/slide') react.
+     *
+     * The legacy stream.ephemeral('Streams/slide', ...) emission is gone;
+     * Media's messages.json flags it as legacy and the listeners (pdf.js,
+     * profile.js) now consume the durable message.
+     *
      * @method goToSlide
      * @param {Number} index
      */
     goToSlide: function (index) {
         var tool = this;
         if (!tool._stream) return;
-        tool._stream.ephemeral('Streams/slide', { slideIndex: index });
+        var qs = Q.Socket.get('/Q', '');
+        if (!qs) return;
+        qs.socket.emit('Media/presentation/command', {
+            intent:      'slide/navigate',
+            slideIndex:  index,
+            publisherId: tool._stream.fields.publisherId,
+            streamName:  tool._stream.fields.name
+        });
     },
 
     /**

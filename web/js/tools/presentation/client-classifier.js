@@ -133,11 +133,13 @@ Q.Media.ClientClassifier.create = function (options) {
     function _emitEphemeral(intent, captures) {
         if (!stream) return false;
         var SCROLL = 20;
+        // Slide and reveal intents are NOT in this map any more. They go
+        // through the durable-message path: intercept() updates local
+        // state and calls _syncServer, which emits Media/presentation/command.
+        // The server (AI._navCommand) posts the durable
+        // Media/presentation/{slide,reveal} message; other clients pick it
+        // up via onMessage and update. No legacy stream.ephemeral here.
         var map = {
-            'slide/next':          function () { stream.ephemeral('Streams/slide', { slideIndex: ++_slideIndex }); },
-            'slide/prev':          function () { _slideIndex = Math.max(0, _slideIndex - 1); stream.ephemeral('Streams/slide', { slideIndex: _slideIndex }); },
-            'slide/first':         function () { _slideIndex = 0; stream.ephemeral('Streams/slide', { slideIndex: 0 }); },
-            'slide/last':          function () { stream.ephemeral('Streams/slide', { slideIndex: 9999 }); },
             'video/play':          function () { stream.ephemeral('Streams/play', {}); },
             'video/pause':         function () { stream.ephemeral('Streams/pause', {}); },
             'video/seek':          function () { captures.pos != null && stream.ephemeral('Streams/seek', { pos: captures.pos }); },
@@ -152,7 +154,6 @@ Q.Media.ClientClassifier.create = function (options) {
             'scroll/up':           function () { stream.ephemeral('Q/scroll', { top: '-' + SCROLL + '%' }); },
             'scroll/top':          function () { stream.ephemeral('Q/scroll', { top: '0%' }); },
             'scroll/bottom':       function () { stream.ephemeral('Q/scroll', { top: '100%' }); },
-            'reveal/next':         function () { stream.ephemeral('Streams/reveal', { revealIndex: ++_revealIndex }); },
             'fullscreen':          function () { stream.ephemeral('Q/fullscreen', {}); },
         };
         if (map[intent]) { map[intent](); return true; }
@@ -324,11 +325,9 @@ Q.Media.ClientClassifier.create = function (options) {
                 streamName:  match.streamName,
                 streamType:  'Media/pdf'
             });
-            // Then navigate to the page
-            setTimeout(function () {
-                stream.ephemeral('Streams/slide', { slideIndex: match.pageIndex });
-                _slideIndex = match.pageIndex;
-            }, 120); // small delay so presentation tool activates the PDF first
+            // Update local state for optimistic UI; server posts the
+            // durable Media/presentation/slide message via _syncServer.
+            _slideIndex = match.pageIndex;
         }
         _syncServer('slide/navigate', {
             slideIndex:         match.pageIndex,
@@ -374,7 +373,21 @@ Q.Media.ClientClassifier.create = function (options) {
                 return _handleNavigate(query);
             }
 
-            // All other intents: emit ephemeral directly, sync server
+            // ── Slide and reveal: durable-message path ────────────────────────
+            // Update local state for optimistic host-screen UI, then sync the
+            // server. The server (AI._navCommand) posts the durable
+            // Media/presentation/{slide,reveal} message; other clients pick it
+            // up via onMessage. No legacy stream.ephemeral here.
+            if (intent === 'slide/next')  { _slideIndex++;                          _syncServer(intent, captures); return true; }
+            if (intent === 'slide/prev')  { _slideIndex = Math.max(0, _slideIndex - 1); _syncServer(intent, captures); return true; }
+            if (intent === 'slide/first') { _slideIndex = 0;                        _syncServer(intent, captures); return true; }
+            if (intent === 'slide/last')  { _syncServer(intent, captures, { slideIndex: 9999 }); return true; }
+            if (intent === 'reveal/next') { _revealIndex++;                         _syncServer(intent, captures); return true; }
+
+            // ── Other intents: ephemeral fan-out + server sync ────────────────
+            // zoom, scroll, play/pause/seek, gallery, fullscreen — all stay
+            // ephemeral by design (no legacy flag in messages.json, no need
+            // for a durable record).
             var emitted = _emitEphemeral(intent, captures);
             if (emitted) {
                 _syncServer(intent, captures);
