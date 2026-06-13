@@ -207,7 +207,7 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
         if (_audioContext == null || recreate) {
             _audioContext = Q.Media.WebRTC.audioContext != null ? Q.Media.WebRTC.audioContext : new AudioContext({
                 //sampleRate: 44100, //commented because of Firefox error: "DOMException: AudioContext.createMediaStreamSource: Connecting AudioNodes from AudioContexts with different sample-rate is currently not supported"
-                latencyHint: 'playback'
+                latencyHint: 'interactive'
             });
         }
         if (_destinationNode == null || recreate) {
