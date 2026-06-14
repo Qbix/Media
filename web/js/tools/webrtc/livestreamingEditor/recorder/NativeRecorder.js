@@ -55,7 +55,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             //console.log('mediaRecorder: warning', e);
         });
 
-        mediaRecorder.start(1000); // Start recording, and dump data every second
+        mediaRecorder.start(5000); // Start recording, and dump data every 5 seconds
 
         return mediaRecorder;
     }
