@@ -1276,7 +1276,7 @@ window.WebRTCWebcastClient = function (options) {
                     });
     
     
-                    _mediaRecorder.start(1000);
+                    _mediaRecorder.start(5000);  // Start recording, and dump data every 5 seconds
                 }
 
 
