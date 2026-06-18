@@ -73,22 +73,41 @@ Q.Media.ClientClassifier.create = function (options) {
     var _pdfCorpus   = {};
     var _pdfLoading  = {};  // promise cache so we don't double-load
 
-    // Compiled patterns loaded lazily from Q.text.Streams.controlPhrases
-    var _compiled    = null;
 
-    // ── Pattern loading ───────────────────────────────────────────────────────
+    // Compiled patterns (rebuilt when controlPhrases becomes available).
+    var _compiled = null;
+    // Raw phrase map, populated when the JSON loads.
+    var _raw = null;
+    // Promise tracking the load — patterns work once this resolves.
+    var _loading = null;
+
+    _ensureLoaded();
+
+    function _ensureLoaded() {
+        if (_raw || _loading) return _loading;
+        _loading = Q.Text.get('Streams/controlPhrases').then(function (content) {
+            _raw = content || {};
+            _compiled = null;   // force recompile on next _loadPatterns()
+            return _raw;
+        });
+        return _loading;
+    }
 
     function _loadPatterns() {
         if (_compiled) return _compiled;
-        var raw = Q.getObject('text.Streams.controlPhrases') || {};
+        if (!_raw) {
+            // Not loaded yet — kick off, but return empty so intercept falls through.
+            _ensureLoaded();
+            return [];
+        }
         var locale = Q.info && Q.info.language ? Q.info.language.split('-')[0] : 'en';
-        var map = raw[locale] || raw['en'] || {};
+        var map = _raw[locale] || _raw['en'] || {};
         var compiled = [];
         Q.each(map, function (intent, phrases) {
             if (intent.charAt(0) === '_') return;
             Q.each(phrases, function (i, phrase) {
                 if (typeof phrase === 'string'
-                && phrase.charAt(0) === '/' && phrase.slice(-1) === '/') {
+                    && phrase.charAt(0) === '/' && phrase.slice(-1) === '/') {
                     var rx = new RegExp(phrase.slice(1, -1), 'i');
                     compiled.push({ intent: intent, test: function (t) { return rx.test(t); } });
                 } else {

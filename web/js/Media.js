@@ -151,9 +151,6 @@
 		// B-roll gallery
 		"Media/presentation/gallery": { js: "{{Media}}/js/tools/presentation/gallery.js", css: "{{Media}}/css/tools/presentation.css" },
 
-		// classifier
-		"Media/presentation/client-classifier": { js: "{{Media}}/js/tools/presentation/client-classifier.js" },
-
 		// Chat composer extensions
 		"Media/card/chat":  { js: "{{Media}}/js/tools/card/chat.js",  css: "{{Media}}/css/tools/card/chat.css" },
 		"Media/chart/chat": { js: "{{Media}}/js/tools/chart/chat.js", css: ["{{Media}}/css/tools/card/chat.css","{{Media}}/css/tools/chart/chat.css"] }

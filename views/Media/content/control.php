@@ -1,4 +1,5 @@
 <?php
+
 /**
  * View for the Media/control page — the private host/guest control panel.
  * Rendered inside the app layout (nav bar, etc. remain visible).
@@ -16,13 +17,17 @@ $toolAttrs = Q_Html::attributes(array(
     'data-writeLevel'        => $writeLevel,
 ));
 
+
 ?>
-<div id="Media_presentation_control_page"
-     class="Q_tool Media_presentation_control_tool"
-     <?php echo $toolAttrs ?>>
+<div id="Media_presentation_control_page">
+    <?php echo Q::tool('Media/presentation/control', array(
+        "publisherId" => $publisherId,
+        "streamName" => $streamName,
+        "isHost" => $isHost ? 'true' : 'false',
+        "lang" => $lang,
+        "screenUrl" => $screenUrl,
+        "toolPublisherId" => $toolPublisherId,
+        "toolStreamName" => $toolStreamName,
+        "writeLevel" => $writeLevel
+    )) ?>>
 </div>
-<script>
-Q.onReady.add(function () {
-    Q.activate(document.getElementById('Media_presentation_control_page'));
-}, 'Media/control');
-</script>

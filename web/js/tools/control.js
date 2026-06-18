@@ -105,6 +105,7 @@ Q.Tool.define('Media/presentation/control', function (options) {
         .activate(function () {
             tool._chatTool = Q.Tool.from(chatWrap, 'Streams/chat');
             tool._wireMicButton();
+            tool._wirePreviewEphemeralHooks();
 
         // ── Mode toggles (host only) ────────────────────────────────────────
         if (state.isHost) {
@@ -217,6 +218,120 @@ Q.Tool.define('Media/presentation/control', function (options) {
             }
         });
     },
+    _wirePreviewEphemeralHooks: function () {
+        var tool = this;
+        var state = tool.state;
+        var pId = state.publisherId;
+        var sName = state.streamName;
+        var chatEl = tool._chatTool && tool._chatTool.element;
+        if (!chatEl) return;
+
+        // Helper: emit ephemeral on the *content* stream (not the presentation)
+        function contentEphemeral(previewState, type, data) {
+            Q.Streams.Stream.ephemeral(
+                previewState.publisherId,
+                previewState.streamName,
+                Q.extend({ type: type }, data)
+            );
+        }
+
+        // ── Any Streams/preview: onInvoke → show that stream on the canvas ──
+        function wirePreview(previewTool) {
+            if (!previewTool || previewTool.name != 'streams_preview' || !chatEl.contains(previewTool.element)) return;
+            var ps = previewTool.state;
+            ps.onInvoke.set(function () {
+                Q.Streams.Stream.ephemeral(pId, sName, {
+                    type: 'Media/presentation/show',
+                    publisherId: ps.publisherId,
+                    streamName: ps.streamName
+                });
+            }, tool);
+        }
+        chatEl.forEachTool('Streams/preview', wirePreview);
+        Q.Tool.onActivate('Streams/preview').add(function () {
+            if (this.name != 'streams_preview' || !chatEl.contains(this.element)) return;
+            wirePreview(this);
+        }, tool);
+
+        // ── Streams/pdf/preview: scroll + slide → content stream ephemerals ──
+        function wirePdfPreview(previewTool) {
+            if (!previewTool) return;
+            var previewState = previewTool.preview && previewTool.preview.state
+                || previewTool.state;
+            document.body.forEachTool('Q/pdf', function () {
+                var pdfTool = this;
+                if (Q.isEmpty(previewTool.stream)
+                    || Q.url(previewTool.stream.fileUrl()) !== pdfTool.state.url) {
+                    return;
+                }
+                pdfTool.state.onScroll.set(function (scrollTop, scrollLeft) {
+                    contentEphemeral(previewState, 'Streams/scroll', { scrollTop: scrollTop, scrollLeft: scrollLeft });
+                }, previewTool);
+                pdfTool.state.onSlide.set(function (slideIndex) {
+                    contentEphemeral(previewState, 'Streams/slide', { slideIndex: slideIndex });
+                }, previewTool);
+            }, previewTool);
+        }
+        chatEl.forEachTool('Streams/pdf/preview', wirePdfPreview);
+        Q.Tool.onActivate('Streams/pdf/preview').add(function () {
+            if (!chatEl.contains(this.element)) return;
+            wirePdfPreview(this);
+        }, tool);
+
+        // ── Streams/video/preview: play/pause/seek → content stream ephemerals ──
+        function wireVideoPreview(previewTool) {
+            var previewState = previewTool.preview && previewTool.preview.state
+                || previewTool.state;
+            document.body.forEachTool('Q/video', function () {
+                var videoTool = this;
+                if (Q.isEmpty(previewTool.stream)
+                    || Q.url(previewTool.stream.fileUrl()) !== videoTool.state.url) {
+                    return;
+                }
+                videoTool.state.onPlay.set(function (pos) {
+                    contentEphemeral(previewState, 'Streams/play', { pos: pos });
+                }, previewTool);
+                videoTool.state.onPause.set(function (pos) {
+                    contentEphemeral(previewState, 'Streams/pause', { pos: pos });
+                }, previewTool);
+                videoTool.state.onSeek.set(function (pos) {
+                    contentEphemeral(previewState, 'Streams/seek', { pos: pos });
+                }, previewTool);
+            }, previewTool);
+        }
+        chatEl.forEachTool('Streams/video/preview', wireVideoPreview);
+        Q.Tool.onActivate('Streams/video/preview').add(function () {
+            if (!chatEl.contains(this.element)) return;
+            wireVideoPreview(this);
+        }, tool);
+
+        // ── Streams/audio/preview: play/pause/seek → content stream ephemerals ──
+        function wireAudioPreview(previewTool) {
+            var previewState = previewTool.preview && previewTool.preview.state
+                || previewTool.state;
+            document.body.forEachTool('Q/audio', function () {
+                var audioTool = this;
+                if (Q.isEmpty(previewTool.stream)
+                    || Q.url(previewTool.stream.fileUrl()) !== audioTool.state.url) {
+                    return;
+                }
+                audioTool.state.onPlay.set(function (pos) {
+                    contentEphemeral(previewState, 'Streams/play', { pos: pos });
+                }, previewTool);
+                audioTool.state.onPause.set(function (pos) {
+                    contentEphemeral(previewState, 'Streams/pause', { pos: pos });
+                }, previewTool);
+                audioTool.state.onSeek.set(function (pos) {
+                    contentEphemeral(previewState, 'Streams/seek', { pos: pos });
+                }, previewTool);
+            }, previewTool);
+        }
+        chatEl.forEachTool('Streams/audio/preview', wireAudioPreview);
+        Q.Tool.onActivate('Streams/audio/preview').add(function () {
+            if (!chatEl.contains(this.element)) return;
+            wireAudioPreview(this);
+        }, tool);
+    },
 
     /**
      * Start speech recognition.
@@ -234,20 +349,15 @@ Q.Tool.define('Media/presentation/control', function (options) {
         // so the gesture chain is preserved. On first load (cold start), there
         // is a small risk of gesture chain break — mitigate by pre-loading
         // Q.Speech.Recognition() during page init (before any user tap).
-        Q.Speech.Recognition(function () {
-            // This callback fires synchronously if already loaded, async if cold load.
-            // Either way, start() is called as close to the gesture as possible.
-            Q.Speech.Recognition.start({
-                lang:        state.lang || 'en-US',
-                autoRestart: true,   // iOS Safari stops on silence — auto-restart
-            });
-
-            state._micActive = true;
-            tool._updateMicUI(true);
-
-            // Connect to AI socket for all users — role guard is on the server
-            tool._connectAISocket();
+        Q.Speech.Recognition.start({
+            lang: state.lang || 'en-US',
+            autoRestart: true,   // iOS Safari stops on silence — auto-restart
         });
+
+        state._micActive = true;
+        tool._updateMicUI(true);
+        
+        tool._connectAISocket();
     },
 
     _stopMic: function () {
