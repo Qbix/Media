@@ -74,7 +74,10 @@ Q.page('Media/presentation', function () {
             publisherId: publisherId,
             streamName: streamName,
             show: page.show,
-            mode: page.mode
+            mode: page.mode,
+            backgroundGallery: page.backgroundGallery,
+            pexelsKey:  page.pexelsKey  || null,
+            pixabayKey: page.pixabayKey || null
         }));
         Q.activate(Q.replace(oldContainer, newContainer));
     }

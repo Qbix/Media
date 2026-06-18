@@ -16,102 +16,64 @@
      * @param {Object} options.publisherId
      * @param {Object} options.streamName
      */
-    Q.Tool.define("Media/presentation/pdf", function(options) {
+    Q.Tool.define("Media/presentation/pdf", function (options) {
         var tool = this;
         var state = tool.state;
         Streams.retainWith(tool).get(state.publisherId, state.streamName, function (err, stream) {
-            if (err) {
-                return;
-            }
-
-            var options = Q.extend({}, stream.getAllAttributes(), {
+            if (err) return;
+            var opts = Q.extend({}, stream.getAllAttributes(), {
                 publisherId: stream.fields.publisherId,
                 streamName: stream.fields.name,
                 autoplay: true,
                 url: stream.fileUrl() || stream.iconUrl('80')
             });
             Q.Template.render('Media/presentation/pdf', {
-                'Q/pdf': options,
+                'Q/pdf': opts,
                 title: stream.fields.title
-            }, null, {
-                tool: tool
-            }).then(function (html) {
-                tool.element.forEachTool("Q/pdf", function () {
+            }, null, { tool: tool }).then(function (html) {
+                tool.element.forEachTool('Q/pdf', function () {
                     var pdfTool = this;
+                    tool._pdfTool = pdfTool;
                     pdfTool.state.onRefresh.addOnce(function () {
                         var lastScrollEphemeral = null;
-                        var lastSlideEphemeral = null;
-                        var _scroll = function (ephemeral) {
+                        tool._scroll = function (ephemeral) {
                             lastScrollEphemeral = ephemeral;
-                            var scrollTop = Q.getObject("scrollTop", ephemeral);
-                            if (scrollTop) {
-                                scrollTop = pdfTool.element.scrollHeight/100*scrollTop;
-                            }
-                            var scrollLeft = Q.getObject("scrollLeft", ephemeral);
-                            if (scrollLeft) {
-                                scrollLeft = pdfTool.element.scrollWidth/100*scrollLeft;
-                            }
-
-                            pdfTool.setCurrentPosition(scrollTop, scrollLeft);
+                            var st = Q.getObject('scrollTop', ephemeral);
+                            if (st) st = pdfTool.element.scrollHeight / 100 * st;
+                            var sl = Q.getObject('scrollLeft', ephemeral);
+                            if (sl) sl = pdfTool.element.scrollWidth / 100 * sl;
+                            pdfTool.setCurrentPosition(st, sl);
                         };
-                        var _slide = function (ephemeral) {
+                        // The slide-render primitive — same body as old _slide
+                        tool.goToSlide = function (index) {
                             pdfTool.element.setAttribute('data-slideMode', true);
-                            lastSlideEphemeral = ephemeral;
-                            state.trackScroll = pdfTool.element.slideIndex === ephemeral.slideIndex;
+                            state.trackScroll = pdfTool.element.slideIndex === index;
                             if (state.trackScroll) {
                                 pdfTool.element.removeAttribute('data-slideMode');
                             }
-
-                            $("canvas", pdfTool.element).each(function (index, element) {
-                                if (index === ephemeral.slideIndex || state.trackScroll) {
-                                    element.style.display = 'block';
-                                } else {
-                                    element.style.display = 'none';
-                                }
+                            $('canvas', pdfTool.element).each(function (i, el) {
+                                el.style.display = (i === index || state.trackScroll) ? 'block' : 'none';
                             });
-                            if (state.trackScroll) {
-                                _scroll(lastScrollEphemeral);
-                            }
-                            pdfTool.element.slideIndex = state.trackScroll ? null : ephemeral.slideIndex;
+                            if (state.trackScroll) tool._scroll(lastScrollEphemeral);
+                            pdfTool.element.slideIndex = state.trackScroll ? null : index;
                         };
-                        if (Q.getObject('cacheData.slideIndex', pdfTool)) {
-                            _slide({
-                                slideIndex: pdfTool.cacheData.slideIndex
-                            });
+                        if (Q.getObject('cacheData.slideIndex', pdfTool) != null) {
+                            tool.goToSlide(pdfTool.cacheData.slideIndex);
                         }
-                        stream.onEphemeral('Streams/scroll').set(_scroll, tool);
-                        // Listen for the durable Media/presentation/slide
-                        // message instead of the legacy Streams/slide
-                        // ephemeral. Parse the JSON instructions field and
-                        // call _slide with the shape it already expects
-                        // ({ slideIndex }).
-                        if (stream.onMessage) {
-                            stream.onMessage('Media/presentation/slide', function (msg) {
-                                var instr = {};
-                                try { instr = JSON.parse(msg.instructions || '{}'); } catch (e) {}
-                                if (instr.index != null) {
-                                    _slide({ slideIndex: instr.index });
-                                }
-                            });
-                        }
+                        stream.onEphemeral('Streams/scroll').set(tool._scroll, tool);
+                        // Slide/reveal listeners are GONE from this file.
+                        // Parent Media/presentation tool dispatches goToSlide() to us.
                     }, tool);
                 }, tool);
-
                 Q.replace(tool.element, html);
                 Q.activate(tool.element);
                 setTimeout(function () {
                     var caption = tool.element.querySelector('.Media_presentation_caption');
-                    caption.addClass('Media_presentation_fadeout');
+                    if (caption) caption.addClass('Media_presentation_fadeout');
                 }, 10);
             });
         });
-    },
-    {
-        trackScroll: false
-    },
-    {
-
-    });
+    }, { trackScroll: false }, {});
     
     })(Q, Q.jQuery, window);
         

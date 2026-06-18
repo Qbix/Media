@@ -117,7 +117,10 @@ Q.Tool.define("Media/presentation/gallery", function (options) {
         hero.appendChild(galleryDiv);
         tool.element.appendChild(wrapper);
 
-        var kb = state.kenburns;
+        var kb = state.kenburns != null ? state.kenburns : {
+            from: { left: 0.0, top: 0.0, width: 1.0, height: 1.0 },
+            to: { left: 0.05, top: 0.05, width: 0.90, height: 0.90 }
+        };
         var enriched = images.map(function (img) {
             return Q.extend({
                 interval: {
@@ -221,8 +224,8 @@ Q.Tool.define("Media/presentation/gallery", function (options) {
 
     _fetchAndSet: function (query) {
         var tool = this;
-        var pexelsKey  = tool.state.pexelsKey  || Q.Config.get(['Media', 'gallery', 'pexelsKey'],  null);
-        var pixabayKey = tool.state.pixabayKey || Q.Config.get(['Media', 'gallery', 'pixabayKey'], null);
+        var pexelsKey = tool.state.pexelsKey;
+        var pixabayKey = tool.state.pixabayKey;
         if (!pexelsKey && !pixabayKey) {
             return console.warn('Media/presentation/gallery: set pexelsKey or pixabayKey');
         }

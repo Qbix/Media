@@ -32,8 +32,12 @@ function Media_presentation_response_content($params)
     $mode = Q::ifset($_REQUEST, 'm', 'broadcast');
     $values = array('b' => 'broadcast', 'p' => 'participant');
     $mode = Q::ifset($values, $mode, $mode);
+    $pexelsKey  = Q_Config::get('Media', 'gallery', 'pexelsKey',  null);
+    $pixabayKey = Q_Config::get('Media', 'gallery', 'pixabayKey', null);
+    
     Q_Response::setScriptData('Q.Media.pages.presentation', @compact(
-        'calendar', 'presentation', 'show', 'mode'
+        'calendar', 'presentation', 'show', 'mode',
+        'pexelsKey', 'pixabayKey'
     ));
     Q_Response::addScript('{{Media}}/js/pages/presentation.js');
     Q_Response::addScript('{{Media}}/js/tools/presentation.js');

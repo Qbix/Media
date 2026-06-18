@@ -13,6 +13,15 @@ function Media_presentation_tool($options)
 	Q_Response::addStylesheet('{{Media}}/css/tools/presentation.css', 'Media');
 	Q_Response::addScript('{{Media}}/js/Media.js', 'Media');
     Q_Response::addScript('{{Media}}/js/tools/presentation.js', 'Media');
-	Q_Response::setToolOptions($options);
-	return '';
+
+    // Bridge server config into the tool's client-side state.
+    if (!isset($options['pexelsKey'])) {
+        $options['pexelsKey']  = Q_Config::get('Media', 'gallery', 'pexelsKey',  null);
+    }
+    if (!isset($options['pixabayKey'])) {
+        $options['pixabayKey'] = Q_Config::get('Media', 'gallery', 'pixabayKey', null);
+    }
+
+    Q_Response::setToolOptions($options);
+    return '';
 }

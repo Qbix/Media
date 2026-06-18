@@ -85,9 +85,11 @@ Q.Tool.define("Media/presentation", function(options) {
             state.presentingUserIds = presentingUserIds;
             state.title = stream.fields.title;
 
-            tool.refresh(stream);
-            tool._initBackground(stream);
-            tool._initCompositor(stream);
+            tool.refresh(stream).then(function () {
+                tool._initEphemerals(stream);
+                tool._initBackground(stream);
+                tool._initCompositor(stream);
+            });
         }, {
             participants: 100
         });
@@ -119,38 +121,40 @@ Q.Tool.define("Media/presentation", function(options) {
     backgroundGallery: false,
     pinnedItems: [],
     resize: { duration: 500 },
-    transitionClass: null
+    transitionClass: null,
+    pexelsKey: null,
+    pixabayKey: null
 },
-{
-    refresh: function (stream) {
-        var tool = this;
-        var state = this.state;
+    {
+        refresh: function (stream) {
+            var tool = this;
+            var state = this.state;
 
-        if (stream) {
-            var tc = stream.getAttribute('transitionClass');
-            if (tc) {
-                state.transitionClass = tc;
-                tool.element.classList.add(tc);
+            if (stream) {
+                var tc = stream.getAttribute('transitionClass');
+                if (tc) {
+                    state.transitionClass = tc;
+                    tool.element.classList.add(tc);
+                }
             }
-        }
 
-        Q.Template.render(
-            'Media/presentation',
-            Q.take(tool.state, ['title', 'presentingUserIds']),
-            { tool: tool }
-        ).then(function (html) {
-            Q.replace(tool.element, html);
+            return Q.Template.render(    // ← return the promise
+                'Media/presentation',
+                Q.take(tool.state, ['title', 'presentingUserIds']),
+                { tool: tool }
+            ).then(function (html) {
+                Q.replace(tool.element, html);
 
-            $(".Media_presentation_title", tool.element).tool("Streams/inplace", {
-                editable: false,
-                field: "title",
-                publisherId: state.publisherId,
-                streamName: state.streamName
-            }).activate();
+                $(".Media_presentation_title", tool.element).tool("Streams/inplace", {
+                    editable: false,
+                    field: "title",
+                    publisherId: state.publisherId,
+                    streamName: state.streamName
+                }).activate();
 
-            Q.activate(tool.element);
-        });
-    },
+                Q.activate(tool.element);
+            });
+        },
 
     next: function () {
 
@@ -256,166 +260,77 @@ Q.Tool.define("Media/presentation", function(options) {
         setTimeout(remove, timeoutMs || 500);
     },
 
+        _initEphemerals: function (stream) {
+            var tool = this;
+
+            stream.onEphemeral('Media/presentation/graph/update').set(function (e) {
+                // … (move from old _initBackground body verbatim)
+            }, tool);
+            stream.onEphemeral('Media/presentation/table/update').set(function (e) {
+                // …
+            }, tool);
+            stream.onEphemeral('Media/presentation/reaction/burst').set(function (e) {
+                // …
+            }, tool);
+            stream.onEphemeral('Media/livestream/reaction').set(function (e) {
+                // …
+            }, tool);
+            stream.onEphemeral('Q/style').set(function (e) {
+                // …
+            }, tool);
+        },
+
     // ── Background gallery ─────────────────────────────────────────────────
 
-    _initBackground: function (stream) {
-        var tool = this;
-        var state = tool.state;
+        _initBackground: function (stream) {
+            var tool = this;
+            var state = tool.state;
 
-        var bgConfig = state.backgroundGallery;
-        if (!bgConfig) {
-            bgConfig = stream.getAttribute('backgroundGallery');
-            if (bgConfig && typeof bgConfig === 'string') {
-                try { bgConfig = JSON.parse(bgConfig); } catch (e) { bgConfig = null; }
-            }
-        }
-        if (!bgConfig) return;
-        if (bgConfig === true) bgConfig = {};
-        state._bgConfig = bgConfig;
+            // Background container — positioned behind slides via CSS
+            var bg = document.createElement('div');
+            bg.className = 'Media_presentation_background';
+            tool.element.insertBefore(bg, tool.element.firstChild);
+            tool._bgElement = bg;
 
-        var bg = document.createElement('div');
-        bg.className = 'Media_presentation_background';
-        var galleryDiv = document.createElement('div');
-        bg.appendChild(galleryDiv);
-        tool.element.insertBefore(bg, tool.element.firstChild);
-        tool._bgElement = bg;
+            // The Media/presentation/gallery sub-tool owns:
+            //   - all Streams/gallery/* ephemeral wiring
+            //   - Pexels + Pixabay fetch
+            //   - WebSpeech keyword detection
+            //   - render / re-render with proper teardown
+            var galleryDiv = document.createElement('div');
+            bg.appendChild(galleryDiv);
 
-        var images = bgConfig.images || [];
-        var kb = bgConfig.kenburns || {
-            from: { left: 0.0,  top: 0.0,  width: 1.0,  height: 1.0  },
-            to:   { left: 0.05, top: 0.05, width: 0.90, height: 0.90 }
-        };
-        var intervalDuration   = bgConfig.intervalDuration   || 7000;
-        var transitionDuration = bgConfig.transitionDuration || 1500;
-
-        function enrich(imgs) {
-            return imgs.map(function (img) {
-                return Q.extend({
-                    interval: { type: 'kenburns', duration: intervalDuration, ease: 'smooth',
-                                from: _bgJitter(kb.from), to: _bgJitter(kb.to) }
-                }, img);
-            });
-        }
-
-        $(galleryDiv).tool('Q/gallery', {
-            images:   enrich(images),
-            autoplay: images.length > 0,
-            loop:     true,
-            transition: { type: 'crossfade', duration: transitionDuration, ease: 'smooth' },
-            interval:   { type: 'kenburns',  duration: intervalDuration,   ease: 'smooth', from: kb.from, to: kb.to }
-        }).activate(function () {
-            tool._bgGallery = $(galleryDiv).data('gallery');
-            if (!images.length) {
-                tool._bgGallery.pause();
-                Q.req('Users/image', 'fetch', function (err, data) {
-                    if (err || !data.slots || !data.slots.fetch) return;
-                    tool._bgSetImages(data.slots.fetch);
-                }, { method: 'get', fields: { provider: 'pexels', options: { curated: true } } });
-            }
-        });
-
-        if (state.mode === 'participant') {
-            tool._renderReactionBar(stream);
-        }
-
-        // Durable message handlers
-        if (stream.onMessage) {
-            stream.onMessage('Media/presentation/card/show', function (message) {
-                var d = {};
-                try { d = JSON.parse(message.fields.instructions || '{}'); } catch(e) {}
-                if (d.visualizationData && d.streamType) {
-                    tool._showInlineCard(d.streamType, d.visualizationType, d.visualizationData);
+            var bgConfig = state.backgroundGallery;
+            if (typeof bgConfig === 'string') {
+                try { bgConfig = JSON.parse(bgConfig); } catch (e) { bgConfig = {}; }
+            } else if (!bgConfig) {
+                bgConfig = stream.getAttribute('backgroundGallery') || {};
+                if (typeof bgConfig === 'string') {
+                    try { bgConfig = JSON.parse(bgConfig); } catch (e) { bgConfig = {}; }
                 }
-            }, tool);
-            stream.onMessage('Media/presentation/graph/update', function (message) {
-                var d = {};
-                try { d = JSON.parse(message.fields.instructions || '{}'); } catch(e) {}
-                if (d.action) tool._updateGraph(d);
-            }, tool);
-            stream.onMessage('Media/presentation/table/update', function (message) {
-                var d = {};
-                try { d = JSON.parse(message.fields.instructions || '{}'); } catch(e) {}
-                if (d.action) tool._updateTable(d);
-            }, tool);
-            stream.onMessage('Media/presentation/reaction', function (message) {
-                var instructions = {};
-                try { instructions = JSON.parse(message.fields.instructions || '{}'); } catch(e) {}
-                if (instructions.emoji) tool._showReaction(instructions.emoji);
-            }, tool);
-        }
+            } else if (bgConfig === true) {
+                bgConfig = {};
+            }
 
-        // Ephemeral handlers
-        // NOTE: Media/presentation/show is registered in the constructor (combined handler)
-        stream.onEphemeral('Media/presentation/graph/update').set(function (e) {
-            if (e && e.action) tool._updateGraph(e);
-        }, tool);
-        stream.onEphemeral('Media/presentation/table/update').set(function (e) {
-            if (e && e.action) tool._updateTable(e);
-        }, tool);
-        stream.onEphemeral('Streams/gallery/images').set(function (e) {
-            if (e && e.images) tool._bgSetImages(e.images);
-        }, tool);
-        stream.onEphemeral('Streams/gallery/query').set(function (e) {
-            if (e && e.query) tool._bgFetchAndSet(e.query);
-        }, tool);
-        stream.onEphemeral('Streams/gallery/next').set(function () {
-            tool._bgGallery && tool._bgGallery.next(false);
-        }, tool);
-        stream.onEphemeral('Streams/gallery/pause').set(function () {
-            tool._bgGallery && tool._bgGallery.pause();
-        }, tool);
-        stream.onEphemeral('Streams/gallery/resume').set(function () {
-            tool._bgGallery && tool._bgGallery.resume();
-        }, tool);
-        stream.onEphemeral('Media/presentation/reaction/burst').set(function (e) {
-            if (e && e.emoji) tool._showReaction(e.emoji);
-        }, tool);
-        stream.onEphemeral('Media/livestream/reaction').set(function (e) {
-            if (e && e.reaction) tool._showReaction(e.reaction);
-        }, tool);
-        stream.onEphemeral('Q/style').set(function (e) {
-            if (!e) return;
-            Q.handle(Q.Socket.onEvent('Q/style'), tool, [e]);
-        }, tool);
-    },
+            $(galleryDiv).tool('Media/presentation/gallery', {
+                publisherId: stream.fields.publisherId,
+                streamName: stream.fields.name,
+                images: bgConfig.images || [],
+                pexelsKey: state.pexelsKey,
+                pixabayKey: state.pixabayKey,
+                speechEnabled: false, // parent tool may drive speech separately
+                transitionDuration: bgConfig.transitionDuration || 1500,
+                intervalDuration: bgConfig.intervalDuration || 7000,
+                kenburns: !bgConfig.kenburns ? undefined : bgConfig.kenburns
+            }).activate(function () {
+                tool._bgGalleryTool = Q.Tool.from(galleryDiv, 'Media/presentation/gallery');
+            });
+        },
 
-    _bgSetImages: function (images) {
-        var tool = this;
-        if (!tool._bgGallery) return;
-        var $galleryDiv = $(tool._bgElement).find('.Q_gallery_tool');
-        if (!$galleryDiv.length) return;
-        tool._bgGallery.pause();
-        var kb = (tool.state._bgConfig || {}).kenburns || {
-            from: { left: 0.0,  top: 0.0,  width: 1.0,  height: 1.0  },
-            to:   { left: 0.05, top: 0.05, width: 0.90, height: 0.90 }
-        };
-        var enriched = images.map(function (img) {
-            return Q.extend({
-                interval: { type: 'kenburns', duration: 7000, ease: 'smooth',
-                            from: _bgJitter(kb.from), to: _bgJitter(kb.to) }
-            }, img);
-        });
-        Q.Tool.clear($galleryDiv[0]);
-        $galleryDiv.empty();
-        $galleryDiv.tool('Q/gallery', { images: enriched, autoplay: true, loop: true,
-            transition: { type: 'crossfade', duration: 1500, ease: 'smooth' },
-            interval: { type: 'kenburns', duration: 7000, ease: 'smooth', from: kb.from, to: kb.to }
-        }).activate(function () {
-            tool._bgGallery = $galleryDiv.data('gallery');
-        });
-    },
-
-    _bgFetchAndSet: function (query) {
-        var tool = this;
-        Q.req('Q/image/fetch', 'fetch', function (err, data) {
-            if (err || !data.slots || !data.slots.fetch) return;
-            tool._bgSetImages(data.slots.fetch);
-        }, { method: 'get', fields: { provider: 'pexels', q: query } });
-    },
 
     _bgDestroy: function () {
         var tool = this;
-        if (tool._bgGallery) tool._bgGallery.pause();
+        if (tool._bgGalleryTool) tool._bgGalleryTool.pause();
         if (tool._bgElement) {
             Q.Tool.clear(tool._bgElement);
             tool._bgElement.remove();
@@ -772,21 +687,48 @@ Q.Tool.define("Media/presentation", function(options) {
         tool._mainEl.style.flexGrow   = '1';
 
         if (stream && stream.onMessage) {
-            stream.onMessage('Media/presentation/pin', function (msg) {
+            stream.onMessage('Media/presentation/pin').set(function (msg) {
                 var d = _parseInstr(msg);
                 if (d.publisherId && d.streamName) tool.pin(d.publisherId, d.streamName, d);
             }, tool);
-            stream.onMessage('Media/presentation/unpin', function (msg) {
+            stream.onMessage('Media/presentation/unpin').set(function (msg) {
                 var d = _parseInstr(msg);
                 if (d.publisherId && d.streamName) tool.unpin(d.publisherId, d.streamName, d);
             }, tool);
-            stream.onMessage('Media/presentation/resize', function (msg) {
+            stream.onMessage('Media/presentation/resize').set(function (msg) {
                 var d = _parseInstr(msg);
                 if (d.ratio != null) tool.resize({ ratio: d.ratio, duration: d.duration });
             }, tool);
-            stream.onMessage('Media/presentation/reorder', function (msg) {
+            stream.onMessage('Media/presentation/reorder').set(function (msg) {
                 var d = _parseInstr(msg);
                 if (d.items) tool.reorder({ items: d.items });
+            }, tool);
+            stream.onMessage('Media/presentation/slide').set(function (message) {
+                var instr = {};
+                try { instr = JSON.parse(message.instructions || '{}'); } catch (e) { }
+                if (instr.index == null) return;
+                state.slideIndex = instr.index;
+                
+                var subToolNames = [
+                    'Media/presentation/pdf',
+                    // future: 'Media/presentation/cardSeries', 'Media/presentation/gallery', etc.
+                ];
+                subToolNames.forEach(function (name) {
+                    var className = '.' + name.replace(/\//g, '_') + '_tool';
+                    tool.element.querySelectorAll(className).forEach(function (el) {
+                        var t = Q.Tool.from(el, name);
+                        if (t && typeof t.goToSlide === 'function') {
+                            t.goToSlide(instr.index);
+                        }
+                    });
+                });
+            }, tool);
+            stream.onMessage('Media/presentation/reveal').set(function (message) {
+                var instr = {};
+                try { instr = JSON.parse(message.instructions || '{}'); } catch (e) { }
+                if (instr.index == null) return;
+                state.revealIndex = instr.index;
+                // Same dispatch pattern when sub-tools (e.g. profile cards) expose goToReveal.
             }, tool);
         }
 

@@ -52,7 +52,7 @@ function Media_control_response_content()
     }
 
     $isHost = $stream->testWriteLevel('edit');
-    $lang   = Q_Request::language() ?: 'en-US';
+    $lang   = Q_Request::languageLocale() ?: 'en-US';
 
     // ── Tool backing stream ──────────────────────────────────────────────────
     // When a participant triggers a generated tool (e.g. chess board), we
@@ -120,6 +120,7 @@ function Media_control_response_content()
 
     // Scripts and styles needed by the control tool
     Q_Response::addScript('{{Media}}/js/tools/control.js');
+    Q_Response::addScript('{{Media}}/js/tools/presentation/client-classifier.js');
     Q_Response::addStylesheet('{{Media}}/css/tools/control.css');
     Q_Response::addStylesheet('{{Q}}/css/tools/cards.css');
 
