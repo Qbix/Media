@@ -397,21 +397,33 @@ Q.Media.ClientClassifier.create = function (options) {
             // server. The server (AI._navCommand) posts the durable
             // Media/presentation/{slide,reveal} message; other clients pick it
             // up via onMessage. No legacy stream.ephemeral here.
-            if (intent === 'slide/next')  { _slideIndex++;                          _syncServer(intent, captures); return true; }
+            /* if (intent === 'slide/next')  { _slideIndex++;                          _syncServer(intent, captures); return true; }
             if (intent === 'slide/prev')  { _slideIndex = Math.max(0, _slideIndex - 1); _syncServer(intent, captures); return true; }
             if (intent === 'slide/first') { _slideIndex = 0;                        _syncServer(intent, captures); return true; }
             if (intent === 'slide/last')  { _syncServer(intent, captures, { slideIndex: 9999 }); return true; }
-            if (intent === 'reveal/next') { _revealIndex++;                         _syncServer(intent, captures); return true; }
+            if (intent === 'reveal/next') { _revealIndex++;                         _syncServer(intent, captures); return true; } */
+
+            if (intent === 'slide/next') return { intent: 'slide/next', captures: captures };
+            if (intent === 'slide/prev') return { intent: 'slide/prev', captures: captures };
+            if (intent === 'slide/first') return { intent: 'slide/first', captures: captures };
+            if (intent === 'slide/last') return { intent: 'slide/last', captures: captures };
+            if (intent === 'reveal/next') return { intent: 'reveal/next', captures: captures };
+            if (intent === 'reveal/prev') return { intent: 'reveal/prev', captures: captures };
+            if (intent === 'zoom/in') return { intent: 'zoom/in', captures: captures };
+            if (intent === 'zoom/out') return { intent: 'zoom/out', captures: captures };
 
             // ── Other intents: ephemeral fan-out + server sync ────────────────
             // zoom, scroll, play/pause/seek, gallery, fullscreen — all stay
             // ephemeral by design (no legacy flag in messages.json, no need
             // for a durable record).
-            var emitted = _emitEphemeral(intent, captures);
+            /* var emitted = _emitEphemeral(intent, captures);
             if (emitted) {
                 _syncServer(intent, captures);
                 return true;
-            }
+            } */
+
+            var emitted = _emitEphemeral(intent, captures);
+            if (emitted) return { intent: intent, captures: captures, emittedEphemeral: true };
 
             // Image/tool generation and stream commands: let server handle
             // (they need LLM or DB access)
