@@ -38,7 +38,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         this.eventDispatcher.on('webrtcLayoutUpdated', updateVisualSourcesOrdering)
 
         function updateVisualSourcesOrdering() {
-            //log('updateVisualSourcesOrdering START', sceneInstance.sources);
+            console.log('updateVisualSourcesOrdering START', sceneInstance.sources);
             let visualSources = [];
 
             //get all visual sourcesa
@@ -49,12 +49,12 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
                 if(source.sourceType == 'video' || source.sourceType == 'videoInput' || source.sourceType == 'image') {
                     visualSources.push(source)
-                } else if (source.sourceType == 'group' && source.groupType == 'webrtc') {
+                } else if (source.sourceType == 'group' && source.groupType == 'webrtc' && source.statePerScene[sceneInstance.id]) {
                     //log('updateVisualSourcesOrdering: GROUP', source.sources[0], source.sources[1]);
 
-                    for(let c in source.sources) {
+                    for(let c in source.statePerScene[sceneInstance.id].sources) {
                     //for(let c = source.sources.length - 1; c >= 0; c--) {
-                        visualSources.push(source.sources[c])
+                        visualSources.push(source.statePerScene[sceneInstance.id].sources[c])
                         //log('updateVisualSourcesOrdering: GROUP FOR', visualSources[0], visualSources[1]);
 
                     }
@@ -113,6 +113,8 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             //log('updateVisualSourcesOrdering:  sceneInstance.visualSources',  sceneInstance.visualSources);
 
         }
+
+        this.updateVisualSourcesOrdering = updateVisualSourcesOrdering;
 
         this.eventDispatcher.on('sourceRemoved', function (removedSource) {
             log('sourceRemoved', removedSource)
@@ -230,7 +232,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         return _scenes;
     }
 
-    function selectScene(sceneInstance) {
+    async function selectScene(sceneInstance, layoutName) {
         //TODO: pause remote video
         log('selectScene', sceneInstance);
 
@@ -267,6 +269,10 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     }
                 }
             }
+
+            const webrtcGroup = videoComposer.getWebrtcGroups(sceneInstance);
+
+            if(webrtcGroup.length) await videoComposer.updateWebRTCLayout(webrtcGroup[0].statePerScene[sceneInstance.id], layoutName, 0);
 
             let prevSelectedScene = _activeScene;
             _activeScene = sceneInstance;
@@ -308,7 +314,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
     var videoComposer = (function () {
         var _webrtcAudioGroup = null;
-        var _availableWebRTCSources = [];
+        var _webRTCGroups = [];
         var _size = {width:1920, height: 1080};
         var _inputCtx = null;
         var _isActive = null;
@@ -862,18 +868,18 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         }
         TextObjectSource.prototype = new Source();
 
-        var GroupSource = function () {
-            let groupInstance = this;
-            this.groupType = null;
-            this.sourceType = 'group';
+        var GroupSourceState = function (sourceInstance, sceneId) {
+            const thisInstance = this;
+            this.source = sourceInstance;
+            this.sceneId = sceneId;
             this.layoutName = null;
-            this.scene = null;
             this.layoutManager = null; 
             this._currentLayout = null; 
             this.prevLayout = null; 
+            this.currentLayoutMode = null; 
+            this.loudestMode = null; 
             this.pendingLayoutUpdate = null; 
             this.sources = []; 
-            this.removedWebrtcSources = []; 
             this.layoutUpdateQueue = []; 
             this.activePresenterSources = []; 
             this.size = {width:_size.width, height:_size.height};
@@ -889,27 +895,27 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         this.updateTimeout = null;
                     }
                     this.updateTimeout = setTimeout(function () {
-                        updateWebRTCLayout(groupInstance);
+                        updateWebRTCLayout(thisInstance);
                     }, 100)
                 },
                 set x(value) {
                     this._x = value;
-                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    if(sourceInstance.eventDispatcher != null) sourceInstance.eventDispatcher.dispatch('rectChanged');
                     this.updateGroupLayout();
                 },
                 set y(value) {
                     this._y = value;
-                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    if(sourceInstance.eventDispatcher != null) sourceInstance.eventDispatcher.dispatch('rectChanged');
                     this.updateGroupLayout();
                 },
                 set width(value) {
                     this._width = value;
-                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    if(sourceInstance.eventDispatcher != null) sourceInstance.eventDispatcher.dispatch('rectChanged');
                     this.updateGroupLayout();
                 },
                 set height(value) {
                     this._height = value;
-                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    if(sourceInstance.eventDispatcher != null) sourceInstance.eventDispatcher.dispatch('rectChanged');
                     this.updateGroupLayout();
                 },
                 get x() {return this._x;},
@@ -917,6 +923,89 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 get width() {return this._width;},
                 get height() {return this._height;}
             };
+            this.params = {
+                tiledLayoutMargins: getOptions().liveStreaming && getOptions().liveStreaming.tiledLayoutMargins ? getOptions().liveStreaming.tiledLayoutMargins : 0,
+                tiledLayoutInnerMargins: getOptions().liveStreaming && getOptions().liveStreaming.tiledLayoutInnerMargins ? getOptions().liveStreaming.tiledLayoutInnerMargins : 0,
+                tiledLayoutOuterHorizontalMargins: getOptions().liveStreaming && getOptions().liveStreaming.tiledLayoutOuterHorizontalMargins ? getOptions().liveStreaming.tiledLayoutOuterHorizontalMargins : 0,
+                tiledLayoutOuterVerticalMargins: getOptions().liveStreaming && getOptions().liveStreaming.tiledLayoutOuterVerticalMargins ? getOptions().liveStreaming.tiledLayoutOuterVerticalMargins : 0,
+                audioLayoutBgColor: getOptions().liveStreaming && getOptions().liveStreaming.audioLayoutBgColor ? getOptions().liveStreaming.audioLayoutBgColor : "rgba(255, 255, 255, 0)",
+                defaultLayout: getOptions().liveStreaming && getOptions().liveStreaming.defaultLayout ? getOptions().liveStreaming.defaultLayout : 'tiledStreamingLayout',
+            };
+        }
+
+        Object.defineProperties(GroupSourceState.prototype, {
+            'currentLayout': {
+                'set': function(val) {
+                    if(this.prevLayout != this._currentLayout) {
+                        this.prevLayout = this._currentLayout;
+                    }
+                    this._currentLayout = val;
+                },
+                'get': function() {
+                    return this._currentLayout;
+                }
+            }
+        });
+
+        var GroupSource = function () {
+            let groupInstance = this;
+            this.groupType = null;
+            this.sourceType = 'group';
+            this.layoutName = null;
+            this.scene = null;
+            this.layoutManager = null; 
+            this._currentLayout = null; 
+            this.prevLayout = null; 
+            this.pendingLayoutUpdate = null; 
+            this.sources = []; 
+            this.removedWebrtcSources = []; 
+            this.layoutUpdateQueue = []; 
+            this.activePresenterSources = []; 
+            this.size = {width:_size.width, height:_size.height};
+            /* this.rect = {
+                _width:1920, 
+                _height: 1080, 
+                _x: 0, 
+                _y: 0, 
+                updateTimeout: null,
+                updateGroupLayout: function () {
+                    if(this.updateTimeout != null) {
+                        clearTimeout(this.updateTimeout);
+                        this.updateTimeout = null;
+                    }
+                    this.updateTimeout = setTimeout(function () {
+                        updateWebRTCLayout(groupInstance.statePerScene[_activeScene.id]);
+                    }, 100)
+                },
+                set x(value) {
+                    this._x = value;
+                    groupInstance.statePerScene[_activeScene.id].rect._x = value;
+                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    this.updateGroupLayout();
+                },
+                set y(value) {
+                    this._y = value;
+                    groupInstance.statePerScene[_activeScene.id].rect._y = value;
+                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    this.updateGroupLayout();
+                },
+                set width(value) {
+                    this._width = value;
+                    groupInstance.statePerScene[_activeScene.id].rect._width = value;
+                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    this.updateGroupLayout();
+                },
+                set height(value) {
+                    this._height = value;
+                    groupInstance.statePerScene[_activeScene.id].rect._height = value;
+                    if(groupInstance.eventDispatcher != null) groupInstance.eventDispatcher.dispatch('rectChanged');
+                    this.updateGroupLayout();
+                },
+                get x() {return this._x;},
+                get y() {return this._y;},
+                get width() {return this._width;},
+                get height() {return this._height;}
+            }; */
             this.params = {
                 tiledLayoutMargins: getOptions().liveStreaming && getOptions().liveStreaming.tiledLayoutMargins ? getOptions().liveStreaming.tiledLayoutMargins : 0,
                 tiledLayoutInnerMargins: getOptions().liveStreaming && getOptions().liveStreaming.tiledLayoutInnerMargins ? getOptions().liveStreaming.tiledLayoutInnerMargins : 0,
@@ -957,6 +1046,14 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         GroupSource.prototype = new Source();
 
         Object.defineProperties(GroupSource.prototype, {
+            'rect': {
+                'get': function() {
+                    return this.statePerScene[_activeScene.id].rect;
+                }
+            }
+        });
+
+        Object.defineProperties(GroupSource.prototype, {
             'currentLayout': {
                 'set': function(val) {
                     if(this.prevLayout != this._currentLayout) {
@@ -975,7 +1072,22 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         webrtcGroup.groupType = 'webrtc';
         webrtcGroup.layoutManager = new LayoutManager(webrtcGroup);
         _defaultScene.sources.push(webrtcGroup);*/
-       
+
+        var SourceState = function (sourceInstance) {
+            this.kind = null; // audio || video
+            this.name = null;
+            this.active = true;
+            this.screenSharing = true;
+
+            this.rect = null;
+            this.params = {
+                captionBgColor: '#26A553',
+                captionFontColor: '#FFFFFF',
+                displayVideo: 'cover',
+                flip: sourceInstance.participant.isLocal ? true : false
+            };
+        }
+
         var WebRTCStreamSource = function (participant, parentGroup) {
             this.kind = null;
             this.participant = participant;
@@ -992,6 +1104,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             this.caption =  participant.greeting;
             this.isNewSourceOnCanvas = true;
             this.eventDispatcher = new EventSystem();
+            this.statePerScene = []
             this.params = {
                 captionBgColor: '#26A553',
                 captionFontColor: '#FFFFFF',
@@ -1000,6 +1113,15 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             };
         }
         WebRTCStreamSource.prototype = new Source();
+        
+        Object.defineProperties(WebRTCStreamSource.prototype, {
+            'rect': {
+                'get': function() {
+                    return this.statePerScene[_activeScene.id].rect;
+                }
+            }
+        });
+
 
         _eventDispatcher.on('sourceRemoved', function (removedSource) {
             log('sourceRemoved', removedSource)
@@ -1058,8 +1180,9 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             return {index:0, childItemsNum: 0 };
         }
 
-        function getWebrtcGroups() {
-            return _activeScene.sources.filter(function (source) {
+        function getWebrtcGroups(scene) {
+            if(!scene) scene = _activeScene;
+            return scene.sources.filter(function (source) {
                 return source.sourceType == 'group' && source.groupType == 'webrtc';
             });
         }
@@ -1077,21 +1200,38 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 return { width: srcWidth*ratio, height: srcHeight*ratio };
             }
 
-            if(newSource.sourceType == 'webrtcGroup') {
+            if (newSource instanceof GroupSource) {
+                if (!newSource.statePerScene[scene.id]) {
+                    webrtcGroup.statePerScene[scene.id] = new GroupSourceState(webrtcGroup, scene.id);
+                    webrtcGroup.statePerScene[scene.id].layoutManager = new LayoutManager(webrtcGroup.statePerScene[scene.id]);
+                }
+                scene.sources.splice(0, 0, newSource);
+                scene.eventDispatcher.dispatch('sourceAdded', webrtcGroup);
+                updateActiveWebRTCLayouts();
+            } else if(newSource.sourceType == 'webrtcGroup') {
                 log('addSource: add webrtcGroup')
                 var webrtcGroup = new GroupSource()
                 webrtcGroup.scene = scene;
                 webrtcGroup.name = newSource.title || 'Participants';
                 webrtcGroup.groupType = 'webrtc';
                 webrtcGroup.layoutManager = new LayoutManager(webrtcGroup);
+                webrtcGroup.statePerScene = {};
                 webrtcGroup.checkLoudestInterval = addMonitoringVolume(webrtcGroup);
                 if(_activeScene == scene) {
                     webrtcGroup.checkLoudestInterval.start();
                 }
 
-                scene.sources.splice(0, 0, webrtcGroup)
+                for (let s in _scenes) {
+                    if (!webrtcGroup.statePerScene[_scenes[s].id]) {
+                        webrtcGroup.statePerScene[_scenes[s].id] = new GroupSourceState(webrtcGroup, _scenes[s].id);
+                        webrtcGroup.statePerScene[_scenes[s].id].layoutManager = new LayoutManager(webrtcGroup.statePerScene[_scenes[s].id]);
+                    }
+                }
+
+                _webRTCGroups.splice(0, 0, webrtcGroup);
+                scene.sources.splice(0, 0, webrtcGroup);
                 scene.eventDispatcher.dispatch('sourceAdded', webrtcGroup);
-                
+                updateActiveWebRTCLayouts();
                 return webrtcGroup;
             } else if(newSource.sourceType == 'webrtc') {
                 //seems this code is redundant now as visual webrtc sources are added in updateWebRTCLayout
@@ -1585,68 +1725,421 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         function updateActiveWebRTCLayouts(layoutName) {
             log('updateActiveWebRTCLayouts start')
 
-            for(let i in _activeScene.sources) {
-                if(_activeScene.sources[i].sourceType == 'group' && _activeScene.sources[i].groupType == 'webrtc') {
-                    let layoutToRender = layoutName != 'previous' ? layoutName : _activeScene.sources[i].prevLayout;
-                    updateWebRTCLayout(_activeScene.sources[i], layoutToRender);
-                }
+            for (let i in _webRTCGroups) {
+                const webrtcGroup = _webRTCGroups[i]
+                updateWebRTCSourcesList(webrtcGroup);
+
+                //for (let s in _scenes) {
+                    const scene = _activeScene;
+                    let layoutToRender = layoutName != 'previous' ? layoutName : webrtcGroup.statePerScene[scene.id].prevLayout;
+                    if(webrtcGroup.statePerScene[scene.id]) updateWebRTCLayout(webrtcGroup.statePerScene[scene.id], layoutToRender);
+                //}
+
             }
         }
 
-        function updateWebRTCLayout(webrtcGroupSource, layoutName, startAsEmpty) {
-            log('updateWebRTCCanvasLayout start', layoutName, webrtcGroupSource.currentLayout, startAsEmpty)
+        function updateWebRTCLayout(webrtcGroupSource, layoutName, animationLength) {
+            let args = Array.prototype.slice.call(arguments);
+            return new Promise(function (resolve, reject) {
+                log('updateWebRTCCanvasLayout start', layoutName, webrtcGroupSource)
+                console.log('updateWebRTCCanvasLayout start', layoutName, webrtcGroupSource)
+                console.trace();
+                function getTransitionTime() {
+                    if (animationLength != null) return animationLength;
+                    return webrtcGroupSource.currentLayout == 'loudestFullScreen' && webrtcGroupSource.loudestMode ? 0 : 300
+                }
+
+                const sceneId = webrtcGroupSource.sceneId;
+                const scene = _scenes.filter(function(s) { return s.id == sceneId; })[0];
+
+                if (webrtcGroupSource.pendingLayoutUpdate) {
+                    //log('updateWebRTCCanvasLayout: pendingLayoutUpdate: cancel')
+                    webrtcGroupSource.layoutUpdateQueue.push({ args: args });
+                    return resolve();
+                }
+
+                console.log('updateWebRTCCanvasLayout start 111', sceneId, layoutName, webrtcGroupSource)
+
+                var participants = tool.webrtcSignalingLib.roomParticipants(true);
+
+                webrtcGroupSource.pendingLayoutUpdate = true;
+
+                if (layoutName == 'loudestFullScreen' || (!layoutName && webrtcGroupSource.currentLayout == 'loudestFullScreen')) {
+                    webrtcGroupSource.loudestMode = true;
+                    layoutName = 'loudestFullScreen'
+                } else if (layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
+                    webrtcGroupSource.loudestMode = true;
+                    layoutName = 'floatingScreenSharing'
+                } else {
+                    webrtcGroupSource.loudestMode = false;
+                }
+
+                log('updateWebRTCCanvasLayout: layoutChanged = ', layoutName, webrtcGroupSource.currentLayout, !webrtcGroupSource.loudestMode, (layoutName != webrtcGroupSource.currentLayout && !webrtcGroupSource.loudestMode))
+
+                var layoutChanged = false;
+                if (layoutName && ((layoutName != webrtcGroupSource.currentLayout && !webrtcGroupSource.loudestMode) || (layoutName == 'tiledStreamingLayout' && webrtcGroupSource.currentLayout == 'tiledStreamingLayout' && webrtcGroupSource.currentLayoutMode == 'audioOnly'))) {
+                    layoutChanged = true;
+                    log('updateWebRTCCanvasLayout: layoutChanged true1');
+                }
+
+                if (layoutName == 'audioOnly') {
+                    webrtcGroupSource.currentLayoutMode = 'audioOnly';
+                } else if (layoutName) {
+                    webrtcGroupSource.currentLayoutMode = 'regular';
+                }
+
+                log('updateWebRTCCanvasLayout: layoutChanged true2', webrtcGroupSource.layoutManager.currentRects.length, participants.length);
+
+                if (webrtcGroupSource.layoutManager.currentRects.length != participants.length) {
+                    layoutChanged = true;
+
+                    log('updateWebRTCCanvasLayout: layoutChanged true2');
+                }
+
+                var allWebRTCSources = [...webrtcGroupSource.sources];
+
+                const originalSourcesList = [...webrtcGroupSource.source.sources];
+
+                for (let t = allWebRTCSources.length - 1; t >= 0; t--) {
+                    let sourceIsActive = false;
+                    for (let c = originalSourcesList.length - 1; c >= 0; c--) {
+                        if (allWebRTCSources[t] == originalSourcesList[c]) {
+                            sourceIsActive = originalSourcesList[c];
+                            originalSourcesList.splice(c, 1)
+                        }
+                    }
+
+                    if (sourceIsActive) {
+                        if (allWebRTCSources[t].statePerScene[sceneId].kind !== sourceIsActive.kind) {
+                            allWebRTCSources[t].statePerScene[sceneId].kind = sourceIsActive.kind;
+                        }
+                        continue;
+                    }
+
+                    allWebRTCSources.splice(t, 1)
+                }
+
+                for (let c in originalSourcesList) {
+                    let sourceSceneState = new SourceState(originalSourcesList[c]);
+                    originalSourcesList[c].statePerScene[sceneId] = sourceSceneState;
+                    if (originalSourcesList[c].kind) sourceSceneState.kind = originalSourcesList[c].kind;
+                    if (originalSourcesList[c].mainStream) sourceSceneState.mainStream = true;
+                    if (originalSourcesList[c].screenSharing) {
+                        sourceSceneState.screenSharing = true;
+                        sourceSceneState.params.flip = false;
+                    }
+                    allWebRTCSources.splice(0, 0, originalSourcesList[c]);
+                }
+
+                var videoTracksOfUserWhoShares = [];
+                //if user has screensharing tracks and current layout is any of *screensharing, we should take ALL videos of this user 
+                //and put it at the beginning of webrtc group as layout rectangles are generated in corresponding order - (first rects - for screensharing and for the videos
+                //of the user who shares screen, next - all the rest rectangles)
+                let screensharingLayout = layoutName == 'screenSharing' || layoutName == 'audioScreenSharing' || layoutName == 'sideScreenSharing' || layoutName == 'floatingScreenSharing'
+                    || ((webrtcGroupSource.currentLayout == 'screenSharing' || webrtcGroupSource.currentLayout == 'audioScreenSharing' || webrtcGroupSource.currentLayout == 'sideScreenSharing' || webrtcGroupSource.currentLayout == 'floatingScreenSharing') && !layoutName)
+                if (screensharingLayout) {
+                    log('updateWebRTCCanvasLayout: sdaraort streams')
+
+                    var getOtherUsersTracks = function (participant, screenSharingStream) {
+
+                        //add another screensharing of this participant to the beginning of group
+                        for (let k = allWebRTCSources.length - 1; k >= 0; k--) {
+
+                            if (allWebRTCSources[k].participant != participant) continue;
+                            if (allWebRTCSources[k].screenSharing && allWebRTCSources[k] != screenSharingStream) {
+                                videoTracksOfUserWhoShares.unshift(allWebRTCSources[k]);
+                                allWebRTCSources.splice(k, 1);
+                            }
+                        }
+
+                        //add video from cameras after screensharings videos (so screensharing is on background of other videos)
+                        for (let k = allWebRTCSources.length - 1; k >= 0; k--) {
+                            if (allWebRTCSources[k].participant != participant) continue;
+
+                            if (!allWebRTCSources[k].screenSharing) {
+                                videoTracksOfUserWhoShares.push(allWebRTCSources[k])
+                                allWebRTCSources.splice(k, 1);
+                            }
+                        }
+                    }
+
+                    // check if there are new screensharing streams added
+                    for (let r = 0; r < allWebRTCSources.length; r++) {
+                        if (!allWebRTCSources[r].screenSharing) continue;
+
+                        let screenSharingStream = allWebRTCSources[r];
+                        allWebRTCSources.splice(r, 1);
+                        videoTracksOfUserWhoShares.unshift(screenSharingStream)
+
+                        getOtherUsersTracks(screenSharingStream.participant, screenSharingStream)
+
+                        break;
+                    }
+
+                    allWebRTCSources = videoTracksOfUserWhoShares.concat(allWebRTCSources);
+                    webrtcGroupSource.activePresenterSources = videoTracksOfUserWhoShares;
+                } else {
+                    webrtcGroupSource.activePresenterSources = [];
+                    //if it's not any of screensharing layouts, remove screensharing videos from layout
+                    for (let k = allWebRTCSources.length - 1; k >= 0; k--) {
+                        if (allWebRTCSources[k].screenSharing) {
+                            allWebRTCSources.splice(k, 1);
+                        }
+                    }
+                }
+
+                let loudestSource;
+                if (webrtcGroupSource.loudestMode) {
+                    //we have specific scenario for floatingScreenSharing layout. This layout shows 1) presenter 2) his screensharing
+                    //3) the loudest person (except presenter) in the room. So we need to find the loudest person except presenter
+                    //and move him to the index 3 
+                    if (layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
+                        let allExceptPresenter = allWebRTCSources.filter(function (o) {
+                            if (videoTracksOfUserWhoShares.indexOf(o) != -1) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        });
+
+                        if (allExceptPresenter.length != 0) {
+                            let loudest = allExceptPresenter.reduce(function (current, previous) {
+                                return current.audioLevel >= previous.audioLevel ? current : previous;
+                            }, allExceptPresenter[0])
+                            for (let k in allWebRTCSources) {
+                                if (allWebRTCSources[k] == loudest) {
+                                    loudestSource = allWebRTCSources.splice(k, 1)[0];
+                                    allWebRTCSources.splice(0, 0, loudestSource);
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        for (let k in allWebRTCSources) {
+                            if (allWebRTCSources[k].screenSharing || !allWebRTCSources[k].loudest) continue;
+                            loudestSource = allWebRTCSources.splice(k, 1)[0];
+                            allWebRTCSources.unshift(loudestSource);
+                            break;
+                        }
+                    }
+                }
+
+                //log('updateWebRTCCanvasLayout: webrtcGroupSource.currentLayoutMode', webrtcGroupSource.currentLayoutMode)
+                //log('updateWebRTCCanvasLayout: screensharing added', allWebRTCSources.map(o=>o.name), allWebRTCSources)
+
+                //if current layout mode is "audioOnly", remove all video tracks except .mainStream = true, and change kind of rest video tracks to "audio"
+                if (webrtcGroupSource.currentLayoutMode == 'audioOnly') {
+                    let onlyAudioStreams = [];
+                    for (let s in allWebRTCSources) {
+                        if (allWebRTCSources[s].mainStream) {
+                            allWebRTCSources[s].statePerScene[sceneId].kind = 'audio';
+                            onlyAudioStreams.push(allWebRTCSources[s]);
+                        }
+                    }
+                    allWebRTCSources = onlyAudioStreams;
+                } else if (layoutName == 'audioScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'audioScreenSharing')) {
+                    //if current layout is "audioScreenSharing", leave only one video track on canvas (track whose .screenSharing prop is true)
+                    //and change the kind of rest video tracks (.mainStream == true) to 'audio'
+                    //log('updateWebRTCCanvasLayout: audioScreenSharing')
+
+                    let screensharingPlusAudio = [];
+                    for (let s in allWebRTCSources) {
+                        if (parseInt(s) == 0) {
+                            screensharingPlusAudio.push(allWebRTCSources[s]);
+                        } else if (allWebRTCSources[s].mainStream) {
+                            allWebRTCSources[s].statePerScene[sceneId].kind = 'audio';
+                            screensharingPlusAudio.push(allWebRTCSources[s]);
+                        }
+                    }
+                    allWebRTCSources = screensharingPlusAudio;
+                } else if (layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
+                    allWebRTCSources = allWebRTCSources.splice(0, 3);
+                }
+
+                //log('updateWebRTCCanvasLayout: audio layout applied', allWebRTCSources.map(o=>o.name), allWebRTCSources)
+                //log('updateWebRTCCanvasLayout: layoutName', webrtcGroupSource.currentLayout, layoutName)
+
+                //generate layout rectangles depending on layout name (if it is passed to this func, or webrtcGroupSource.currentLayout otherwise)
+                let streamsNum = allWebRTCSources.length;
+
+                let layoutRects;
+                let prevLayoutName = webrtcGroupSource.currentLayout;
+                if (layoutName != null && layoutName != 'audioOnly') {
+                    //log('updateWebRTCCanvasLayout layout', layoutName, streamsNum);
+
+                    layoutRects = webrtcGroupSource.layoutManager.layoutGenerator(layoutName, streamsNum);
+                    webrtcGroupSource.currentLayout = layoutName;
+                    webrtcGroupSource.currentLayoutMode = 'regular';
+                } else {
+                    if (layoutName == 'audioOnly' || (!layoutName && webrtcGroupSource.currentLayoutMode == 'audioOnly')) {
+                        //log('updateWebRTCCanvasLayout layout 2', layoutName, streamsNum);
+
+                        layoutRects = webrtcGroupSource.layoutManager.layoutGenerator('tiledStreamingLayout', streamsNum);
+                        webrtcGroupSource.currentLayout = 'tiledStreamingLayout';
+                        webrtcGroupSource.currentLayoutMode = 'audioOnly';
+                    } else if (webrtcGroupSource.currentLayout != null) {
+                        //log('updateWebRTCCanvasLayout layout currentLayout', webrtcGroupSource.currentLayout);
+
+                        layoutRects = webrtcGroupSource.layoutManager.layoutGenerator(webrtcGroupSource.currentLayout, streamsNum);
+                        webrtcGroupSource.currentLayoutMode = 'regular';
+                    } else {
+                        //log('updateWebRTCCanvasLayout layout tiledStreamingLayout');
+
+                        layoutRects = webrtcGroupSource.layoutManager.layoutGenerator(webrtcGroupSource.params.defaultLayout, streamsNum);
+                        //log('updateWebRTCCanvasLayout layout tiledStreamingLayout after', layoutRects);
+
+                        webrtcGroupSource.currentLayout = webrtcGroupSource.params.defaultLayout;
+                        webrtcGroupSource.currentLayoutMode = 'regular';
+                    }
+                }
+                //log('updateWebRTCCanvasLayout: rects new', JSON.stringify(layoutRects));
+
+                layoutRects = [...layoutRects];
+
+                let reservedForPresenter = [];
+                let activeVideosOfUserWhoShares = videoTracksOfUserWhoShares.filter(function (o) {
+                    return o.active ? true : false;
+                });
+                if (screensharingLayout && activeVideosOfUserWhoShares.length != 0) {
+                    reservedForPresenter = layoutRects.splice(0, activeVideosOfUserWhoShares.length);
+                }
+
+                let reservedForLoudest;
+                if (webrtcGroupSource.loudestMode) {
+                    reservedForLoudest = [layoutRects.splice(0, 1)[0]]
+                }
+
+                layoutRects = layoutRects.reverse();
+                log('updateWebRTCCanvasLayout: rects reservedForPresenter', JSON.stringify(reservedForPresenter));
+                log('updateWebRTCCanvasLayout: rects reservedForLoudest', reservedForLoudest);
+                log('updateWebRTCCanvasLayout: rects new', JSON.stringify(layoutRects));
+                //log('updateWebRTCCanvasLayout layout result', JSON.stringify(layoutRects));
+                log('updateWebRTCCanvasLayout: order new', JSON.stringify(allWebRTCSources.map(function (o) {
+                    return { id: o.id, rect: o.rect }
+                })));
+
+                let activeWebRTCSources = [...allWebRTCSources];
+
+                webrtcGroupSource.sources = allWebRTCSources;
+                activeWebRTCSources.reverse();
+                log('distributeRectsForOtherStreams for BEFORE', activeWebRTCSources.length);
+
+                //assign layout rects to all sources that are supposed to be rendered on canvas
+                //for(let r = 0; r < allWebRTCSources.length; r++){
+                let layoutIsUpdating = false;
+                for (let r = activeWebRTCSources.length - 1; r >= 0; r--) {
+                    let newRectOfStream;
+                    //log('distributeRectsForOtherStreams for', layoutRects.length);
+                    if (!activeWebRTCSources[r].statePerScene[sceneId].rect) {
+                        activeWebRTCSources[r].statePerScene[sceneId].rect = new DOMRect(0, 0, 0, 0);
+                    }
+
+                    log('distributeRectsForOtherStreams for START', activeWebRTCSources[r], activeWebRTCSources[r].screenSharing);
+
+                    if ((screensharingLayout && activeVideosOfUserWhoShares.indexOf(activeWebRTCSources[r]) != -1)) {
+                        //first rects are reserved for the user who shares screen
+                        //OR first rect are reserved for the loudest source
+                        log('distributeRectsForOtherStreams 1');
+
+                        /* newRectOfStream = layoutRects[r];
+                        layoutRects.splice(r, 1); */
+                        if (activeWebRTCSources[r].screenSharing) {
+                            newRectOfStream = reservedForPresenter.splice(0, 1)[0];
+                        } else {
+                            newRectOfStream = reservedForPresenter.shift();
+                        }
+                    } else if (webrtcGroupSource.loudestMode && loudestSource == activeWebRTCSources[r]) {
+                        newRectOfStream = reservedForLoudest.shift();
+                        log('updateWebRTCCanvasLayout 2')
+                    }/*  else if(layoutChanged) {
+                    //log('distributeRectsForOtherStreams layoutChange=true');
+                    //to avoid situation when a source randomly changes it's position on canvas
+                    let closestRectInfo = findClosestRectIndex(activeWebRTCSources[r].rect, layoutRects, []);
+                    if(closestRectInfo) newRectOfStream = layoutRects[closestRectInfo.index];
+                    log('updateWebRTCCanvasLayout 2')
+
+                    layoutRects.splice(closestRectInfo.index, 1);
+                } */ else {
+                        log('updateWebRTCCanvasLayout 3')
+
+                        newRectOfStream = layoutRects.pop();
+
+                        //layoutRects.splice(r, 1);
+                    }
+                    log('distributeRectsForOtherStreams for result', newRectOfStream);
+
+                    layoutIsUpdating = true;
+                    let starttime = performance.now();
+                    let rectToUpdate = activeWebRTCSources[r].statePerScene[sceneId].rect;
+                    let startPositionRect = { y: rectToUpdate.y, x: rectToUpdate.x, width: rectToUpdate.width, height: rectToUpdate.height };
+                    moveit(rectToUpdate, newRectOfStream, startPositionRect, getTransitionTime(), starttime, activeWebRTCSources[r], parseInt(r) == 0 ? notPendingAnymore : null);
+                }
+
+                //if(screensharingLayout) {
+                //webrtcGroupSource.sources.reverse();
+                webrtcGroupSource.sources.sort((firstValue, secondValue) => {
+
+                    var indexA = activeWebRTCSources.indexOf(firstValue);
+                    var indexB = activeWebRTCSources.indexOf(secondValue);
+
+                    if (indexA === -1 && indexB === -1) {
+                        return 0; // Maintain the current order if both are not in arrayB
+                    } else if (indexA === -1) {
+                        return 1; // Move the object not in arrayB to a higher index
+                    } else if (indexB === -1) {
+                        return -1; // Move the object not in arrayB to a lower index
+                    }
+
+                    // Sort based on the order in arrayB
+                    return indexA - indexB;
+                });
+                //}
+
+                log('updateWebRTCCanvasLayout reversed', webrtcGroupSource.sources);
+
+                //if layout is floatingScreenSharing, then screensharing video should be above camera videos 
+                //(this is exceptions as usually screen sharing video is full-screen and below other video)
+                if (webrtcGroupSource.currentLayout == 'floatingScreenSharing' && webrtcGroupSource.sources.length >= 2) {
+                    webrtcGroupSource.sources.splice(0, 0, webrtcGroupSource.sources.splice(1, 1)[0]);
+                }
+
+                if (!layoutIsUpdating) {
+                    notPendingAnymore();
+                }
+                function notPendingAnymore() {
+                    log('notPendingAnymore')
+                    webrtcGroupSource.pendingLayoutUpdate = false;
+
+                    scene.eventDispatcher.dispatch('webrtcLayoutUpdated', {
+                        layoutChanged: prevLayoutName !== webrtcGroupSource.currentLayout,
+                        currentLayout: webrtcGroupSource.currentLayout,
+                        prevLayoutName: prevLayoutName
+                    });
+
+                    resolve();
+                    if (webrtcGroupSource.layoutUpdateQueue.length != 0) {
+                        let queueItem = webrtcGroupSource.layoutUpdateQueue.splice(0, 1)[0];
+                        updateWebRTCLayout.apply(null, queueItem.args)
+                        return;
+                    }
+                }
+            });
+
+        }
+
+        function setOrUpdateWebrtcLayout() {
             
-            function getTransitionTime() {
-                return webrtcGroupSource.currentLayout == 'loudestFullScreen' && webrtcGroupSource.loudestMode ? 0 : 300
-            }
-          
-            if(webrtcGroupSource.pendingLayoutUpdate) {
-                //log('updateWebRTCCanvasLayout: pendingLayoutUpdate: cancel')
-                webrtcGroupSource.layoutUpdateQueue.push({args: Array.prototype.slice.call(arguments)});
-                return;
-            }
-            
-            var participants = tool.webrtcSignalingLib.roomParticipants(true);
+        }
 
-            webrtcGroupSource.pendingLayoutUpdate = true;
-
-            if(layoutName == 'loudestFullScreen' || (!layoutName && webrtcGroupSource.currentLayout == 'loudestFullScreen')) {
-                webrtcGroupSource.loudestMode = true;
-                layoutName = 'loudestFullScreen'
-            } else if(layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
-                webrtcGroupSource.loudestMode = true;
-                layoutName = 'floatingScreenSharing'
-            } else {
-                webrtcGroupSource.loudestMode = false;
-            }
-
-            log('updateWebRTCCanvasLayout: layoutChanged = ', layoutName, webrtcGroupSource.currentLayout, !webrtcGroupSource.loudestMode, (layoutName != webrtcGroupSource.currentLayout && !webrtcGroupSource.loudestMode))
-
-            var layoutChanged = false;
-            if(layoutName && ((layoutName != webrtcGroupSource.currentLayout && !webrtcGroupSource.loudestMode) || (layoutName == 'tiledStreamingLayout' && webrtcGroupSource.currentLayout == 'tiledStreamingLayout' && webrtcGroupSource.currentLayoutMode == 'audioOnly'))) {
-                layoutChanged = true;
-                log('updateWebRTCCanvasLayout: layoutChanged true1');
-            }
-
-            if(layoutName == 'audioOnly') {
-                webrtcGroupSource.currentLayoutMode = 'audioOnly';
-            } else if(layoutName) {
-                webrtcGroupSource.currentLayoutMode = 'regular';
-            }
-
-            log('updateWebRTCCanvasLayout: layoutChanged true2', webrtcGroupSource.layoutManager.currentRects.length, participants.length);
-
-            if(webrtcGroupSource.layoutManager.currentRects.length != participants.length) {
-                layoutChanged = true;
-
-                log('updateWebRTCCanvasLayout: layoutChanged true2');
-            }
-            
-            var allWebRTCSources = [...webrtcGroupSource.sources];
+        function updateWebRTCSourcesList(webrtcGroupSource) {
+            var allWebRTCSources = webrtcGroupSource.sources;
             allWebRTCSources = allWebRTCSources.reverse();
             log('updateWebRTCCanvasLayout: order cur', JSON.stringify(allWebRTCSources.map(function (o) {
-                return {id: o.id, rect: o.rect}
+                return { id: o.id, rect: o.rect }
             })));
+
+            var participants = tool.webrtcSignalingLib.roomParticipants(true);
+
             //create canvas screens/streams for new participants
             for (let v in participants) {
                 //log('updateWebRTCCanvasLayout participant', participants[v].online, participants[v])
@@ -1663,8 +2156,8 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
                 //if participant is offline, remove those track from canvas
                 if (participants[v].online == false) {
-                    for(let t = allWebRTCSources.length - 1; t >= 0; t--) {
-                        if(allWebRTCSources[t].participant == participants[v]) {
+                    for (let t = allWebRTCSources.length - 1; t >= 0; t--) {
+                        if (allWebRTCSources[t].participant == participants[v]) {
                             allWebRTCSources.splice(t, 1);
                         }
                     }
@@ -1674,11 +2167,11 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
                 //if participant has no any of his video/audio on canvas, 
                 //add him as avatar+audio visualization on canvas - this is default representation of user on the canvas
-                if(renderedTracks.length == 0) {
+                if (renderedTracks.length == 0) {
                     let canvasStream = new WebRTCStreamSource(participants[v], webrtcGroupSource);
                     canvasStream.kind = 'audio';
                     canvasStream.mainStream = true;
-                    canvasStream.active = startAsEmpty ? false : true;
+                    canvasStream.active = true;
                     allWebRTCSources.push(canvasStream);
                 }
 
@@ -1698,49 +2191,42 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     }
                 }
 
-                let inactiveSourcesOfUser = webrtcGroupSource.removedWebrtcSources.filter(function (o) {
-                    return o.participant == participants[v];
-                });
-
                 let videoTracks = participants[v].tracks.filter(function (trackObj) {
                     return trackObj.kind == 'video' && !(/*trackObj.mediaStreamTrack.muted == true ||*/ trackObj.mediaStreamTrack.enabled == false || trackObj.mediaStreamTrack.readyState == 'ended' || trackObj.stream.active == false);
                 });
 
                 //check if all currently rendered video tracks of the user are still active (readyState is not "ended" etc.)
                 //and if not - remove this track from canvas or replace it with audio+avatar
-                for(let t = allWebRTCSources.length - 1; t >= 0; t--) {
-                    if(allWebRTCSources[t].participant == participants[v] && allWebRTCSources[t].kind == 'video') {
+                for (let t = allWebRTCSources.length - 1; t >= 0; t--) {
+                    if (allWebRTCSources[t].participant == participants[v] && allWebRTCSources[t].kind == 'video') {
                         let trackIsAcite = videoTracks.indexOf(allWebRTCSources[t].track) != -1;
-                        if(!trackIsAcite) {
-                            if(!allWebRTCSources[t].mainStream) {
+                        if (!trackIsAcite) {
+                            if (!allWebRTCSources[t].mainStream) {
                                 allWebRTCSources.splice(t, 1);
                             } else {
                                 allWebRTCSources[t].kind = 'audio';
-                                allWebRTCSources[t].track = null;
-                                allWebRTCSources[t].mediaStream = null;
-                                allWebRTCSources[t].htmlVideoEl = null;
                             }
                         }
                     }
                 }
 
                 //if user doesn't have any video tracks, skip him (he will still have video+audio visualization on the canvas)
-                if(videoTracks.length == 0) {
+                if (videoTracks.length == 0) {
                     continue;
                 }
 
                 //check if all users's active video tracks are rendered on canvas; if not - add this track on canvas by 
                 //replacing current avatar+audio visualization with video track, or, if it's screensharing - by adding additional video 
                 //on canvas because there should be scrensharing video and the avatar/camera video of the user who's this screensharing is
-                for(let t in videoTracks) {
+                for (let t in videoTracks) {
                     let videoIsRendered = false;
-                    for(let r in renderedTracks) {
-                        if(renderedTracks[r].track && renderedTracks[r].track == videoTracks[t]) {
+                    for (let r in renderedTracks) {
+                        if (renderedTracks[r].track && renderedTracks[r].track == videoTracks[t]) {
                             videoIsRendered = true;
                         }
                     }
 
-                    if(videoIsRendered) {
+                    if (videoIsRendered) {
                         continue;
                     }
 
@@ -1752,12 +2238,14 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         canvasStream.track = videoTracks[t];
                         canvasStream.mediaStream = videoTracks[t].stream;
                         canvasStream.htmlVideoEl = videoTracks[t].trackEl;
-                        canvasStream.active = startAsEmpty ? false : true;
+                        canvasStream.active = true;
                         canvasStream.screenSharing = true;
                         canvasStream.params.flip = false;
 
                         allWebRTCSources.push(canvasStream)
                     } else {
+
+                        //switch default source from audio to video type
                         for (let r in renderedTracks) {
                             if (renderedTracks[r].mainStream) {
                                 renderedTracks[r].kind = 'video';
@@ -1765,143 +2253,12 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                                 renderedTracks[r].mediaStream = videoTracks[t].stream;
                                 renderedTracks[r].htmlVideoEl = videoTracks[t].livestreamVideoProcessor && videoTracks[t].livestreamVideoProcessor.processedTrack ? videoTracks[t].livestreamVideoProcessor.processedTrack.trackEl : videoTracks[t].trackEl;
                                 renderedTracks[r].parentGroup = webrtcGroupSource;
-                                renderedTracks[r].active = startAsEmpty ? false : true;
+                                renderedTracks[r].active = true;
                                 break;
                             }
                         }
                     }
-                }                                
-            }
-
-            var videoTracksOfUserWhoShares = [];
-            //if user has screensharing tracks and current layout is any of *screensharing, we should take ALL videos of this user 
-            //and put it at the beginning of webrtc group as layout rectangles are generated in corresponding order - (first rects - for screensharing and for the videos
-            //of the user who shares screen, next - all the rest rectangles)
-            let screensharingLayout = layoutName == 'screenSharing' || layoutName == 'audioScreenSharing' || layoutName == 'sideScreenSharing' || layoutName == 'floatingScreenSharing' 
-            || ((webrtcGroupSource.currentLayout == 'screenSharing' || webrtcGroupSource.currentLayout == 'audioScreenSharing' || webrtcGroupSource.currentLayout == 'sideScreenSharing' || webrtcGroupSource.currentLayout == 'floatingScreenSharing') && !layoutName)
-            if(screensharingLayout) {
-                log('updateWebRTCCanvasLayout: sdaraort streams')
-
-                var getOtherUsersTracks = function(participant, screenSharingStream) {
-
-                    //add another screensharing of this participant to the beginning of group
-                    for(let k = allWebRTCSources.length - 1; k >= 0; k--){
-
-                        if(allWebRTCSources[k].participant != participant) continue;
-                        if(allWebRTCSources[k].screenSharing && allWebRTCSources[k] != screenSharingStream) {
-                            videoTracksOfUserWhoShares.unshift(allWebRTCSources[k]);
-                            allWebRTCSources.splice(k, 1);
-                        }
-                    }
-
-                    //add video from cameras after screensharings videos (so screensharing is on background of other videos)
-                    for(let k = allWebRTCSources.length - 1; k >= 0; k--){
-                        if(allWebRTCSources[k].participant != participant) continue;
-
-                        if(!allWebRTCSources[k].screenSharing) {
-                            videoTracksOfUserWhoShares.push(allWebRTCSources[k])
-                            allWebRTCSources.splice(k, 1);
-                        }
-                    }
                 }
-
-                // check if there are new screensharing streams added
-                for(let r = 0; r < allWebRTCSources.length; r++){
-                    if(!allWebRTCSources[r].screenSharing) continue;
-
-                    let screenSharingStream = allWebRTCSources[r];
-                    allWebRTCSources.splice(r, 1);
-                    videoTracksOfUserWhoShares.unshift(screenSharingStream)
-
-                    getOtherUsersTracks(screenSharingStream.participant, screenSharingStream)
-
-                    break;
-                }
-                
-                allWebRTCSources = videoTracksOfUserWhoShares.concat(allWebRTCSources);   
-                webrtcGroupSource.activePresenterSources = videoTracksOfUserWhoShares;
-            } else {
-                webrtcGroupSource.activePresenterSources = [];
-                //if it's not any of screensharing layouts, remove screensharing videos from layout
-                for(let k = allWebRTCSources.length - 1; k >= 0; k--){    
-                    if(allWebRTCSources[k].screenSharing) {
-                        allWebRTCSources.splice(k, 1);
-                    }
-                }
-            }
-          
-            let loudestSource;
-            if(webrtcGroupSource.loudestMode) {
-                //we have specific scenario for floatingScreenSharing layout. This layout shows 1) presenter 2) his screensharing
-                //3) the loudest person (except presenter) in the room. So we need to find the loudest person except presenter
-                //and move him to the index 3 
-                if(layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
-                    let allExceptPresenter = allWebRTCSources.filter(function (o) {
-                        if(videoTracksOfUserWhoShares.indexOf(o) != -1) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    });
-
-                    if(allExceptPresenter.length != 0) {
-                        let loudest = allExceptPresenter.reduce(function (current, previous) {
-                            return current.audioLevel >= previous.audioLevel ? current : previous;
-                        }, allExceptPresenter[0])
-                        for(let k in allWebRTCSources){
-                            if(allWebRTCSources[k] == loudest)  {
-                                loudestSource = allWebRTCSources.splice(k, 1)[0];
-                                allWebRTCSources.splice(0, 0, loudestSource);
-                                break;
-                            } 
-                        } 
-                    }
-                } else {
-                    for(let k in allWebRTCSources){
-                        if(allWebRTCSources[k].screenSharing || !allWebRTCSources[k].loudest) continue;
-                        loudestSource = allWebRTCSources.splice(k, 1)[0];              
-                        allWebRTCSources.unshift(loudestSource);    
-                        break;
-                    } 
-                }
-            }
-
-            //log('updateWebRTCCanvasLayout: webrtcGroupSource.currentLayoutMode', webrtcGroupSource.currentLayoutMode)
-            //log('updateWebRTCCanvasLayout: screensharing added', allWebRTCSources.map(o=>o.name), allWebRTCSources)
-
-            //if current layout mode is "audioOnly", remove all video tracks except .mainStream = true, and change kind of rest video tracks to "audio"
-            if(webrtcGroupSource.currentLayoutMode == 'audioOnly') {
-                let onlyAudioStreams = [];
-                for(let s in allWebRTCSources) {
-                    if(allWebRTCSources[s].mainStream) {
-                        allWebRTCSources[s].kind = 'audio';
-                        allWebRTCSources[s].track = null;
-                        allWebRTCSources[s].mediaStream = null;
-                        allWebRTCSources[s].htmlVideoEl = null;
-                        onlyAudioStreams.push(allWebRTCSources[s]);
-                    }
-                }
-                allWebRTCSources = onlyAudioStreams;
-            } else if (layoutName == 'audioScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'audioScreenSharing')) {
-                //if current layout is "audioScreenSharing", leave only one video track on canvas (track who's .screenSharing prop is true)
-                //and change the king of rest video tracks (.mainStream == true) to 'audio'
-                //log('updateWebRTCCanvasLayout: audioScreenSharing')
-
-                let screensharingPlusAudio = [];
-                for(let s in allWebRTCSources) {
-                    if(parseInt(s) == 0) {
-                        screensharingPlusAudio.push(allWebRTCSources[s]);
-                    } else if(allWebRTCSources[s].mainStream) {
-                        allWebRTCSources[s].kind = 'audio';
-                        allWebRTCSources[s].track = null;
-                        allWebRTCSources[s].mediaStream = null;
-                        allWebRTCSources[s].htmlVideoEl = null;
-                        screensharingPlusAudio.push(allWebRTCSources[s]);
-                    }
-                }
-                allWebRTCSources = screensharingPlusAudio;
-            } else if(layoutName == 'floatingScreenSharing' || (!layoutName && webrtcGroupSource.currentLayout == 'floatingScreenSharing')) {
-                allWebRTCSources = allWebRTCSources.splice(0, 3);
             }
 
             //if filtered video should be rendered on canvas, then replace current (not filtered) with filtered videos
@@ -1921,179 +2278,9 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     source.htmlVideoEl = trackInstance.trackEl;
                     source.htmlVideoEl.play();
                 })
-
-
-
             }
-
-            //log('updateWebRTCCanvasLayout: audio layout applied', allWebRTCSources.map(o=>o.name), allWebRTCSources)
-            //log('updateWebRTCCanvasLayout: layoutName', webrtcGroupSource.currentLayout, layoutName)
-
-            //generate layout rectangles depending on layout name (if it is passed to this func, or webrtcGroupSource.currentLayout otherwise)
-            let streamsNum = allWebRTCSources.filter(function (o) {
-                return o.active == true;
-            }).length;
-            
-            let prevLayoutName = webrtcGroupSource.currentLayout;
-            if(layoutName != null && layoutName != 'audioOnly') {
-                //log('updateWebRTCCanvasLayout layout', layoutName, streamsNum);
-
-                layoutRects = webrtcGroupSource.layoutManager.layoutGenerator(layoutName, streamsNum);
-                webrtcGroupSource.currentLayout = layoutName;
-                webrtcGroupSource.currentLayoutMode = 'regular';
-            } else {
-                if(layoutName == 'audioOnly' || (!layoutName && webrtcGroupSource.currentLayoutMode == 'audioOnly')) {
-                    //log('updateWebRTCCanvasLayout layout 2', layoutName, streamsNum);
-
-                    layoutRects = webrtcGroupSource.layoutManager.layoutGenerator('tiledStreamingLayout', streamsNum);
-                    webrtcGroupSource.currentLayout = 'tiledStreamingLayout';
-                    webrtcGroupSource.currentLayoutMode = 'audioOnly';
-                } else if(webrtcGroupSource.currentLayout != null) {
-                    //log('updateWebRTCCanvasLayout layout currentLayout', webrtcGroupSource.currentLayout);
-
-                    layoutRects = webrtcGroupSource.layoutManager.layoutGenerator(webrtcGroupSource.currentLayout, streamsNum);
-                    webrtcGroupSource.currentLayoutMode = 'regular';
-                } else {
-                    //log('updateWebRTCCanvasLayout layout tiledStreamingLayout');
-
-                    layoutRects = webrtcGroupSource.layoutManager.layoutGenerator(webrtcGroupSource.params.defaultLayout, streamsNum);
-                    //log('updateWebRTCCanvasLayout layout tiledStreamingLayout after', layoutRects);
-
-                    webrtcGroupSource.currentLayout = webrtcGroupSource.params.defaultLayout;
-                    webrtcGroupSource.currentLayoutMode = 'regular';
-                }
-            }
-            //log('updateWebRTCCanvasLayout: rects new', JSON.stringify(layoutRects));
-
-            layoutRects = [...layoutRects];
-
-            let reservedForPresenter = [];
-            let activeVideosOfUserWhoShares = videoTracksOfUserWhoShares.filter(function (o) {
-                return o.active ? true : false;
-            });
-            if(screensharingLayout && activeVideosOfUserWhoShares.length != 0) {
-                reservedForPresenter = layoutRects.splice(0, activeVideosOfUserWhoShares.length);
-            }
-            
-            let reservedForLoudest;
-            if(webrtcGroupSource.loudestMode) {
-                reservedForLoudest = [layoutRects.splice(0, 1)[0]]
-            }
-
-            layoutRects = layoutRects.reverse();
-            log('updateWebRTCCanvasLayout: rects reservedForPresenter', JSON.stringify(reservedForPresenter));
-            log('updateWebRTCCanvasLayout: rects reservedForLoudest', reservedForLoudest);
-            log('updateWebRTCCanvasLayout: rects new', JSON.stringify(layoutRects));
-            //log('updateWebRTCCanvasLayout layout result', JSON.stringify(layoutRects));
-            log('updateWebRTCCanvasLayout: order new', JSON.stringify(allWebRTCSources.map(function (o) {
-                return {id: o.id, rect: o.rect}
-            })));
-
-            let activeWebRTCSources = allWebRTCSources.filter(function (o) {
-                return o.active == true;
-            });
 
             webrtcGroupSource.sources = allWebRTCSources;
-            activeWebRTCSources.reverse();
-            log('distributeRectsForOtherStreams for BEFORE', activeWebRTCSources.length);
-
-            //assign layout rects to all sources that are supposed to be rendered on canvas
-            //for(let r = 0; r < allWebRTCSources.length; r++){
-            let layoutIsUpdating = false;
-            for(let r = activeWebRTCSources.length - 1; r >= 0; r--){
-                let newRectOfStream;
-                //log('distributeRectsForOtherStreams for', layoutRects.length);
-                if(!activeWebRTCSources[r].rect) {
-                    activeWebRTCSources[r].rect = new DOMRect(0, 0, 0, 0);
-                }
-
-                log('distributeRectsForOtherStreams for START', activeWebRTCSources[r], activeWebRTCSources[r].screenSharing);
-
-                if((screensharingLayout && activeVideosOfUserWhoShares.indexOf(activeWebRTCSources[r]) != -1)) {
-                    //first rects are reserved for the user who shares screen
-                    //OR first rect are reserved for the loudest source
-                    log('distributeRectsForOtherStreams 1');
-
-                    /* newRectOfStream = layoutRects[r];
-                    layoutRects.splice(r, 1); */
-                    if(activeWebRTCSources[r].screenSharing) {
-                        newRectOfStream = reservedForPresenter.splice(0, 1)[0];
-                    } else {
-                        newRectOfStream = reservedForPresenter.shift();
-                    }
-                } else if (webrtcGroupSource.loudestMode && loudestSource == activeWebRTCSources[r]){
-                    newRectOfStream = reservedForLoudest.shift();
-                    log('updateWebRTCCanvasLayout 2')
-                }/*  else if(layoutChanged) {
-                    //log('distributeRectsForOtherStreams layoutChange=true');
-                    //to avoid situation when a source randomly changes it's position on canvas
-                    let closestRectInfo = findClosestRectIndex(activeWebRTCSources[r].rect, layoutRects, []);
-                    if(closestRectInfo) newRectOfStream = layoutRects[closestRectInfo.index];
-                    log('updateWebRTCCanvasLayout 2')
-
-                    layoutRects.splice(closestRectInfo.index, 1);
-                } */ else {
-                    log('updateWebRTCCanvasLayout 3')
-
-                    newRectOfStream = layoutRects.pop();
-                    
-                    //layoutRects.splice(r, 1);
-                }
-                log('distributeRectsForOtherStreams for result', newRectOfStream);
-
-                layoutIsUpdating = true;
-                let starttime = performance.now();
-                let rectToUpdate = activeWebRTCSources[r].rect;
-                let startPositionRect = {y:rectToUpdate.y, x:rectToUpdate.x, width:rectToUpdate.width,height:rectToUpdate.height};
-                moveit(rectToUpdate, newRectOfStream, startPositionRect, getTransitionTime(), starttime, activeWebRTCSources[r], parseInt(r) == 0 ? notPendingAnymore : null);
-            }
-
-            //if(screensharingLayout) {
-                //webrtcGroupSource.sources.reverse();
-                webrtcGroupSource.sources.sort((firstValue, secondValue) => {
-
-                    var indexA = activeWebRTCSources.indexOf(firstValue);
-                    var indexB = activeWebRTCSources.indexOf(secondValue);
-
-                    if (indexA === -1 && indexB === -1) {
-                        return 0; // Maintain the current order if both are not in arrayB
-                    } else if (indexA === -1) {
-                        return 1; // Move the object not in arrayB to a higher index
-                    } else if (indexB === -1) {
-                        return -1; // Move the object not in arrayB to a lower index
-                    }
-
-                    // Sort based on the order in arrayB
-                    return indexA - indexB;
-                 });
-            //}
-
-            log('updateWebRTCCanvasLayout reversed', webrtcGroupSource.sources);
-
-            //if layout is floatingScreenSharing, then screensharing video should be above camera videos 
-            //(this is exceptions as usually screen sharing video is full-screen and below other video)
-            if(webrtcGroupSource.currentLayout == 'floatingScreenSharing' && allWebRTCSources.length >= 2) {
-                webrtcGroupSource.sources.splice(0, 0, allWebRTCSources.splice(1, 1)[0]);
-            }
-            _activeScene.eventDispatcher.dispatch('webrtcLayoutUpdated', {
-                layoutChanged: prevLayoutName !== webrtcGroupSource.currentLayout,
-                currentLayout: webrtcGroupSource.currentLayout,
-                prevLayoutName: prevLayoutName
-            });
-            
-            if(!layoutIsUpdating) {
-                notPendingAnymore();
-            }
-            function notPendingAnymore() {
-                log('notPendingAnymore')
-                webrtcGroupSource.pendingLayoutUpdate = false;
-
-                if(webrtcGroupSource.layoutUpdateQueue.length != 0) {
-                    let queueItem = webrtcGroupSource.layoutUpdateQueue.splice(0, 1)[0];
-                    updateWebRTCLayout.apply(null, queueItem.args)
-                    return;
-                }
-            }
         }
 
         function getLoudestSource(webrtcGroup) {
@@ -2331,17 +2518,17 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 if(_activeScene.visualSources[i].active == false || _activeScene.visualSources[i].sourceType == 'group') continue;
 
                 let streamData = _activeScene.visualSources[i];
-
+                let sourceState = streamData.statePerScene[_activeScene.id];
                 if(streamData.sourceType == 'image') {
                     drawImage(streamData);
                 } else if(streamData.sourceType == 'video' || streamData.sourceType == 'videoInput') {
                     drawVideo(streamData);
-                } else if(streamData.sourceType == 'webrtc' && streamData.kind == 'video') {
-                    drawSingleVideoOnCanvas(streamData.htmlVideoEl, streamData, _size.width, _size.height, streamData.htmlVideoEl.videoWidth, streamData.htmlVideoEl.videoHeight);
+                } else if(streamData.sourceType == 'webrtc' && sourceState.kind == 'video') {
+                    drawSingleVideoOnCanvas(_activeScene.id, streamData, _size.width, _size.height, streamData.htmlVideoEl.videoWidth, streamData.htmlVideoEl.videoHeight);
                     streamData.eventDispatcher.dispatch('userRendered')
 
-                } else if(streamData.sourceType == 'webrtc' && streamData.kind == 'audio') {
-                    drawSingleAudioOnCanvas(streamData);
+                } else if(streamData.sourceType == 'webrtc' && sourceState.kind == 'audio') {
+                    drawSingleAudioOnCanvas(_activeScene.id, streamData);
                     streamData.eventDispatcher.dispatch('userRendered')
 
                 }
@@ -2514,7 +2701,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
         }
 
-        function drawSingleVideoOnCanvas(localVideo, data, canvasWidth, canvasHeight, videoWidth, videoHeight) {
+        function drawSingleVideoOnCanvas(sceneId, data, canvasWidth, canvasHeight, videoWidth, videoHeight) {
             if(data.participant.online == false) return;
             //_inputCtx.translate(data.rect.x, data.rect.y);
 
@@ -2534,21 +2721,24 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             data.widthLog = currentWidth;
             data.heightLog = currentHeight;
 
+            const sourceSceneState = data.statePerScene[sceneId];
+            const rect = sourceSceneState.rect;
+
             //if(!data.screenSharing) {
-            if(data.params.displayVideo == 'cover') {
-                var widthToGet = data.rect.width, heightToGet = data.rect.height, ratio = data.rect.width / data.rect.height;
+            if(sourceSceneState.params.displayVideo == 'cover') {
+                var widthToGet = rect.width, heightToGet = rect.height, ratio = rect.width / rect.height;
                 var x, y;
 
-                var scale = Math.max( data.rect.width / currentWidth, (data.rect.height / currentHeight));
+                var scale = Math.max( rect.width / currentWidth, (rect.height / currentHeight));
 
-                widthToGet =  data.rect.width / scale;
+                widthToGet =  rect.width / scale;
                 heightToGet = currentHeight;
-                //log('draw', widthToGet / heightToGet, data.rect.width / data.rect.height)
+                //log('draw', widthToGet / heightToGet, rect.width / rect.height)
 
-                if((widthToGet / heightToGet).toFixed(2) != (data.rect.width / data.rect.height).toFixed(2)) {
+                if((widthToGet / heightToGet).toFixed(2) != (rect.width / rect.height).toFixed(2)) {
                     //log('draw if1')
                     widthToGet = currentWidth;
-                    heightToGet = data.rect.height / scale;
+                    heightToGet = rect.height / scale;
 
                     x = 0;
                     y = ((currentHeight / 2) - (heightToGet / 2));
@@ -2557,12 +2747,12 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                     x = ((currentWidth / 2) - (widthToGet / 2));
                     y = 0;
                 }
-                /* if size is smaller than rect widthToGet = data.rect.width / scale;
-                heightToGet = data.rect.height / scale;*/
-                let rectX = data.rect.x;
-                if (data.params.flip) {
+                /* if size is smaller than rect widthToGet = rect.width / scale;
+                heightToGet = rect.height / scale;*/
+                let rectX = rect.x;
+                if (sourceSceneState.params.flip) {
                     _inputCtx.save();
-                    _inputCtx.translate(data.rect.width, 0);
+                    _inputCtx.translate(rect.width, 0);
                     _inputCtx.scale(-1, 1);
                     rectX = Math.sign(rectX) == 1 ? -Math.abs(rectX) : Math.abs(rectX);
                     draw();
@@ -2572,30 +2762,30 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 }
 
                 function draw() {
-                    _inputCtx.drawImage( localVideo,
+                    _inputCtx.drawImage( data.htmlVideoEl,
                         x, y,
                         widthToGet, heightToGet,
-                        rectX, data.rect.y,
-                        data.rect.width, data.rect.height);
+                        rectX, rect.y,
+                        rect.width, rect.height);
                 }
             } else {
                 _inputCtx.fillStyle = "#000000";
-                _inputCtx.fillRect(data.rect.x, data.rect.y, data.rect.width, data.rect.height);
+                _inputCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
 
-                var hRatio = data.rect.width / currentWidth;
-                var vRatio = data.rect.height / currentHeight;
+                var hRatio = rect.width / currentWidth;
+                var vRatio = rect.height / currentHeight;
                 var ratio  = Math.min ( hRatio, vRatio );
 
                 var outWidth = currentWidth*ratio;
                 var outHeight = currentHeight*ratio;
-                var freeWidthPx = ( data.rect.width - outWidth ) / 2;
-                var freeHeightPx = ( data.rect.height - outHeight ) / 2
-                var centerShift_x = data.rect.x + freeWidthPx;
-                var centerShift_y = data.rect.y + freeHeightPx;
+                var freeWidthPx = ( rect.width - outWidth ) / 2;
+                var freeHeightPx = ( rect.height - outHeight ) / 2
+                var centerShift_x = rect.x + freeWidthPx;
+                var centerShift_y = rect.y + freeHeightPx;
 
                 let rectX = centerShift_x;
                 let rectWidth = currentWidth * ratio;
-                if (data.params.flip) {
+                if (sourceSceneState.params.flip) {
                     _inputCtx.save();
                     _inputCtx.translate(rectWidth, 0);
                     _inputCtx.scale(-1, 1);
@@ -2607,7 +2797,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 }
 
                 function draw() {
-                    _inputCtx.drawImage( localVideo,
+                    _inputCtx.drawImage( data.htmlVideoEl,
                         0, 0,
                         currentWidth, currentHeight,
                         rectX, centerShift_y,
@@ -2624,21 +2814,24 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
 
             _inputCtx.beginPath();
-            _inputCtx.moveTo(data.rect.x + data.rect.width, data.rect.y);
-            _inputCtx.lineTo(data.rect.x + data.rect.width, data.rect.y);
+            _inputCtx.moveTo(rect.x + rect.width, rect.y);
+            _inputCtx.lineTo(rect.x + rect.width, rect.y);
             _inputCtx.stroke();
 
-            //_inputCtx.strokeRect(data.rect.x, data.rect.y, data.rect.width, data.rect.height);
+            //_inputCtx.strokeRect(rect.x, rect.y, rect.width, rect.height);
         }
 
-        function drawSingleAudioOnCanvas(data) {
+        function drawSingleAudioOnCanvas(sceneId, data) {
 
             if(data.participant.online == false) return;
 
-            //_inputCtx.clearRect(data.rect.x, data.rect.y, data.rect.width, data.rect.height);
+            const sourceSceneState = data.statePerScene[sceneId];
+            const rect = sourceSceneState.rect;
+
+            //_inputCtx.clearRect(rect.x, rect.y, rect.width, rect.height);
 
             _inputCtx.fillStyle = data.parentGroup.params.audioLayoutBgColor;
-            _inputCtx.fillRect(data.rect.x, data.rect.y, data.rect.width, data.rect.height);
+            _inputCtx.fillRect(rect.x, rect.y, rect.width, rect.height);
 
             //drawAudioVisualization(data);
 
@@ -2649,23 +2842,21 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 width = avatar.naturalWidth;
                 height = avatar.naturalHeight;
 
-                var scale = Math.min( (data.rect.width / 2) / width,  (data.rect.height / 2) / height);
+                var scale = Math.min( (rect.width / 2) / width,  (rect.height / 2) / height);
                 var scaledWidth = width * scale;
                 var scaledHeight = height * scale;
                 // get the top left position of the image
-                var x = data.rect.x + (( data.rect.width / 2) - (width / 2) * scale);
+                var x = rect.x + (( rect.width / 2) - (width / 2) * scale);
                 var y;
 
-                y = data.rect.y + ((data.rect.height / 2) - (height / 2) * scale);
+                y = rect.y + ((rect.height / 2) - (height / 2) * scale);
 
                 var size = Math.min(scaledHeight, scaledWidth);
                 var radius =  size / 2;
 
-                drawSimpleCircleAudioVisualization(data, x, y, radius, scale, size);
-
+                drawSimpleCircleAudioVisualization(sceneId, data, x, y, radius, scale, size);
 
                 _inputCtx.save();
-
 
                 _inputCtx.beginPath();
                 _inputCtx.arc(x + (size / 2), y + (size / 2), radius, 0, Math.PI * 2 , false); //draw the circle
@@ -2688,13 +2879,16 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
             if(webrtcSource == null || webrtcSource.displayNameTimeout != null) return;
 
-            var rectWidth = webrtcSource.rect.width;
-            var xPos = webrtcSource.rect.x + ((webrtcSource.rect.width - rectWidth) / 2);
-            var rectHeight = webrtcSource.rect.height / 100 * 20;
+            const sourceSceneState = webrtcSource.statePerScene[_activeScene.id];
+            const rect = sourceSceneState.rect;
+
+            var rectWidth = rect.width;
+            var xPos = rect.x + ((rect.width - rectWidth) / 2);
+            var rectHeight = rect.height / 100 * 20;
             if(rectHeight > 100) rectHeight = 100;
            
             var nameLabel = new RectObjectSource({
-                baseSource: webrtcSource,
+                baseSource: sourceSceneState,
                 frame: 0,
                 frames: 100
                 //fill: webrtcSource.params.captionBgColor
@@ -2739,12 +2933,12 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 },
                 'yTo': {
                     'get': function() {
-                        return webrtcSource.rect.y + webrtcSource.rect.height - this.heightTo;
+                        return rect.y + rect.height - this.heightTo;
                     }
                 },
                 'fill': {
                     'get': function() {
-                        return webrtcSource.params.captionBgColor;
+                        return sourceSceneState.params.captionBgColor;
                     }
                 }
             });
@@ -2792,7 +2986,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 frame: 0,
                 frames: 100,
                 textHeight: nameTextSize.fontBoundingBoxAscent + nameTextSize.fontBoundingBoxDescent,
-                fillStyle: webrtcSource.params.captionFontColor,
+                fillStyle: sourceSceneState.params.captionFontColor,
                 font: font,
                 latestSize: fontSize,
                 //text: textName.toUpperCase()
@@ -2859,7 +3053,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 },*/
                 'fillStyle': {
                     'get': function() {
-                        return webrtcSource.params.captionFontColor;
+                        return sourceSceneState.params.captionFontColor;
                     }
                 },
                 'text': {
@@ -2872,7 +3066,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
             let captionFontSize = (rectHeight / 100 * 20);
             _inputCtx.font = captionFontSize + "px Arial";
-            var captionTextSize = _inputCtx.measureText(webrtcSource.caption);
+            var captionTextSize = _inputCtx.measureText(sourceSceneState.caption);
             var captionTextWidth = captionTextSize.width;
             var captionTextHeight =  captionTextSize.fontBoundingBoxAscent + captionTextSize.fontBoundingBoxDescent;
             log('nameTextHeight', captionTextHeight)
@@ -2921,7 +3115,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                         this.latestSize = size;
                         _inputCtx.font = size + "px Arial";
                         log('updating.....')
-                        let nameTextSize = _inputCtx.measureText(webrtcSource.caption);
+                        let nameTextSize = _inputCtx.measureText(sourceSceneState.caption);
                         this.textHeight = nameTextSize.fontBoundingBoxAscent + nameTextSize.fontBoundingBoxDescent;
 
                         return size + 'px Arial';
@@ -2929,12 +3123,12 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 },
                 'fillStyle': {
                     'get': function() {
-                        return webrtcSource.params.captionFontColor;
+                        return sourceSceneState.params.captionFontColor;
                     }
                 },
                 'text': {
                     'get': function() {
-                        return webrtcSource.caption;
+                        return sourceSceneState.caption;
                     }
                 },
             });
@@ -2951,8 +3145,11 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             var dependentTextSources = [];
             var nameBgSource;
            
+            const sourceSceneState = webrtcSource.statePerScene[_activeScene.id];
+            const rect = sourceSceneState.rect;
+
             for(let i in _activeScene.additionalSources) {
-                if(_activeScene.additionalSources[i].sourceType != 'webrtcrect' || _activeScene.additionalSources[i].baseSource != webrtcSource) continue;
+                if(_activeScene.additionalSources[i].sourceType != 'webrtcrect' || _activeScene.additionalSources[i].baseSource != sourceSceneState) continue;
                 nameBgSource = _activeScene.additionalSources[i];
                 break;
             }
@@ -3159,11 +3356,14 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             return average;
         }
 
-        function drawSimpleCircleAudioVisualization(data, x, y, radius, scale, size) {
+        function drawSimpleCircleAudioVisualization(sceneId, data, x, y, radius, scale, size) {
             let audioVisualizationTools = data.participant.voiceMeterTools;
             if(!audioVisualizationTools || !audioVisualizationTools.simple) return;
             var analyser = audioVisualizationTools.simple.analyser;
             //log('data.participant', analyser == null, data.participant.localMediaControlsState.mic == false)
+
+            const sourceSceneState = data.statePerScene[sceneId];
+            const rect = sourceSceneState.rect;
 
             if(analyser == null || data.participant.localMediaControlsState.mic == false) return;
             var bufferLength = analyser.frequencyBinCount;
@@ -3173,7 +3373,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
             _inputCtx.save();
             _inputCtx.beginPath();
-            _inputCtx.rect(data.rect.x, data.rect.y, data.rect.width, data.rect.height);
+            _inputCtx.rect(rect.x, rect.y, rect.width, rect.height);
             _inputCtx.clip();
             //_inputCtx.stroke();
 
@@ -3182,7 +3382,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             _inputCtx.fillStyle = "rgba(255, 255, 255, 0.4)";
             _inputCtx.beginPath();
 
-            _inputCtx.arc(data.rect.x + (data.rect.width / 2), data.rect.y + (data.rect.height / 2), radius, 0, 2 * Math.PI);
+            _inputCtx.arc(rect.x + (rect.width / 2), rect.y + (rect.height / 2), radius, 0, 2 * Math.PI);
 
             _inputCtx.fill();
             //var radius =  size / 2  + (bass * 0.25);
@@ -3193,19 +3393,23 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         function drawCircleAudioVisualization(data, x, y, radius, scale, size) {
             var analyser = data.participant.soundMeter.analyser;
             if(analyser == null) return;
+
+            const sourceSceneState = data.statePerScene[sceneId];
+            const rect = sourceSceneState.rect;
+
             var bufferLength = analyser.frequencyBinCount;
             var dataArray = new Uint8Array(bufferLength);
             analyser.getByteFrequencyData(dataArray);
             //just show bins with a value over the treshold
             var threshold = 0;
             // clear the current state
-            //_inputCtx.clearRect(data.rect.x, data.rect.y, data.rect.width, data.rect.height);
+            //_inputCtx.clearRect(rect.x, rect.y, rect.width, rect.height);
             //the max count of bins for the visualization
             var maxBinCount = dataArray.length;
 
             _inputCtx.save();
             _inputCtx.beginPath();
-            _inputCtx.rect(data.rect.x, data.rect.y, data.rect.width, data.rect.height);
+            _inputCtx.rect(rect.x, rect.y, rect.width, rect.height);
             _inputCtx.clip();
             //_inputCtx.stroke();
 
@@ -3265,20 +3469,23 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             var analyser = audioVisualizationTools.simple.analyser;
             if(analyser == null || data.participant.localMediaControlsState.mic == false) return;
 
+            const sourceSceneState = data.statePerScene[sceneId];
+            const rect = sourceSceneState.rect;
+
             var analyser = audioVisualization.analyser;
             var bufferLength = analyser.frequencyBinCount;
             var dataArray = new Uint8Array(bufferLength);
             analyser.getByteFrequencyData(dataArray);
 
-            var WIDTH = data.rect.width;
-            var HEIGHT = data.rect.height / 2;
+            var WIDTH = rect.width;
+            var HEIGHT = rect.height / 2;
             var barWidth = 2;
-            var barsNum = Math.floor(data.rect.width / barWidth);
+            var barsNum = Math.floor(rect.width / barWidth);
             var barHeight;
 
-            //var x = data.rect.x;
-            var y = data.rect.y + 36;
-            var x = ((data.rect.x + data.rect.width - data.rect.x) / 2) - barWidth + data.rect.x;
+            //var x = rect.x;
+            var y = rect.y + 36;
+            var x = ((rect.x + rect.width - rect.x) / 2) - barWidth + rect.x;
 
             var lastRightX = x, lastLeftX = x, side = 'l';
             for (let i = 0; i < bufferLength; i++) {
@@ -3299,13 +3506,13 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
                     x = lastRightX + barWidth + 1;
 
-                    if(x + barWidth >= data.rect.x + data.rect.width) break;
+                    if(x + barWidth >= rect.x + rect.width) break;
                 } else if(side == 'r') {
                     lastRightX = x;
                     side = 'l';
 
                     x = lastLeftX - barWidth - 1;
-                    if(x - barWidth <= data.rect.x) break;
+                    if(x - barWidth <= rect.x) break;
                 }
 
 
@@ -5343,11 +5550,9 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         videoTrackIsMuted: function () {
             return _videoTrackIsMuted;
         },
-        createScene: createScene,
         removeScene: removeScene,
         moveSceneUp: moveSceneUp,
         moveSceneDown: moveSceneDown,
-        getScenes: getScenes,
         selectScene: selectScene,
         getActiveScene: getActiveScene
     }

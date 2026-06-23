@@ -1159,7 +1159,7 @@
                         syncList();
                     }
 
-                    function selectScene(sceneIdOrObject) {
+                    function selectScene(sceneIdOrObject, byDirectSelect) {
                         let sceneItem;
                         if(typeof sceneIdOrObject == 'string') {
                             sceneItem = _scenesList.filter(function(s){
@@ -1204,9 +1204,15 @@
                                 allParticipantsListItem.resizingElement.parentElement.removeChild(allParticipantsListItem.resizingElement);
                             }*/
                         }
-                        tool.canvasComposer.selectScene(_activeScene.sceneInstance);
+
+                        
+                        
+                        
 
                         if (_sourcesColumnEl) {
+                            let sceneIndex = _scenesList.indexOf(sceneItem);
+                            tool.canvasComposer.selectScene(_activeScene.sceneInstance, !_layoutsList[sceneIndex].inited ? _layoutsList[sceneIndex].key : null);
+
                             let sourceColAlreadyExists = _sourcesColumnEl.querySelector('.live-editor-sources-inner');
                             if(sourceColAlreadyExists != null && sourceColAlreadyExists.parentElement) {
                                 sourceColAlreadyExists.parentElement.removeChild(sourceColAlreadyExists);
@@ -1214,11 +1220,13 @@
 
                             _sourcesColumnEl.appendChild(_activeScene.sourcesInterface.createSourcesCol());
 
-                            let sceneIndex = _scenesList.indexOf(sceneItem);
                             if(sceneIndex != -1 && _layoutsList[sceneIndex] && !_layoutsList[sceneIndex].inited) { //set default webrtc layout
                                 _layoutsList[sceneIndex].inited = true;
+                                //tool.webrtcSourcesGroup.statePerScene[sceneItem.sourceInstance.id];
                                 sceneItem.sourcesInterface.selectLayout(_layoutsList[sceneIndex].key, true);
                             }
+                        } else {
+                            tool.canvasComposer.selectScene(_activeScene.sceneInstance);
                         }
 
                         //_activeScene.sourcesInterface.initHoveringTool();
@@ -1235,15 +1243,11 @@
                         }*/
 
                         let webrtcGroups = _activeScene.sourcesInterface.getWebrtcGroupListItems()
-                        for(let i in webrtcGroups) {
-                            if(webrtcGroups[i].sourceInstance) {
-                                tool.canvasComposer.videoComposer.updateWebRTCLayout(webrtcGroups[i].sourceInstance);
-                            }
-                        }
+                        //tool.canvasComposer.videoComposer.updateWebRTCLayout(tool.webrtcSourcesGroup.statePerScene[sceneItem.sceneInstance.id]);
 
                         _activeScene.sourcesInterface.update();
                         optionsColumn.update();
-                        _eventDispatcher.dispatch('sceneSelected', _activeScene);
+                        _eventDispatcher.dispatch('sceneSelected', { scene: _activeScene, byDirectSelect: byDirectSelect });
                     }
 
                     function moveSceneUp(sceneId) {
@@ -1382,7 +1386,17 @@
                             if (sceneAlreadyExists) continue;
                             log('scenesInterface: not exist')
 
-                            var item = new SceneListItem(scenes[s])
+                            var item = new SceneListItem(scenes[s]);
+
+                            if (_scenesList.length == 0) {
+                                tool.webrtcSourcesGroup = tool.canvasComposer.videoComposer.addSource({
+                                    sourceType: 'webrtcGroup',
+                                    title: name ? name : 'Participants'
+                                }, scenes[s]);
+                            } else {
+                                tool.canvasComposer.videoComposer.addSource(tool.webrtcSourcesGroup, scenes[s]);
+                            }
+
                             addSceneItemToList(item);
 
                             if (_activeScene == null && parseInt(s) == 0) {
@@ -1694,7 +1708,7 @@
                         });
 
                         selectDropDown.addEventListener('change', function (e) {
-                            selectScene(e.target.value);
+                            selectScene(e.target.value, true);
                         })
 
                         var customSelect = new CustomSelect(selectDropDown);
@@ -1738,7 +1752,7 @@
                                     optionElementCon.className = 'live-editor-custom-select-option';
                                     optionElementCon.dataset.selectValue = originalSelect.options[j].value;
                                     customSelect.customSelectListEl.appendChild(optionElementCon);
-    
+                                    console.log('syncOptionsList addd', optionElementCon)
                                     optionElementCon.addEventListener("click", function(e) {
                                         customSelect.selectOption(e.currentTarget);
                                     });
@@ -1788,8 +1802,8 @@
                             }
                         };
 
-                        _eventDispatcher.on('sceneSelected', function (scene) {
-                            customSelect.value = scene.sceneInstance.id;
+                        _eventDispatcher.on('sceneSelected', function (e) {
+                            if(!e.byDirectSelect) customSelect.value = e.scene.sceneInstance.id;
                         });
                        
 
@@ -2816,7 +2830,7 @@
                                     listItemInstance.toggleVisibility();                                
                                 } else {
                                     log('visibilityBtnCon change 1.2');
-                                    addTeleconferenceSource();
+                                    //addTeleconferenceSource();
                                     listItemInstance.toggleVisibility();
                                 }
                             });
@@ -3326,16 +3340,17 @@
                     }
 
                     function sortList(type) {
+                        if(!_visualSourcesListEl) return;
                         var listArr, listEl, sources;
 
                         if(type == 'visual') {
                             listArr = _sourcesList;
                             listEl = _visualSourcesListEl;
-                            sources = scenesInterface.getActive().sceneInstance.sources;
+                            sources = sceneListItem.sceneInstance.sources;
                         } else {
                             listArr = _audioList;
                             listEl = _audioSourcesListEl;
-                            sources = scenesInterface.getActive().sceneInstance.audioSources;
+                            sources = sceneListItem.sceneInstance.audioSources;
                         }
                         log('sortList: sources', type, sources, listArr);
 
@@ -4169,7 +4184,7 @@
                         function sortList() {
                             var listArr = _overlaySourcesList;
                             var listEl = _overlaySourcesListEl;
-                            var sources = scenesInterface.getActive().sceneInstance.overlaySources;
+                            var sources = sceneListItem.sceneInstance.overlaySources;
                                 
                             if(sources.length !== listArr.length) {
                                 return;
@@ -4411,7 +4426,7 @@
                         listSelect.className = 'live-editor-layouts-list-select';
                         listContainer.appendChild(listSelect);
                         listSelect.addEventListener('change', function (e) {                            
-                            if(e instanceof Event) {
+                            if(e && e.constructor.name == 'CustomEvent') {
                                 selectLayout(e.target.value);
                                 _autoSwitchToScreensharingLayoutAndBack = false;
                             }
@@ -4504,18 +4519,14 @@
                     }
 
                     function selectLayout(layoutKey, byHotKeys) {
-                        log('selectLayout START', layoutKey)
-
-                        let webrtcGroups = getWebrtcGroupListItems();
+                        console.log('selectLayout START', layoutKey)
                        
                         _selectedLayout = layoutKey;
-
-                        for(let g in webrtcGroups) {
-                            tool.canvasComposer.videoComposer.updateWebRTCLayout(webrtcGroups[g].sourceInstance, layoutKey, null);
-                        }
-
+                        
                         if(byHotKeys) {
                             _layoutsListCustomSelect.value = layoutKey;
+                        } else {
+                            tool.canvasComposer.videoComposer.updateWebRTCLayout(tool.webrtcSourcesGroup.statePerScene[sceneListItem.sceneInstance.id], layoutKey, null);
                         }
                     }
 
@@ -4563,9 +4574,9 @@
                             //_participantsList.addTeleconferenceSource();
                         //}
 
-                        if(getWebrtcGroupListItems().length == 0) {
+                        /* if(getWebrtcGroupListItems().length == 0) {
                             addTeleconferenceSource();
-                        }
+                        } */
 
                         _sceneSourcesColumnEl = sourcesColumnInner;
                         return sourcesColumnInner;
@@ -8811,7 +8822,7 @@
                         }
                     });
 
-                    this._syncOptionsList = function () {
+                    this._syncOptionsList = function (doNotTriggerSelect) {
                         let originalSelect = selectInstance.originalSelect;
                         let optionsNumber = originalSelect.options.length;
                         log('syncOptionsList optionsNumber', originalSelect.options);
@@ -8879,7 +8890,7 @@
                         for (let i = 0; i < optionsNumber; i++) {
                             if (originalSelect.options[i].selected == true) {
                                 for(let c in selectInstance.optionsList) {
-                                    if (originalSelect.options[i].value == selectInstance.optionsList[c].value) {
+                                    if (originalSelect.options[i].value == selectInstance.optionsList[c].value && !doNotTriggerSelect) {
                                         selectInstance.selectOption(selectInstance.optionsList[c].customOptionEl);
                                     }
                                 }
@@ -9275,7 +9286,7 @@
                     optionsListCon.appendChild(selectControlsEl);
 
 
-                    selectInstance.syncOptionsList();
+                    selectInstance.syncOptionsList(true);
 
                     selectedOptionEl.addEventListener("click", function (e) {
                         //e.stopPropagation();
