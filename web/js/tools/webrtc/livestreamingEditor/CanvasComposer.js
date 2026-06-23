@@ -1058,6 +1058,12 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             return {index:0, childItemsNum: 0 };
         }
 
+        function getWebrtcGroups() {
+            return _activeScene.sources.filter(function (source) {
+                return source.sourceType == 'group' && source.groupType == 'webrtc';
+            });
+        }
+
         function addSource(newSource, scene, successCallback, failureCallback) {
             var scene = scene || _activeScene;
 
@@ -1928,6 +1934,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
                 return o.active == true;
             }).length;
             
+            let prevLayoutName = webrtcGroupSource.currentLayout;
             if(layoutName != null && layoutName != 'audioOnly') {
                 //log('updateWebRTCCanvasLayout layout', layoutName, streamsNum);
 
@@ -2068,7 +2075,11 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             if(webrtcGroupSource.currentLayout == 'floatingScreenSharing' && allWebRTCSources.length >= 2) {
                 webrtcGroupSource.sources.splice(0, 0, allWebRTCSources.splice(1, 1)[0]);
             }
-            _activeScene.eventDispatcher.dispatch('webrtcLayoutUpdated');
+            _activeScene.eventDispatcher.dispatch('webrtcLayoutUpdated', {
+                layoutChanged: prevLayoutName !== webrtcGroupSource.currentLayout,
+                currentLayout: webrtcGroupSource.currentLayout,
+                prevLayoutName: prevLayoutName
+            });
             
             if(!layoutIsUpdating) {
                 notPendingAnymore();
@@ -4310,6 +4321,7 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
 
         return {
             getWebrtcGroupIndex: getWebrtcGroupIndex,
+            getWebrtcGroups: getWebrtcGroups,
             updateActiveWebRTCLayouts: updateActiveWebRTCLayouts,
             updateWebRTCLayout: updateWebRTCLayout,
             compositeVideosAndDraw: compositeVideosAndDraw,
@@ -5328,7 +5340,6 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
         },
         createScene: createScene,
         getScenes: getScenes,
-        getActiveScene: getActiveScene,
         videoTrackIsMuted: function () {
             return _videoTrackIsMuted;
         },
