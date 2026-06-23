@@ -152,6 +152,9 @@
                 });
             }
 
+
+            tool._connectStreamHandlers(stream);
+
             // CSS variable updates from AI pipeline — re-use listenForStyle logic
             // via Q.handle so the <style> injection matches all other screens
             stream.onEphemeral('Q/style').set(function (e) {
@@ -173,6 +176,11 @@
                 }
             );
         }
+
+        tool._handleSocketReconnect();
+
+        let poweredBy = document.querySelector('.powered_by_safebots');
+        if (poweredBy) poweredBy.classList.add('Q_hide');
 
     }, {
         publisherId: null,
@@ -269,7 +277,14 @@
                     }
                     tool._setupPdfVisibilityObserver(pdfTool);
                     pdfTool.state.onScroll.set(function (scrollTop, scrollLeft) {
-                        contentEphemeral(previewState, 'Streams/scroll', { scrollTop: scrollTop, scrollLeft: scrollLeft });
+                        if(pdfTool.state.slideMode) return;
+
+                        let pctTop = ((pdfTool.element.scrollTop / (pdfTool.element.scrollHeight - pdfTool.element.clientHeight)) * 100);
+                        pctTop = Number.isNaN(pctTop) ? "0.00" : pctTop.toFixed(2);
+                        let pctLeft = ((pdfTool.element.scrollLeft / (pdfTool.element.scrollWidth - pdfTool.element.clientWidth)) * 100);
+                        pctLeft = Number.isNaN(pctLeft) ? "0.00" : pctLeft.toFixed(2);
+
+                        contentEphemeral(previewState, 'Streams/scroll', { scrollTop: pctTop, scrollLeft: pctLeft });
                     }, previewTool);
                     pdfTool.state.onSlide.set(function (slideIndex) {
                         contentEphemeral(previewState, 'Streams/slide', { slideIndex: slideIndex });
@@ -288,6 +303,7 @@
 
             // ── Streams/video/preview: play/pause/seek → content stream ephemerals ──
             function wireVideoPreview(previewTool) {
+                if(!previewState) return;
                 var previewState = previewTool.preview && previewTool.preview.state
                     || previewTool.state;
                 document.body.forEachTool('Q/video', function () {
@@ -388,7 +404,7 @@
          */
         _resolveActiveContentTool: function (previewTool, contentToolName) {
             if (!previewTool || (Q.isEmpty(previewTool.stream) && !previewTool.state.publisherId && !previewTool.state.streamName)) return null;
-            var activeTools = Q.Tool.byName('Q/pdf');
+            var activeTools = Q.Tool.byName(contentToolName);
             for (var toolKey in activeTools) {
                 if (Object.prototype.hasOwnProperty.call(activeTools, toolKey)) {
                     let tool = activeTools[toolKey];
@@ -419,9 +435,8 @@
                 var canvases = pdfTool.element.querySelectorAll('canvas');
                 if (!canvases.length) return;
                 
-                var inSlideMode = pdfTool.element.getAttribute('data-slideMode') === 'true';
                 var current;
-                if(inSlideMode) {
+                if(pdfTool.state.slideMode) {
                     current = (pdfTool.cacheData && pdfTool.cacheData.slideIndex != null) ? pdfTool.cacheData.slideIndex : -1;
                 } else {
                     current = tool._currentVisibleCanvasIndex(pdfTool)
@@ -441,17 +456,16 @@
                 return;
             }
 
-            if (previewType === 'streams_video_preview' || previewType === 'streams_audio_preview') {
-                var contentName = (previewType === 'streams_video_preview') ? 'Q/video' : 'Q/audio';
+            if (intent.indexOf('video/') === 0 || intent.indexOf('audio/') === 0) {
+                var contentName = intent.indexOf('video/') === 0 ? 'Q/video' : 'Q/audio';
                 var mediaTool = tool._resolveActiveContentTool(preview, contentName);
                 if (!mediaTool) return;
-                var el = mediaTool.element.querySelector('video, audio');
-                if (!el) return;
+                
                 switch (intent) {
-                    case 'play': el.play(); break;
-                    case 'pause': el.pause(); break;
-                    case 'mute': el.muted = true; break;
-                    case 'unmute': el.muted = false; break;
+                    case 'video/play': mediaTool.play(); break;
+                    case 'video/pause': mediaTool.pause(); break;
+                    case 'video/mute': break;
+                    case 'video/unmute': break;
                     default: return;
                 }
                 tool._syncServer(handled, { pos: el.currentTime });
@@ -571,19 +585,19 @@
          * @return {Number}            the index actually applied
          */
         _pdfApplySlide: function (pdfTool, slideIndex) {
+            var tool = this;
             var canvases = pdfTool.element.querySelectorAll('canvas');
             if (!canvases.length) return -1;
             pdfTool.cacheData = pdfTool.cacheData || {};
 
-            var inSlideMode = pdfTool.element.getAttribute('data-slideMode') === 'true';
             var targetIndex;
 
             targetIndex = Math.max(0, Math.min(canvases.length - 1, slideIndex));
-            if (!inSlideMode) {
+            if (!pdfTool.state.slideMode) {
                 // Reads from IntersectionObserver snapshot — accurate even with
                 // variable canvas heights, transforms, or fractional scroll positions.
                 //targetIndex = this._currentVisibleCanvasIndex(pdfTool);
-                pdfTool.element.setAttribute('data-slideMode', 'true');
+                tool._enableSlideMode(pdfTool);
             }
 
             pdfTool.cacheData.slideIndex = targetIndex;
@@ -592,6 +606,14 @@
                 canvas.style.display = (i === targetIndex) ? 'block' : 'none';
             });
             return targetIndex;
+        },
+        _enableSlideMode: function (pdfTool) {
+            pdfTool.element.setAttribute('data-slideMode', 'true');
+            pdfTool.state.slideMode = true;
+        },
+        _disableSlideMode: function (pdfTool) {
+            pdfTool.element.removeAttribute('data-slideMode');
+            pdfTool.state.slideMode = false;
         },
 
         /**
@@ -606,9 +628,9 @@
          * @param {Q.Tool} pdfTool
          */
         _checkPdfMode: function (pdfTool) {
+            var tool = this;
             if (!pdfTool || !pdfTool.element) return;
-            var inSlideMode = pdfTool.element.getAttribute('data-slideMode') === 'true';
-            if (!inSlideMode) return;
+            if (pdfTool.state.slideMode === false) return;
 
             var canvases = pdfTool.element.querySelectorAll('canvas');
             if (!canvases.length) return;
@@ -618,7 +640,7 @@
                 ? Math.max(0, Math.min(canvases.length - 1, pdfTool.cacheData.slideIndex))
                 : 0;
 
-            pdfTool.element.removeAttribute('data-slideMode');
+            tool._disableSlideMode(pdfTool);
             canvases.forEach(function (canvas) { canvas.style.display = ''; });
 
             var targetCanvas = canvases[activeIndex];
@@ -786,18 +808,7 @@
             // No separate namespace, no separate connection needed.
 
             // Tell server to start the AI pipeline for this session.
-            _qEmit('AI/transcription/session/start', {
-                lang: state.lang || 'en-US',
-                sampleRate: 16000,
-                publisherId: state.publisherId,
-                streamName: state.streamName,
-                role: state.isHost ? 'host' : 'participant',
-                mode: state.mode || 'live',   // live|narration
-                isOwnLivestream: !!state.isOwnLivestream,
-                modes: { composition: !!state.modes.composition, navigation: !!state.modes.navigation, transcription: !!state.modes.transcription },
-                toolStreamName: state.toolStreamName || null,
-                toolPublisherId: state.toolPublisherId || null,
-            });
+            tool._startSession();
 
             // Client-side classifier — intercepts navigation before sending to server
             tool._classifier = Q.Media.ClientClassifier
@@ -817,14 +828,14 @@
             // (Deepgram path bypasses this — audio goes directly server-side)
             Q.Speech.Recognition.onResult.set(function (chunk) {
                 if (!chunk || !chunk.isFinal) return;
-                if (tool._classifier && state.modes.navigation !== false) {
+                /* if (tool._classifier && state.modes.navigation !== false) {
                     var handled = tool._classifier.intercept(chunk.transcript);
                     if (handled) {
                         tool._handleCommandLocally(handled);   // update host UI immediately
                         //tool._syncServer(handled);              // fan out to viewer + record VTT
                         return;
                     }
-                }
+                } */
                 _qEmit('Streams/utterance', {
                     transcript: chunk.transcript,
                     isFinal: chunk.isFinal,
@@ -931,6 +942,68 @@
                     // a durable Media/presentation/tool/show message + VTT NOTE
                     _qEmit('AI/tool/committed', { toolName: data.toolName });
                 }, tool);
+            }
+        },
+        _startSession: function () {
+            var tool = this;
+            var state = tool.state;
+            _qEmit('AI/transcription/session/start', {
+                sessionToken: tool._getSessionToken(),
+                lang: state.lang || 'en-US',
+                sampleRate: 16000,
+                publisherId: state.publisherId,
+                streamName: state.streamName,
+                role: state.isHost ? 'host' : 'participant',
+                mode: state.mode || 'live',   // live|narration
+                isOwnLivestream: !!state.isOwnLivestream,
+                modes: { composition: !!state.modes.composition, navigation: !!state.modes.navigation, transcription: !!state.modes.transcription },
+                toolStreamName: state.toolStreamName || null,
+                toolPublisherId: state.toolPublisherId || null,
+            });
+        },
+        _getSessionToken: function () {
+            var tool = this;
+            if (tool.sessionToken == null) {
+                tool.sessionToken = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+            }
+            return tool.sessionToken;
+        },
+        _connectStreamHandlers: function (stream) {
+            var tool = this;
+            stream.onMessage('Media/presentation/slide').set(function (msg) {
+                var instr = {};
+                try { instr = JSON.parse(msg.instructions || '{}'); } catch (e) { }
+                var mySocketId = Q.Socket.get('/Q', '').socket.id;
+                //if (mySocketId && msg.byClientId === mySocketId) return;
+                if (instr.index == null) return;
+                var preview = tool._activePreview;
+                if (!preview || preview.state.streamName.indexOf('Streams/pdf') !== 0) return;
+                var pdfTool = tool._resolveActiveContentTool(preview, 'Q/pdf');
+                if (!pdfTool) return;
+                // Idempotency: if we just set this index locally, the durable echo is a no-op
+                if (pdfTool.cacheData && pdfTool.cacheData.slideIndex === instr.index) return;
+                tool._pdfApplySlide(pdfTool, instr.index);
+            }, tool);
+        },
+        _handleSocketReconnect: function () {
+            var tool = this;
+            var state = tool.state;
+            var qs = Q.Socket.get('/Q', '');
+            if (qs && qs.socket) {
+                tool.currentSocketId = qs.socket.id;
+                Q.Socket.onConnect().add(function () {
+                    if (state._micActive && tool.currentSocketId != qs.socket.id) {
+                        Q.log && Q.log('Socket reconnected — checking if session needs resume');
+                        // Re-emit session/start with the same token to resume server-side state
+                        tool._startSession();
+                    }
+
+                    tool.currentSocketId = qs.socket.id;
+                });
+            } else {
+                Q.Socket.onConnect().addOnce(function () {
+                    tool._handleSocketReconnect();
+                });
             }
         },
 

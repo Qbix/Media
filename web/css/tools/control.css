@@ -1,10 +1,13 @@
+#Media_presentation_control_page {
+    height: 100%;
+    overflow: hidden;
+}
 /* Media/presentation/control tool */
 
 .Media_control_tool {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    height: 100dvh; /* iOS safe */
+    height: 100%; 
     background: #0d0d14;
     color: #e8e6e0;
     font-family: system-ui, -apple-system, sans-serif;
@@ -223,15 +226,19 @@
     display: flex;
     flex-direction: column;
     min-height: 0; /* critical for flex child scroll */
+    padding: 0 10px;
 }
 
 /* Let Streams/chat fill the space */
-.Media_control_chat_wrap .Streams_chat_tool {
+.Media_control_chat_wrap.Streams_chat_tool {
     flex: 1;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+.Media_control_chat_wrap .Streams_chat_messages {
+    overflow-y: auto;
 }
 
 /* ── Mobile safe area ── */
