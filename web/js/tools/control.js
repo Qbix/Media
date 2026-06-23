@@ -250,7 +250,7 @@
                 if (!previewTool || !chatEl.contains(previewTool.element)) return;
                 var ps = previewTool.state;
                 ps.onInvoke.set(function () {
-                    tool._activePreview = previewTool;
+                    tool._activePreview = tool._getChildPreviewTool(previewTool);
                     Q.Streams.Stream.ephemeral(pId, sName, {
                         type: 'Media/presentation/show',
                         publisherId: ps.publisherId,
@@ -414,6 +414,16 @@
                 }
             }
         },
+        _getChildPreviewTool: function (previewTool) {
+            if (!previewTool || (Q.isEmpty(previewTool.stream) && !previewTool.state.publisherId && !previewTool.state.streamName)) return null;
+            var allPreviewGroup = Q.Tool.active['Streams_preview-4'];
+
+            for (var toolName in allPreviewGroup) {
+                if (Object.prototype.hasOwnProperty.call(allPreviewGroup, toolName)) {
+                    if(allPreviewGroup[toolName].preview == previewTool) return allPreviewGroup[toolName];
+                }
+            }
+        },
 
         /**
          * Apply a classifier-matched intent to the *currently active* preview's
@@ -561,6 +571,14 @@
                 }
             }
             return bestIdx;
+        },
+        _getCurrentPdfIndex: function (pdfTool) {
+            var tool = this;
+            if (pdfTool.state.slideMode) {
+                return (pdfTool.cacheData && pdfTool.cacheData.slideIndex != null) ? pdfTool.cacheData.slideIndex : -1;
+            } else {
+                return tool._currentVisibleCanvasIndex(pdfTool);
+            }
         },
 
         /**
@@ -836,7 +854,7 @@
                         return;
                     }
                 } */
-                _qEmit('Streams/utterance', {
+                tool._emitWithState('Streams/utterance', {
                     transcript: chunk.transcript,
                     isFinal: chunk.isFinal,
                     confidence: chunk.confidence,
@@ -981,7 +999,7 @@
                 var pdfTool = tool._resolveActiveContentTool(preview, 'Q/pdf');
                 if (!pdfTool) return;
                 // Idempotency: if we just set this index locally, the durable echo is a no-op
-                if (pdfTool.cacheData && pdfTool.cacheData.slideIndex === instr.index) return;
+                if (tool._getCurrentPdfIndex(pdfTool) === instr.index) return;
                 tool._pdfApplySlide(pdfTool, instr.index);
             }, tool);
         },
@@ -1005,6 +1023,64 @@
                     tool._handleSocketReconnect();
                 });
             }
+        },
+
+        /**
+ * Emit a socket event with the current presentation state automatically
+ * attached. Use this instead of _qEmit for any event the server-side
+ * classifier or pipeline might need to interpret in context.
+ */
+        _emitWithState: function (event, payload) {
+            var tool = this;
+            var state = tool._collectCurrentState();
+            var qs = Q.Socket.get('/Q', '');
+            if (qs) qs.socket.emit(event, Q.extend({}, payload, { _state: state }));
+        },
+
+        /**
+         * Snapshot of state needed by the server to interpret commands correctly.
+         * Reads from the active preview's content tool — single source of truth.
+         */
+        _collectCurrentState: function () {
+            var tool = this;
+            var preview = tool._activePreview;
+            if (!preview) return { activePreviewType: null };
+            var snapshot = {
+                activePreviewType: preview.name,
+                publisherId: preview.stream && preview.stream.fields.publisherId,
+                streamName: preview.stream && preview.stream.fields.name
+            };
+            if (preview.name === 'streams_pdf_preview') {
+                var pdfTool = tool._resolveActiveContentTool(preview, 'Q/pdf');
+                if (pdfTool) {
+                    snapshot.slideMode = pdfTool.element.getAttribute('data-slideMode') === 'true';
+                    snapshot.slideIndex = tool._getCurrentPdfIndex(pdfTool)
+
+                    snapshot.scrollTop = pdfTool.cacheData && pdfTool.cacheData.scrollTop;
+                    // If scrollTop isn't tracked, derive from element directly
+                    if (snapshot.scrollTop == null) snapshot.scrollTop = pdfTool.element.scrollTop;
+                }
+            }
+            if (preview.name === 'streams_video_preview' || preview.name === 'streams_audio_preview') {
+                var contentName = preview.name === 'streams_video_preview' ? 'Q/video' : 'Q/audio';
+                var mediaTool = tool._resolveActiveContentTool(preview, contentName);
+                var mediaEl = mediaTool && mediaTool.element.querySelector('video, audio');
+                if (mediaEl) {
+                    snapshot.currentTime = mediaEl.currentTime;
+                    snapshot.paused = mediaEl.paused;
+                    snapshot.muted = mediaEl.muted;
+                }
+            }
+            // Zoom: read from active content tool's transform if present
+            var activeEl = tool._activePreview && (
+                document.querySelector('.Q_pdf_tool[data-active]') ||
+                document.querySelector('.Q_image_tool[data-active]')
+            );
+            if (activeEl && activeEl.style.transform) {
+                var m = activeEl.style.transform.match(/scale\(([\d.]+)\)/);
+                if (m) snapshot.zoomScale = parseFloat(m[1]);
+            }
+            return snapshot;
         },
 
         // ── Live caption ───────────────────────────────────────────────────────
