@@ -37,6 +37,10 @@
                     pdfTool.state.onRefresh.addOnce(function () {
                         var lastScrollEphemeral = null;
                         tool._scroll = function (ephemeral) {
+                            var inSlideMode = pdfTool.element.getAttribute('data-slideMode') === 'true';
+                            if(inSlideMode) {
+                                _disableSlideMode();
+                            }
                             lastScrollEphemeral = ephemeral;
                             var st = Q.getObject('scrollTop', ephemeral);
                             if (st) st = pdfTool.element.scrollHeight / 100 * st;
@@ -48,17 +52,25 @@
                         tool.goToSlide = function (index) {
                             pdfTool.element.setAttribute('data-slideMode', true);
                             state.trackScroll = pdfTool.element.slideIndex === index;
-                            if (state.trackScroll) {
+                            /* if (state.trackScroll) {
                                 pdfTool.element.removeAttribute('data-slideMode');
-                            }
+                            } */
                             $('canvas', pdfTool.element).each(function (i, el) {
-                                el.style.display = (i === index || state.trackScroll) ? 'block' : 'none';
+                                el.style.display = (i === index/*  || state.trackScroll */) ? 'block' : 'none';
                             });
-                            if (state.trackScroll) tool._scroll(lastScrollEphemeral);
+                            //if (state.trackScroll) tool._scroll(lastScrollEphemeral);
                             pdfTool.element.slideIndex = state.trackScroll ? null : index;
                         };
+
+                        function _disableSlideMode() {
+                            pdfTool.element.removeAttribute('data-slideMode');
+                             $('canvas', pdfTool.element).each(function (i, el) {
+                                el.style.display = 'block';
+                            });
+                        }
+
                         if (Q.getObject('cacheData.slideIndex', pdfTool) != null) {
-                            tool.goToSlide(pdfTool.cacheData.slideIndex);
+                            pdfTool.goToSlide(pdfTool.cacheData.slideIndex);
                         }
                         stream.onEphemeral('Streams/scroll').set(tool._scroll, tool);
                         // Slide/reveal listeners are GONE from this file.
