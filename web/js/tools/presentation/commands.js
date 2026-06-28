@@ -43,16 +43,16 @@
 
         // ── Build page structure ───────────────────────────────────────────────
         tool.element.innerHTML = '';
-        tool.element.className += ' Media_control_tool';
+        tool.element.className += ' Media_presentation_commands_tool';
 
         // Header bar
         var header = document.createElement('div');
         header.className = 'Media_presentation_commands_header';
         header.innerHTML =
-            '<span class="Media_commands_title">Control</span>' +
-            '<div class="Media_commands_header_right">' +
-            '  <button class="Media_commands_mic_btn" title="Start / stop microphone">' +
-            '    <svg class="Media_commands_mic_icon" viewBox="0 0 24 24" width="22" height="22"' +
+            '<span class="Media_presentation_commands_title">Control</span>' +
+            '<div class="Media_presentation_commands_header_right">' +
+            '  <button class="Media_presentation_commands_mic_btn" title="Start / stop microphone">' +
+            '    <svg class="Media_presentation_commands_mic_icon" viewBox="0 0 24 24" width="22" height="22"' +
             '         fill="currentColor" aria-hidden="true">' +
             '      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66' +
             '           1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72' +
@@ -60,7 +60,7 @@
             '    </svg>' +
             '  </button>' +
             (state.isHost
-                ? '<a class="Media_commands_screen_link" href="' + state.screenUrl + '" target="_blank"' +
+                ? '<a class="Media_presentation_commands_screen_link" href="' + state.screenUrl + '" target="_blank"' +
                 '   title="Open shared screen">⬡</a>'
                 : '') +
             '</div>';
@@ -69,7 +69,7 @@
         // Coaching strip (host only)
         if (state.isHost) {
             var coaching = document.createElement('div');
-            coaching.className = 'Media_commands_coaching Media_commands_coaching_empty';
+            coaching.className = 'Media_presentation_commands_coaching Media_presentation_commands_coaching_empty';
             coaching.dataset.label = 'AI coaching';
             tool.element.appendChild(coaching);
             tool._coachingEl = coaching;
@@ -78,14 +78,14 @@
         // Proposal feed (host only — guests see committed cards via chat)
         if (state.isHost) {
             var proposals = document.createElement('div');
-            proposals.className = 'Media_commands_proposals';
+            proposals.className = 'Media_presentation_commands_proposals';
             tool.element.appendChild(proposals);
             tool._proposalsEl = proposals;
         }
 
         // Chat region — Streams/chat with our chat extensions
         var chatWrap = document.createElement('div');
-        chatWrap.className = 'Media_commands_chat_wrap';
+        chatWrap.className = 'Media_presentation_commands_chat_wrap';
         tool.element.appendChild(chatWrap);
 
         $(chatWrap)
@@ -110,18 +110,18 @@
                 // ── Mode toggles (host only) ────────────────────────────────────────
                 if (state.isHost) {
                     var modesWrap = document.createElement('div');
-                    modesWrap.className = 'Media_commands_modes';
+                    modesWrap.className = 'Media_presentation_commands_modes';
                     modesWrap.innerHTML =
-                        '<button class="Media_commands_mode_btn Media_commands_mode_composition active"'
+                        '<button class="Media_presentation_commands_mode_btn Media_presentation_commands_mode_composition active"'
                         + ' data-mode="composition" title="AI card composition on/off">🧠&nbsp;Compose</button>'
-                        + '<button class="Media_commands_mode_btn Media_commands_mode_navigation active"'
+                        + '<button class="Media_presentation_commands_mode_btn Media_presentation_commands_mode_navigation active"'
                         + ' data-mode="navigation" title="Voice navigation on/off">🎙&nbsp;Navigate</button>'
-                        + '<button class="Media_commands_mode_btn Media_commands_mode_transcription active"'
+                        + '<button class="Media_presentation_commands_mode_btn Media_presentation_commands_mode_transcription active"'
                         + ' data-mode="transcription" title="Post speech as chat messages">📝&nbsp;Chat</button>';
                     tool.element.appendChild(modesWrap);
 
                     modesWrap.addEventListener('click', function (e) {
-                        var btn = e.target.closest('.Media_commands_mode_btn');
+                        var btn = e.target.closest('.Media_presentation_commands_mode_btn');
                         if (!btn) return;
                         var mode = btn.getAttribute('data-mode');
                         var active = btn.classList.toggle('active');
@@ -569,7 +569,7 @@
 
             _updateMicUI: function (active) {
                 var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
-                $btn.toggleClass('Media_commands_mic_active', active);
+                $btn.toggleClass('Media_presentation_commands_mic_active', active);
                 $btn.attr('title', active ? 'Stop microphone' : 'Start microphone');
                 // Pulsing red dot appears via CSS when active class is set
             },
@@ -655,7 +655,7 @@
                         // Activate in host (interactive) mode.
                         // Pass the presentation stream so the tool can sync via ephemerals.
                         var wrap = document.createElement('div');
-                        wrap.className = 'Media_commands_generated_tool';
+                        wrap.className = 'Media_presentation_commands_generated_tool';
                         tool.element.appendChild(wrap);
                         var el = Q.Tool.prepare('div', data.toolName,
                             Q.extend({
@@ -854,7 +854,7 @@
             _showCaption: function (text) {
                 var $cap = $(this.element).find('.Media_presentation_commands_caption');
                 if (!$cap.length) {
-                    $cap = $('<div class="Media_commands_caption"></div>');
+                    $cap = $('<div class="Media_presentation_commands_caption"></div>');
                     $(this.element).find('.Media_presentation_commands_chat_wrap').before($cap);
                 }
                 $cap.text(text);
@@ -869,7 +869,7 @@
                 if (!tool._proposalsEl) return;
 
                 var card = document.createElement('div');
-                card.className = 'Media_commands_proposal';
+                card.className = 'Media_presentation_commands_proposal';
                 card.dataset.proposalId = proposal.proposalId;
 
                 var label = (proposal.visualizationType || 'proposal').replace(/_/g, ' ');
@@ -884,13 +884,13 @@
                 else if (d.html) preview = 'HTML slide (' + d.html.length + ' chars)';
 
                 card.innerHTML =
-                    '<div class="Media_commands_proposal_type">' + label + '</div>' +
-                    '<div class="Media_commands_proposal_preview">' + String(preview).encodeHTML() + '</div>' +
-                    '<div class="Media_commands_proposal_actions">' +
-                    '  <button class="Media_commands_proposal_commit" data-id="' + proposal.proposalId + '">Show</button>' +
-                    '  <button class="Media_commands_proposal_cancel" data-id="' + proposal.proposalId + '">Skip</button>' +
+                    '<div class="Media_presentation_commands_proposal_type">' + label + '</div>' +
+                    '<div class="Media_presentation_commands_proposal_preview">' + String(preview).encodeHTML() + '</div>' +
+                    '<div class="Media_presentation_commands_proposal_actions">' +
+                    '  <button class="Media_presentation_commands_proposal_commit" data-id="' + proposal.proposalId + '">Show</button>' +
+                    '  <button class="Media_presentation_commands_proposal_cancel" data-id="' + proposal.proposalId + '">Skip</button>' +
                     '</div>' +
-                    '<div class="Media_commands_proposal_timer"></div>';
+                    '<div class="Media_presentation_commands_proposal_timer"></div>';
 
                 tool._proposalsEl.insertBefore(card, tool._proposalsEl.firstChild);
 
@@ -929,17 +929,17 @@
 
             _showCoaching: function (text, sourceUri) {
                 if (!this._coachingEl) return;
-                this._coachingEl.classList.remove('Media_commands_coaching_empty');
+                this._coachingEl.classList.remove('Media_presentation_commands_coaching_empty');
                 this._coachingEl.innerHTML =
-                    '<span class="Media_commands_coaching_text">' + String(text).encodeHTML() + '</span>' +
+                    '<span class="Media_presentation_commands_coaching_text">' + String(text).encodeHTML() + '</span>' +
                     (sourceUri
-                        ? ' <a class="Media_commands_coaching_link" href="' + String(sourceUri).encodeHTML() +
+                        ? ' <a class="Media_presentation_commands_coaching_link" href="' + String(sourceUri).encodeHTML() +
                         '" target="_blank" rel="noopener">source</a>'
                         : '');
                 clearTimeout(this._coachingTimer);
                 var el = this._coachingEl;
                 this._coachingTimer = setTimeout(function () {
-                    el.classList.add('Media_commands_coaching_empty');
+                    el.classList.add('Media_presentation_commands_coaching_empty');
                 }, 12000);
             },
 
