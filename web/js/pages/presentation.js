@@ -5,7 +5,8 @@ Q.page('Media/presentation', function () {
     if (page.mode === 'participant' || page.noFullscreen) {
         if (!Q.Pointer.clickedAtLeastOnce) {
             Q.alert(Q.text.Media.presentation.Alert, {
-                title: ""
+                title: "",
+                className: "Media_presentation_start_alert"
             });
         }
     } else {
