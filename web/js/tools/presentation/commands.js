@@ -114,7 +114,7 @@ Q.Tool.define('Media/presentation/commands', function (options) {
             tool.element.appendChild(modesWrap);
 
             modesWrap.addEventListener('click', function (e) {
-                var btn = e.target.closest('.Media_presentation_commands_mode_btn');
+                var btn = e.target.closest('.Media_commands_mode_btn');
                 if (!btn) return;
                 var mode   = btn.getAttribute('data-mode');
                 var active = btn.classList.toggle('active');
@@ -122,7 +122,7 @@ Q.Tool.define('Media/presentation/commands', function (options) {
                 update[mode] = active;
                 tool.setState({ modes: Q.extend({}, tool.state.modes, update) });
                 if (tool.state._micActive) {
-                    _qEmit('AI/session/modes', update);
+                    Q.Streams.Transcript.setModes(tool.state.modes);
                 }
             });
         }
@@ -132,16 +132,6 @@ Q.Tool.define('Media/presentation/commands', function (options) {
     Streams.retainWith(tool).get(state.publisherId, state.streamName, function (err, stream) {
         if (err) return;
         tool._stream = stream;
-        if (tool._classifier && tool._classifier.setState) {
-            // Give classifier access to the live stream for ephemeral emit
-            tool._classifier = Q.Media.ClientClassifier.create({
-                publisherId:    state.publisherId,
-                streamName:     state.streamName,
-                stream:         stream,
-                qEmit:          _qEmit,
-                sessionStartMs: state._sessionStartMs || Date.now()
-            });
-        }
 
         // CSS variable updates from AI pipeline — re-use listenForStyle logic
         // via Q.handle so the <style> injection matches all other screens
@@ -239,8 +229,8 @@ Q.Tool.define('Media/presentation/commands', function (options) {
             state._micActive = true;
             tool._updateMicUI(true);
 
-            // Connect to AI socket for all users — role guard is on the server
-            tool._connectAISocket();
+            // Open the transcript session for all users — role guard is on the server
+            tool._connectTranscript();
         });
     },
 
@@ -248,7 +238,11 @@ Q.Tool.define('Media/presentation/commands', function (options) {
         var tool = this;
         var state = tool.state;
         Q.Speech.Recognition.stop && Q.Speech.Recognition.stop();
-        _qEmit('AI/transcription/session/stop');
+        if (state._aiStarted) {
+            Q.Streams.Transcript.stop();
+            if (tool._mediaContext) { tool._mediaContext.unregister(); tool._mediaContext = null; }
+            state._aiStarted = false;
+        }
         state._micActive = false;
         tool._updateMicUI(false);
     },
@@ -306,63 +300,42 @@ Q.Tool.define('Media/presentation/commands', function (options) {
         // Pulsing red dot appears via CSS when active class is set
     },
 
-    // ── AI socket ──────────────────────────────────────────────────────────
+    // ── Transcript session ───────────────────────────────────────────────────
 
-    _connectAISocket: function () {
+    _connectTranscript: function () {
         var tool = this;
         var state = tool.state;
         if (state._aiStarted) return;
         state._aiStarted = true;
         state._sessionStartMs = Date.now();  // track for relSec calculation
 
-        // The /Q socket is already open and authenticated by the platform.
-        // We emit/listen on it directly — same pattern as Streams does.
-        // No separate namespace, no separate connection needed.
+        // Media enriches each utterance with slide + PDF context.
+        if (state.modes.navigation !== false) {
+            tool._mediaContext = Q.Media.Transcript.create({
+                publisherId: state.publisherId,
+                streamName:  state.streamName,
+                slideIndex:  0
+            });
+            tool._mediaContext.register();
+        }
 
-        // Tell server to start the AI pipeline for this session.
-        _qEmit('AI/transcription/session/start', {
+        // Streams owns the session and the emit. It wires Q.Speech.Recognition
+        // and forwards each final result as a Streams/utterance.
+        Q.Streams.Transcript.start({
             lang:             state.lang || 'en-US',
-            sampleRate:       16000,
             publisherId:      state.publisherId,
             streamName:       state.streamName,
             role:             state.isHost ? 'host' : 'participant',
             mode:             state.mode || 'live',   // live|narration
             isOwnLivestream:  !!state.isOwnLivestream,
-            modes:            { composition: !!state.modes.composition, navigation: !!state.modes.navigation, transcription: !!state.modes.transcription },
+            modes: {
+                composition:   !!state.modes.composition,
+                navigation:    !!state.modes.navigation,
+                transcription: !!state.modes.transcription
+            },
             toolStreamName:   state.toolStreamName  || null,
-            toolPublisherId:  state.toolPublisherId || null,
+            toolPublisherId:  state.toolPublisherId || null
         });
-
-        // Client-side classifier — intercepts navigation before sending to server
-        tool._classifier = Q.Media.ClientClassifier
-            && Q.Media.ClientClassifier.create({
-                publisherId:    state.publisherId,
-                streamName:     state.streamName,
-                stream:         tool._stream || null,
-                qEmit:          _qEmit,
-                sessionStartMs: state._sessionStartMs
-            });
-        // Pre-load PDF corpora in background (optional speedup)
-        if (tool._classifier && tool._classifier.preloadPdfs) {
-            tool._classifier.preloadPdfs();
-        }
-
-        // Forward browser WebSpeech results to the server pipeline
-        // (Deepgram path bypasses this — audio goes directly server-side)
-        Q.Speech.Recognition.onResult.set(function (chunk) {
-            if (!chunk || !chunk.isFinal) return;
-            // Intercept locally first — navigation commands never reach server
-            if (tool._classifier && state.modes.navigation !== false) {
-                var handled = tool._classifier.intercept(chunk.transcript);
-                if (handled) return;
-            }
-            _qEmit('Streams/utterance', {
-                transcript: chunk.transcript,
-                isFinal:    chunk.isFinal,
-                confidence: chunk.confidence,
-                speaker:    Q.Users.loggedInUserId()
-            });
-        }, tool);
 
         // Server echoes back all final transcripts for caption display
         Q.Socket.onEvent('Streams/utterance').set(function (data) {
@@ -460,7 +433,7 @@ Q.Tool.define('Media/presentation/commands', function (options) {
 
                 // Tell the server the tool was committed and shown — server posts
                 // a durable Media/presentation/tool/show message + VTT NOTE
-                _qEmit('AI/tool/committed', { toolName: data.toolName });
+                _qEmit('Media/presentation/tool/committed', { toolName: data.toolName });
             }, tool);
         }
     },
@@ -565,9 +538,8 @@ Q.Tool.define('Media/presentation/commands', function (options) {
         beforeRemove: function () {
             var tool = this, state = tool.state;
             if (state._micActive) tool._stopMic();
-            // _stopMic already emits AI/transcription/session/stop via _qEmit
-            Q.Speech.Recognition.onResult &&
-                Q.Speech.Recognition.onResult.remove(tool);
+            // _stopMic calls Q.Streams.Transcript.stop(), which removes the
+            // recognition handler Streams installed. Nothing tool-keyed remains.
             clearTimeout(tool._captionTimer);
             clearTimeout(tool._coachingTimer);
         }
