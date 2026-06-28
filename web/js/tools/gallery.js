@@ -26,14 +26,14 @@ var Streams = Q.Streams;
  *   Any content word → Streams/gallery/query { query } ephemeral → Pexels fetch
  *
  * PHP usage (in a view, same as Q/gallery):
- *   echo Q::tool("Media/presentation/gallery", array(
+ *   echo Q::tool("Media/gallery", array(
  *       'publisherId' => $publisherId,
  *       'streamName'  => $streamName,
  *       'images'      => $gallery,   // [{src, caption}, ...]
  *       'pexelsKey'   => $pexelsKey
  *   ));
  *
- * @class Media/presentation/gallery
+ * @class Media/gallery
  * @constructor
  * @param {Object} [options]
  * @param {String} options.publisherId
@@ -45,7 +45,7 @@ var Streams = Q.Streams;
  * @param {Number} [options.intervalDuration=6000]
  * @param {Object} [options.kenburns]    Base from/to kenburns rectangles
  */
-Q.Tool.define("Media/presentation/gallery", function (options) {
+Q.Tool.define("Media/gallery", function (options) {
     var tool = this;
     var state = tool.state;
 
@@ -224,7 +224,7 @@ Q.Tool.define("Media/presentation/gallery", function (options) {
         var pexelsKey  = tool.state.pexelsKey  || Q.Config.get(['Media', 'gallery', 'pexelsKey'],  null);
         var pixabayKey = tool.state.pixabayKey || Q.Config.get(['Media', 'gallery', 'pixabayKey'], null);
         if (!pexelsKey && !pixabayKey) {
-            return console.warn('Media/presentation/gallery: set pexelsKey or pixabayKey');
+            return console.warn('Media/gallery: set pexelsKey or pixabayKey');
         }
         if (pexelsKey) {
             // Pexels: primary source
@@ -269,7 +269,7 @@ Q.Tool.define("Media/presentation/gallery", function (options) {
             }));
         })
         .catch(function (e) {
-            console.warn('Media/presentation/gallery: Pixabay error', e);
+            console.warn('Media/gallery: Pixabay error', e);
         });
     },
 

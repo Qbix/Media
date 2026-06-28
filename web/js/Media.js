@@ -150,10 +150,7 @@
 		"Media/presentation/chart/line": { js: "{{Media}}/js/tools/presentation/chart/line.js", css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
 
 		// B-roll gallery
-		"Media/presentation/gallery": { js: "{{Media}}/js/tools/presentation/gallery.js", css: "{{Media}}/css/tools/presentation.css" },
-
-		// classifier
-		"Media/presentation/clientCclassifier": { js: "{{Media}}/js/tools/presentation/clientClassifier.js" },
+		"Media/gallery": { js: "{{Media}}/js/tools/presentation/gallery.js", css: "{{Media}}/css/tools/presentation.css" },
 
 		// Chat composer extensions
 		"Media/card/chat":  { js: "{{Media}}/js/tools/card/chat.js",  css: "{{Media}}/css/tools/card/chat.css" },
@@ -315,7 +312,7 @@
 			'Media/chart/line':      'Media/presentation/chart/line',
 			'Media/card/slide':  	 'Media/presentation/card/slide',
 			'Media/card/map':        'Places/directions',
-			'Media/gallery':         'Media/presentation/gallery'
+			'Media/gallery':         'Media/gallery'
 		}
 	});
 	Q.Tool.define.options('Streams/chat', {
