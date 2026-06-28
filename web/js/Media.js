@@ -150,7 +150,7 @@
 		"Media/presentation/chart/line": { js: "{{Media}}/js/tools/presentation/chart/line.js", css: ["{{Media}}/css/tools/presentation.css","{{Q}}/css/tools/cards.css"] },
 
 		// B-roll gallery
-		"Media/gallery": { js: "{{Media}}/js/tools/presentation/gallery.js", css: "{{Media}}/css/tools/presentation.css" },
+		"Media/gallery": { js: "{{Media}}/js/tools/gallery.js", css: "{{Media}}/css/tools/presentation.css" },
 
 		// Chat composer extensions
 		"Media/card/chat":  { js: "{{Media}}/js/tools/card/chat.js",  css: "{{Media}}/css/tools/card/chat.css" },
