@@ -22,7 +22,7 @@
  *
  * @return {string} HTML for the content slot
  */
-function Media_control_response_content()
+function Media_commands_response_content()
 {
     $uri         = Q_Request::uri();
     $calendarId  = $uri->calendarId;

@@ -513,13 +513,13 @@
 }
 
 /* Mode toggle buttons (control page) */
-.Media_control_modes {
+.Media_presentation_commands_modes {
     display: flex;
     gap: 6px;
     padding: 6px 8px;
     border-top: 1px solid rgba(255,255,255,0.08);
 }
-.Media_control_mode_btn {
+.Media_presentation_commands_mode_btn {
     flex: 1;
     padding: 5px 8px;
     font-size: 11px;
@@ -530,7 +530,7 @@
     cursor: pointer;
     transition: all 0.15s;
 }
-.Media_control_mode_btn.active {
+.Media_presentation_commands_mode_btn.active {
     background: rgba(59,130,246,0.2);
     border-color: rgba(59,130,246,0.5);
     color: #93c5fd;

@@ -29,7 +29,7 @@
         "index": 3,
         "relSec": 142.4
       },
-      "whoEmits": "ControlClassifier via stream proxy, or client directly"
+      "whoEmits": "CommandsClassifier via stream proxy, or client directly"
     },
     "Media/presentation/card/show": {
       "description": "A visualization card was committed and appeared on screen.",
@@ -154,7 +154,7 @@
           }
         ]
       },
-      "whoEmits": "AI Pipeline (proposed), ControlClassifier (voice mutations)"
+      "whoEmits": "AI Pipeline (proposed), CommandsClassifier (voice mutations)"
     },
     "Media/presentation/table/update": {
       "description": "Add, remove, or update rows/columns in a data table visualization. action='set' replaces the whole table. addRow/removeRow/addCol/removeCol animate the specific change. updateCell flashes the changed cell.",
@@ -195,7 +195,7 @@
           ]
         ]
       },
-      "whoEmits": "AI Pipeline (proposed), ControlClassifier (voice mutations)"
+      "whoEmits": "AI Pipeline (proposed), CommandsClassifier (voice mutations)"
     },
     "Media/presentation/reveal": {
       "description": "Progressive reveal index within the current slide or card.",
@@ -203,7 +203,7 @@
         "index": "integer (0=header, 1=+body, 2=full)",
         "relSec": "number"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Media/presentation/pin": {
       "description": "Pin a stream alongside the main presentation area. The pinned area is subdivided intelligently for N pinned items. Implicitly opens the pinned area (resize ratio 0.35) if currently closed.",
@@ -295,7 +295,7 @@
         "rules": "object of CSS property \u2192 value",
         "css": "arbitrary CSS string (for @keyframes, pseudo-elements)"
       },
-      "whoEmits": "toolCssUpdate.js"
+      "whoEmits": "cssUpdate.js"
     },
     "AI/tool/generated": {
       "description": "Host preview of a newly generated Q.Tool.define() tool. Sent socket-only to the host before approval. After approval, a Media/presentation/tool/show message is posted.",
@@ -310,59 +310,59 @@
       "payload": {
         "slideIndex": "integer"
       },
-      "whoEmits": "ControlClassifier (legacy path)"
+      "whoEmits": "CommandsClassifier (legacy path)"
     },
     "Streams/reveal": {
       "description": "[LEGACY] Use Media/presentation/reveal message instead.",
       "payload": {
         "revealIndex": "integer"
       },
-      "whoEmits": "ControlClassifier (legacy path)"
+      "whoEmits": "CommandsClassifier (legacy path)"
     },
     "Streams/highlight": {
       "description": "Spotlight a specific element. Still ephemeral \u2014 no record value.",
       "payload": {
         "elementId": "string"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/zoom": {
       "description": "Zoom the current content. Still ephemeral \u2014 display state only.",
       "payload": {
         "scale": "number"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/play": {
       "description": "Play video.",
       "payload": {},
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/pause": {
       "description": "Pause video.",
       "payload": {},
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/seek": {
       "description": "Seek video.",
       "payload": {
         "pos": "seconds"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Q/scroll": {
       "description": "Scroll the presentation.",
       "payload": {
         "direction": "up|down|top|bottom"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Q/fullscreen": {
       "description": "Toggle fullscreen.",
       "payload": {
         "on": "boolean"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Q/audio": {
       "description": "Play an audio clip.",
@@ -376,7 +376,7 @@
       "payload": {
         "url": "string"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/gallery/images": {
       "description": "Replace gallery image set.",
@@ -405,7 +405,7 @@
     "Streams/gallery/remove": {
       "description": "Remove current gallery image.",
       "payload": {},
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/gallery/query": {
       "description": "Fetch Pexels images for query string.",
@@ -417,24 +417,24 @@
     "Streams/gallery/next": {
       "description": "Advance gallery to next image.",
       "payload": {},
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/gallery/pause": {
       "description": "Pause gallery autoplay.",
       "payload": {},
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/gallery/resume": {
       "description": "Resume gallery autoplay.",
       "payload": {},
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     },
     "Streams/gallery/caption": {
       "description": "Set/remove current image caption.",
       "payload": {
         "text": "string"
       },
-      "whoEmits": "ControlClassifier"
+      "whoEmits": "CommandsClassifier"
     }
   },
   "visualizationTypes": {

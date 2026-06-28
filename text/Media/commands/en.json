@@ -1,184 +1,213 @@
 {
-    "_comment": "Media/commands content. Load with Q.Text.get('Media/commands').",
-    "_usage": "text.control.Next for display label; text.patterns.SlideNext for classifier patterns.",
-    "control": {
-        "Next": "Next slide",
-        "Prev": "Previous slide",
-        "First": "First slide",
-        "Last": "Last slide",
-        "Play": "Play",
-        "Pause": "Pause",
-        "Seek": "Go to...",
-        "GalleryNext": "Next image",
-        "GalleryPause": "Pause background",
-        "GalleryResume": "Resume background",
-        "Highlight": "Highlight...",
-        "ZoomIn": "Zoom in",
-        "ZoomOut": "Zoom out",
-        "ZoomReset": "Reset zoom",
-        "ScrollDown": "Scroll down",
-        "ScrollUp": "Scroll up",
-        "ScrollTop": "Top of page",
-        "ScrollBottom": "Bottom of page",
-        "Reveal": "Reveal next",
-        "Fullscreen": "Fullscreen"
-    },
-    "patterns": {
-        "SlideNext": [
-            "next slide",
-            "next card",
-            "go forward",
-            "move on",
-            "advance",
-            "next please",
-            "next one",
-            "show next",
-            "/^next$/"
-        ],
-        "SlidePrev": [
-            "previous slide",
-            "previous card",
-            "go back",
-            "back one",
-            "last slide",
-            "prior slide",
-            "step back",
-            "/^back$/"
-        ],
-        "SlideFirst": [
-            "first slide",
-            "go to the beginning",
-            "start over",
-            "from the top",
-            "beginning please"
-        ],
-        "SlideLast": [
-            "last slide",
-            "go to the end",
-            "final slide",
-            "jump to end"
-        ],
-        "VideoPlay": [
-            "play",
-            "play video",
-            "play the video",
-            "start video",
-            "resume video",
-            "unpause",
-            "/^play$/"
-        ],
-        "VideoPause": [
-            "pause",
-            "pause video",
-            "stop video",
-            "hold on",
-            "/^pause$/"
-        ],
-        "VideoSeek": [
-            "go to",
-            "seek to",
-            "jump to",
-            "skip to",
-            "fast forward to",
-            "rewind to"
-        ],
-        "GalleryNext": [
-            "next image",
-            "next photo",
-            "next picture",
-            "skip image",
-            "change the background"
-        ],
-        "GalleryPause": [
-            "pause background",
-            "stop background",
-            "freeze background",
-            "hold the background",
-            "pause the images"
-        ],
-        "GalleryResume": [
-            "resume background",
-            "continue background",
-            "start background again",
-            "unpause background"
-        ],
-        "Highlight": [
-            "highlight",
-            "point to",
-            "show me",
-            "emphasize",
-            "focus on",
-            "mark",
-            "call out"
-        ],
-        "ZoomIn": [
-            "zoom in",
-            "zoom",
-            "bigger",
-            "enlarge",
-            "magnify",
-            "make it bigger",
-            "closer"
-        ],
-        "ZoomOut": [
-            "zoom out",
-            "smaller",
-            "shrink",
-            "pull back",
-            "make it smaller",
-            "step back",
-            "wider view"
-        ],
-        "ZoomReset": [
-            "reset zoom",
-            "zoom reset",
-            "normal size",
-            "fit to screen",
-            "zoom to fit"
-        ],
-        "ScrollDown": [
-            "scroll down",
-            "keep going",
-            "more",
-            "continue down",
-            "page down",
-            "below"
-        ],
-        "ScrollUp": [
-            "scroll up",
-            "go up",
-            "back up",
-            "upward",
-            "page up",
-            "above"
-        ],
-        "ScrollTop": [
-            "scroll to top",
-            "go to top",
-            "back to top",
-            "beginning of page",
-            "top of page"
-        ],
-        "ScrollBottom": [
-            "scroll to bottom",
-            "go to bottom",
-            "end of page",
-            "bottom of page"
-        ],
-        "RevealNext": [
-            "reveal",
-            "show more",
-            "next point",
-            "continue",
-            "and",
-            "next bullet"
-        ],
-        "Fullscreen": [
-            "fullscreen",
-            "full screen",
-            "maximize",
-            "fill screen",
-            "make it full"
-        ]
-    }
+	"_comment": "Media command text. 'commands' = button labels; 'phrases' = recognized phrases, keyed by command.",
+	"commands": {
+		"slide/next": "Next slide",
+		"slide/prev": "Previous slide",
+		"slide/first": "First slide",
+		"slide/last": "Last slide",
+		"video/play": "Play",
+		"video/pause": "Pause",
+		"video/seek": "Go to time...",
+		"video/seek/relative": "Skip",
+		"gallery/next": "Next image",
+		"gallery/pause": "Pause background",
+		"gallery/resume": "Resume background",
+		"gallery/caption/remove": "Remove caption",
+		"gallery/remove": "Remove image",
+		"highlight": "Highlight...",
+		"zoom/in": "Zoom in",
+		"zoom/out": "Zoom out",
+		"zoom/reset": "Reset zoom",
+		"scroll/down": "Scroll down",
+		"scroll/up": "Scroll up",
+		"scroll/top": "Top of page",
+		"scroll/bottom": "Bottom of page",
+		"reveal/next": "Reveal next",
+		"fullscreen": "Fullscreen",
+		"slide/navigate": "Go to slide..."
+	},
+	"phrases": {
+		"slide/next": [
+			"next slide",
+			"next card",
+			"go forward",
+			"move on",
+			"advance",
+			"next please",
+			"next one",
+			"show next",
+			"/^next$/"
+		],
+		"slide/prev": [
+			"previous slide",
+			"previous card",
+			"go back",
+			"back one",
+			"prior slide",
+			"step back",
+			"/^back$/"
+		],
+		"slide/first": [
+			"first slide",
+			"go to the beginning",
+			"start over",
+			"from the top",
+			"beginning please"
+		],
+		"slide/last": [
+			"last slide",
+			"go to the end",
+			"final slide",
+			"jump to end"
+		],
+		"video/play": [
+			"play",
+			"play video",
+			"play the video",
+			"start video",
+			"resume video",
+			"unpause",
+			"/^play$/"
+		],
+		"video/pause": [
+			"pause",
+			"pause video",
+			"stop video",
+			"hold on",
+			"/^pause$/"
+		],
+		"video/seek": [
+			"/\\b(?:go|seek|jump|skip|rewind|fast ?forward) to \\d/",
+			"/\\b(?:go|seek|jump|skip|rewind|fast ?forward) to .*(?:minute|second|hour)/"
+		],
+		"video/seek/relative": [
+			"go back {{time}}",
+			"back {{time}}",
+			"rewind {{time}}",
+			"skip back {{time}}",
+			"go forward {{time}}",
+			"skip forward {{time}}",
+			"skip ahead {{time}}",
+			"fast forward {{time}}",
+			"forward {{time}}"
+		],
+		"gallery/next": [
+			"next image",
+			"next photo",
+			"next picture",
+			"skip image",
+			"change the background"
+		],
+		"gallery/pause": [
+			"pause background",
+			"stop background",
+			"freeze background",
+			"hold the background",
+			"pause the images"
+		],
+		"gallery/resume": [
+			"resume background",
+			"continue background",
+			"start background again",
+			"unpause background"
+		],
+		"gallery/caption/remove": [
+			"remove caption",
+			"hide caption",
+			"clear caption",
+			"remove the caption",
+			"hide the caption"
+		],
+		"gallery/remove": [
+			"remove this image",
+			"skip this image",
+			"hide this photo",
+			"remove current image",
+			"remove this photo"
+		],
+		"highlight": [
+			"highlight",
+			"point to",
+			"emphasize",
+			"focus on",
+			"mark",
+			"call out"
+		],
+		"zoom/in": [
+			"zoom in",
+			"zoom",
+			"bigger",
+			"enlarge",
+			"magnify",
+			"make it bigger",
+			"closer"
+		],
+		"zoom/out": [
+			"zoom out",
+			"smaller",
+			"shrink",
+			"pull back",
+			"make it smaller",
+			"wider view"
+		],
+		"zoom/reset": [
+			"reset zoom",
+			"zoom reset",
+			"normal size",
+			"fit to screen",
+			"zoom to fit"
+		],
+		"scroll/down": [
+			"scroll down",
+			"keep going",
+			"continue down",
+			"page down",
+			"below"
+		],
+		"scroll/up": [
+			"scroll up",
+			"go up",
+			"back up",
+			"upward",
+			"page up",
+			"above"
+		],
+		"scroll/top": [
+			"scroll to top",
+			"go to top",
+			"back to top",
+			"beginning of page",
+			"top of page"
+		],
+		"scroll/bottom": [
+			"scroll to bottom",
+			"go to bottom",
+			"end of page",
+			"bottom of page"
+		],
+		"reveal/next": [
+			"reveal",
+			"show more",
+			"next point",
+			"next bullet"
+		],
+		"fullscreen": [
+			"fullscreen",
+			"full screen",
+			"maximize",
+			"fill screen",
+			"make it full"
+		],
+		"slide/navigate": [
+			"go to {{query}}",
+			"find {{query}}",
+			"jump to {{query}}",
+			"navigate to {{query}}",
+			"take me to {{query}}",
+			"open the {{query}}",
+			"show the {{query}} slide",
+			"find the {{query}} slide",
+			"go to the {{query}} slide"
+		]
+	}
 }
