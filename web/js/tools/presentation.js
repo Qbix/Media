@@ -340,7 +340,7 @@
                 tool.element.insertBefore(bg, tool.element.firstChild);
                 tool._bgElement = bg;
 
-                // The Media/presentation/gallery sub-tool owns:
+                // The Media/gallery sub-tool owns:
                 //   - all Streams/gallery/* ephemeral wiring
                 //   - Pexels + Pixabay fetch
                 //   - WebSpeech keyword detection
@@ -360,7 +360,7 @@
                     bgConfig = {};
                 }
 
-                $(galleryDiv).tool('Media/presentation/gallery', {
+                $(galleryDiv).tool('Media/gallery', {
                     publisherId: stream.fields.publisherId,
                     streamName: stream.fields.name,
                     images: bgConfig.images || [],
@@ -371,7 +371,7 @@
                     intervalDuration: bgConfig.intervalDuration || 7000,
                     kenburns: !bgConfig.kenburns ? undefined : bgConfig.kenburns
                 }).activate(function () {
-                    tool._bgGalleryTool = Q.Tool.from(galleryDiv, 'Media/presentation/gallery');
+                    tool._bgGalleryTool = Q.Tool.from(galleryDiv, 'Media/gallery');
                 });
             },
 
@@ -811,7 +811,7 @@
 
                         var subToolNames = [
                             'Media/presentation/pdf',
-                            // future: 'Media/presentation/cardSeries', 'Media/presentation/gallery', etc.
+                            // future: 'Media/presentation/cardSeries', 'Media/gallery', etc.
                         ];
                         subToolNames.forEach(function (name) {
                             var className = '.' + name.replace(/\//g, '_') + '_tool';

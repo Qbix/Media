@@ -3,7 +3,7 @@
 /**
  * View for the Media/control page — the private host/guest control panel.
  * Rendered inside the app layout (nav bar, etc. remain visible).
- * Activates the Media/presentation/control tool.
+ * Activates the Media/presentation/commands tool.
  */
 
 $toolAttrs = Q_Html::attributes(array(
@@ -20,7 +20,7 @@ $toolAttrs = Q_Html::attributes(array(
 
 ?>
 <div id="Media_presentation_control_page">
-    <?php echo Q::tool('Media/presentation/control', array(
+    <?php echo Q::tool('Media/presentation/commands', array(
         "publisherId" => $publisherId,
         "streamName" => $streamName,
         "isHost" => $isHost ? 'true' : 'false',
@@ -29,5 +29,5 @@ $toolAttrs = Q_Html::attributes(array(
         "toolPublisherId" => $toolPublisherId,
         "toolStreamName" => $toolStreamName,
         "writeLevel" => $writeLevel
-    )) ?>>
+    )) ?>
 </div>

@@ -27,8 +27,8 @@
  *   3. In production: calls Q.Streams.create('Media/clip', ...) to create
  *      the clip stream with start/end timestamps. Stubbed here.
  */
-
-const { transcriptEmitter } = require('../../../Streams/classes/Streams/TranscriptEmitter');
+var Q = require('Q');
+const { transcriptEmitter } = require(Q.PLUGINS_DIR + '/Streams/classes/Streams/TranscriptEmitter');
 
 const CLIP_DEBOUNCE_MS = 8000; // wait 8s after topic shift before committing cut
 
