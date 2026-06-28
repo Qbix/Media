@@ -58,9 +58,9 @@
 			"feed/:feedId": { "module": "Media", "action": "feed" },
 			"newFeed": {"module": "Media", "action": "newFeed"},
 			"presentation/:calendarId": {"module": "Media", "action": "presentation"},
-			"presentation/:calendarId/control": { "module": "Media", "action": "control" },
+			"presentation/:calendarId/control": { "module": "Media", "action": "commands" },
 			"presentation/:communityId/:calendarId": {"module": "Media", "action": "presentation"},
-			"presentation/:communityId/:calendarId/control": { "module": "Media", "action": "control" },
+			"presentation/:communityId/:calendarId/control": { "module": "Media", "action": "commands" },
 			"channels": {"module": "Media", "action": "channels"},
 			"channels/:publisherId": {"module": "Media", "action": "channels"},
 			"channel": {"module": "Media", "action": "channel"},
@@ -413,6 +413,15 @@
 					}
 				}
 			}
+		},
+		"commands": {
+			"Media": {
+				"slide/navigate": {
+					"routing": "immediate",
+					"handler": "Media.commands.slideNavigate",
+					"description": "Navigate to a slide by semantic title/content search"
+				}
+			}
 		}
 	},
 	"Assets": {
@@ -482,13 +491,6 @@
 			}
 		},
 		"admins": ["Users/owners", "Users/admins", "Media/admins"],
-		"commands": {
-			"slide/navigate": {
-				"routing": "immediate",
-				"handler": "Media.commands.slideNavigate",
-				"description": "Navigate to a slide by semantic title and content search across past presentation cards and related streams."
-			}
-		},
 		"livestream": {
 			"reminders": {
 				"86400": { /* 24 hours */
