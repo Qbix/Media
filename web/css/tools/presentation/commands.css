@@ -230,14 +230,14 @@
 }
 
 /* Let Streams/chat fill the space */
-.Media_commands_chat_wrap.Streams_chat_tool {
+.Media_presentation_commands_chat_wrap.Streams_chat_tool {
     flex: 1;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     height: 100%;
 }
-.Media_commands_chat_wrap .Streams_chat_messages {
+.Media_presentation_commands_chat_wrap .Streams_chat_messages {
     overflow-y: auto;
 }
 
