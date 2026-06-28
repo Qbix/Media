@@ -1,40 +1,42 @@
 (function (Q, $, window, undefined) {
 
-function _qEmit(event, data) { var qs = Q.Socket.get('/Q', ''); if (qs) qs.socket.emit(event, data); }
-
 /**
  * Media/webrtc/chat tool
  *
  * Extends Streams/chat with a phone-icon button that:
  *   1. Starts/stops a WebRTC call (always, same as before)
- *   2. Simultaneously wires/unwires the AI mic pipeline when
- *      composition OR navigation mode is enabled on this tool.
+ *   2. Simultaneously wires/unwires the mic + transcript session when
+ *      composition, navigation, or transcription mode is enabled on this tool.
  *
  * MODES AND MIC LIFECYCLE
  * ───────────────────────
- * Each person who opens a Streams/chat and has this tool activated
- * gets their own independent mic + pipeline session tied to their
- * /Q socket. It has nothing to do with WebRTC peer connections.
+ * Each person who opens a Streams/chat and has this tool activated gets their
+ * own independent mic + transcript session tied to their /Q socket. It has
+ * nothing to do with WebRTC peer connections.
+ *
+ * The tool owns the mic gesture only. The session and the emit belong to
+ * Streams: it calls Q.Streams.Transcript.start(), which announces the session
+ * to the server and forwards each final Q.Speech.Recognition result as a
+ * Streams/utterance. When navigation is on, the tool also registers
+ * Q.Media.Transcript so Media can attach slide + PDF context to each utterance.
  *
  *   Phone icon clicked (WebRTC off)
  *     → WebRTC call starts
- *     → If (state.composition || state.navigation): AI pipeline starts
- *       → AI/transcription/session/start sent on /Q socket with that
- *          person's role, publisherId, streamName, modes
+ *     → If (composition || navigation || transcription): mic starts and
+ *       Q.Streams.Transcript.start() opens the session
  *
  *   Phone icon clicked (WebRTC on)
  *     → WebRTC call ends
- *     → If AI pipeline was started: AI/transcription/session/stop sent
+ *     → If the session was started: Q.Streams.Transcript.stop()
  *
- * Multiple people joining the same WebRTC each get their own pipeline
- * session on their own socket. The server assigns role per session.
- * Only host-role sessions drive AI proposals; participant-role sessions
- * contribute transcripts only.
+ * Multiple people joining the same WebRTC each get their own session on their
+ * own socket. The server assigns role per session. Only host-role sessions
+ * drive AI proposals; participant-role sessions contribute transcripts only.
  *
  * speechMode option (legacy)
  * ──────────────────────────
- * When speechMode:true the phone icon controls only the mic, with no
- * WebRTC call. Used by the /control page. This behaviour is unchanged.
+ * When speechMode:true the phone icon controls only the mic, with no WebRTC
+ * call. Used by the /control page. This behaviour is unchanged.
  *
  * @class Media/webrtc/chat
  * @constructor
@@ -45,14 +47,14 @@ function _qEmit(event, data) { var qs = Q.Socket.get('/Q', ''); if (qs) qs.socke
  * @param {Boolean} [options.composition=false]
  *   AI card composition enabled. When true AND WebRTC starts, mic pipeline starts.
  * @param {Boolean} [options.navigation=false]
+ *   Voice navigation enabled. When true AND WebRTC starts, mic pipeline starts.
  * @param {Boolean} [options.transcription=false]
  *   Post each final utterance as a Streams/chat/message on the stream.
- *   Voice navigation enabled. When true AND WebRTC starts, mic pipeline starts.
  * @param {String}  [options.role='participant']
  *   Role sent to the server. 'host' enables AI proposals; 'participant' records only.
  * @param {String}  [options.lang='en-US']
  * @param {Boolean} [options.autoConnectAI=true]
- *   When speechMode:true, auto-connect AI socket when mic starts.
+ *   When speechMode:true, auto-open the transcript session when mic starts.
  */
 Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool) {
     var tool  = this;
@@ -94,22 +96,22 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
 },
 
 {
-    speechMode:   false,
+    speechMode:    false,
     composition:   false,
     navigation:    false,
     transcription: false,
-    role:         'participant',
-    lang:         'en-US',
+    role:          'participant',
+    lang:          'en-US',
     autoConnectAI: true,
-    _micActive:   false,
-    _aiStarted:   false,
+    _micActive:    false,
+    _aiStarted:    false,
     _webrtcActive: false
 },
 
 {
     /**
      * Start a WebRTC call.
-     * Also starts the AI mic pipeline when composition or navigation is on.
+     * Also starts the mic + transcript session when any mode is on.
      */
     startWebRTC: function () {
         var tool = this, state = tool.state;
@@ -168,8 +170,8 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
     },
 
     /**
-     * Start speech recognition + AI pipeline.
-     * Called synchronously inside gesture handler for iOS Safari.
+     * Start speech recognition + transcript session.
+     * Called synchronously inside the gesture handler for iOS Safari.
      */
     _startMic: function () {
         var tool = this, state = tool.state;
@@ -184,7 +186,7 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
             tool._updateMicUI(true);
 
             if (state.autoConnectAI || state.speechMode) {
-                tool._connectAISocket();
+                tool._connectTranscript();
             }
         });
     },
@@ -200,19 +202,20 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
         tool._updateMicUI(false);
 
         if (state._aiStarted) {
-            _qEmit('AI/transcription/session/stop');
+            Q.Streams.Transcript.stop();
+            if (tool._mediaContext) {
+                tool._mediaContext.unregister();
+                tool._mediaContext = null;
+            }
             state._aiStarted = false;
-        }
-        if (Q.Speech && Q.Speech.Recognition && Q.Speech.Recognition.onResult) {
-            Q.Speech.Recognition.onResult.remove(tool);
         }
     },
 
     /**
-     * Connect to the AI pipeline on the /Q socket.
-     * One session per person per socket — independent of WebRTC peers.
+     * Open the transcript session and register Media's context contributor.
+     * Streams.Transcript wires onResult and owns the emit.
      */
-    _connectAISocket: function () {
+    _connectTranscript: function () {
         var tool = this, state = tool.state;
         if (state._aiStarted) return;
         state._aiStarted = true;
@@ -221,50 +224,27 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
         var publisherId = chatTool.state.publisherId;
         var streamName  = chatTool.state.streamName;
 
-        _qEmit('AI/transcription/session/start', {
-            lang:        state.lang || 'en-US',
-            sampleRate:  16000,
+        // Media enriches each utterance with slide + PDF context.
+        if (state.navigation) {
+            tool._mediaContext = Q.Media.Transcript.create({
+                publisherId: publisherId,
+                streamName:  streamName,
+                slideIndex:  0
+            });
+            tool._mediaContext.register();
+        }
+
+        Q.Streams.Transcript.start({
             publisherId: publisherId,
             streamName:  streamName,
             role:        state.role || 'participant',
+            lang:        state.lang || 'en-US',
             modes: {
-                composition:  !!state.composition,
-                navigation:   !!state.navigation,
-                transcription:!!state.transcription
+                composition:   !!state.composition,
+                navigation:    !!state.navigation,
+                transcription: !!state.transcription
             }
         });
-
-        // Client-side classifier — intercepts navigation before server
-        var chatTool2 = tool.chatTool;
-        var pStream   = null;
-        try {
-            pStream = Q.Streams.get.cache.get([publisherId, streamName]) || null;
-        } catch (e) {}
-        if (Q.Media && Q.Media.ClientClassifier && state.navigation) {
-            tool._classifier = Q.Media.ClientClassifier.create({
-                publisherId:    publisherId,
-                streamName:     streamName,
-                stream:         pStream,
-                qEmit:          _qEmit,
-                sessionStartMs: Date.now()
-            });
-        }
-
-        // Forward final transcripts to the server pipeline
-        Q.Speech.Recognition.onResult.set(function (chunk) {
-            if (!chunk || !chunk.isFinal) return;
-            // Intercept navigation locally when navigation mode is on
-            if (tool._classifier && state.navigation) {
-                var handled = tool._classifier.intercept(chunk.transcript);
-                if (handled) return;
-            }
-            _qEmit('Streams/utterance', {
-                transcript: chunk.transcript,
-                isFinal:    true,
-                confidence: chunk.confidence,
-                speaker:    Q.Users.loggedInUserId()
-            });
-        }, tool);
     },
 
     // ── UI helpers ────────────────────────────────────────────────────────────
@@ -291,11 +271,12 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
     },
 
     /**
-     * Dynamically update composition/navigation modes.
-     * If WebRTC is active and AI session is running, also notifies the server.
-     * If WebRTC is active but AI not started, starts it when any mode turns on.
+     * Dynamically update composition / navigation / transcription modes.
+     * If the session is running, notify the server. If the mic is off and a mode
+     * turns on (with WebRTC up or in speechMode), start the mic pipeline; if all
+     * modes turn off, stop it.
      * @method setModes
-     * @param {Object} modes  { composition: bool, navigation: bool }
+     * @param {Object} modes  { composition, navigation, transcription }
      */
     setModes: function (modes) {
         var tool = this, state = tool.state;
@@ -307,16 +288,17 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
 
         var anyOn = state.composition || state.navigation || state.transcription;
         if (anyOn && !state._micActive) {
-            // Mode just turned on — start mic pipeline
+            // A mode just turned on — start the mic pipeline
             tool._startMic();
         } else if (!anyOn && state._micActive) {
-            // Both modes off — stop mic pipeline
+            // All modes off — stop the mic pipeline
             tool._stopMic();
         } else if (state._aiStarted) {
-            // Session running — notify server of mode change
-            _qEmit('AI/session/modes', {
-                composition: state.composition,
-                navigation:  state.navigation
+            // Session running — notify the server of the mode change
+            Q.Streams.Transcript.setModes({
+                composition:   state.composition,
+                navigation:    state.navigation,
+                transcription: state.transcription
             });
         }
     },
@@ -325,9 +307,6 @@ Q.Tool.define("Media/webrtc/chat", ["Streams/chat"], function (options, chatTool
         beforeRemove: function () {
             var tool = this, state = tool.state;
             if (state._micActive) tool._stopMic();
-            if (Q.Speech && Q.Speech.Recognition && Q.Speech.Recognition.onResult) {
-                Q.Speech.Recognition.onResult.remove(tool);
-            }
         }
     }
 });
