@@ -1,6 +1,6 @@
-/* Media/presentation/control tool */
+/* Media/presentation/commands tool */
 
-.Media_control_tool {
+.Media_presentation_commands_tool {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -12,7 +12,7 @@
 }
 
 /* ── Header ── */
-.Media_control_header {
+.Media_presentation_commands_header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,7 +22,7 @@
     background: rgba(12,12,18,0.95);
 }
 
-.Media_control_title {
+.Media_presentation_commands_title {
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -31,22 +31,22 @@
     font-family: ui-monospace, monospace;
 }
 
-.Media_control_header_right {
+.Media_presentation_commands_header_right {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.Media_control_screen_link {
+.Media_presentation_commands_screen_link {
     font-size: 1.1rem;
     color: rgba(232,230,224,0.4);
     text-decoration: none;
     transition: color 0.15s;
 }
-.Media_control_screen_link:hover { color: #e8e6e0; }
+.Media_presentation_commands_screen_link:hover { color: #e8e6e0; }
 
 /* ── Mic button ── */
-.Media_control_mic_btn {
+.Media_presentation_commands_mic_btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,13 +62,13 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.Media_control_mic_btn:hover {
+.Media_presentation_commands_mic_btn:hover {
     border-color: rgba(255,255,255,0.3);
     color: #e8e6e0;
 }
 
 /* Active state: pulsing red */
-.Media_control_mic_btn.Media_control_mic_active {
+.Media_presentation_commands_mic_btn.Media_presentation_commands_mic_active {
     background: rgba(232, 84, 71, 0.18);
     border-color: #e85447;
     color: #e85447;
@@ -81,7 +81,7 @@
 }
 
 /* ── Live caption strip ── */
-.Media_control_caption {
+.Media_presentation_commands_caption {
     padding: 8px 16px;
     font-size: 0.85rem;
     color: rgba(232,230,224,0.55);
@@ -95,7 +95,7 @@
 }
 
 /* ── Coaching strip (host only) ── */
-.Media_control_coaching {
+.Media_presentation_commands_coaching {
     padding: 10px 16px;
     font-size: 0.85rem;
     background: rgba(78,195,161,0.08);
@@ -107,7 +107,7 @@
     transition: opacity 0.3s;
 }
 
-.Media_control_coaching_empty {
+.Media_presentation_commands_coaching_empty {
     opacity: 0;
     pointer-events: none;
     height: 0;
@@ -116,30 +116,30 @@
     overflow: hidden;
 }
 
-.Media_control_coaching_text {
+.Media_presentation_commands_coaching_text {
     color: #4fc3a1;
     flex: 1;
     line-height: 1.4;
 }
 
-.Media_control_coaching_link {
+.Media_presentation_commands_coaching_link {
     font-size: 0.75rem;
     color: rgba(79,195,161,0.6);
     text-decoration: none;
     font-family: ui-monospace, monospace;
     white-space: nowrap;
 }
-.Media_control_coaching_link:hover { color: #4fc3a1; }
+.Media_presentation_commands_coaching_link:hover { color: #4fc3a1; }
 
 /* ── Proposal feed (host only) ── */
-.Media_control_proposals {
+.Media_presentation_commands_proposals {
     flex-shrink: 0;
     max-height: 220px;
     overflow-y: auto;
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.Media_control_proposal {
+.Media_presentation_commands_proposal {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     align-items: center;
@@ -151,7 +151,7 @@
 }
 
 /* Countdown bar across the bottom of the proposal */
-.Media_control_proposal::after {
+.Media_presentation_commands_proposal::after {
     content: '';
     position: absolute;
     bottom: 0; left: 0;
@@ -161,9 +161,9 @@
     transition: width 0.1s linear;
 }
 /* Timer element drives --pct via JS */
-.Media_control_proposal_timer { display: none; }
+.Media_presentation_commands_proposal_timer { display: none; }
 
-.Media_control_proposal_type {
+.Media_presentation_commands_proposal_type {
     font-size: 0.65rem;
     font-family: ui-monospace, monospace;
     letter-spacing: 0.08em;
@@ -172,7 +172,7 @@
     white-space: nowrap;
 }
 
-.Media_control_proposal_preview {
+.Media_presentation_commands_proposal_preview {
     font-size: 0.85rem;
     color: #e8e6e0;
     overflow: hidden;
@@ -180,13 +180,13 @@
     white-space: nowrap;
 }
 
-.Media_control_proposal_actions {
+.Media_presentation_commands_proposal_actions {
     display: flex;
     gap: 6px;
 }
 
-.Media_control_proposal_commit,
-.Media_control_proposal_cancel {
+.Media_presentation_commands_proposal_commit,
+.Media_presentation_commands_proposal_cancel {
     padding: 5px 12px;
     border-radius: 4px;
     font-size: 0.75rem;
@@ -198,26 +198,26 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.Media_control_proposal_commit {
+.Media_presentation_commands_proposal_commit {
     background: rgba(232,197,71,0.15);
     color: #e8c547;
     border-color: rgba(232,197,71,0.3);
 }
-.Media_control_proposal_commit:hover {
+.Media_presentation_commands_proposal_commit:hover {
     background: rgba(232,197,71,0.25);
 }
 
-.Media_control_proposal_cancel {
+.Media_presentation_commands_proposal_cancel {
     background: transparent;
     color: rgba(232,230,224,0.35);
     border-color: rgba(255,255,255,0.08);
 }
-.Media_control_proposal_cancel:hover {
+.Media_presentation_commands_proposal_cancel:hover {
     color: rgba(232,230,224,0.6);
 }
 
 /* ── Chat region ── */
-.Media_control_chat_wrap {
+.Media_presentation_commands_chat_wrap {
     flex: 1;
     overflow: hidden;
     display: flex;
@@ -226,7 +226,7 @@
 }
 
 /* Let Streams/chat fill the space */
-.Media_control_chat_wrap .Streams_chat_tool {
+.Media_presentation_commands_chat_wrap .Streams_chat_tool {
     flex: 1;
     overflow: hidden;
     display: flex;
@@ -236,9 +236,9 @@
 
 /* ── Mobile safe area ── */
 @media (max-width: 600px) {
-    .Media_control_header { padding: 10px 12px; }
-    .Media_control_proposal { grid-template-columns: auto 1fr; }
-    .Media_control_proposal_actions { grid-column: 1 / -1; }
+    .Media_presentation_commands_header { padding: 10px 12px; }
+    .Media_presentation_commands_proposal { grid-template-columns: auto 1fr; }
+    .Media_presentation_commands_proposal_actions { grid-column: 1 / -1; }
 }
 
 /* ── AI command messages in chat ────────────────────────────────────────────

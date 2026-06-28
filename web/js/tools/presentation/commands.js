@@ -2,8 +2,6 @@
 
 var Streams = Q.Streams;
 
-function _qEmit(event, data) { var qs = Q.Socket.get('/Q', ''); if (qs) qs.socket.emit(event, data); }
-
 /**
  * @module Media
  */
@@ -23,12 +21,12 @@ function _qEmit(event, data) { var qs = Q.Socket.get('/Q', ''); if (qs) qs.socke
  * Speech path:
  *   Tap mic → Q.Speech.Recognition.start() called in gesture handler.
  *   If AI plugin is loaded (Deepgram), it takes over via implement().
- *   Transcripts → AI socket → ControlClassifier → LLM pipeline.
+ *   Transcripts → AI socket → CommandsClassifier → LLM pipeline.
  *   Proposals come back as AI/proposal/show socket events.
  *   Background kenburns gallery queries come as Streams/gallery/query ephemerals
  *   and need no veto — they update the b-roll on the shared screen automatically.
  *
- * @class Media/presentation/control
+ * @class Media/presentation/commands
  * @constructor
  * @param {Object} [options]
  * @param {String} options.publisherId      Presentation stream publisherId
@@ -37,22 +35,18 @@ function _qEmit(event, data) { var qs = Q.Socket.get('/Q', ''); if (qs) qs.socke
  * @param {String} [options.lang='en-US']   BCP-47 language tag
  * @param {Boolean}[options.autoMic=false]  Auto-start mic after first tap anywhere (for kiosk use)
  */
-Q.Tool.define('Media/presentation/control', function (options) {
+Q.Tool.define('Media/presentation/commands', function (options) {
     var tool = this;
     var state = tool.state;
 
-    // ── Build page structure ───────────────────────────────────────────────
-    tool.element.innerHTML = '';
-    tool.element.className += ' Media_control_tool';
-
     // Header bar
     var header = document.createElement('div');
-    header.className = 'Media_control_header';
+    header.className = 'Media_presentation_commands_header';
     header.innerHTML =
-        '<span class="Media_control_title">Control</span>' +
-        '<div class="Media_control_header_right">' +
-        '  <button class="Media_control_mic_btn" title="Start / stop microphone">' +
-        '    <svg class="Media_control_mic_icon" viewBox="0 0 24 24" width="22" height="22"' +
+        '<span class="Media_commands_title">Control</span>' +
+        '<div class="Media_commands_header_right">' +
+        '  <button class="Media_commands_mic_btn" title="Start / stop microphone">' +
+        '    <svg class="Media_commands_mic_icon" viewBox="0 0 24 24" width="22" height="22"' +
         '         fill="currentColor" aria-hidden="true">' +
         '      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66' +
         '           1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72' +
@@ -60,7 +54,7 @@ Q.Tool.define('Media/presentation/control', function (options) {
         '    </svg>' +
         '  </button>' +
         (state.isHost
-            ? '<a class="Media_control_screen_link" href="' + state.screenUrl + '" target="_blank"' +
+            ? '<a class="Media_commands_screen_link" href="' + state.screenUrl + '" target="_blank"' +
               '   title="Open shared screen">⬡</a>'
             : '') +
         '</div>';
@@ -69,7 +63,7 @@ Q.Tool.define('Media/presentation/control', function (options) {
     // Coaching strip (host only)
     if (state.isHost) {
         var coaching = document.createElement('div');
-        coaching.className = 'Media_control_coaching Media_control_coaching_empty';
+        coaching.className = 'Media_commands_coaching Media_commands_coaching_empty';
         coaching.dataset.label = 'AI coaching';
         tool.element.appendChild(coaching);
         tool._coachingEl = coaching;
@@ -78,14 +72,14 @@ Q.Tool.define('Media/presentation/control', function (options) {
     // Proposal feed (host only — guests see committed cards via chat)
     if (state.isHost) {
         var proposals = document.createElement('div');
-        proposals.className = 'Media_control_proposals';
+        proposals.className = 'Media_commands_proposals';
         tool.element.appendChild(proposals);
         tool._proposalsEl = proposals;
     }
 
     // Chat region — Streams/chat with our chat extensions
     var chatWrap = document.createElement('div');
-    chatWrap.className = 'Media_control_chat_wrap';
+    chatWrap.className = 'Media_commands_chat_wrap';
     tool.element.appendChild(chatWrap);
 
     $(chatWrap)
@@ -109,18 +103,18 @@ Q.Tool.define('Media/presentation/control', function (options) {
         // ── Mode toggles (host only) ────────────────────────────────────────
         if (state.isHost) {
             var modesWrap = document.createElement('div');
-            modesWrap.className = 'Media_control_modes';
+            modesWrap.className = 'Media_commands_modes';
             modesWrap.innerHTML =
-                '<button class="Media_control_mode_btn Media_control_mode_composition active"'
+                '<button class="Media_commands_mode_btn Media_commands_mode_composition active"'
                 + ' data-mode="composition" title="AI card composition on/off">🧠&nbsp;Compose</button>'
-                + '<button class="Media_control_mode_btn Media_control_mode_navigation active"'
+                + '<button class="Media_commands_mode_btn Media_commands_mode_navigation active"'
                 + ' data-mode="navigation" title="Voice navigation on/off">🎙&nbsp;Navigate</button>'
-                + '<button class="Media_control_mode_btn Media_control_mode_transcription active"'
+                + '<button class="Media_commands_mode_btn Media_commands_mode_transcription active"'
                 + ' data-mode="transcription" title="Post speech as chat messages">📝&nbsp;Chat</button>';
             tool.element.appendChild(modesWrap);
 
             modesWrap.addEventListener('click', function (e) {
-                var btn = e.target.closest('.Media_control_mode_btn');
+                var btn = e.target.closest('.Media_presentation_commands_mode_btn');
                 if (!btn) return;
                 var mode   = btn.getAttribute('data-mode');
                 var active = btn.classList.toggle('active');
@@ -205,7 +199,7 @@ Q.Tool.define('Media/presentation/control', function (options) {
     _wireMicButton: function () {
         var tool = this;
         var state = tool.state;
-        var $btn = $(tool.element).find('.Media_control_mic_btn');
+        var $btn = $(tool.element).find('.Media_presentation_commands_mic_btn');
 
         $btn.on(Q.Pointer.fastclick, function (e) {
             e.preventDefault();
@@ -306,8 +300,8 @@ Q.Tool.define('Media/presentation/control', function (options) {
     },
 
     _updateMicUI: function (active) {
-        var $btn = $(this.element).find('.Media_control_mic_btn');
-        $btn.toggleClass('Media_control_mic_active', active);
+        var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
+        $btn.toggleClass('Media_commands_mic_active', active);
         $btn.attr('title', active ? 'Stop microphone' : 'Start microphone');
         // Pulsing red dot appears via CSS when active class is set
     },
@@ -438,7 +432,7 @@ Q.Tool.define('Media/presentation/control', function (options) {
                 // Activate in host (interactive) mode.
                 // Pass the presentation stream so the tool can sync via ephemerals.
                 var wrap = document.createElement('div');
-                wrap.className = 'Media_control_generated_tool';
+                wrap.className = 'Media_commands_generated_tool';
                 tool.element.appendChild(wrap);
                 var el = Q.Tool.prepare('div', data.toolName,
                     Q.extend({
@@ -474,10 +468,10 @@ Q.Tool.define('Media/presentation/control', function (options) {
     // ── Live caption ───────────────────────────────────────────────────────
 
     _showCaption: function (text) {
-        var $cap = $(this.element).find('.Media_control_caption');
+        var $cap = $(this.element).find('.Media_presentation_commands_caption');
         if (!$cap.length) {
-            $cap = $('<div class="Media_control_caption"></div>');
-            $(this.element).find('.Media_control_chat_wrap').before($cap);
+            $cap = $('<div class="Media_commands_caption"></div>');
+            $(this.element).find('.Media_presentation_commands_chat_wrap').before($cap);
         }
         $cap.text(text);
         clearTimeout(this._captionTimer);
@@ -491,7 +485,7 @@ Q.Tool.define('Media/presentation/control', function (options) {
         if (!tool._proposalsEl) return;
 
         var card = document.createElement('div');
-        card.className = 'Media_control_proposal';
+        card.className = 'Media_commands_proposal';
         card.dataset.proposalId = proposal.proposalId;
 
         var label = (proposal.visualizationType || 'proposal').replace(/_/g, ' ');
@@ -506,18 +500,18 @@ Q.Tool.define('Media/presentation/control', function (options) {
         else if (d.html) preview = 'HTML slide (' + d.html.length + ' chars)';
 
         card.innerHTML =
-            '<div class="Media_control_proposal_type">' + label + '</div>' +
-            '<div class="Media_control_proposal_preview">' + String(preview).encodeHTML() + '</div>' +
-            '<div class="Media_control_proposal_actions">' +
-            '  <button class="Media_control_proposal_commit" data-id="' + proposal.proposalId + '">Show</button>' +
-            '  <button class="Media_control_proposal_cancel" data-id="' + proposal.proposalId + '">Skip</button>' +
+            '<div class="Media_commands_proposal_type">' + label + '</div>' +
+            '<div class="Media_commands_proposal_preview">' + String(preview).encodeHTML() + '</div>' +
+            '<div class="Media_commands_proposal_actions">' +
+            '  <button class="Media_commands_proposal_commit" data-id="' + proposal.proposalId + '">Show</button>' +
+            '  <button class="Media_commands_proposal_cancel" data-id="' + proposal.proposalId + '">Skip</button>' +
             '</div>' +
-            '<div class="Media_control_proposal_timer"></div>';
+            '<div class="Media_commands_proposal_timer"></div>';
 
         tool._proposalsEl.insertBefore(card, tool._proposalsEl.firstChild);
 
         // Countdown ring
-        var timerEl = card.querySelector('.Media_control_proposal_timer');
+        var timerEl = card.querySelector('.Media_presentation_commands_proposal_timer');
         var elapsed = 0;
         var tick = setInterval(function () {
             elapsed += 100;
@@ -528,11 +522,11 @@ Q.Tool.define('Media/presentation/control', function (options) {
         card.dataset.tick = tick;
 
         // Buttons
-        card.querySelector('.Media_control_proposal_commit').addEventListener('click', function () {
+        card.querySelector('.Media_presentation_commands_proposal_commit').addEventListener('click', function () {
             _qEmit('AI/veto/commit', { proposalId: proposal.proposalId });
             tool._removeProposal(proposal.proposalId);
         });
-        card.querySelector('.Media_control_proposal_cancel').addEventListener('click', function () {
+        card.querySelector('.Media_presentation_commands_proposal_cancel').addEventListener('click', function () {
             _qEmit('AI/veto/cancel', { proposalId: proposal.proposalId });
             tool._removeProposal(proposal.proposalId);
         });
@@ -551,17 +545,17 @@ Q.Tool.define('Media/presentation/control', function (options) {
 
     _showCoaching: function (text, sourceUri) {
         if (!this._coachingEl) return;
-        this._coachingEl.classList.remove('Media_control_coaching_empty');
+        this._coachingEl.classList.remove('Media_commands_coaching_empty');
         this._coachingEl.innerHTML =
-            '<span class="Media_control_coaching_text">' + String(text).encodeHTML() + '</span>' +
+            '<span class="Media_commands_coaching_text">' + String(text).encodeHTML() + '</span>' +
             (sourceUri
-                ? ' <a class="Media_control_coaching_link" href="' + String(sourceUri).encodeHTML() +
+                ? ' <a class="Media_commands_coaching_link" href="' + String(sourceUri).encodeHTML() +
                   '" target="_blank" rel="noopener">source</a>'
                 : '');
         clearTimeout(this._coachingTimer);
         var el = this._coachingEl;
         this._coachingTimer = setTimeout(function () {
-            el.classList.add('Media_control_coaching_empty');
+            el.classList.add('Media_commands_coaching_empty');
         }, 12000);
     },
 
@@ -580,5 +574,10 @@ Q.Tool.define('Media/presentation/control', function (options) {
     }
 
 });
+
+function _qEmit(event, data) {
+    var qs = Q.Socket.get('/Q', '');
+    if (qs) qs.socket.emit(event, data);
+}
 
 })(Q, Q.jQuery, window);

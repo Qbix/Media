@@ -19,9 +19,6 @@
 		['Q.Tool.define', 'Q.Template.set'],
 		'Media/', ["Media/content"]
 	);
-	Q.Text.addFor(['Q.Media.ClientClassifier'],
-    	'Streams/', ['Streams/controlPhrases']
-	);
 	Q.Tool.define({
 		"Media/presentation": {
 			js: "{{Media}}/js/tools/presentation.js",
@@ -54,6 +51,10 @@
 		"Media/presentation/slide": {
 			js: "{{Media}}/js/tools/presentation/slide.js",
 			css: "{{Media}}/css/tools/presentation.css"
+		},
+		"Media/presentation/commands": {
+			js: "{{Media}}/js/tools/presentation/commands.js",
+			css: "{{Media}}/css/tools/presentation/commands.css"
 		},
 		"Media/clip": {
 			js: "{{Media}}/js/tools/clip.js",
@@ -152,7 +153,7 @@
 		"Media/presentation/gallery": { js: "{{Media}}/js/tools/presentation/gallery.js", css: "{{Media}}/css/tools/presentation.css" },
 
 		// classifier
-		"Media/presentation/client-classifier": { js: "{{Media}}/js/tools/presentation/client-classifier.js" },
+		"Media/presentation/clientCclassifier": { js: "{{Media}}/js/tools/presentation/clientClassifier.js" },
 
 		// Chat composer extensions
 		"Media/card/chat":  { js: "{{Media}}/js/tools/card/chat.js",  css: "{{Media}}/css/tools/card/chat.css" },

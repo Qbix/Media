@@ -413,6 +413,15 @@
 					}
 				}
 			}
+		},
+		"commands": {
+			"Media": {
+				"slide/navigate": {
+					"routing": "immediate",
+					"handler": "Media.commands.slideNavigate",
+					"description": "Navigate to a slide by semantic title/content search"
+				}
+			}
 		}
 	},
 	"Assets": {
@@ -482,13 +491,6 @@
 			}
 		},
 		"admins": ["Users/owners", "Users/admins", "Media/admins"],
-		"commands": {
-			"slide/navigate": {
-				"routing": "immediate",
-				"handler": "Media.commands.slideNavigate",
-				"description": "Navigate to a slide by semantic title and content search across past presentation cards and related streams."
-			}
-		},
 		"livestream": {
 			"reminders": {
 				"86400": { /* 24 hours */
