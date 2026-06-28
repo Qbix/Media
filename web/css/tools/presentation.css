@@ -99,9 +99,13 @@
 }
 
 .Media_presentation_tool .Media_presentation_video_screen,
-.Media_presentation_tool .Media_presentation_pdf_screen,
-.Media_presentation_tool .Media_presentation_title_screen {
+.Media_presentation_tool .Media_presentation_pdf_screen {
     background: black;
+    color: white;
+}
+
+.Media_presentation_tool .Media_presentation_title_screen {
+    background: transparent;
     color: white;
 }
 

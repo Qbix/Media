@@ -85,7 +85,12 @@
                 }, 10);
             });
         });
-    }, { trackScroll: false }, {});
+    }, { 
+        trackScroll: false 
+    }, 
+    {
+        
+    });
     
     })(Q, Q.jQuery, window);
         

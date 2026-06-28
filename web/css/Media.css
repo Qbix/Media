@@ -74,6 +74,7 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+    z-index: 9999999999;
 }
 
 .Media_presentation_clickhere {

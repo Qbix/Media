@@ -228,6 +228,96 @@
                 }
             });
         },
+        /**
+         * Send content-state to viewers: live ephemeral for immediate UX,
+         * optionally a durable message for late-joiner state reconstruction.
+         *
+         * @param {Object} previewState   { publisherId, streamName } of content stream
+         * @param {String} type           e.g. 'Streams/scroll', 'Streams/slide'
+         * @param {Object} instructions   Payload
+         * @param {Object} [options]
+         *   @param {Number}  [options.debounce]      Debounce window for durable post (ms)
+         *   @param {Boolean} [options.persist=true]  Whether to also post durable
+         *                                            (false = ephemeral-only, no DB row)
+         */
+        _emitContentState: function (previewState, type, instructions, options) {
+            options = options || {};
+            let payload = Q.extend({}, instructions, { type: type });
+            // 1. Live ephemeral — fan out to viewers immediately for snappy UX
+            Q.Streams.Stream.ephemeral(
+                previewState.publisherId,
+                previewState.streamName,
+                payload
+            );
+
+            // 2. Durable post — for state reconstruction on viewer mount
+            if (options.persist === false) return;
+
+            if (options.debounce) {
+                this._postDebouncedMessage(
+                    previewState.publisherId, previewState.streamName,
+                    type, instructions, options.debounce
+                );
+            } else if (Q.Streams && Q.Streams.Message && Q.Streams.Message.post) {
+                Q.Streams.Message.post({
+                    publisherId: previewState.publisherId,
+                    streamName: previewState.streamName,
+                    type: type,
+                    instructions: JSON.stringify(instructions)
+                });
+            }
+        },
+        /**
+         * Post a durable Streams message, debounced. Multiple posts arriving for
+         * the same (publisherId, streamName, type) within `delayMs` collapse into
+         * a single message carrying the latest payload — fires once after the
+         * burst ends.
+         *
+         * Use for continuous actions (scroll, seek, zoom drag) where the viewer
+         * mostly needs the resting position, not every intermediate value.
+         * Use immediate Q.Streams.Message.post for discrete actions (slide change,
+         * play/pause toggle, show new content).
+         *
+         * @param {String} publisherId
+         * @param {String} streamName
+         * @param {String} type           Message type, e.g. 'Streams/scroll'
+         * @param {Object} instructions   Payload — latest call's value wins
+         * @param {Number} [delayMs=1000] Debounce window
+         */
+        _postDebouncedMessage: function (publisherId, streamName, type, instructions, delayMs) {
+            var tool = this;
+            delayMs = delayMs || 1000;
+            var key = publisherId + '/' + streamName + '/' + type;
+
+            tool._debouncedPosts = tool._debouncedPosts || {};
+            var entry = tool._debouncedPosts[key];
+
+            if (entry) {
+                // Reset the timer; replace the payload entirely (trailing-edge,
+                // latest-wins). Don't merge — newer state supersedes older.
+                clearTimeout(entry.timer);
+                entry.instructions = instructions;
+            } else {
+                entry = {
+                    publisherId: publisherId,
+                    streamName: streamName,
+                    type: type,
+                    instructions: instructions
+                };
+                tool._debouncedPosts[key] = entry;
+            }
+
+            entry.timer = setTimeout(function () {
+                delete tool._debouncedPosts[key];
+                if (!Q.Streams || !Q.Streams.Message || !Q.Streams.Message.post) return;
+                Q.Streams.Message.post({
+                    publisherId: entry.publisherId,
+                    streamName: entry.streamName,
+                    type: entry.type,
+                    instructions: JSON.stringify(entry.instructions)
+                });
+            }, delayMs);
+        },
         _wirePreviewEphemeralHooks: function () {
             var tool = this;
             var state = tool.state;
@@ -251,12 +341,40 @@
                 var ps = previewTool.state;
                 ps.onInvoke.set(function () {
                     tool._activePreview = tool._getChildPreviewTool(previewTool);
-                    Q.Streams.Stream.ephemeral(pId, sName, {
+                    
+                    /* Q.Streams.Stream.ephemeral(pId, sName, {
                         type: 'Media/presentation/show',
                         publisherId: ps.publisherId,
                         streamName: ps.streamName
+                    }); */
+
+                    Q.Streams.Message.post({
+                        publisherId: tool.state.publisherId,
+                        streamName: tool.state.streamName,
+                        type: 'Media/presentation/show',
+                        instructions: JSON.stringify({
+                            toolName: previewTool.name,
+                            publisherId: ps.publisherId,
+                            streamName: ps.streamName,
+                        })
                     });
                 }, tool);
+            }
+
+            function trackToolRemove(contentTool, previewTool) {
+                var ps = previewTool.state;
+                contentTool.Q.beforeRemove.add(function () {
+                        Q.Streams.Message.post({
+                            publisherId: tool.state.publisherId,
+                            streamName: tool.state.streamName,
+                            type: 'Media/presentation/hide',
+                            instructions: JSON.stringify({
+                                toolName: contentTool.name,
+                                publisherId: ps.publisherId,
+                                streamName: ps.streamName,
+                            })
+                        });
+                    }, previewTool);
             }
             chatEl.forEachTool('Streams/preview', wirePreview);
             Q.Tool.onActivate('Streams/preview').add(function () {
@@ -271,6 +389,7 @@
                     || previewTool.state;
                 document.body.forEachTool('Q/pdf', function () {
                     var pdfTool = this;
+                    trackToolRemove(pdfTool, previewTool);
                     if (Q.isEmpty(previewTool.stream)
                         || Q.url(previewTool.stream.fileUrl()) !== pdfTool.state.url) {
                         return;
@@ -284,12 +403,17 @@
                         let pctLeft = ((pdfTool.element.scrollLeft / (pdfTool.element.scrollWidth - pdfTool.element.clientWidth)) * 100);
                         pctLeft = Number.isNaN(pctLeft) ? "0.00" : pctLeft.toFixed(2);
 
-                        contentEphemeral(previewState, 'Streams/scroll', { scrollTop: pctTop, scrollLeft: pctLeft });
+                        tool._emitContentState(previewState, 'Streams/scroll',
+                            { scrollTop: pctTop, scrollLeft: pctLeft },
+                            { debounce: 1000 }
+                        );
+
                     }, previewTool);
                     pdfTool.state.onSlide.set(function (slideIndex) {
                         contentEphemeral(previewState, 'Streams/slide', { slideIndex: slideIndex });
+                        tool._emitContentState(previewState, 'Streams/slide', { slideIndex: slideIndex });
                     }, previewTool);
-
+                    
                     pdfTool.element.addEventListener("wheel", function(event) {
                         tool._checkPdfMode(pdfTool);
                     });
@@ -303,23 +427,30 @@
 
             // ── Streams/video/preview: play/pause/seek → content stream ephemerals ──
             function wireVideoPreview(previewTool) {
-                if(!previewState) return;
+                if(!previewTool) return;
                 var previewState = previewTool.preview && previewTool.preview.state
                     || previewTool.state;
                 document.body.forEachTool('Q/video', function () {
                     var videoTool = this;
+                    trackToolRemove(videoTool, previewTool);
                     if (Q.isEmpty(previewTool.stream)
                         || Q.url(previewTool.stream.fileUrl()) !== videoTool.state.url) {
                         return;
                     }
                     videoTool.state.onPlay.set(function (pos) {
-                        contentEphemeral(previewState, 'Streams/play', { pos: pos });
+                         tool._emitContentState(previewState, 'Streams/play', { pos: pos });
+                    }, previewTool);
+                    videoTool.state.onPlaying.set(function (pos) {
+                         tool._emitContentState(previewState, 'Streams/seek', { pos: videoTool.getCurrentPosition(), sync: true, playing: true });
                     }, previewTool);
                     videoTool.state.onPause.set(function (pos) {
-                        contentEphemeral(previewState, 'Streams/pause', { pos: pos });
+                        tool._emitContentState(previewState, 'Streams/pause', { pos: pos });
                     }, previewTool);
                     videoTool.state.onSeek.set(function (pos) {
-                        contentEphemeral(previewState, 'Streams/seek', { pos: pos });
+                        tool._emitContentState(previewState, 'Streams/seek',
+                            { pos: pos },
+                            { debounce: 1000 }
+                        );
                     }, previewTool);
                 }, previewTool);
             }
@@ -331,22 +462,24 @@
 
             // ── Streams/audio/preview: play/pause/seek → content stream ephemerals ──
             function wireAudioPreview(previewTool) {
+                if(!previewTool) return;
                 var previewState = previewTool.preview && previewTool.preview.state
                     || previewTool.state;
                 document.body.forEachTool('Q/audio', function () {
                     var audioTool = this;
+                    trackToolRemove(audioTool, previewTool);
                     if (Q.isEmpty(previewTool.stream)
                         || Q.url(previewTool.stream.fileUrl()) !== audioTool.state.url) {
                         return;
                     }
                     audioTool.state.onPlay.set(function (pos) {
-                        contentEphemeral(previewState, 'Streams/play', { pos: pos });
+                        tool._emitContentState(previewState, 'Streams/play', { pos: pos });
                     }, previewTool);
                     audioTool.state.onPause.set(function (pos) {
-                        contentEphemeral(previewState, 'Streams/pause', { pos: pos });
+                        tool._emitContentState(previewState, 'Streams/pause', { pos: pos });
                     }, previewTool);
                     audioTool.state.onSeek.set(function (pos) {
-                        contentEphemeral(previewState, 'Streams/seek', { pos: pos });
+                        tool._emitContentState(previewState, 'Streams/seek', { pos: pos });
                     }, previewTool);
                 }, previewTool);
             }
@@ -416,7 +549,7 @@
         },
         _getChildPreviewTool: function (previewTool) {
             if (!previewTool || (Q.isEmpty(previewTool.stream) && !previewTool.state.publisherId && !previewTool.state.streamName)) return null;
-            var allPreviewGroup = Q.Tool.active['Streams_preview-4'];
+            var allPreviewGroup = Q.Tool.active[previewTool.id];
 
             for (var toolName in allPreviewGroup) {
                 if (Object.prototype.hasOwnProperty.call(allPreviewGroup, toolName)) {
@@ -1044,9 +1177,9 @@
         _collectCurrentState: function () {
             var tool = this;
             var preview = tool._activePreview;
-            if (!preview) return { activePreviewType: null };
+            if (!preview) return { activePreview: null };
             var snapshot = {
-                activePreviewType: preview.name,
+                activePreview: { toolName: preview.name, streamName: preview.state.streamName, publisherId: preview.state.publisherId},
                 publisherId: preview.stream && preview.stream.fields.publisherId,
                 streamName: preview.stream && preview.stream.fields.name
             };
@@ -1188,6 +1321,14 @@
                     Q.Speech.Recognition.onResult.remove(tool);
                 clearTimeout(tool._captionTimer);
                 clearTimeout(tool._coachingTimer);
+
+                if (tool._debouncedPosts) {
+                    Object.keys(tool._debouncedPosts).forEach(function (key) {
+                        var entry = tool._debouncedPosts[key];
+                        if (entry.timer) clearTimeout(entry.timer);
+                    });
+                    tool._debouncedPosts = {};
+                }
             }
         }
 
