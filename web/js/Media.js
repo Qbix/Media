@@ -507,7 +507,138 @@
         });
 
 		WebConference.start();
-    }
+    };
+
+	/**
+	 * Media's transcript-context contributor. Loads the PDF page corpus for the
+	 * presentation and, on each utterance, attaches the slide index and any new
+	 * pages to the outgoing context. register() hooks it onto the Streams emit;
+	 * unregister() removes it.
+	 *
+	 * @class Q.Media.Transcript
+	 */
+	Q.Media.Transcript = Q.Media.Transcript || {};
+	
+	/**
+	 * @param {Object} options { publisherId, streamName, slideIndex }
+	 * @return {Object} { register, unregister, setState, ready }
+	 */
+	Q.Media.Transcript.create = function (options) {
+		var publisherId = options.publisherId;
+		var streamName  = options.streamName;
+	
+		var _slideIndex   = options.slideIndex || 0;
+		var _pdfCorpus    = {};    // key -> [{ index, text }]
+		var _pdfLoading   = {};    // key -> Promise
+		var _contextDirty = true;  // resend the corpus to the server next utterance
+	
+		function _pdfKey(pub, name) { return pub + ':' + name; }
+	
+		function _loadPdfCorpus(pub, name, url) {
+			var key = _pdfKey(pub, name);
+			if (_pdfCorpus[key]) return Promise.resolve(_pdfCorpus[key]);
+			if (_pdfLoading[key]) return _pdfLoading[key];
+	
+			var pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib
+				|| (window.Q && Q.getObject('PDF.lib'));
+			if (!pdfjsLib || !pdfjsLib.getDocument) {
+				return Promise.resolve([]);
+			}
+	
+			var promise = pdfjsLib.getDocument({ url: url }).promise.then(function (doc) {
+				var numPages = doc.numPages;
+				var pages = [];
+				var chain = Promise.resolve();
+				for (var i = 1; i <= numPages; i++) {
+					(function (pageNum) {
+						chain = chain.then(function () {
+							return doc.getPage(pageNum).then(function (page) {
+								return page.getTextContent().then(function (content) {
+									var text = content.items
+										.map(function (item) { return item.str; })
+										.join(' ')
+										.replace(/\s+/g, ' ')
+										.trim()
+										.slice(0, 400);
+									pages.push({ index: pageNum - 1, text: text.toLowerCase() });
+									page.cleanup();
+								});
+							});
+						});
+					})(i);
+				}
+				return chain.then(function () {
+					doc.destroy();
+					_pdfCorpus[key] = pages;
+					delete _pdfLoading[key];
+					_contextDirty = true;
+					return pages;
+				});
+			}).catch(function () {
+				delete _pdfLoading[key];
+				return [];
+			});
+	
+			_pdfLoading[key] = promise;
+			return promise;
+		}
+	
+		function _loadAllPdfCorpora() {
+			return new Promise(function (resolve) {
+				Q.Streams.related(
+					Q.Users.loggedInUserId(), publisherId, streamName,
+					function (err, result) {
+						if (err || !result || !result.streams) return resolve();
+						var promises = [];
+						Q.each(result.streams, function (i, s) {
+							if (s.fields && s.fields.type === 'Media/pdf') {
+								var url = s.fileUrl ? s.fileUrl() : null;
+								if (url) {
+									promises.push(_loadPdfCorpus(s.fields.publisherId, s.fields.name, url));
+								}
+							}
+						});
+						Promise.all(promises).then(function () { resolve(); });
+					}
+				);
+			});
+		}
+	
+		// Flatten the corpus for the server, but only when it changed since the last
+		// send. Returns undefined when there is nothing new to ship.
+		function _pdfContextDelta() {
+			if (!_contextDirty) return undefined;
+			var pages = [];
+			Q.each(_pdfCorpus, function (key, list) {
+				var parts = key.split(':');
+				var pub  = parts[0];
+				var name = parts.slice(1).join(':');
+				list.forEach(function (p) {
+					pages.push({ publisherId: pub, streamName: name, index: p.index, text: p.text });
+				});
+			});
+			if (!pages.length) return undefined;
+			_contextDirty = false;
+			return { pages: pages };
+		}
+	
+		// The hook handler — adds Media's properties to the shared context.
+		function _enrich(context) {
+			context.slideIndex = _slideIndex;
+			var delta = _pdfContextDelta();
+			if (delta) { context.pdf = delta; }
+		}
+	
+		_loadAllPdfCorpora();
+	
+		return {
+			register:   function () { Q.Streams.Transcript.onContext.set(_enrich, 'Media'); },
+			unregister: function () { Q.Streams.Transcript.onContext.remove('Media'); },
+			setState:   function (s) { if (s && s.slideIndex != null) { _slideIndex = s.slideIndex; } },
+			ready:      function () { return _loadAllPdfCorpora(); },
+			refreshContext: function () { _contextDirty = true; }
+		};
+	};
 
 	Q.page('', function () {
 		var fsc = Q.first(document.getElementsByClassName('Media_fullscreen_capable'));

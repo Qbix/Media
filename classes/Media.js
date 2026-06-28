@@ -13,10 +13,19 @@ Media.WebRTC          = require('Media/WebRTC');
 Media.RTMPMediaServer = require('RTMPMediaServer');
 module.exports = Media;
 
+// Session lifecycle and durable posting live in Streams now.
+var Session           = require('../../Streams/classes/Streams/Transcript/Session');
+var transcriptEmitter = require('../../Streams/classes/Streams/TranscriptEmitter').transcriptEmitter;
+
 /**
- * Start node-side listeners for the Media plugin.
- * Calls WebRTC.listen(). CommandsClassifier and ClipHandler are loaded
- * automatically by Bootstrap.loadHandlers() — no manual registration here.
+ * Start node-side listeners for the Media plugin. Brings up WebRTC, posts the
+ * presentation start/end records by subscribing to the Streams session
+ * lifecycle, and wires the presentation control events (navigation, tool
+ * commit). CommandsClassifier and ClipHandler are loaded automatically by
+ * Bootstrap.loadHandlers() — no manual registration here.
+ *
+ * Call after Streams.listen() so the session lifecycle events exist.
+ *
  * @method listen
  * @static
  */
@@ -24,8 +33,147 @@ Media.listen = function () {
     if (Media.listen.result) {
         return Media.listen.result;
     }
+
     var webrtc = Media.WebRTC.listen();
-    return Media.listen.result = { webrtc: webrtc };
+    var Users  = Q.require('Users');
+
+    // ── Presentation lifecycle — follows the Streams session ────────────
+
+    transcriptEmitter.on('sessionStart', function (evt) {
+        var session = Session.get(evt.sessionId);
+        if (!session || !session.publisherId || !session.streamName) return;
+        Session.postMessage(Q, {
+            publisherId: session.publisherId,
+            streamName:  session.streamName,
+            byUserId:    session.userId,
+            type:        'Media/presentation/start',
+            instructions: JSON.stringify({
+                role: session.role, lang: session.lang, mode: session.mode
+            })
+        });
+    });
+
+    transcriptEmitter.on('sessionEnd', function (evt) {
+        var session = Session.get(evt.sessionId);
+        if (!session || !session.publisherId || !session.streamName) return;
+        Session.postMessage(Q, {
+            publisherId: session.publisherId,
+            streamName:  session.streamName,
+            byUserId:    session.userId,
+            type:        'Media/presentation/end',
+            instructions: JSON.stringify({
+                relSec:                 Session.relSec(session),
+                transcriptMessageCount: session.transcriptBuffer.length
+            })
+        });
+    });
+
+    // ── Presentation control events ─────────────────────────────────────
+
+    var socket = Users.Socket.listen();
+    var nsp = socket.io.of('/Q');
+
+    nsp.on('connection', function (client) {
+        if (client._mediaRegistered) return;
+        client._mediaRegistered = true;
+
+        // Navigation — slide / reveal advances driven from the host UI.
+        client.on('Media/presentation/command', function (data) {
+            var session = Session.get(client.id);
+            if (!session || !data || !data.intent) return;
+            Media._navCommand(session, data);
+        });
+
+        // A generated tool was shown on screen.
+        client.on('Media/presentation/tool/committed', function (data) {
+            var session = Session.get(client.id);
+            if (!session || !session.publisherId || !session.streamName) return;
+            var toolName = data && data.toolName;
+            if (toolName) Media._postToolCommit(session, toolName);
+        });
+    });
+
+    return Media.listen.result = { webrtc: webrtc, socket: true };
+};
+
+// ── Presentation command helpers (moved from AI.js) ─────────────────────────
+
+Media._navCommand = function (session, data) {
+    if (data.slideIndex  != null) session.slideIndex  = data.slideIndex;
+    if (data.revealIndex != null) session.revealIndex = data.revealIndex;
+    if (!session.publisherId || !session.streamName) return;
+
+    var intent = data.intent || '';
+    var isSlide  = intent === 'slide/navigate'  || intent.indexOf('slide/')  === 0;
+    var isReveal = intent === 'reveal/navigate' || intent.indexOf('reveal/') === 0;
+    if (!isSlide && !isReveal) return;
+
+    var relSec = data.relSec || Session.relSec(session);
+
+    if (isSlide) {
+        var slideInstr = JSON.stringify({
+            index:  session.slideIndex,
+            relSec: relSec,
+            intent: intent,
+            query:  data.query || undefined
+        });
+        Session.postMessage(Q, {
+            publisherId:  session.publisherId,
+            streamName:   session.streamName,
+            byUserId:     session.userId,
+            type:         'Media/presentation/slide',
+            instructions: slideInstr
+        }, function (err, message) {
+            if (!err && message) {
+                transcriptEmitter._appendVttEventNote(
+                    session, 'Media/presentation/slide',
+                    message.fields.ordinal, slideInstr, Q, message.fields.sentTime
+                );
+            }
+        });
+        return;
+    }
+
+    // Reveal — same shape, different type. Durable so the VTT chapter markers
+    // carry within-slide reveal advances too.
+    var revealInstr = JSON.stringify({
+        index:  session.revealIndex,
+        relSec: relSec,
+        intent: intent
+    });
+    Session.postMessage(Q, {
+        publisherId:  session.publisherId,
+        streamName:   session.streamName,
+        byUserId:     session.userId,
+        type:         'Media/presentation/reveal',
+        instructions: revealInstr
+    }, function (err, message) {
+        if (!err && message) {
+            transcriptEmitter._appendVttEventNote(
+                session, 'Media/presentation/reveal',
+                message.fields.ordinal, revealInstr, Q, message.fields.sentTime
+            );
+        }
+    });
+};
+
+Media._postToolCommit = function (session, toolName) {
+    var relSec    = Session.relSec(session);
+    var toolInstr = JSON.stringify({ toolName: toolName, relSec: relSec });
+    Session.postMessage(Q, {
+        publisherId:  session.publisherId,
+        streamName:   session.streamName,
+        byUserId:     session.userId,
+        type:         'Media/presentation/tool/show',
+        instructions: toolInstr
+    }, function (err, message) {
+        if (!err && message) {
+            transcriptEmitter._appendVttEventNote(
+                session, 'Media/presentation/tool/show',
+                message.fields.ordinal, toolInstr, Q, message.fields.sentTime
+            );
+        }
+    });
 };
 
 /**
@@ -33,9 +181,8 @@ Media.listen = function () {
  * reveal, fullscreen, highlight — into the shared Streams.Commands registry.
  * These emitters used to be a hardcoded map inside the CommandsClassifier; the
  * classifier is now generic and reads behaviour (emit) and whole-text capture
- * rules (captures) from here. Require this once when the Media plugin starts
- * (e.g. from Media.js) so the registry is populated before the first transcript
- * arrives.
+ * rules (captures) from here. Require this once when the Media plugin starts so
+ * the registry is populated before the first transcript arrives.
  *
  * Each emitter is fn(captures, stream, state, Q) and fires a stream ephemeral.
  * Output types stay plugin-agnostic (Streams/* and Q/*); Media simply owns the
