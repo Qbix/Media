@@ -734,8 +734,12 @@
                     toolPublisherId: state.toolPublisherId || null
                 });
 
-                //override onResult handler as we need to send the state of presentation
-                Q.Speech.Recognition.onResult.set(function (chunk) {
+                //emit state of presentation contol page (slide index, scroll etc) each time when sending a transcript to the server
+                Q.Streams.Transcript.onContext.set(function (context, chunk) {
+                    if(!context.payload) context.payload = {};
+                    context.payload.state = tool._collectCurrentState();
+                }, 'Presentation-transcript')
+                /* Q.Speech.Recognition.onResult.set(function (chunk) {
                     if (!chunk || !chunk.isFinal) { return; }
                     tool._emitWithState('Streams/utterance', {
                         transcript: chunk.transcript,
@@ -743,7 +747,7 @@
                         confidence: chunk.confidence,
                         speaker: Q.Users.loggedInUserId()
                     });
-                }, 'Streams.Transcript');
+                }, 'Streams.Transcript'); */
             },
             _getSessionToken: function () {
                 var tool = this;
@@ -759,14 +763,14 @@
                     try { instr = JSON.parse(msg.instructions || '{}'); } catch (e) { }
                     var mySocketId = Q.Socket.get('/Q', '').socket.id;
                     //if (mySocketId && msg.byClientId === mySocketId) return;
-                    if (instr.index == null) return;
+                    if (instr.slideIndex == null) return;
                     var preview = tool._activePreview;
                     if (!preview || preview.state.streamName.indexOf('Streams/pdf') !== 0) return;
                     var pdfTool = tool._resolveActiveContentTool(preview, 'Q/pdf');
                     if (!pdfTool) return;
                     // Idempotency: if we just set this index locally, the durable echo is a no-op
-                    if (tool._getCurrentPdfIndex(pdfTool) === instr.index) return;
-                    tool._pdfApplySlide(pdfTool, instr.index);
+                    if (tool._getCurrentPdfIndex(pdfTool) === instr.slideIndex) return;
+                    tool._pdfApplySlide(pdfTool, instr.slideIndex);
                 }, tool);
             },
             _handleSocketReconnect: function () {
@@ -847,6 +851,372 @@
                     if (m) snapshot.zoomScale = parseFloat(m[1]);
                 }
                 return snapshot;
+            },
+
+            /**
+         * Find the live content tool (Q/pdf, Q/video, Q/audio) corresponding
+         * to the given preview tool. Matches by file URL since previews and
+         * content tools share the underlying stream's fileUrl.
+         *
+         * @param {Q.Tool} previewTool  e.g. a Streams/pdf/preview instance
+         * @param {String} contentToolName  e.g. 'Q/pdf'
+         * @return {Q.Tool|null}
+         */
+        _resolveActiveContentTool: function (previewTool, contentToolName) {
+            if (!previewTool || (Q.isEmpty(previewTool.stream) && !previewTool.state.publisherId && !previewTool.state.streamName)) return null;
+            var activeTools = Q.Tool.byName(contentToolName);
+            for (var toolKey in activeTools) {
+                if (Object.prototype.hasOwnProperty.call(activeTools, toolKey)) {
+                    let tool = activeTools[toolKey];
+                     if (tool.state && tool.state.publisherId === previewTool.state.publisherId && tool.state.streamName === previewTool.state.streamName) {
+                        return tool;
+                     }
+                }
+            }
+        },
+        _getChildPreviewTool: function (previewTool) {
+            if (!previewTool || (Q.isEmpty(previewTool.stream) && !previewTool.state.publisherId && !previewTool.state.streamName)) return null;
+            var allPreviewGroup = Q.Tool.active[previewTool.id];
+
+            for (var toolName in allPreviewGroup) {
+                if (Object.prototype.hasOwnProperty.call(allPreviewGroup, toolName)) {
+                    if(allPreviewGroup[toolName].preview == previewTool) return allPreviewGroup[toolName];
+                }
+            }
+        },
+
+        /**
+         * Apply a classifier-matched intent to the *currently active* preview's
+         * underlying content tool. State (slideIndex, currentTime, etc.) lives
+         * on the content tool — read from it, compute the next value, write back.
+         *
+         * @param {Object} handled  { intent, captures }
+         */
+        _handleCommandLocally: function (handled) {
+            var tool = this;
+            var preview = tool._activePreview;
+            if (!preview || !handled || !handled.intent) return;
+            var intent = handled.intent;
+            var previewType = preview.name;   // 'streams_pdf_preview', 'streams_video_preview', etc.
+
+            if (intent.indexOf('slide/') === 0) {
+                var pdfTool = tool._resolveActiveContentTool(preview, 'Q/pdf');
+                if (!pdfTool) return;
+                var canvases = pdfTool.element.querySelectorAll('canvas');
+                if (!canvases.length) return;
+                
+                var current;
+                if(pdfTool.state.slideMode) {
+                    current = (pdfTool.cacheData && pdfTool.cacheData.slideIndex != null) ? pdfTool.cacheData.slideIndex : -1;
+                } else {
+                    current = tool._currentVisibleCanvasIndex(pdfTool)
+                }
+                    
+                var next;
+                switch (intent) {
+                    case 'slide/next': next = current + 1; break;
+                    case 'slide/prev': next = Math.max(0, current - 1); break;
+                    case 'slide/first': next = 0; break;
+                    case 'slide/last': next = canvases.length - 1; break;
+                    default: return;
+                }
+                next = Math.max(0, Math.min(canvases.length - 1, next));
+                tool._pdfApplySlide(pdfTool, next);
+                tool._syncServer(handled, { slideIndex: next });
+                return;
+            }
+
+            if (intent.indexOf('video/') === 0 || intent.indexOf('audio/') === 0) {
+                var contentName = intent.indexOf('video/') === 0 ? 'Q/video' : 'Q/audio';
+                var mediaTool = tool._resolveActiveContentTool(preview, contentName);
+                if (!mediaTool) return;
+                
+                switch (intent) {
+                    case 'video/play': mediaTool.play(); break;
+                    case 'video/pause': mediaTool.pause(); break;
+                    case 'video/mute': break;
+                    case 'video/unmute': break;
+                    default: return;
+                }
+                tool._syncServer(handled, { pos: el.currentTime });
+                return;
+            }
+
+            // No matching active preview for this intent → no local action,
+            // but still sync so the server can record it for VTT / forward to viewer.
+            tool._syncServer(handled);
+        },
+
+        /**
+         * Attach an IntersectionObserver to a Q/pdf instance that tracks which
+         * canvas children are currently visible, and to what degree. Stores the
+         * latest snapshot on pdfTool._visibility for _currentVisibleCanvasIndex
+         * and any other caller to read synchronously.
+         *
+         * Safe to call multiple times — short-circuits if already set up.
+         * Cleans itself up on the tool's onBeforeRemove event so the observer
+         * doesn't outlive the element.
+         */
+        _setupPdfVisibilityObserver: function (pdfTool) {
+            var tool = this;
+            if (!pdfTool || pdfTool._visibilityObserver) return;
+
+            var canvases = pdfTool.element.querySelectorAll('canvas');
+            if (!canvases.length) {
+                // Q/pdf renders canvases asynchronously after the document loads.
+                // Defer setup until onRefresh fires.
+                pdfTool.state.onRefresh.addOnce(function () {
+                    tool._setupPdfVisibilityObserver(pdfTool);
+                }, pdfTool);
+                return;
+            }
+
+            pdfTool._visibility = {};   // index → { ratio, top }
+
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    var idx = Array.prototype.indexOf.call(
+                        pdfTool.element.querySelectorAll('canvas'),
+                        entry.target
+                    );
+                    if (idx < 0) return;
+                    pdfTool._visibility[idx] = {
+                        ratio: entry.intersectionRatio,
+                        top: entry.boundingClientRect.top
+                    };
+                });
+            }, {
+                root: pdfTool.element,
+                threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+            });
+
+                canvases.forEach(function (canvas) { observer.observe(canvas); });
+                pdfTool._visibilityObserver = observer;
+
+                pdfTool.Q.beforeRemove.set(function () {
+                    observer.disconnect();
+                    delete pdfTool._visibilityObserver;
+                    delete pdfTool._visibility;
+                }, pdfTool);
+            },
+
+            /**
+             * Determine which canvas is currently most visible in scroll mode.
+             * Reads from the IntersectionObserver snapshot (always fresh — observer
+             * callbacks fire on every threshold crossing during scroll).
+             *
+             * Falls back to canvas 0 if visibility data hasn't been populated yet
+             * (initial state, or before the first scroll event after mount).
+             *
+             * @param {Q.Tool} pdfTool
+             * @return {Number}  canvas index (0-based)
+             */
+            _currentVisibleCanvasIndex: function (pdfTool) {
+                if (!pdfTool || !pdfTool._visibility) return 0;
+                var visibility = pdfTool._visibility;
+                var canvases = pdfTool.element.querySelectorAll('canvas');
+                if (!canvases.length) return 0;
+
+                var bestIdx = 0;
+                var bestRatio = -1;
+                for (var i = 0; i < canvases.length; i++) {
+                    var v = visibility[i];
+                    if (!v) continue;
+                    // Most visible by ratio. Tie-break by topmost (smaller top wins —
+                    // closer to the viewport top reads as "the one the user is reading").
+                    if (v.ratio > bestRatio ||
+                        (v.ratio === bestRatio && v.top < (visibility[bestIdx] || { top: Infinity }).top)) {
+                        bestRatio = v.ratio;
+                        bestIdx = i;
+                    }
+                }
+                return bestIdx;
+            },
+            _getCurrentPdfIndex: function (pdfTool) {
+                var tool = this;
+                if (pdfTool.state.slideMode) {
+                    return (pdfTool.cacheData && pdfTool.cacheData.slideIndex != null) ? pdfTool.cacheData.slideIndex : -1;
+                } else {
+                    return tool._currentVisibleCanvasIndex(pdfTool);
+                }
+            },
+
+            /**
+             * Apply a slide index to the PDF tool, handling mode transitions.
+             *
+             * Already in slide mode → switch to canvases[slideIndex].
+             *
+             * In scroll mode → entering slide mode snaps to whatever canvas the
+             * user is currently looking at (computed from scrollTop), and the
+             * passed-in slideIndex is IGNORED for this call. Rationale: a voice
+             * command from scroll mode is read as "let me enter slide mode where
+             * I am" — the next command navigates from there. This preserves visual
+             * continuity and is symmetric with _checkPdfMode's exit path.
+             *
+             * Returns the index that was actually applied, so the caller can sync
+             * that to the server (the snap-to-visible behavior can override the
+             * caller's intended index, and the server should record what really
+             * happened, not what was requested).
+             *
+             * @param {Q.Tool} pdfTool    the Q/pdf instance
+             * @param {Number} slideIndex  target slide (honored only when already in slide mode)
+             * @return {Number}            the index actually applied
+             */
+            _pdfApplySlide: function (pdfTool, slideIndex) {
+                var tool = this;
+                var canvases = pdfTool.element.querySelectorAll('canvas');
+                if (!canvases.length) return -1;
+                pdfTool.cacheData = pdfTool.cacheData || {};
+
+                var targetIndex;
+
+                targetIndex = Math.max(0, Math.min(canvases.length - 1, slideIndex));
+                if (!pdfTool.state.slideMode) {
+                    // Reads from IntersectionObserver snapshot — accurate even with
+                    // variable canvas heights, transforms, or fractional scroll positions.
+                    //targetIndex = this._currentVisibleCanvasIndex(pdfTool);
+                    tool._enableSlideMode(pdfTool);
+                }
+
+                pdfTool.cacheData.slideIndex = targetIndex;
+                pdfTool.element.slideIndex = targetIndex;
+                canvases.forEach(function (canvas, i) {
+                    canvas.style.display = (i === targetIndex) ? 'block' : 'none';
+                });
+                return targetIndex;
+            },
+            _enableSlideMode: function (pdfTool) {
+                pdfTool.element.setAttribute('data-slideMode', 'true');
+                pdfTool.state.slideMode = true;
+            },
+            _disableSlideMode: function (pdfTool) {
+                pdfTool.element.removeAttribute('data-slideMode');
+                pdfTool.state.slideMode = false;
+            },
+
+            /**
+             * Wheel-event handler hook: transition the PDF tool from slide mode
+             * back to scroll mode, preserving visual continuity by scrolling so
+             * the previously-active slide's canvas sits at the top of the viewport.
+             *
+             * Symmetric with _pdfApplySlide's scroll → slide transition.
+             *
+             * No-op when the tool is already in scroll mode.
+             *
+             * @param {Q.Tool} pdfTool
+             */
+            _checkPdfMode: function (pdfTool) {
+                var tool = this;
+                if (!pdfTool || !pdfTool.element) return;
+                if (pdfTool.state.slideMode === false) return;
+
+                var canvases = pdfTool.element.querySelectorAll('canvas');
+                if (!canvases.length) return;
+                pdfTool.cacheData = pdfTool.cacheData || {};
+
+                var activeIndex = (pdfTool.cacheData.slideIndex != null)
+                    ? Math.max(0, Math.min(canvases.length - 1, pdfTool.cacheData.slideIndex))
+                    : 0;
+
+                tool._disableSlideMode(pdfTool);
+                canvases.forEach(function (canvas) { canvas.style.display = ''; });
+
+                var targetCanvas = canvases[activeIndex];
+                if (targetCanvas) {
+                    // scrollIntoView handles fractional positions, scroll snap, and
+                    // transformed parents better than direct scrollTop assignment.
+                    targetCanvas.scrollIntoView({ block: 'start', behavior: 'instant' });
+                }
+            },
+
+            /**
+             * Reveal progressive disclosure step on the active card tool, if any.
+             * Card tools expose data-reveal-up-to attributes that step animations follow.
+             * @param {Number} revealIndex
+             */
+            _applyReveal: function (revealIndex) {
+                var $cards = $(document.body).find('.Media_card_tool[data-reveal]');
+                $cards.each(function () {
+                    this.setAttribute('data-reveal-up-to', String(revealIndex));
+                });
+            },
+
+            /**
+             * CSS transform scale on the active content surface.
+             * Picks the most "presentation-like" container — falls back to body.
+             */
+            _applyZoom: function (scale) {
+                var surface = document.querySelector('.Media_presentation_main')
+                    || document.querySelector('.Q_pdf_tool')
+                    || document.body;
+                surface.style.transform = 'scale(' + scale + ')';
+                surface.style.transformOrigin = 'center center';
+            },
+
+            /**
+             * Relative scroll on the active content surface.
+             */
+            _applyScroll: function (dx, dy) {
+                var surface = document.querySelector('.Q_pdf_tool')
+                    || document.scrollingElement
+                    || document.body;
+                surface.scrollBy({ left: dx, top: dy, behavior: 'smooth' });
+            },
+            _applyScrollAbsolute: function (x, y) {
+                var surface = document.querySelector('.Q_pdf_tool')
+                    || document.scrollingElement
+                    || document.body;
+                surface.scrollTo({ left: x, top: y, behavior: 'smooth' });
+            },
+
+            /** Play first matching Q/video or Q/audio tool. */
+            _applyPlay: function () {
+                document.body.forEachTool('Q/video', function () { try { this.play && this.play(); } catch (e) { } });
+                document.body.forEachTool('Q/audio', function () { try { this.play && this.play(); } catch (e) { } });
+            },
+            _applyPause: function () {
+                document.body.forEachTool('Q/video', function () { try { this.pause && this.pause(); } catch (e) { } });
+                document.body.forEachTool('Q/audio', function () { try { this.pause && this.pause(); } catch (e) { } });
+            },
+            _applyMute: function (muted) {
+                document.body.forEachTool('Q/video', function () {
+                    var v = this.element.querySelector('video'); if (v) v.muted = muted;
+                });
+                document.body.forEachTool('Q/audio', function () {
+                    var a = this.element.querySelector('audio'); if (a) a.muted = muted;
+                });
+            },
+
+            _applyFullscreen: function () {
+                var el = document.querySelector('.Q_pdf_tool')
+                    || document.querySelector('.Q_video_tool')
+                    || document.documentElement;
+                if (document.fullscreenElement) {
+                    document.exitFullscreen && document.exitFullscreen();
+                } else {
+                    el.requestFullscreen && el.requestFullscreen();
+                }
+            },
+
+            /**
+             * Emit Media/presentation/command to the server with the absolute
+             * post-update state. The server's _navCommand picks slide/reveal up
+             * as durable messages; other intents are logged for VTT.
+             *
+             * Called AFTER _handleCommandLocally so state.* reflects the new values.
+             */
+            _syncServer: function (handled, extras) {
+                var tool = this;
+                var state = tool.state;
+                if (!handled || !handled.intent) return;
+                var payload = Q.extend({
+                    intent: handled.intent,
+                    publisherId: state.publisherId,
+                    streamName: state.streamName,
+                    captures: handled.captures || {},
+                    relSec: ((Date.now() - (state._sessionStartMs || Date.now())) / 1000).toFixed(1)
+                }, extras || {});
+                _qEmit('Media/presentation/command', payload);
             },
 
             // ── Live caption ───────────────────────────────────────────────────────
