@@ -7,6 +7,7 @@
 
 var Q = require('Q');
 var Streams = require('Streams');
+var Commands = require('Streams/Commands');
 
 function Media() {}
 Media.WebRTC          = require('Media/WebRTC');
@@ -191,7 +192,7 @@ Media._postToolCommit = function (session, toolName) {
 
 var SCROLL_STEP = 20;
 
-Streams.Commands.register({
+Commands.register({
 
     // -- slides --------------------------------------------------------------
     'slide/next':  { emit: function (c, stream, state) {
