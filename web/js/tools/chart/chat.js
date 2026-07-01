@@ -21,21 +21,21 @@ Q.Tool.define("Media/chart/chat", ["Streams/chat"], function (options) {
 
     if (!Q.Users.loggedInUserId()) return;
 
-    // Bar chart
-    tool.chatTool.addMenuItem('chart_bar', {
-        title:     'Bar chart',
-        icon:      '{{Q}}/img/icons/chart-bar.png',
-        className: 'Media_chart_chat_bar',
-        handler:   function () { _showBarComposer(); }
-    });
+    // // Bar chart
+    // tool.chatTool.addMenuItem('chart_bar', {
+    //     title:     'Bar chart',
+    //     icon:      '{{Q}}/img/icons/chart-bar.png',
+    //     className: 'Media_chart_chat_bar',
+    //     handler:   function () { _showBarComposer(); }
+    // });
 
-    // Line chart
-    tool.chatTool.addMenuItem('chart_line', {
-        title:     'Line chart',
-        icon:      '{{Q}}/img/icons/chart-line.png',
-        className: 'Media_chart_chat_line',
-        handler:   function () { _showLineComposer(); }
-    });
+    // // Line chart
+    // tool.chatTool.addMenuItem('chart_line', {
+    //     title:     'Line chart',
+    //     icon:      '{{Q}}/img/icons/chart-line.png',
+    //     className: 'Media_chart_chat_line',
+    //     handler:   function () { _showLineComposer(); }
+    // });
 
     function _showBarComposer() {
         var $form = $('<div class="Media_chart_composer"></div>');
