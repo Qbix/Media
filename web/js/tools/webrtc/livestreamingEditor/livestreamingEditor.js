@@ -185,8 +185,33 @@
 
                 webrtcSignalingLib.event.on('localRecordingEnded', function (e) {
                     let statsContainer = document.querySelector('.live-editor-dialog-header-stats');
-                    if(statsContainer) statsContainer.innerHTML = '';
+                    if (statsContainer) statsContainer.innerHTML = '';
                 });
+
+                tool.webrtcSignalingLib.event.on('screensharingStarted', switchToSideScreensharing);
+                tool.webrtcSignalingLib.event.on('remoteScreensharingStarted', switchToSideScreensharing);
+                tool.webrtcSignalingLib.event.on('screensharingStopped', switchBackFromSideScreensharing);
+                tool.webrtcSignalingLib.event.on('remoteScreensharingStopped', switchBackFromSideScreensharing);
+
+                function switchToSideScreensharing() {
+                    let activeScene = tool.livestreamingEditor.scenesInterface.getActive();
+                    if (!activeScene) return;
+                    tool.screensharingStartedScene = activeScene;
+                    let webrtcGroups = tool.canvasComposer.videoComposer.getWebrtcGroups();
+                    if(webrtcGroups.length) {
+                        activeScene.layoutToSwitchBack = webrtcGroups[0].currentLayout;
+                    }
+
+                    activeScene.sourcesInterface.selectLayout('sideScreenSharing', true);
+                }
+
+                function switchBackFromSideScreensharing() {
+                    if (tool.screensharingStartedScene) {
+                        if(tool.screensharingStartedScene.layoutToSwitchBack) tool.screensharingStartedScene.sourcesInterface.selectLayout(tool.screensharingStartedScene.layoutToSwitchBack, true);
+                        tool.screensharingStartedScene.layoutToSwitchBack = null;
+                        tool.screensharingStartedScene = null;
+                    }
+                }
 
                 function renderMp4RecordingStats(e) {
                     let statsContainer = document.querySelector('.live-editor-dialog-header-stats');
@@ -1369,6 +1394,7 @@
                                 item.sourcesInterface.addWatermark(_watermark, scenes[s]);
                             }
 
+                            handleAppEvents(item);
                             item.reactionsSource = tool.canvasComposer.videoComposer.addSource({
                                 sourceType: 'reactions',
                             }, scenes[s]);
@@ -1378,6 +1404,14 @@
                         }
                        
                         log('_scenesList', _scenesList)
+                    }
+
+                    function handleAppEvents(sceneListItem) {
+                        sceneListItem.sceneInstance.eventDispatcher.on('webrtcLayoutUpdated', function (e) {
+                            if (e.layoutChanged && sceneListItem.layoutToSwitchBack && e.currentLayout.toLowerCase().indexOf('screensharing') === -1) {
+                                sceneListItem.layoutToSwitchBack = null;
+                            }
+                        })
                     }
 
 

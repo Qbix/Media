@@ -43,10 +43,8 @@ Q.Tool.define("Media/presentation/card/glossary", function (options) {
 })(Q, Q.jQuery, window);
 
 Q.Template.set('Media/presentation/card/glossary',
-    '<div class="Media_presentation_screen Media_presentation_card_screen">'
-  + '<div class="Media_presentation_hero">'
+  '<div class="Media_presentation_hero">'
   + '{{{tool "Q/card/glossary"}}}'
   + '<div class="Media_presentation_caption">{{title}}</div>'
-  + '</div>'
   + '</div>'
 );

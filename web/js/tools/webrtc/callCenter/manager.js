@@ -380,6 +380,27 @@
 
                     liveChatItemContainer.addEventListener('click', selectChat);
 
+                    var commandsChatItemContainer = document.createElement('DIV');
+                    commandsChatItemContainer.className = 'media-callcenter-m-main-chat';
+                    commandsChatItemContainer.dataset.chatType = 'commands';
+                    toolContainerInner.appendChild(commandsChatItemContainer);
+                    
+                    var commandsChatItemInnerCon = document.createElement('DIV');
+                    commandsChatItemInnerCon.className = 'media-callcenter-m-main-chat-inner';
+                    commandsChatItemContainer.appendChild(commandsChatItemInnerCon);
+
+                    var commandsChatItemIcon = document.createElement('DIV');
+                    commandsChatItemIcon.className = 'media-callcenter-m-main-chat-icon';
+                    commandsChatItemIcon.innerHTML = _icons.liveChat;
+                    commandsChatItemInnerCon.appendChild(commandsChatItemIcon);
+
+                    var commandsChatItemTitle = document.createElement('DIV');
+                    commandsChatItemTitle.className = 'media-callcenter-m-main-chat-title';
+                    commandsChatItemTitle.innerHTML = 'Presentation';
+                    commandsChatItemInnerCon.appendChild(commandsChatItemTitle);
+
+                    commandsChatItemContainer.addEventListener('click', selectChat);
+
                     function selectChat(e) {
                         let activeItems = document.querySelectorAll('.media-callcenter-m-calls-item-active');
                         for (let i = 0; i < activeItems.length; i++) {
@@ -393,6 +414,8 @@
                             tool.openConferenceChat(tool.state.publisherId, tool.state.streamName);
                         } else if(chatType == 'live') {
                             tool.openConferenceChat(tool.state.livestreamStream.fields.publisherId, tool.state.livestreamStream.fields.name);
+                        } else if(chatType == 'commands') {
+                            tool.openCommandsTool(tool.state.livestreamStream.fields.publisherId, tool.state.livestreamStream.fields.name);
                         }
                     }
                 }
@@ -1755,8 +1778,66 @@
                         }
                     )
                 }
+            },
+            openCommandsTool: function (publisherId, streamName) {
+                var tool = this;
+                //if call center is activated in livestream editor, user can open teleconference chat
+                if(tool.state.chatContainer instanceof HTMLElement) {
+                    if(tool.currentActiveChat && tool.currentActiveChat.chatTool) {
+                        tool.currentActiveChat.chatTool.remove()
+                    }
+                    tool.state.chatContainer.innerHTML = '';
+
+                    if(tool.commandsTool) {
+                        tool.state.chatContainer.appendChild(tool.commandsTool.element);
+                        return;
+                    }
+
+                    tool.getPresentationStream().then(function (streams) {
+                        let presentationStream = streams.presentationStream;
+                        let commandsChatStream = streams.commandsChatStream;
+                        let chatContainer = document.createElement('DIV');
+                        tool.state.chatContainer.appendChild(chatContainer);
+                        let audioTrack = tool.state.activeWebrtcRoom.controls().livestreamingEditorTool.canvasComposer.audioComposer.getComposedAudio();
+                        Q.activate(
+                            Q.Tool.setUpElement(chatContainer, 'Media/presentation/commands', Q.extend({}, {}, {
+                                publisherId: presentationStream.fields.publisherId,
+                                streamName: presentationStream.fields.name,
+                                isHost: true,
+                                lang: 'en_US',
+                                toolPublisherId: commandsChatStream.fields.publisherId,
+                                toolStreamName: commandsChatStream.fields.name,
+                                audioTrack: audioTrack
+                            })),
+                            {},
+                            function () {
+                                let chatTool = this;
+                                tool.commandsTool = chatTool;
+                            }
+                        )
+                    });
+                }
+            },
+            getPresentationStream: function () {
+                var tool = this;
+                return new Promise(function (resolve, reject) {
+                    Q.req("Media/webrtc", ["createPresentation"], function (err, response) {
+                        var msg = Q.firstErrorMessage(err, response && response.errors);
+
+                        if (msg) {
+                            reject('Error while making call center from a stream');
+                        }
+                        resolve(response.slots.createPresentation);
+                    }, {
+                        method: 'post',
+                        fields: {
+                            publisherId: tool.state.publisherId,
+                            streamName: tool.state.streamName
+                        }
+                    });
+
+                });
             }
-                
         }
 
     );
