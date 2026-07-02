@@ -17,9 +17,8 @@ $toolAttrs = Q_Html::attributes(array(
     'data-writeLevel'        => $writeLevel,
 ));
 
-
 ?>
-<div id="Media_presentation_control_page">
+<div id="Media_presentation_commands_page">
     <?php echo Q::tool('Media/presentation/commands', array(
         "publisherId" => $publisherId,
         "streamName" => $streamName,

@@ -1187,6 +1187,7 @@
     flex: 1;
     padding-top: 10px;
     padding-right: 10px;
+    min-width: 0;
 }
 .live-editor-scenes-body, .live-editor-sources-body, .live-editor-options-body{
     flex-grow: 1;
@@ -2996,4 +2997,11 @@
     box-shadow: 0 0 1px rgba(50, 50, 50, 0.5);
     background-color: #2f2f2f;
     color: #cdcdcd;
+}
+
+.live-editor-chat-tool-con {
+    max-width: 100%;
+}
+.live-editor-chat-tool-con .Media_presentation_commands_tool {
+    max-width: 100%;
 }

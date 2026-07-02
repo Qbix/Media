@@ -624,8 +624,18 @@ function Media_webrtc_post($params = array())
 
         Q_Response::setSlot("scheduleOrUpdateRoomStream", $response);
 
-    } else if(Q_Request::slotName('room')) {
+    } else if(Q_Request::slotName('createPresentation')) {
+        $response = [];
 
+        $streamName = Q::ifset($params, 'streamName', null);
+        $publisherId = Q::ifset($params, 'publisherId', null);
+        $meetingParams = Q::ifset($params, 'meetingParams', null);
+
+        $response = Media_WebRTC::getOrCreatePresentation($streamName, $publisherId);        
+
+        Q_Response::setSlot("createPresentation", $response);
+
+    } else if(Q_Request::slotName('room')) {
         if($useTwilioTurn) {
             try {
                 $turnCredentials = Media_WebRTC::getTwilioTurnCredentials();

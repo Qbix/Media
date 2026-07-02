@@ -28,7 +28,7 @@
                     $(".Media_presentation_audio", tool.element).tool("Q/audio", {
                         url: stream.fileUrl()
                     }).activate(function () {
-                        var audioTool = this;
+                        var audioTool = tool.originalTool = this;
                         stream.onEphemeral('Streams/play').set(function (ephemeral) {
                             var pos = Q.getObject("pos", ephemeral);
                             if (!isNaN(parseFloat(pos))) {

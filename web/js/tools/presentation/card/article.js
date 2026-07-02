@@ -47,8 +47,7 @@ Q.Tool.define("Media/presentation/card/article", function (options) {
 })(Q, Q.jQuery, window);
 
 Q.Template.set('Media/presentation/card/article',
-    '<div class="Media_presentation_screen Media_presentation_card_screen">'
-  + '<div class="Media_presentation_hero">'
+  '<div class="Media_presentation_hero">'
   + '{{#if imageUrl}}'
   + '<div class="Media_presentation_card_image">'
   + '<img src="{{imageUrl}}" alt="" loading="lazy" onerror="this.parentNode.style.display=\'none\'">'
@@ -57,6 +56,5 @@ Q.Template.set('Media/presentation/card/article',
   + '{{/if}}'
   + '{{{tool "Q/card/article"}}}'
   + '<div class="Media_presentation_caption">{{title}}</div>'
-  + '</div>'
   + '</div>'
 );

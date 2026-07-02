@@ -28,7 +28,7 @@
                     $(".Media_presentation_video", tool.element).tool("Q/video", {
                         url: stream.fileUrl()
                     }).activate(function () {
-                        var videoTool = this;
+                        var videoTool = tool.originalTool = this;
                         stream.onEphemeral('Streams/play').set(function (ephemeral) {
                             var pos = Q.getObject("pos", ephemeral);
                             if (!isNaN(parseFloat(pos))) {

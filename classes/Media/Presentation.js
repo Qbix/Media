@@ -15,7 +15,7 @@ const child_process = require('child_process');
 const appDir = path.dirname(require.main.filename) + '/../../';
 const appName =  Q.Config.get(['Q','app']);
 // Lazily loaded after Q is ready to require plugins.
-var Session, StreamsTranscript;
+var Session, StreamsTranscript, Pipeline;
 var transcriptEmitter = null;  // hoisted at first AI.listen() — Streams plugin must be loaded first
 
 
@@ -38,6 +38,7 @@ Presentation.listen = function (options) {
     Session = require(Q.PLUGINS_DIR + '/Streams/classes/Streams/Transcript/Session');
     transcriptEmitter = require(Q.PLUGINS_DIR + '/Streams/classes/Streams/TranscriptEmitter').transcriptEmitter;
     StreamsTranscript = require(Q.PLUGINS_DIR + '/Streams/classes/Streams/Transcript');
+    Pipeline = require(Q.PLUGINS_DIR + '/AI/classes/AI/Pipeline');
     
     transcriptEmitter.on('sessionStart', function (evt) {
         var session = Session.get(evt.sessionId);
@@ -72,10 +73,8 @@ Presentation.listen = function (options) {
 
     // Every final utterance: run the AI pipeline for non-control narration.
     StreamsTranscript.on('processed', function (session, result, Q, Users) {
-        debugger;
-        /* if(result.isControl) {
-            Users.Socket.emitToUser(result.entry.speaker, event, data);
-        } */
+
+       
     });
 
 }
@@ -159,6 +158,7 @@ Presentation._postToolCommit = function (session, toolName) {
     });
 };
 Presentation.handleNavigation = function (command, captures, stream, sessionState) {
+    //console.log('presentation: command', command)
     var SCROLL_STEP = 20;
     var presentationState = Q.getObject(['entry', 'payload', 'state'], sessionState)
     if (command == 'slide/next') {
@@ -179,9 +179,41 @@ Presentation.handleNavigation = function (command, captures, stream, sessionStat
          return postMessage('Streams/pause', { });
     } else if (command == 'video/seek') {
         return stream.ephemeral('Streams/seek', {})
+    } else if (command == 'scroll/down') {
+        return postMessage('Q/scroll', { top: '+' + SCROLL_STEP + '%' })
+    } else if (command == 'scroll/up') {
+        return postMessage('Q/scroll', { top: '-' + SCROLL_STEP + '%' })
+    } else if (command == 'scroll/top') {
+        return postMessage('Q/scroll', { top: '0%' })
+    } else if (command == 'scroll/bottom') {
+        return postMessage('Q/scroll', { top: '100%' })
     }
 
-    function postMessage(type, instructions) {
+    /* function postMessage(type, instructions) {
+        return Session.postMessage(Q, {
+            publisherId: sessionState.session.publisherId,
+            streamName: sessionState.session.streamName,
+            byUserId: sessionState.session.userId,
+            type: type,
+            instructions: JSON.stringify(instructions)
+        });
+    } */
+
+    function postMessage(type, instructions, options) {
+        options = options || {};
+
+        instructions.voiceNavigation = true;
+        Session.postEphemeral({
+                publisherId: sessionState.session.publisherId,
+                streamName: sessionState.session.streamName,
+                asUserId: sessionState.session.userId,
+                type: type,
+                payload: instructions
+            });
+
+        // 2. Durable post — for state reconstruction on viewer mount
+        if (options.persist === false) return;
+
         return Session.postMessage(Q, {
             publisherId: sessionState.session.publisherId,
             streamName: sessionState.session.streamName,
@@ -211,88 +243,139 @@ Q.plugins.Streams.Commands.register({
     // -- slides --------------------------------------------------------------
     'slide/next': {
         emit: function (captures, stream, sessionState) {
-            Presentation.handleNavigation('slide/next', captures, stream, sessionState)
+            return Presentation.handleNavigation('slide/next', captures, stream, sessionState)
         }
     },
-    'slide/prev':  { 
+    'slide/prev': {
         emit: function (captures, stream, sessionState) {
-            Presentation.handleNavigation('slide/prev', captures, stream, sessionState)
-        }
-},
-    'slide/first': { 
-        emit: function (captures, stream, sessionState) {
-            Presentation.handleNavigation('slide/first', captures, stream, sessionState)
+            return Presentation.handleNavigation('slide/prev', captures, stream, sessionState)
         }
     },
-    'slide/last':  { 
+    'slide/first': {
         emit: function (captures, stream, sessionState) {
-            Presentation.handleNavigation('slide/last', captures, stream, sessionState)
+            return Presentation.handleNavigation('slide/first', captures, stream, sessionState)
+        }
+    },
+    'slide/last': {
+        emit: function (captures, stream, sessionState) {
+            return Presentation.handleNavigation('slide/last', captures, stream, sessionState)
         }
     },
 
     // -- video ---------------------------------------------------------------
-    'video/play':  { 
+    'video/play': {
         emit: function (captures, stream, sessionState) {
-            Presentation.handleNavigation('slide/play', captures, stream, sessionState)
-        }
-},
-    'video/pause': { 
-        emit: function (captures, stream, sessionState) {
-            Presentation.handleNavigation('slide/pause', captures, stream, sessionState)
+            return Presentation.handleNavigation('video/play', captures, stream, sessionState)
         }
     },
-    'video/seek':  {
+    'video/pause': {
+        emit: function (captures, stream, sessionState) {
+            return Presentation.handleNavigation('video/pause', captures, stream, sessionState)
+        }
+    },
+    'video/seek': {
         captures: { pos: 'time' },
-        emit: function (c, stream) {
-            return c.pos != null && stream.ephemeral('Streams/seek', { pos: c.pos });
+        emit: function (captures, stream, sessionState) {
+            return c.pos != null ? Presentation.handleNavigation('video/seek', { pos: c.pos }, stream, sessionState) : null;
         }
     },
     'video/seek/relative': {
         captures: { rel: 'duration' },   // duration returns { delta, forward }
-        emit: function (c, stream) {
-            return c.delta != null && stream.ephemeral('Streams/seek', {
+        emit: function (captures, stream, sessionState) {
+            return c.delta != null ? Presentation.handleNavigation('video/seek/relative', {
                 pos: (c.forward ? '+' : '-') + c.delta
-            });
+            }, stream, sessionState) : null;
         }
     },
 
     // -- gallery -------------------------------------------------------------
-    'gallery/next':           { emit: function (c, stream) { return stream.ephemeral('Streams/gallery/next', {}); } },
-    'gallery/pause':          { emit: function (c, stream) { return stream.ephemeral('Streams/gallery/pause', {}); } },
-    'gallery/resume':         { emit: function (c, stream) { return stream.ephemeral('Streams/gallery/resume', {}); } },
-    'gallery/caption/remove': { emit: function (c, stream) { return stream.ephemeral('Streams/gallery/caption', { remove: true }); } },
-    'gallery/remove':         { emit: function (c, stream) { return stream.ephemeral('Streams/gallery/remove', {}); } },
+    'gallery/next': {
+        emit: function (captures, stream, sessionState) {
+            //return stream.ephemeral('Streams/gallery/next', {});
+        }
+    },
+    'gallery/pause': {
+        emit: function (captures, stream, sessionState) {
+            //return stream.ephemeral('Streams/gallery/pause', {});
+        }
+    },
+    'gallery/resume': {
+        emit: function (captures, stream, sessionState) {
+            //return stream.ephemeral('Streams/gallery/resume', {});
+        }
+    },
+    'gallery/caption/remove': {
+        emit: function (captures, stream, sessionState) {
+            //return stream.ephemeral('Streams/gallery/caption', { remove: true });
+        }
+    },
+    'gallery/remove': {
+        emit: function (captures, stream, sessionState) {
+            //return stream.ephemeral('Streams/gallery/remove', {});
+        }
+    },
 
     // -- highlight -----------------------------------------------------------
     'highlight': {
         captures: { elementId: 'ordinal' },
-        emit: function (c, stream) {
-            return c.elementId && stream.ephemeral('Streams/highlight', { elementId: c.elementId });
+        emit: function (captures, stream, sessionState) {
+            //return c.elementId && stream.ephemeral('Streams/highlight', { elementId: c.elementId });
         }
     },
 
     // -- zoom ----------------------------------------------------------------
-    'zoom/in':    { emit: function (c, stream, state) {
-        return stream.ephemeral('Streams/zoom', { scale: +(((state && state.zoomScale) || 1) * 1.5).toFixed(2) });
-    } },
-    'zoom/out':   { emit: function (c, stream, state) {
-        return stream.ephemeral('Streams/zoom', { scale: +(((state && state.zoomScale) || 1) / 1.5).toFixed(2) });
-    } },
-    'zoom/reset': { emit: function (c, stream) { return stream.ephemeral('Streams/zoom', { scale: 1 }); } },
+    'zoom/in': {
+        emit: function (captures, stream, sessionState){
+            //return stream.ephemeral('Streams/zoom', { scale: +(((state && state.zoomScale) || 1) * 1.5).toFixed(2) });
+        }
+    },
+    'zoom/out': {
+        emit: function (captures, stream, sessionState) {
+            //return stream.ephemeral('Streams/zoom', { scale: +(((state && state.zoomScale) || 1) / 1.5).toFixed(2) });
+        }
+    },
+    'zoom/reset': {
+        emit: function (captures, stream, sessionState) {
+            //return stream.ephemeral('Streams/zoom', { scale: 1 });
+        }
+    },
 
     // -- scroll --------------------------------------------------------------
-    'scroll/down':   { emit: function (c, stream) { return stream.ephemeral('Q/scroll', { top: '+' + SCROLL_STEP + '%' }); } },
-    'scroll/up':     { emit: function (c, stream) { return stream.ephemeral('Q/scroll', { top: '-' + SCROLL_STEP + '%' }); } },
-    'scroll/top':    { emit: function (c, stream) { return stream.ephemeral('Q/scroll', { top: '0%' }); } },
-    'scroll/bottom': { emit: function (c, stream) { return stream.ephemeral('Q/scroll', { top: '100%' }); } },
+    'scroll/down': {
+        emit: function (captures, stream, sessionState) {
+            return Presentation.handleNavigation('scroll/down', captures, stream, sessionState);
+        }
+    },
+    'scroll/up': {
+        emit: function (captures, stream, sessionState) {
+            return Presentation.handleNavigation('scroll/up', captures, stream, sessionState);
+        }
+    },
+    'scroll/top': {
+        emit: function (captures, stream, sessionState) {
+            return Presentation.handleNavigation('scroll/top', captures, stream, sessionState);
+        }
+    },
+    'scroll/bottom': {
+        emit: function (captures, stream, sessionState) {
+            return Presentation.handleNavigation('scroll/bottom', captures, stream, sessionState);
+        }
+    },
 
     // -- reveal / fullscreen -------------------------------------------------
-    'reveal/next': { emit: function (c, stream, state) {
-        return stream.ephemeral('Streams/reveal', { revealIndex: ((state && state.revealIndex) || 0) + 1 });
-    } },
-    'fullscreen':  { emit: function (c, stream) { return stream.ephemeral('Q/fullscreen', {}); } }
+    'reveal/next': {
+        emit: function (c, stream, state) {
+            //return stream.ephemeral('Streams/reveal', { revealIndex: ((state && state.revealIndex) || 0) + 1 });
+        }
+    },
+    'fullscreen': {
+        emit: function (captures, stream, sessionState) { 
+            //return stream.ephemeral('Q/fullscreen', {}); 
+        }
+    }
 
-});
+}
+);
 
 Presentation.listen.options = {};
 

@@ -68,8 +68,9 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 }
 
 .Media_presentation #content {
-	animation: Media_backgroundColors 5s infinite alternate;
-	border: dotted 1px rgba(100, 100, 100, 0.5);
+	/* animation: Media_backgroundColors 5s infinite alternate; */
+	/* border: dotted 1px rgba(100, 100, 100, 0.5); */
+	border: none;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -83,16 +84,16 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 	text-align: center;
 }
 
-.Media_presentation_tool,
+/* .Media_presentation_tool,
 .Media_presentation_title_screen {
 	background: black;
 	color: white;
-}
+} */
 
 .Q_column_shows {
 	min-width: 320px !important;
 }
-  
+
 @keyframes Media_backgroundColors {
 	0% { background-color: red; }
 	25% { background-color: blue; }

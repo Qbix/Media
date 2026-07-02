@@ -60,8 +60,7 @@ Q.Tool.define("Media/presentation/card/comparison", function (options) {
 })(Q, Q.jQuery, window);
 
 Q.Template.set('Media/presentation/card/comparison',
-    '<div class="Media_presentation_screen Media_presentation_card_screen">'
-  + '<div class="Media_presentation_hero">'
+  '<div class="Media_presentation_hero">'
   + '{{#if leftImageUrl}}'
   + '<div class="Media_presentation_card_comparison_images">'
   + '<img src="{{leftImageUrl}}"  class="Media_presentation_card_comparison_img" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
@@ -70,6 +69,5 @@ Q.Template.set('Media/presentation/card/comparison',
   + '{{/if}}'
   + '{{{tool "Q/card/comparison"}}}'
   + '<div class="Media_presentation_caption">{{title}}</div>'
-  + '</div>'
   + '</div>'
 );
