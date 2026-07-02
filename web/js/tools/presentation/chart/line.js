@@ -60,10 +60,8 @@ Q.Tool.define("Media/presentation/chart/line", function (options) {
 })(Q, Q.jQuery, window);
 
 Q.Template.set('Media/presentation/chart/line',
-    '<div class="Media_presentation_screen Media_presentation_chart_screen">'
-  + '<div class="Media_presentation_hero">'
+  '<div class="Media_presentation_hero">'
   + '  {{{tool "Q/chart/line"}}}'
   + '  <div class="Media_presentation_caption">{{title}}</div>'
-  + '</div>'
   + '</div>'
 );

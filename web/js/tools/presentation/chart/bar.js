@@ -57,10 +57,8 @@ Q.Tool.define("Media/presentation/chart/bar", function (options) {
 })(Q, Q.jQuery, window);
 
 Q.Template.set('Media/presentation/chart/bar',
-    '<div class="Media_presentation_screen Media_presentation_chart_screen">'
-  + '<div class="Media_presentation_hero">'
+  '<div class="Media_presentation_hero">'
   + '  {{{tool "Q/chart/bar"}}}'
   + '  <div class="Media_presentation_caption">{{title}}</div>'
-  + '</div>'
   + '</div>'
 );

@@ -55,6 +55,8 @@
                             /* if (state.trackScroll) {
                                 pdfTool.element.removeAttribute('data-slideMode');
                             } */
+                            var canvases = pdfTool.element.querySelectorAll('canvas');
+                            index = Math.min(canvases.length - 1, index);
                             $('canvas', pdfTool.element).each(function (i, el) {
                                 el.style.display = (i === index/*  || state.trackScroll */) ? 'block' : 'none';
                             });

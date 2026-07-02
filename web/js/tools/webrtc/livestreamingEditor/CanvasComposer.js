@@ -5003,6 +5003,12 @@ Q.Media.WebRTC.livestreaming.CanvasComposer = function (tool) {
             getDestination: function () {
                 return _dest;
             },
+            getComposedAudio: function () {
+                mix();
+                if (_dest && _dest.stream.getTracks().length != 0) {
+                    return _dest.stream.getTracks()[0]
+                }
+            },
             getContext: function () {
                 return audioContext;
             },

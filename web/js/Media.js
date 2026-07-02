@@ -106,7 +106,7 @@
 			js: "{{Media}}/js/tools/webrtc/preparingDialog.js",
 			css: "{{Media}}/css/tools/preparingDialog.css"
 		},
-		"Media/webrtc/commands"  : "{{Media}}/js/tools/webrtc/commands.js",
+		"Media/webrtc/controls"  : "{{Media}}/js/tools/webrtc/controls.js",
 		"Media/webrtc/participants"  : "{{Media}}/js/tools/webrtc/participants.js",
 		"Media/webrtc/waitingRoomList"  : "{{Media}}/js/tools/webrtc/waitingRoomList.js",
 		"Media/webrtc/permissionsManager"  : "{{Media}}/js/tools/webrtc/permissionsManager.js",

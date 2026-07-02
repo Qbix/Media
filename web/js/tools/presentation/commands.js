@@ -46,6 +46,7 @@
         tool.element.className += ' Media_presentation_commands_tool';
 
         // Header bar
+        var screenLink = document.location.protocol + '//' + document.location.host + '/presentation/main?p=' + tool.state.publisherId + '&s=' + tool.state.streamName + '&f=1';
         var header = document.createElement('div');
         header.className = 'Media_presentation_commands_header';
         header.innerHTML =
@@ -60,7 +61,7 @@
             '    </svg>' +
             '  </button>' +
             (state.isHost
-                ? '<a class="Media_presentation_commands_screen_link" href="' + state.screenUrl + '" target="_blank"' +
+                ? '<a class="Media_presentation_commands_screen_link" href="' + screenLink + '" target="_blank"' +
                 '   title="Open shared screen">⬡</a>'
                 : '') +
             '</div>';
@@ -142,6 +143,9 @@
 
 
             tool._connectStreamHandlers(stream);
+            if(tool.state.audioTrack) {
+                tool._startMic();
+            }
 
             // CSS variable updates from AI pipeline — re-use listenForStyle logic
             // via Q.handle so the <style> injection matches all other screens
@@ -188,6 +192,7 @@
             writeLevel: 16,  // ephemeral by default; server sets actual level
             _micActive: false,
             _aiStarted: false,
+            audioTrack: null,
             modes: {
                 composition: true,  // AI proposes visualization cards from speech
                 navigation: true,  // voice commands control slides/video/zoom
@@ -400,7 +405,7 @@
 
                         }, previewTool);
                         pdfTool.state.onSlide.set(function (slideIndex) {
-                            contentEphemeral(previewState, 'Streams/slide', { slideIndex: slideIndex });
+                            //contentEphemeral(previewState, 'Streams/slide', { slideIndex: slideIndex });
                             tool._emitContentState(previewState, 'Streams/slide', { slideIndex: slideIndex });
                         }, previewTool);
 
@@ -497,7 +502,9 @@
                 // is a small risk of gesture chain break — mitigate by pre-loading
                 // Q.Speech.Recognition() during page init (before any user tap).
                 Q.Speech.Recognition.start({
-                    lang: state.lang || 'en-US',
+                    lang: navigator.language || navigator.userLanguage,
+                    source: tool.state.audioTrack ?? 'microphone', 
+                    interimResults: false, 
                     autoRestart: true,   // iOS Safari stops on silence — auto-restart
                 });
 
@@ -688,7 +695,7 @@
                 }
             },
 
-            _startSession: function () {
+            _startSession: function (restart) {
                 var tool = this;
                 var state = tool.state;
                 /* _qEmit('AI/transcription/session/start', {
@@ -718,6 +725,7 @@
                 // Streams owns the session and the emit. It wires Q.Speech.Recognition
                 // and forwards each final result as a Streams/utterance.
                 Q.Streams.Transcript.start({
+                    restart: restart,
                     sessionToken: tool._getSessionToken(),
                     lang: state.lang || 'en-US',
                     publisherId: state.publisherId,
@@ -759,19 +767,213 @@
             _connectStreamHandlers: function (stream) {
                 var tool = this;
                 stream.onMessage('Media/presentation/slide').set(function (msg) {
-                    var instr = {};
-                    try { instr = JSON.parse(msg.instructions || '{}'); } catch (e) { }
-                    var mySocketId = Q.Socket.get('/Q', '').socket.id;
-                    //if (mySocketId && msg.byClientId === mySocketId) return;
-                    if (instr.slideIndex == null) return;
-                    var preview = tool._activePreview;
-                    if (!preview || preview.state.streamName.indexOf('Streams/pdf') !== 0) return;
-                    var pdfTool = tool._resolveActiveContentTool(preview, 'Q/pdf');
-                    if (!pdfTool) return;
-                    // Idempotency: if we just set this index locally, the durable echo is a no-op
-                    if (tool._getCurrentPdfIndex(pdfTool) === instr.slideIndex) return;
-                    tool._pdfApplySlide(pdfTool, instr.slideIndex);
+                    _applyByType('Media/presentation/slide', msg);
                 }, tool);
+                stream.onEphemeral('Q/scroll').set(function (ephemeral) {
+                    _applyByType('Q/scroll', ephemeral);
+                }, tool);
+                stream.onEphemeral('Streams/play').set(function (ephemeral) {
+                    _applyByType('Streams/play', ephemeral);
+                }, tool);
+                stream.onEphemeral('Streams/pause').set(function (ephemeral) {
+                    _applyByType('Streams/pause', ephemeral);
+                }, tool);
+                stream.onEphemeral('Streams/seek').set(function (ephemeral) {
+                    _applyByType('Streams/seek', ephemeral);
+                }, tool);
+
+                function _applyByType(type, instr) {
+                    var state = tool.state;
+
+                    if (typeof instr === 'string') {
+                        try { instr = JSON.parse(instr || '{}'); }
+                        catch (e) { return; }
+                    }
+                    if (!instr || typeof instr !== 'object') return;
+                    if (instr.instructions) {
+                        if (typeof instr.instructions === 'string') {
+                            try { instr = JSON.parse(instr.instructions || '{}'); }
+                            catch (e) { return; }
+                        }
+                    }
+                    if(!instr.voiceNavigation) return;
+
+                    switch (type) {
+
+                        // ── Active content swap ───────────────────────────────────────
+                        // Updates tool.current via tool.show(). Other state types apply
+                        // to whatever sub-tool this leaves mounted, so process this first
+                        // on mount reconstruction.
+                       /*  case 'Media/presentation/show':
+                            if (instr.publisherId && instr.streamName) {
+                                await tool.show(instr.publisherId, instr.streamName);
+                            }
+                            return;
+                        case 'Media/presentation/hide':
+                            if (instr.publisherId && instr.streamName) {
+                                await tool.hide(instr.publisherId, instr.streamName, instr.toolName);
+                            }
+                            return; */
+
+                        // ── Slide navigation ──────────────────────────────────────────
+                        // The wrapper sub-tool (Media/presentation/pdf, etc.) exposes
+                        // goToSlide. Both legacy 'Streams/slide' and durable
+                        // 'Media/presentation/slide' route here.
+                        case 'Streams/slide':
+                        case 'Media/presentation/slide':
+                            //var mySocketId = Q.Socket.get('/Q', '').socket.id;
+                            //if (mySocketId && msg.byClientId === mySocketId) return;
+                            if (instr.slideIndex == null) return;
+                            if (!tool._activePreview || tool._activePreview.state.streamName.indexOf('Streams/pdf') !== 0) return;
+                            var pdfTool = tool._resolveActiveContentTool(tool._activePreview, 'Q/pdf');
+                            if (!pdfTool) return;
+                            // Idempotency: if we just set this index locally, the durable echo is a no-op
+                            if (tool._getCurrentPdfIndex(pdfTool) === instr.slideIndex) return;
+                            tool._pdfApplySlide(pdfTool, instr.slideIndex);
+                            return;
+
+                        // ── Reveal step (cards with progressive disclosure) ───────────
+                        case 'Streams/reveal':
+                        case 'Media/presentation/reveal':
+                            var revealIndex = (instr.revealIndex != null) ? instr.revealIndex : instr.index;
+                            if (revealIndex == null) return;
+                            state.revealIndex = revealIndex;
+                            if (tool.current.tool && typeof tool.current.tool.goToReveal === 'function') {
+                                tool.current.tool.goToReveal(revealIndex);
+                            }
+                            return;
+
+                        // ── Scroll position (PDF) ─────────────────────────────────────
+                        // Percentages of (scrollHeight - clientHeight). Drill into the
+                        // wrapper's inner Q/pdf element to set scrollTop directly.
+                        // Wrapper could expose tool.current.tool.setScroll(top, left)
+                        // as a follow-up cleanup; for now we reach in.
+                        case 'Q/scroll':
+                            if (instr.top == null) return;
+                            if (!tool._activePreview || tool._activePreview.state.streamName.indexOf('Streams/pdf') !== 0) return;
+                            var pdfTool = tool._resolveActiveContentTool(tool._activePreview, 'Q/pdf');
+                            if (!pdfTool) return;
+                            var scrollEl = pdfTool.element;
+
+                            // If the PDF is in slide mode, scroll restore is meaningless —
+                            // either exit slide mode first or skip. We skip; slide mode
+                            // implies the host wasn't scrolling, so reconstruction has
+                            // nothing useful to apply here.
+                            if (scrollEl.getAttribute('data-slideMode') === 'true') return;
+
+                            var maxY = scrollEl.scrollHeight - scrollEl.clientHeight;
+                            let scrollTop = tool._applyScrollValue(scrollEl.scrollTop, instr.top, maxY);
+                            pdfTool.setCurrentPosition(scrollTop);
+                            return;
+
+                        // ── Playback: seek ────────────────────────────────────────────
+                        case 'Streams/seek':
+                            debugger;
+                            return;
+
+                        case 'Streams/play':
+                            if (!tool._activePreview) return;
+                            var isVideo = tool._activePreview.state.streamName.indexOf('Streams/video') === 0;
+                            var isAudio = tool._activePreview.state.streamName.indexOf('Streams/audio') === 0;
+                            if(!isVideo && isAudio) return;
+                            var mediaTool = tool._resolveActiveContentTool(tool._activePreview, isVideo ? 'Q/video' : 'Q/audio');
+                            if (!mediaTool) return;
+
+                            if (instr.pos != null) {
+                                var pos = parseFloat(instr.pos);
+                                if (!isNaN(pos) && Math.abs(mediaTool.getCurrentPosition() - pos) > 0.25) {
+                                    mediaTool.setCurrentPosition(pos);
+                                }
+                            }
+
+                            mediaTool.play();
+                            return;
+
+                        case 'Streams/pause':
+                            if (!tool._activePreview) return;
+                            var isVideo = tool._activePreview.state.streamName.indexOf('Streams/video') === 0;
+                            var isAudio = tool._activePreview.state.streamName.indexOf('Streams/audio') === 0;
+                            if(!isVideo && isAudio) return;
+                            var mediaTool = tool._resolveActiveContentTool(tool._activePreview, isVideo ? 'Q/video' : 'Q/audio');
+                            if (!mediaTool) return;
+
+                            if (instr.pos != null) {
+                                var pos = parseFloat(instr.pos);
+                                if (!isNaN(pos) && Math.abs(mediaTool.getCurrentPosition() - pos) > 0.25) {
+                                    mediaTool.setCurrentPosition(pos);
+                                }
+                            }
+                            mediaTool.pause();
+                            return;
+
+                        // ── Zoom (applied to the current wrapper) ─────────────────────
+                        case 'Streams/zoom':
+                            if (instr.scale == null) return;
+                            var scale = parseFloat(instr.scale);
+                            if (isNaN(scale) || scale <= 0) return;
+                            state.zoomScale = scale;
+                            if (tool.current.tool && tool.current.tool.element) {
+                                tool.current.tool.element.style.transform = 'scale(' + scale + ')';
+                                tool.current.tool.element.style.transformOrigin = 'center center';
+                            }
+                            return;
+
+                        // ── Pin/unpin/resize/reorder (handled by their existing handlers
+                        //    via tool.pin/unpin/resize/reorder — included for completeness) ──
+                        case 'Media/presentation/pin':
+                            if (instr.publisherId && instr.streamName) {
+                                tool.pin(instr.publisherId, instr.streamName, instr);
+                            }
+                            return;
+                        case 'Media/presentation/unpin':
+                            if (instr.publisherId && instr.streamName) {
+                                tool.unpin(instr.publisherId, instr.streamName, instr);
+                            }
+                            return;
+                        case 'Media/presentation/resize':
+                            if (instr.ratio != null) {
+                                tool.resize({ ratio: instr.ratio, duration: instr.duration });
+                            }
+                            return;
+                        case 'Media/presentation/reorder':
+                            if (instr.items) tool.reorder({ items: instr.items });
+                            return;
+
+                        // ── Gallery state (b-roll on screen page) ─────────────────────
+                        // The background gallery sits separately from tool.current — it's
+                        // the screen-wide kenburns layer, not the active content tool.
+                        // _bgInit attaches the gallery; we mutate it via documented APIs.
+                        case 'Streams/gallery/pause':
+                            if (tool._bgGalleryTool && typeof tool._bgGalleryTool.pause === 'function') {
+                                tool._bgGalleryTool.pause();
+                            }
+                            return;
+                        case 'Streams/gallery/resume':
+                            if (tool._bgGalleryTool && typeof tool._bgGalleryTool.resume === 'function') {
+                                tool._bgGalleryTool.resume();
+                            }
+                            return;
+                        case 'Streams/gallery/query':
+                            if (tool._bgGalleryTool && typeof tool._bgGalleryTool._fetchAndSet === 'function') {
+                                tool._bgGalleryTool._fetchAndSet(instr.query);
+                            }
+                            return;
+
+                        // ── Fullscreen: deliberately NOT applied on reconstruction ────
+                        // Fullscreen requires a user gesture; viewer may also prefer
+                        // windowed. Live ephemerals can still toggle during the session;
+                        // mount reconstruction skips it.
+                        case 'Q/fullscreen':
+                            return;
+
+                        default:
+                            // Unknown type — silently ignore. Forward-compatible: a host
+                            // upgraded ahead of this viewer can send new state types, and
+                            // older viewers just skip what they don't understand.
+                            return;
+                    }
+                }
+
             },
             _handleSocketReconnect: function () {
                 var tool = this;
@@ -783,7 +985,7 @@
                         if (state._micActive && tool.currentSocketId != qs.socket.id) {
                             Q.log && Q.log('Socket reconnected — checking if session needs resume');
                             // Re-emit session/start with the same token to resume server-side state
-                            tool._startSession();
+                            tool._startSession(true);
                         }
 
                         tool.currentSocketId = qs.socket.id;
@@ -1127,6 +1329,34 @@
                     // transformed parents better than direct scrollTop assignment.
                     targetCanvas.scrollIntoView({ block: 'start', behavior: 'instant' });
                 }
+            },
+
+            _applyScrollValue: function (currentScrollTop, value, scrollHeight) {
+                const str = String(value).trim();
+
+                // Relative percentage: +50% / -50%
+                let match = str.match(/^([+-])(\d+(?:\.\d+)?)%$/);
+                if (match) {
+                    const [, sign, percent] = match;
+                    const delta = scrollHeight * (parseFloat(percent) / 100);
+
+                    return sign === "+"
+                        ? currentScrollTop + delta
+                        : currentScrollTop - delta;
+                }
+
+                // Absolute percentage: 50% (of total scroll height)
+                match = str.match(/^(\d+(?:\.\d+)?)%$/);
+                if (match) {
+                    return scrollHeight * (parseFloat(match[1]) / 100);
+                }
+
+                // Absolute pixels: 50
+                if (/^\d+(?:\.\d+)?$/.test(str)) {
+                    return parseFloat(str);
+                }
+
+                throw new Error(`Invalid scroll value: ${value}`);
             },
 
             /**

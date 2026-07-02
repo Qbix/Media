@@ -39,7 +39,7 @@
             Streams.retainWith(tool).get(state.publisherId, state.streamName,
                 function (err, stream) {
                     if (err) {
-                        debugger;
+                        //debugger;
                         return;
                     }
 
@@ -51,30 +51,6 @@
                             state.show.streamName
                         );
                     }
-
-                    // Combined Media/presentation/show handler:
-                    // handles stream-based shows AND inline cards AND generated tools
-                    stream.onEphemeral('Media/presentation/show')
-                        .set(function (ephemeral) {
-                            if (!ephemeral) return;
-                            if (ephemeral.publisherId && ephemeral.streamName) {
-                                tool.show(ephemeral.publisherId, ephemeral.streamName);
-                            }
-                            if (ephemeral.visualizationData && ephemeral.streamType) {
-                                tool._showInlineCard(
-                                    ephemeral.streamType,
-                                    ephemeral.visualizationType,
-                                    ephemeral.visualizationData
-                                );
-                            }
-                            if (ephemeral.code && ephemeral.toolName) {
-                                tool._activateGeneratedTool(
-                                    ephemeral.toolName,
-                                    ephemeral.code,
-                                    ephemeral.toolOptions
-                                );
-                            }
-                        }, tool);
 
                     var presentingUserIds = [stream.fields.publisherId];
                     Q.each(this.participants, function () {
@@ -91,6 +67,8 @@
                         tool._initCompositor(stream);
 
                         tool._reconstructPresentationState();
+                    }).catch(function (e) {
+                        console.error(e);
                     });
                 }, {
                 participants: 100
@@ -99,6 +77,7 @@
             // try to preload related tools
             Q.Streams.Tool.preloadRelated(state.publisherId, state.streamName, tool.element);
         }
+        tool.cardSwitchQueue = [];
         tool.current = {};
         tool.refresh();
     },
@@ -222,7 +201,7 @@
                                 resovle();
                             });
                         }).catch(function (exception) {
-                            debugger;
+                            //debugger;
                         });
                 })
 
@@ -282,29 +261,42 @@
                     tool.element.className = tool.element.className
                         .replace(/\bMedia_presentation_transition_\S+/g, '').trim();
                     tool.element.classList.add(tc);
+                    tool.element.classList.remove('Media_presentation_leaving');
                 }
                 next.style.display = 'block';
-                if (!current) return;
-                tool._exitElement(current);
+                if (!current) return Promise.resolve();
+                return tool._exitElement(current);
             },
 
-            _exitElement: function (element) {
+            _exitElement: function (element, options = {}) {
                 if (!element || !element.parentNode) return Promise.resolve();
                 return new Promise(function (resolve, reject) {
-                    element.classList.add('Media_presentation_leaving');
-                    var computed = window.getComputedStyle(element);
-                    var durStr = computed.transitionDuration || '0s';
-                    var delayStr = computed.transitionDelay || '0s';
-                    var toMs = function (s) { return parseFloat(s) * (s.indexOf('ms') >= 0 ? 1 : 1000); };
-                    var timeoutMs = Math.max(toMs(durStr), 0) + Math.max(toMs(delayStr), 0) + 50;
-                    var done = false;
-                    function remove() {
-                        if (done) return; done = true;
+                    element.classList.remove('Media_presentation_transition_rise');
+                    element.classList.add('Media_presentation_leaving_start');
+
+                    function removeEl() {
+                            console.log('_exitElement resolve 1')
+                        element.classList.remove('Media_presentation_leaving_start');
                         if (element.parentNode) element.parentNode.removeChild(element);
                         resolve();
                     }
-                    element.addEventListener('transitionend', remove, { once: true });
-                    setTimeout(remove, timeoutMs || 500);
+                    setTimeout(function () {
+                        element.addEventListener("transitionstart", function () {
+                                console.log('_exitElement transitionstart ')
+
+                        }, { once: true });
+                        console.log('_exitElement 1')
+                        var handler = options.doNotRemove !== true ? removeEl : function () {
+                            console.log('_exitElement resolve 2')
+                            resolve();
+                        }
+                        element.addEventListener('transitionend', handler, { once: true });
+                        element.classList.add('Media_presentation_leaving');
+                        var done = false;
+
+                    }, 50);
+                    
+                    //setTimeout(remove, timeoutMs || 500);
                 });
             },
 
@@ -333,7 +325,7 @@
             _initBackground: function (stream) {
                 var tool = this;
                 var state = tool.state;
-
+                if(tool._bgElement) return;
                 // Background container — positioned behind slides via CSS
                 var bg = document.createElement('div');
                 bg.className = 'Media_presentation_background';
@@ -497,6 +489,12 @@
              */
             _showInlineCard: function (streamType, visualizationType, visualizationData) {
                 var tool = this;
+                if (tool.pendingCardSwitching) {
+                    //log('updateWebRTCCanvasLayout: pendingLayoutUpdate: cancel')
+                    tool.cardSwitchQueue.push({ args: Array.prototype.slice.call(arguments) });
+                    return;
+                }
+                tool.pendingCardSwitching = true;
                 var displayTools = {
                     'Media/card/stat': 'Media/presentation/card/stat',
                     'Media/card/glossary': 'Media/presentation/card/glossary',
@@ -506,30 +504,64 @@
                     'Media/card/comparison': 'Media/presentation/card/comparison',
                     'Media/chart/bar': 'Media/presentation/chart/bar',
                     'Media/chart/line': 'Media/presentation/chart/line',
-                    'Media/card/slide': 'Media/presentation/card/slide'
+                    'Media/card/slide': 'Media/presentation/card/slide',
+			        'Media/card/map': 'Places/directions',
                 };
                 var toolName = displayTools[streamType];
                 if (!toolName) return;
 
+                if(typeof visualizationData == 'string') {
+                    visualizationData = JSON.parse(visualizationData);
+                }
                 var cardEl = Q.Tool.prepare(
                     'div', toolName,
                     Q.extend({}, visualizationData, { inline: true }),
                     null, tool.prefix
                 );
-                cardEl.className += ' Media_presentation_card_screen Media_presentation_transition_rise';
+                cardEl.className += ' Media_ai_tool Media_presentation_screen Media_presentation_card_screen Media_presentation_transition_rise';
 
                 var prev = tool._currentForeground;
                 if (prev) {
-                    prev.classList.add('Media_presentation_leaving');
-                    setTimeout(function () {
-                        if (prev.parentNode) prev.parentNode.removeChild(prev);
-                    }, 600);
-                }
-                tool._currentForeground = cardEl;
-                tool.element.appendChild(cardEl);
-                Q.activate(cardEl);
-            },
+                    console.log('aaaaaaa 1')
+                    tool._hideForeground(prev).then(function () {
 
+                        console.log('aaaaaaa 2')
+                        activateCardTool();
+                    });
+                } else {
+                    activateCardTool();
+                }
+
+                tool._currentForeground = cardEl;
+                tool._currentForegroundTool = cardEl;
+
+                function activateCardTool() {
+                    console.log('aaaaaaa 3')
+                    Q.activate(cardEl, {}, function () {
+                        var cardTool = tool._currentForegroundTool = this;
+                        tool.aiToolsElement.appendChild(cardEl);
+                        //debugger
+                        tool.pendingCardSwitching = false;
+                        if (tool.cardSwitchQueue.length != 0) {
+                            let queueItem = tool.cardSwitchQueue.splice(0, 1)[0];
+                            tool._showInlineCard.apply(null, queueItem.args)
+                        }
+                        
+                    });
+                }
+            },
+            _hideForeground: function (foreground) {
+                var tool = this;
+                console.log('_hideForeground', foreground)
+                if(!foreground) foreground = tool._currentForeground;
+                return new Promise(function (resolve, reject) {
+                    tool._exitElement(foreground).then(function () {
+                        resolve();
+                    }).catch(function (e) {
+                        console.error(e);
+                    });
+                });
+            },
             _activateGeneratedTool: function (toolName, code, extraOptions) {
                 var tool = this;
                 var version = (extraOptions && extraOptions.version) || 1;
@@ -717,6 +749,8 @@
                 var tool = this;
                 var state = tool.state;
 
+                tool.titleScreen = tool.element.querySelector('.Media_presentation_title_screen');
+                
                 var main = document.createElement('div');
                 main.className = 'Media_presentation_main';
                 while (tool.element.firstChild) {
@@ -724,14 +758,41 @@
                 }
                 var pinned = document.createElement('div');
                 pinned.className = 'Media_presentation_pinned';
+                var aiTools = tool.aiToolsElement = document.createElement('div');
+                aiTools.className = 'Media_presentation_ai_tools';
                 tool.element.appendChild(main);
                 tool.element.appendChild(pinned);
+                tool.element.appendChild(aiTools);
                 tool.element.classList.add('Media_presentation_compositor');
                 tool._mainEl = main;
                 tool._pinnedEl = pinned;
                 state._pinnedRatio = 0;
                 tool._pinnedEl.style.flexGrow = '0';
                 tool._mainEl.style.flexGrow = '1';
+
+                const config = {
+                    attributes: false,       // Watch for attribute changes (e.g., class, style, id)
+                    childList: true,        // Watch for additions or removals of child elements
+                    subtree: true,          // Watch the targetNode and all of its nested children
+                    characterData: false,
+                    attributeOldValue: false 
+                };
+
+                const onCardShow = function (mutationsList, observer) {
+                    for (const mutation of mutationsList) {
+                        if(tool.aiToolsElement.childElementCount !== 0) {
+                            if (tool.titleScreen && !tool.titleScreen.classList.contains('Media_presentation_leaving')) {
+                                tool._exitElement(tool.titleScreen, { doNotRemove: true })
+                            } 
+                        } else {
+                            tool.titleScreen.classList.remove('Media_presentation_leaving');
+                        }
+                    }
+                };
+
+                const observer = new MutationObserver(onCardShow);
+
+                observer.observe(tool.aiToolsElement, config);
 
                 if (stream && stream.onMessage) {
 
@@ -741,6 +802,10 @@
 
                     stream.onMessage('Media/presentation/hide').set(function (msg) {
                         tool._applyByType('Media/presentation/hide', msg.instructions);
+                    }, tool);
+
+                    stream.onMessage('Media/presentation/card/show').set(function (msg) {
+                        tool._applyByType('Media/presentation/card/show', msg.instructions);
                     }, tool);
 
                     stream.onMessage('Media/presentation/slide').set(function (msg) {
@@ -778,6 +843,12 @@
                     }, tool);
                     stream.onEphemeral('Streams/play').set(function (ephemeral) {
                         tool._applyByType('Streams/play', ephemeral);
+                    }, tool);
+                    stream.onEphemeral('Streams/pause').set(function (ephemeral) {
+                        tool._applyByType('Streams/pause', ephemeral);
+                    }, tool);
+                    stream.onEphemeral('Streams/seek').set(function (ephemeral) {
+                        tool._applyByType('Streams/seek', ephemeral);
                     }, tool);
 
                     /* stream.onMessage('Media/presentation/show').set(function (msg) {
@@ -916,7 +987,7 @@
                         });
 
                         tool._applyContentStateForCurrent(CONTENT_STATE_TYPES);
-                    }, 5000)
+                    }, 3000)
                 });
             },
             /**
@@ -986,6 +1057,12 @@
                 }
                 if (!instr || typeof instr !== 'object') return;
 
+                if (instr.instructions) {
+                    if (typeof instr.instructions === 'string') {
+                        try { instr = JSON.parse(instr.instructions || '{}'); }
+                        catch (e) { return; }
+                    }
+                }
                 switch (type) {
 
                     // ── Active content swap ───────────────────────────────────────
@@ -995,6 +1072,25 @@
                     case 'Media/presentation/show':
                         if (instr.publisherId && instr.streamName) {
                             await tool.show(instr.publisherId, instr.streamName);
+                        }
+                        return;
+                    case 'Media/presentation/card/show':
+                        /* if (instr.publisherId && instr.streamName) {
+                            tool.show(instr.publisherId, instr.streamName);
+                        } */
+                        if (instr.visualizationData && instr.streamType) {
+                            tool._showInlineCard(
+                                instr.streamType,
+                                instr.visualizationType,
+                                instr.visualizationData
+                            );
+                        }
+                        if (instr.code && instr.toolName) {
+                            tool._activateGeneratedTool(
+                                instr.toolName,
+                                instr.code,
+                                instr.toolOptions
+                            );
                         }
                         return;
                     case 'Media/presentation/hide':
@@ -1061,47 +1157,34 @@
 
                     // ── Playback: seek ────────────────────────────────────────────
                     case 'Streams/seek':
-                        /* var mediaTool = this.current.tool;
-                        if (!mediaTool || (mediaTool.name != 'q_video' && mediaTool.name != 'q_audio')) return;
-                        if (instr.pos == null) return;
-                        var pos = parseFloat(instr.pos);
-                        if (isNaN(pos)) return;
-                        // Relative seeks ("+10" / "-5") from string form
-                        if (typeof instr.pos === 'string'
-                            && (instr.pos[0] === '+' || instr.pos[0] === '-')) {
-                            pos = mediaTool.getCurrentPosition() + (instr.pos[0] === '+' ? pos : -pos);
-                        }
-                        pos = Math.max(0, Math.min(mediaTool.state.duration || pos, pos));
-                        if ((instr.sync && Math.abs(mediaTool.getCurrentPosition() - pos) > 0.25) || (Math.abs(mediaTool.getCurrentPosition() - pos) > 0.25)) {
-                            mediaTool.setCurrentPosition(pos);
-                        } */
+                        //debugger;
                         return;
 
                     case 'Streams/play':
                         var mediaTool = this.current.tool;
-                        if (!mediaTool || (mediaTool.name != 'q_video' && mediaTool.name != 'q_audio')) return;
-
+                        if (!mediaTool || !mediaTool.originalTool || (mediaTool.name != 'media_presentation_video' && mediaTool.name != 'media_presentation_audio')) return;
+                        
                         if (instr.pos != null) {
                             var pos = parseFloat(instr.pos);
-                            if (!isNaN(pos) && Math.abs(mediaTool.getCurrentPosition() - pos) > 0.25) {
-                                mediaTool.setCurrentPosition(pos);
+                            if (!isNaN(pos) && Math.abs(mediaTool.originalTool.getCurrentPosition() - pos) > 0.25) {
+                                mediaTool.originalTool.setCurrentPosition(pos);
                             }
                         }
                        
-                        mediaTool.play();
+                        mediaTool.originalTool.play();
                         return;
 
                     case 'Streams/pause':
                         var mediaTool = this.current.tool;
-                        if (!mediaTool || (mediaTool.name != 'q_video' && mediaTool.name != 'q_audio')) return;
+                        if (!mediaTool || !mediaTool.originalTool || (mediaTool.name != 'media_presentation_video' && mediaTool.name != 'media_presentation_audio')) return;
 
                         if (instr.pos != null) {
                             var pos = parseFloat(instr.pos);
-                            if (!isNaN(pos) && Math.abs(mediaTool.getCurrentPosition() - pos) > 0.25) {
-                                mediaTool.setCurrentPosition(pos);
+                            if (!isNaN(pos) && Math.abs(mediaTool.originalTool.getCurrentPosition() - pos) > 0.25) {
+                                mediaTool.originalTool.setCurrentPosition(pos);
                             }
                         }
-                        mediaTool.pause();
+                        mediaTool.originalTool.pause();
                         return;
 
                     // ── Zoom (applied to the current wrapper) ─────────────────────

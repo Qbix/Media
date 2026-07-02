@@ -731,4 +731,87 @@ abstract class Media_WebRTC
             print_r($output);die;
         }
     }
+
+    static function getOrCreatePresentation($streamName, $publisherId) {
+        $roomId = explode('/', $streamName)[2];
+
+        $fields = array(
+            "toPublisherId" => $publisherId,
+            "toStreamName" => $streamName,
+            "type" => 'Media/presentation'
+        );
+        
+        $lastRelated = Streams_RelatedTo::select()->where($fields)->orderBy("weight", false)->limit(1)->fetchDbRow();
+
+        if ($lastRelated) {
+            $presentationStream = Streams_Stream::fetch(null, $lastRelated->fields['fromPublisherId'], $lastRelated->fields['fromStreamName']);
+        } else {
+            $presentationStream = Streams::create($publisherId, $publisherId, "Media/presentation", array(
+                "title"   => 'Livestream Presentation',
+                "content" => "Auto-generated demo presentation with sample PDF and poll content.",
+                "attributes" => Q::json_encode(array(
+                    "generatedAt" => time(),
+                    'mode' => 'broadcast',
+                    'backgroundGallery' => array(
+                        'images'             => array(),
+                        'intervalDuration'   => 7000,
+                        'transitionDuration' => 1500,
+                        'kenburns' => array(
+                            'from' => array('left' => 0.0,  'top' => 0.0,  'width' => 1.0,  'height' => 1.0),
+                            'to' =>   array('left' => 0.05, 'top' => 0.05, 'width' => 0.90, 'height' => 0.90)
+                        )
+                    )
+                ))
+            ), array('relate' => array(
+                "publisherId" => $publisherId,
+                "streamName" => $streamName,
+                "type" => "Media/presentation"
+            )));
+        }
+        
+        $presentationId = explode('/', $presentationStream->fields['name'])[2];
+
+        $commandsChatName = 'Streams/chat/' . $presentationId . '/' . $publisherId;
+
+        $results = array();
+        $commandsChatStream = Streams::fetchOneOrCreate(
+            $publisherId,
+            $publisherId,
+            $commandsChatName,
+            array(
+                'type'       => 'Streams/chat',
+                'skipAccess' => false,
+                'fields'     => array(
+                    // Participant owns their stream — max on their own
+                    'writeLevel' => Streams::$WRITE_LEVEL['max'],
+                    'readLevel'  => Streams::$READ_LEVEL['content'],
+                    'adminLevel' => Streams::$ADMIN_LEVEL['own'],
+                    'title'      => 'Tool stream: ' . $roomId,
+                ),
+                // Relate to the presentation stream + inherit its access.
+                // Everyone who can access the presentation stream can access this too.
+                'relate' => array(
+                    'publisherId'   => $publisherId,
+                    'streamName'    => $streamName,
+                    'type'          => 'Media/presentation/tool',
+                    'inheritAccess' => true,
+                ),
+            ),
+            $results
+        );
+
+        return array(
+            'presentationStream'    => $presentationStream,
+            'commandsChatStream'    => $commandsChatStream,
+            'publisherId'           => $presentationStream->fields['publisherId'],
+            'streamName'            => $presentationStream->fields['name'],
+            'calendarId'            => $roomId,
+            'isHost'                => true,
+            'lang'                  => 'en_US',
+            'streamTitle'           => $presentationStream->fields['title'],
+            'toolPublisherId'       => $commandsChatStream->fields['publisherId'],
+            'toolStreamName'        => $commandsChatStream->fields['name'],
+            'writeLevel'            => $presentationStream->getWriteLevel(),
+        );
+    }
 };
