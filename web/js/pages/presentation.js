@@ -5,7 +5,8 @@ Q.page('Media/presentation', function () {
     if (page.mode === 'participant' || page.noFullscreen) {
         if (!Q.Pointer.clickedAtLeastOnce) {
             Q.alert(Q.text.Media.presentation.Alert, {
-                title: ""
+                title: "",
+                className: "Media_presentation_start_alert"
             });
         }
     } else {
@@ -74,7 +75,10 @@ Q.page('Media/presentation', function () {
             publisherId: publisherId,
             streamName: streamName,
             show: page.show,
-            mode: page.mode
+            mode: page.mode,
+            backgroundGallery: page.backgroundGallery,
+            pexelsKey:  page.pexelsKey  || null,
+            pixabayKey: page.pixabayKey || null
         }));
         Q.activate(Q.replace(oldContainer, newContainer));
     }

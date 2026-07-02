@@ -7,8 +7,26 @@
     min-height: 75vh;
     width: 100%;
     height: 100%;
-    background: #eeeeee;
+    background: #000000;
     color: black;
+}
+
+.Media_presentation_tool .Media_presentation_ai_tools {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Media_presentation_tool .Media_presentation_ai_tools svg{
+    overflow: visible;
+}
+
+.Media_presentation_tool .Media_presentation_ai_tools .Media_ai_tool {
+    position: relative;
+    scale: 1.5;
+}
+
+.Media_presentation_tool .Media_presentation_ai_tools .Media_ai_tool .Media_presentation_hero {
+    height: fit-content;
 }
 
 .Media_presentation_tool>*,
@@ -61,6 +79,10 @@
     padding: 20px;
 }
 
+.Media_presentation_tool .Media_presentation_caption:empty {
+    display: none;
+}
+
 .Media_presentation_tool .Media_presentation_pdf_caption {
     position: absolute;
     bottom: 0;
@@ -79,6 +101,8 @@
 .Media_presentation_tool .Media_presentation_image_screen img,
 .Media_presentation_tool .Media_presentation_video_screen .Q_video_tool,
 .Media_presentation_tool .Media_presentation_audio_screen .Q_audio_tool {
+    max-height: 100% !important;
+    max-width: 100% !important;
     border-radius: 10px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
     max-height: 75%; /* leave room for caption */
@@ -99,9 +123,13 @@
 }
 
 .Media_presentation_tool .Media_presentation_video_screen,
-.Media_presentation_tool .Media_presentation_pdf_screen,
-.Media_presentation_tool .Media_presentation_title_screen {
+.Media_presentation_tool .Media_presentation_pdf_screen {
     background: black;
+    color: white;
+}
+
+.Media_presentation_tool .Media_presentation_title_screen {
+    background: transparent;
     color: white;
 }
 
@@ -276,7 +304,9 @@
     border-radius: 16px;
     max-width: 860px;
     margin: auto;
-    top: 50%;
+    height: fit-content !important;
+    width: fit-content !important;
+    /* top: 50%; */
     transform: translateY(-50%);
     padding: 48px;
     box-shadow: 0 8px 64px rgba(0,0,0,0.5);
@@ -389,7 +419,10 @@
 }
 .Media_presentation_leaving {
     opacity: 0 !important;
-    transform: scale(0.96) !important;
+    /* transform: scale(0.96) !important; */
+}
+.Media_presentation_leaving_start {
+    opacity: 1;
     transition: opacity 0.3s ease, transform 0.3s ease !important;
     pointer-events: none;
 }
@@ -466,7 +499,7 @@
 }
 .Media_presentation_main {
     flex: 1;
-    position: relative;
+    /* position: relative; */
     overflow: hidden;
     min-width: 0;
     min-height: 0;

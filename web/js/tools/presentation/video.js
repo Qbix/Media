@@ -28,7 +28,7 @@
                     $(".Media_presentation_video", tool.element).tool("Q/video", {
                         url: stream.fileUrl()
                     }).activate(function () {
-                        var videoTool = this;
+                        var videoTool = tool.originalTool = this;
                         stream.onEphemeral('Streams/play').set(function (ephemeral) {
                             var pos = Q.getObject("pos", ephemeral);
                             if (!isNaN(parseFloat(pos))) {
@@ -44,9 +44,20 @@
                             videoTool.pause()
                         }, tool);
                         stream.onEphemeral('Streams/seek').set(function (ephemeral) {
+                            
+                            
                             var pos = Q.getObject("pos", ephemeral);
-                            if (!isNaN(parseFloat(pos))) {
+                            pos = parseFloat(pos);
+                            if (isNaN(pos)) return;
+                            var currentPosition = videoTool.getCurrentPosition();
+                            var sync = Q.getObject("pos", ephemeral);
+                            if((sync && Math.abs(pos - currentPosition) > 2000) || !sync) {
                                 videoTool.setCurrentPosition(pos);
+                            }
+                            var playing = Q.getObject("playing", ephemeral);
+                            if(videoTool.state.player.paused() && playing) {
+                                videoTool.state.player.muted(true);
+                                 videoTool.play();
                             }
                         }, tool);
                     });

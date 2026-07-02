@@ -47,7 +47,7 @@ Q.Tool.define("Media/presentation/card/quote", function (options) {
 })(Q, Q.jQuery, window);
 
 Q.Template.set('Media/presentation/card/quote',
-    '<div class="Media_presentation_screen Media_presentation_card_screen{{#if imageUrl}} Media_presentation_card_withimage{{/if}}">'
+    '<div class="{{#if imageUrl}} Media_presentation_card_withimage{{/if}}">'
   + '<div class="Media_presentation_hero">'
   + '{{#if imageUrl}}'
   + '<div class="Media_presentation_card_image">'
