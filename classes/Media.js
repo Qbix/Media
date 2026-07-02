@@ -7,6 +7,7 @@
 
 var Q = require('Q');
 var Streams = require('Streams');
+var Commands = require('Streams/Commands');
 
 function Media() {}
 Media.WebRTC          = require('Media/WebRTC');
@@ -68,4 +69,3 @@ Media.listen = function () {
 
     return Media.listen.result = { webrtc: webrtc, socket: true };
 };
-
