@@ -1,0 +1,88 @@
+/* Media/livestream/event tool
+ *
+ * Renders a "notify me when live" toggle button and — when livestreams
+ * are active — a list of them with join buttons.
+ */
+
+.Media_livestream_event_tool {
+	display: block;
+}
+
+.Media_livestream_event_toggle {
+	display: flex;
+	align-items: center;
+	position: relative;
+	min-height: 55px;
+	cursor: pointer;
+}
+
+.Media_livestream_event_tool .Calendars_info_icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.Media_livestream_event_tool .Calendars_info_icon svg {
+	max-width: 28px;
+	max-height: 28px;
+}
+
+.Media_livestream_event_tool .Calendars_info_icon svg path {
+	fill: #000000;
+}
+
+.Media_livestream_event_status {
+	font-size: 14px;
+}
+
+/* Working state — while the subscribe/unsubscribe request is in flight. */
+.Media_livestream_event_tool.Q_working {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+/* List of active livestreams. Rendered empty by default; items are
+ * appended by JS when the related livestream stream has an active
+ * broadcast (lives / p2pRoom attributes). */
+.Media_livestream_event_list {
+	margin: 0 5px;
+	border-radius: 7px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, .1), 0 0 2px rgba(0, 0, 0, .2);
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+}
+.Media_livestream_event_list:empty {
+	display: none;
+}
+
+.Media_livestream_event_item {
+	justify-content: space-between;
+	display: flex;
+	align-items: center;
+	padding: 7px 15px;
+	margin: 0;
+	border-bottom: 1px solid rgb(0 0 0 / 10%);
+	cursor: default;
+}
+
+.Media_livestream_event_avatar {
+	max-width: 16px;
+	max-height: 16px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-right: 8px;
+}
+
+.Media_livestream_event_name {
+	flex: 1;
+	font-size: 14px;
+}
+
+.Media_livestream_event_join {
+	cursor: pointer;
+	text-decoration: underline;
+	color: #333;
+}
+.Media_livestream_event_join:hover {
+	text-decoration: none;
+}

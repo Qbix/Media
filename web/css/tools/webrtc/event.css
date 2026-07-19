@@ -1,0 +1,162 @@
+/* Media/webrtc/event tool
+ *
+ * Renders a "join teleconference" button and a live participants list
+ * inside a Calendars/event. The state attribute on the tool root drives
+ * which content shows in the button:
+ *   [data-state=waiting]   → countdown timer (before event starts)
+ *   [data-state=happening] → "Join" button (event is live)
+ *   [data-state=ended]     → "Ended" label (past event)
+ *
+ * The tool root also gets data-webrtc="true|false|loading" to reflect
+ * whether the current user is in the room.
+ */
+
+.Media_webrtc_event_tool {
+	display: block;
+}
+
+.Media_webrtc_event_tool .Media_webrtc_event_button {
+	display: flex;
+	align-items: center;
+	position: relative;
+	min-height: 55px;
+}
+
+.Media_webrtc_event_tool .Calendars_info_icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* Content-state visibility.
+ * Base rule hides all three; the attribute selectors below reveal one. */
+.Media_webrtc_event_tool .Media_webrtc_event_join,
+.Media_webrtc_event_tool .Media_webrtc_event_ended,
+.Media_webrtc_event_tool .Media_webrtc_event_button .Q_timestamp_tool {
+	display: none;
+}
+
+.Media_webrtc_event_tool[data-state=waiting] .Media_webrtc_event_button .Q_timestamp_tool {
+	display: block;
+}
+.Media_webrtc_event_tool[data-state=happening] .Media_webrtc_event_join {
+	display: block;
+	cursor: pointer;
+}
+.Media_webrtc_event_tool[data-state=ended] .Media_webrtc_event_ended {
+	display: block;
+}
+
+/* Scheduler + "enter room early" host controls sit at the right edge
+ * of the button. They're hidden by default; JS removes Q_hidden. */
+.Media_webrtc_event_tool .Media_webrtc_event_scheduler,
+.Media_webrtc_event_tool .Media_webrtc_event_enter {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+.Media_webrtc_event_tool .Media_webrtc_event_scheduler.Q_hidden,
+.Media_webrtc_event_tool .Media_webrtc_event_enter.Q_hidden {
+	display: none;
+}
+.Media_webrtc_event_tool .Media_webrtc_event_scheduler:hover,
+.Media_webrtc_event_tool .Media_webrtc_event_enter:hover {
+	opacity: 0.7;
+	cursor: pointer;
+}
+.Media_webrtc_event_tool .Media_webrtc_event_scheduler svg,
+.Media_webrtc_event_tool .Media_webrtc_event_enter svg {
+	max-width: 24px;
+	max-height: 24px;
+}
+.Media_webrtc_event_tool .Media_webrtc_event_scheduler svg path,
+.Media_webrtc_event_tool .Media_webrtc_event_enter svg path {
+	fill: #000000;
+}
+
+/* Loading state — pushes the icon over to make room for a spinner. */
+.Media_webrtc_event_tool[data-webrtc=loading] .Media_webrtc_event_button {
+	padding-left: 48px;
+}
+.Media_webrtc_event_tool[data-webrtc=loading] .Calendars_info_icon {
+	/* Consumers may set their own spinner background here; kept generic
+	 * so we don't inherit the base64 gif from Calendars. */
+	background-size: contain;
+	background-repeat: no-repeat;
+	padding: 10px;
+}
+
+/* Participants list beneath the button. */
+.Media_webrtc_event_participants {
+	margin: 0 5px;
+	border-radius: 7px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, .1), 0 0 2px rgba(0, 0, 0, .2);
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+}
+
+.Media_webrtc_event_participant {
+	justify-content: space-between;
+	display: flex;
+	align-items: center;
+	padding: 7px 15px;
+	margin: 0;
+	border-bottom: 1px solid rgb(0 0 0 / 10%);
+	cursor: default;
+}
+
+.Media_webrtc_event_participant img {
+	max-width: 16px;
+	max-height: 16px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-right: 8px;
+}
+
+/* Notice bubble shown when the event starts. */
+.Media_webrtc_notice {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px;
+}
+
+.Media_webrtc_notice_avatar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+}
+
+.Media_webrtc_notice_desc {
+	flex: 1;
+	display: flex;
+	align-items: center;
+}
+
+.Media_webrtc_notice_text {
+	font-size: 14px;
+}
+
+.Media_webrtc_notice_buttons {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.Media_webrtc_notice_join {
+	cursor: pointer;
+}
+
+.Media_webrtc_notice_close {
+	cursor: pointer;
+	padding: 0 6px;
+	opacity: 0.7;
+}
+.Media_webrtc_notice_close:hover {
+	opacity: 1;
+}

@@ -81,7 +81,7 @@
                     });
                     Q.handle(tool.state.onWebrtcStreamLoaded, tool, []);
                 })
-                tool.livestreamStream.relatedFrom('Calendars/event/livestream', {}, function () {
+                tool.livestreamStream.relatedFrom('Media/livestream', {}, function () {
                    for(let i in this.relatedStreams) {
                         let relatedStream = this.relatedStreams[i];
                         if(relatedStream.fields.type == 'Calendars/event') {

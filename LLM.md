@@ -233,15 +233,15 @@ Media::userRecordingsStream($userId);
 
 ```php
 // WebRTC rooms relate to Calendars/event via 'Calendars/event/webrtc'
-// Livestreams relate to events via 'Calendars/event/livestream'
+// Livestreams relate to events via 'Media/livestream'
 // See Calendars_Event::create() with teleconference=true
 
-// When a WebRTC room participant joins/leaves, Calendars_Event::postMessage()
+// When a WebRTC room participant joins/leaves, Media_WebRTC::postEventMessage()
 // posts notification messages to the related event stream:
 // Calendars/event/webrtc/started   — first participant joins
 // Calendars/event/webrtc/ended     — last participant leaves
-// Calendars/event/livestream/started — livestream begins
-// Calendars/event/livestream/ended   — livestream ends
+// Media/livestream/started — livestream begins
+// Media/livestream/ended   — livestream ends
 ```
 
 ---
