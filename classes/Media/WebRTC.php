@@ -814,4 +814,102 @@ abstract class Media_WebRTC
             'writeLevel'            => $presentationStream->getWriteLevel(),
         );
     }
+
+    /**
+     * Post a message to the parent stream when WebRTC/livestream state changes.
+     * Finds the stream that this WebRTC room is related to (via Calendars/event/webrtc)
+     * and posts a notification message to it.
+     *
+     * @method postEventMessage
+     * @static
+     * @param {Streams_Stream} $webrtcStream The WebRTC room stream
+     * @param {string} $action "join", "leave", "livestreamStart", or "livestreamStop"
+     * @param {array} [$relatedStream=null] For livestream actions: array with publisherId, streamName
+     * @return {boolean} Whether a message was posted
+     */
+    static function postEventMessage($webrtcStream, $action, $relatedStream = null)
+    {
+        // Find the parent event stream this WebRTC room is related to
+        list($relations, $streams) = $webrtcStream->related(null, false, array(
+            'type' => 'Calendars/event/webrtc',
+            'where' => array(
+                'toStreamName' => new Db_Range('Calendars/event/', false, false, true)
+            ),
+            'skipAccess' => true
+        ));
+        $parentStream = reset($streams);
+        if (empty($parentStream)) {
+            return false;
+        }
+        $parentStream = Streams::fetchOne(
+            null, $parentStream->publisherId, $parentStream->name
+        );
+        if (!$parentStream) {
+            return false;
+        }
+
+        $instructions = array(
+            'publisherId' => $webrtcStream->publisherId,
+            'streamName' => $webrtcStream->name,
+            'url' => $webrtcStream->url()
+        );
+
+        $type = null;
+        $what = null;
+
+        switch ($action) {
+            case 'join':
+                if ($webrtcStream->participatingCount == 1) {
+                    $type = 'webrtc';
+                    $what = 'started';
+                }
+                break;
+            case 'leave':
+                if ($webrtcStream->participatingCount == 0) {
+                    $type = 'webrtc';
+                    $what = 'ended';
+                }
+                break;
+            case 'livestreamStart':
+                $type = 'livestream';
+                $what = 'started';
+                $instructions['publisherId'] = $relatedStream['publisherId'];
+                $instructions['streamName'] = $relatedStream['streamName'];
+                Streams::relate(
+                    null,
+                    $parentStream->publisherId,
+                    $parentStream->name,
+                    'Media/livestream',
+                    $relatedStream['publisherId'],
+                    $relatedStream['streamName'],
+                    array('skipAccess' => true)
+                );
+                break;
+            case 'livestreamStop':
+                $type = 'livestream';
+                $what = 'stopped';
+                if ($relatedStream) {
+                    $instructions['publisherId'] = $relatedStream['publisherId'];
+                    $instructions['streamName'] = $relatedStream['streamName'];
+                }
+                break;
+            default:
+                return false;
+        }
+
+        if (!$type || !$what) {
+            return false;
+        }
+
+        $messageType = ($type === 'livestream')
+            ? "Media/livestream/$what"
+            : "Calendars/event/$type/$what";
+
+        $parentStream->post($parentStream->publisherId, array(
+            'type' => $messageType,
+            'instructions' => $instructions
+        ), true);
+
+        return true;
+    }
 };

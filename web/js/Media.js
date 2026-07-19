@@ -128,6 +128,8 @@
 		"Media/webrtc/callCenter/client"  : "{{Media}}/js/tools/webrtc/callCenter/client.js",
 		"Media/webrtc/popupDialog"  : "{{Media}}/js/tools/webrtc/popupDialog.js",
 		"Media/webrtc/chat": "{{Media}}/js/tools/webrtc/chat.js",
+		"Media/webrtc/event": "{{Media}}/js/tools/webrtc/event.js",
+		"Media/livestream/event": "{{Media}}/js/tools/livestream/event.js",
 		"Media/calls": "{{Media}}/js/tools/calls.js",
 		"Media/calls/call": "{{Media}}/js/tools/call.js",
 		"Games/teams": "{{Media}}/js/tools/games/teams.js",
