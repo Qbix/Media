@@ -9,6 +9,7 @@
 }
 .Media_webrtc_preparing .Media_webrtc_preparing_camera-preview-con {
     position: relative;
+    user-select: none;
 }
 .Media_webrtc_preparing .Media_webrtc_preparing_camera-preview {
     aspect-ratio: 16 / 9;
