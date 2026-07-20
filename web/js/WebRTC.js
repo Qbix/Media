@@ -7297,6 +7297,25 @@
 
         }
 
+        //tries to get the stream in HD (1280x720) first, and falls back to whatever resolution
+        //the browser picks if the HD request fails (e.g. camera doesn't support that exact resolution)
+        function getMediaStreamPreferHD(constrains) {
+            if (!constrains.video) {
+                return getMediaStream(constrains);
+            }
+
+            var hdVideoConstraints = Object.assign(
+                {},
+                constrains.video === true ? {} : constrains.video,
+                { width: { exact: 1280 }, height: { exact: 720 } }
+            );
+
+            return getMediaStream(Object.assign({}, constrains, { video: hdVideoConstraints }))
+                .catch(function () {
+                    return getMediaStream(constrains);
+                });
+        }
+
         /**
          * Init conference using own node.js server for signalling process.
          * @method initWithStreams
@@ -8220,7 +8239,7 @@
 
                         //requesting access to users media. Audio should always be true to avoid autoplay issues
 
-                         getMediaStream({ video: videoConstraints, audio: audioConstraints })
+                         getMediaStreamPreferHD({ video: videoConstraints, audio: audioConstraints })
                         .then(permissionsGrantedCallback)
                         .catch(onPermissionFailed);
                         
@@ -8247,7 +8266,7 @@
                     log('start: regular connect (desktop)');                    
 
                     //requesting access to users media. Audio should always be true to avoid autoplay issues
-                    getMediaStream({ video: videoConstraints, audio: audioConstraints })
+                    getMediaStreamPreferHD({ video: videoConstraints, audio: audioConstraints })
                         .then(permissionsGrantedCallback)
                         .catch(onPermissionFailed);
                 }
