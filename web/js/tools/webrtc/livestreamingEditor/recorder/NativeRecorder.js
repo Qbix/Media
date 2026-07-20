@@ -2,7 +2,6 @@
 Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
     const thisInstance = this;
 
-    const _bitrate = options.bitrate ?? 2 * 1024 * 1024;
     const _codecs = options.codecs;
     const _livestreamingTool = options.livestreamingTool;
 
@@ -46,6 +45,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
     }
 
     async function appendChunkToFile(typedArrayOrBuffer) {
+        console.log('appendChunkToFile');
         _writableHandle.write(typedArrayOrBuffer);
         _writePosition += typedArrayOrBuffer.byteLength;
         _bytesSinceCommit += typedArrayOrBuffer.byteLength;
@@ -55,7 +55,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             new CustomEvent("chunksaved", { detail: { chunk: typedArrayOrBuffer } })
         );
 
-        if (_bytesSinceCommit >= 5 * 1024 * 1024 || Date.now() - _lastCommit > 20000) {
+        if (_recorderState.state != 'stopped' && (_bytesSinceCommit >= 5 * 1024 * 1024 || Date.now() - _lastCommit > 20000)) {
             console.warn('commit')
             await commit();
         }
@@ -114,8 +114,8 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
 
         let mediaRecorder = new MediaRecorder(_mediaStream, {
             mimeType: _codecs,
-            audioBitsPerSecond: 128000,
-            videoBitsPerSecond: _bitrate
+            audioBitsPerSecond: options.audioBitrate ?? 128000,
+            videoBitsPerSecond: options.videoBitrate ?? 2 * 1024 * 1024
         });
 
         mediaRecorder.onerror = function (e) {
@@ -244,9 +244,11 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
     this.stopRecording = function (cancel) {
         //console.log('stopRecordingOnSever');
         return new Promise(async function (resolve, reject) {
+            console.log('stopRecording START');
             _recorderState.mediaRecorder.addEventListener('chunksaved', async function (e) {
                 //console.log('mediaRecorder: chunksaved', _recorderState.savedChunksNumber, _recorderState.finalChunksNumber);
 
+                console.log('stopRecording: chunksaved');
                 //wait on last chunk to be saved
                 if (_recorderState.savedChunksNumber < _recorderState.finalChunksNumber) {
                     return;

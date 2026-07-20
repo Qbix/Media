@@ -29,7 +29,7 @@ Q.Media.WebRTC.livestreaming.Recorder = function (tool) {
                     subtitles: options.subtitles,
                     recording: true,
                     bitrateMode: 'constant',
-                    bitrate: 2_000_000,
+                    bitrate: options.videoBitrate,
                     keyFrameInterval: 1,
                     latencyMode: 'quality',
                     roomStream: roomStream,
@@ -59,6 +59,8 @@ Q.Media.WebRTC.livestreaming.Recorder = function (tool) {
                 _activeRecorder = new Q.Media.WebRTC.livestreaming.NativeRecorder({ 
                     livestreamingTool: tool,
                     codecs: options.mediaRecorderCodecs,
+                    videoBitrate: options.videoBitrate,
+                    audioBitrate: options.audioBitrate,
                     publisherId: roomStream.fields.publisherId,
                     streamName: roomStream.fields.name,
                     title: roomStream.fields.title,
