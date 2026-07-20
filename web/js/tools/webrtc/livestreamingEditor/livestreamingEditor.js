@@ -503,7 +503,7 @@
 
                                         tool.recorder.startRecording({
                                             subtitles: false, //disabled for now due to bug of 100% cpu usage
-                                            mediabunnyRecorder: mp4Checkbox.checked && mp4MuxerRecordingSupported,
+                                            mediabunnyRecorder: false, //mp4Checkbox.checked && mp4MuxerRecordingSupported
                                             mediaRecorderCodecs: mediaRecorderCodecs
                                         })
                                             .then(function () {
