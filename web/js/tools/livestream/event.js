@@ -34,6 +34,9 @@ Q.Tool.define("Media/livestream/event", function (options) {
 			if (err) {
 				return;
 			}
+			if (tool.removed || !tool.element.isConnected) {
+				return;
+			}
 			tool.eventStream = this;
 			tool.refresh();
 		},
@@ -52,10 +55,17 @@ Q.Tool.define("Media/livestream/event", function (options) {
 	refresh: function () {
 		var tool = this;
 
+		if (tool.removed || !tool.element.isConnected) {
+			return;
+		}
+
 		Q.Template.render('Media/livestream/event', {
 			text: tool.text
 		}, function (err, html) {
 			if (err) {
+				return;
+			}
+			if (tool.removed || !tool.element.isConnected) {
 				return;
 			}
 			tool.element.innerHTML = html;
@@ -87,16 +97,21 @@ Q.Tool.define("Media/livestream/event", function (options) {
 			}, tool);
 
 		// toggle notification subscription
-		tool.$(".Media_livestream_event_toggle")
-			.on(Q.Pointer.fastclick + '.Media_livestream_event', function () {
+		var $toggle = tool.$(".Media_livestream_event_toggle");
+		if ($toggle.length) {
+			$toggle.on(Q.Pointer.fastclick + '.Media_livestream_event', function () {
 				tool.element.classList.add('Q_working');
 
 				var action = tool._subscribed ? 'unsubscribe' : 'subscribe';
 				tool._toggleSubscription(action).then(function () {
+					if (tool.removed || !tool.element.isConnected) {
+						return;
+					}
 					tool.element.classList.remove('Q_working');
 					tool._updateToggleUI();
 				});
 			});
+		}
 	},
 
 	/**
@@ -116,6 +131,9 @@ Q.Tool.define("Media/livestream/event", function (options) {
 			creatable: false,
 			realtime: true,
 			onUpdate: function (e) {
+				if (tool.removed || !tool.element.isConnected) {
+					return;
+				}
 				tool._syncLivestreamsList(e.relatedStreams);
 			}
 		}, null, tool.prefix);
@@ -123,7 +141,7 @@ Q.Tool.define("Media/livestream/event", function (options) {
 		Q.activate(relatedEl, {}, function () {
 			tool._relatedTool = this;
 			tool._refreshDebounced = Q.debounce(function () {
-				if (tool._relatedTool) {
+				if (tool._relatedTool && !tool.removed) {
 					tool._relatedTool.refresh();
 				}
 			}, 500);
@@ -138,6 +156,11 @@ Q.Tool.define("Media/livestream/event", function (options) {
 	_syncLivestreamsList: function (relatedStreams) {
 		var tool = this;
 		var $list = tool.$(".Media_livestream_event_list");
+
+		if (!$list.length) {
+			return;
+		}
+
 		var streams = Object.values(relatedStreams);
 
 		for (var i = 0; i < streams.length; i++) {
@@ -232,6 +255,10 @@ Q.Tool.define("Media/livestream/event", function (options) {
 
 		Streams.Avatar.get(livestreamStream.fields.publisherId)
 			.then(function (avatar) {
+				if (tool.removed || !container.isConnected) {
+					return;
+				}
+
 				var img = document.createElement('img');
 				img.src = avatar.iconUrl();
 				img.className = 'Media_livestream_event_avatar';
@@ -297,6 +324,9 @@ Q.Tool.define("Media/livestream/event", function (options) {
 			if (err) {
 				return;
 			}
+			if (tool.removed || !tool.element.isConnected) {
+				return;
+			}
 			var sub = Q.getObject("slots.subscription.subscription", response);
 			tool._applySubscriptionState(sub);
 			tool._updateToggleUI();
@@ -331,6 +361,9 @@ Q.Tool.define("Media/livestream/event", function (options) {
 					Streams.Stream.refresh(
 						state.publisherId, state.streamName,
 						function () {
+							if (tool.removed) {
+								return resolve();
+							}
 							tool.eventStream = this;
 							tool._applySubscriptionState(
 								Q.getObject("slots.subscription", response)
@@ -382,6 +415,10 @@ Q.Tool.define("Media/livestream/event", function (options) {
 	 * @private
 	 */
 	_updateToggleUI: function () {
+		if (this.removed || !this.element.isConnected) {
+			return;
+		}
+
 		var $content = this.$(".Media_livestream_event_status");
 		if (!$content.length) {
 			return;
@@ -402,6 +439,17 @@ Q.Tool.define("Media/livestream/event", function (options) {
 });
 
 // ── Templates ─────────────────────────────────────────────────────────
+
+// Partial used by Calendars/event/tool template.
+// Contains the livestream toggle and list.
+Q.Template.set('Media/event/livestream',
+	'{{#if show.livestream}}' +
+	'  <div class="Q_aspect_livestream">' +
+	'    {{{tool "Media/livestream/event" publisherId=stream.fields.publisherId streamName=stream.fields.name}}}' +
+	'  </div>' +
+	'{{/if}}',
+	null, true
+);
 
 Q.Template.set('Media/livestream/event',
 	'<div class="Q_button Media_livestream_event_toggle">' +

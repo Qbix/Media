@@ -34,6 +34,9 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 			if (err) {
 				return;
 			}
+			if (tool.removed || !tool.element.isConnected) {
+				return;
+			}
 			tool.eventStream = this;
 			tool.refresh();
 		}
@@ -57,6 +60,10 @@ Q.Tool.define("Media/webrtc/event", function (options) {
         var tool = this;
         var state = tool.state;
 
+        if (tool.removed || !tool.element.isConnected) {
+            return;
+        }
+
         if (!state.teleconference) {
             return;
         }
@@ -65,6 +72,9 @@ Q.Tool.define("Media/webrtc/event", function (options) {
             text: tool.text
         }, function (err, html) {
             if (err) {
+                return;
+            }
+            if (tool.removed || !tool.element.isConnected) {
                 return;
             }
             tool.element.innerHTML = html;
@@ -92,6 +102,10 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 			'Calendars/event/webrtc', true,
 			{ dontFilterUsers: true },
 			function () {
+				if (tool.removed || !tool.element.isConnected) {
+					return;
+				}
+
 				var webrtcStream = null;
 				for (var i in this.relatedStreams) {
 					if (this.relatedStreams[i].fields.type === 'Media/webrtc') {
@@ -109,6 +123,9 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 					webrtcStream.fields.publisherId,
 					webrtcStream.fields.name,
 					function (err, stream, extra) {
+						if (tool.removed || !tool.element.isConnected) {
+							return;
+						}
 						if (!stream) {
 							return console.warn('WebRTC stream not found');
 						}
@@ -136,6 +153,10 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 		var $schedulerBtn = tool.$(".Media_webrtc_event_scheduler");
 		var $enterBtn = tool.$(".Media_webrtc_event_enter");
 
+		if (!$schedulerBtn.length) {
+			return;
+		}
+
 		if (!tool.webrtcStream || !tool.webrtcStream.testWriteLevel(40)) {
 			return;
 		}
@@ -157,6 +178,7 @@ Q.Tool.define("Media/webrtc/event", function (options) {
     _updateStateAttr: function () {
         var stream = this.eventStream;
         if (!stream) return;
+        if (this.removed || !this.element.isConnected) return;
         var now = Date.now();
         var start = stream.getAttribute('startTime') * 1000;
         var end = stream.getAttribute('endTime') * 1000;
@@ -244,6 +266,10 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 
 		var onActivate = Q.Tool.onActivate('Q/timestamp');
 		onActivate.add(function () {
+			if (tool.removed || !tool.element.isConnected) {
+				onActivate.remove(toolKey);
+				return;
+			}
 			tool._askToJoinIfHappening();
 			if (tool._detectTimestampTool()) {
 				onActivate.remove(toolKey);
@@ -269,6 +295,9 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 		}
 
 		tsTool.state.beforeRefresh.set(function () {
+			if (tool.removed || !tool.element.isConnected) {
+				return;
+			}
 			tool._updateStateAttr();
 			tool._askToJoinIfHappening();
 		}, toolKey);
@@ -315,10 +344,18 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 	 */
 	_addParticipantAvatar: function (userId, $list) {
 		var tool = this;
+
+		if (!$list.length || !$list[0].isConnected) {
+			return;
+		}
+
 		var container = document.createElement('div');
 		container.className = 'Media_webrtc_event_participant';
 
 		Streams.Avatar.get(userId).then(function (avatar) {
+			if (tool.removed || !container.isConnected) {
+				return;
+			}
 			var img = document.createElement('img');
 			img.src = avatar.iconUrl();
 			img.alt = avatar.displayName();
@@ -470,6 +507,10 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 		var state = tool.state;
 		var $te = $(tool.element);
 
+		if (tool.removed || !tool.element.isConnected) {
+			return;
+		}
+
 		state._webrtcActive = 'loading';
 		$te.attr("data-webrtc", 'loading');
 
@@ -547,6 +588,25 @@ Q.Tool.define("Media/webrtc/event", function (options) {
 });
 
 // ── Templates ─────────────────────────────────────────────────────────
+
+// Partial used by Calendars/event/tool template.
+// Contains the attendee-facing webrtc join button
+// and the host-facing conference management tool.
+Q.Template.set('Media/event/webrtc',
+	'{{#if show.webrtc}}' +
+	'  <div class="Q_button Media_aspect_webrtc" data-invoke="webrtc">' +
+	'    <div class="Calendars_info_icon"><i class="qp-calendars-teleconference"></i></div>' +
+	'    <div class="Calendars_info_content"></div>' +
+	'  </div>' +
+	'{{/if}}' +
+	'{{#if show.teleconference}}' +
+	'  <div class="Q_aspect_conference">' +
+	'    {{{tool "Media/webrtc/event" publisherId=stream.fields.publisherId streamName=stream.fields.name' +
+	'      teleconference=hasTeleconference startTime=startTime}}}' +
+	'  </div>' +
+	'{{/if}}',
+	null, true
+);
 
 Q.Template.set('Media/webrtc/event',
 	'<div class="Q_button Media_webrtc_event_button" data-invoke="teleconference">' +
