@@ -361,6 +361,12 @@
                         var _relatedServerRecordingsTool = null;
                         var _localRecordingTimer = null;
                         var _serverRecordingTimer = null;
+                        var recordingParams = {
+                            bitrate: {
+                                video: null,
+                                audio: null
+                            }
+                        }
 
                         function createSectionElement() {
                             var roomId = 'broadcast-' + tool.webrtcUserInterface.getOptions().roomId + '-' + (tool.webrtcSignalingLib.localParticipant().sid).replace('/webrtc#', '');
@@ -414,7 +420,7 @@
                             getRecordingsBtn.innerHTML = 'Show Recordings';
                             recordingsContainer.appendChild(getRecordingsBtn);
 
-                            let recordingFormats = document.createElement('DIV');
+                            /* let recordingFormats = document.createElement('DIV');
                             recordingFormats.className = 'live-editor-rec-server-dropdown-inner';
 
                             let mp4IsSupported = mp4MuxerRecordingSupported || MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264');
@@ -449,14 +455,15 @@
                             }
                             if(!mp4IsSupported && !webmIsSupported) {
                                 startLocalRecBtn.classList.add('Q_disabled');
-                            }
-                            
+                            } */
+
+                            let settingsEl = generateSettings();
                             Q.activate(
                                 Q.Tool.setUpElement(
                                     dropDownArrCon,
                                     "Media/webrtc/popupDialog",
                                     {
-                                        content: recordingFormats,
+                                        content: settingsEl,
                                         triggerOn: 'lmb',
                                         className: 'live-editor-rec-server-dropdown',
                                         parent: recordingCon
@@ -491,20 +498,187 @@
                                
                             })
 
+                            function generateSettings() {
+
+                                const VIDEO_BITRATES = [
+                                    2_097_152,   // 2 Mbps
+                                    4_194_304,   // 4 Mbps
+                                    5_242_880,   // 5 Mbps
+                                    8_388_608,   // 8 Mbps
+                                    10_485_760,  // 10 Mbps
+                                    12_582_912,  // 12 Mbps
+                                    16_777_216,  // 16 Mbps
+                                    25_165_824,  // 24 Mbps
+                                    33_554_432,  // 32 Mbps
+                                    50_331_648,  // 48 Mbps
+                                    67_108_864,  // 64 Mbps
+                                    83_886_080,  // 80 Mbps
+                                    100_663_296, // 96 Mbps
+                                ];
+
+                                function calculateSize(
+                                    bitrate,
+                                    { width, height } = {},
+                                    minutes = 1
+                                ) {
+                                    // File size is determined by bitrate and duration.
+                                    // width/height are accepted for API consistency but are not used
+                                    // when a fixed bitrate is provided.
+
+                                    const seconds = minutes * 60;
+                                    const bytes = (bitrate * seconds) / 8;
+
+                                    // Decimal MB (1 MB = 1,000,000 bytes)
+                                    return (bytes / 1_000_000).toFixed(1);
+                                }
+
+                                function getRecommendedVideoBitrate({
+                                    width,
+                                    height,
+                                    fps = 30,
+                                }) {
+                                    const maxDimension = Math.max(width, height);
+
+                                    let targetBitrate;
+
+                                    // Base recommendations for ~30 FPS.
+                                    if (maxDimension <= 1280) {
+                                        targetBitrate = 5_242_880;
+                                    } else if (maxDimension <= 1920) {
+                                        targetBitrate = 10_485_760;
+                                    } else if (maxDimension <= 2560) {
+                                        targetBitrate = 25_165_824;
+                                    } else {
+                                        targetBitrate = 50_331_648;
+                                    }
+
+                                    // FPS adjustments.
+                                    if (fps > 60) {
+                                        targetBitrate *= 2;
+                                    } else if (fps > 30) {
+                                        targetBitrate *= 1.5;
+                                    }
+
+                                    // Return the nearest bitrate from VIDEO_BITRATES
+                                    // that is >= the target.
+                                    return (
+                                        VIDEO_BITRATES.find(
+                                            (bitrate) => bitrate >= targetBitrate
+                                        ) ??
+                                        VIDEO_BITRATES[VIDEO_BITRATES.length - 1]
+                                    );
+                                }
+
+                                var canvasSize = tool.canvasComposer.videoComposer.getCanvasSize();
+
+                                const recommendedVideoBitrate = getRecommendedVideoBitrate({ width: canvasSize.width, height: canvasSize.height, fps: 30 });
+
+                                const VIDEO_BITRATE_OPTIONS = VIDEO_BITRATES.map((bitrate) => ({
+                                    bitrate,
+                                    caption:
+                                        `${Math.round(bitrate / 1024 / 1024)} Mbps` +
+                                        ` (1 min is ~${calculateSize(
+                                            bitrate,
+                                            { width: canvasSize.width, height: canvasSize.height },
+                                            1
+                                        )} MB)`,
+                                    default: bitrate == recommendedVideoBitrate
+                                }));
+
+                                const AUDIO_BITRATE_OPTIONS = [
+                                    {
+                                        bitrate: 64_000,
+                                        caption: '64 kbps',
+                                    },
+                                    {
+                                        bitrate: 96_000,
+                                        caption: '96 kbps',
+                                    },
+                                    {
+                                        bitrate: 128_000,
+                                        caption: '128 kbps',
+                                        default: true
+                                    },
+                                    {
+                                        bitrate: 160_000,
+                                        caption: '160 kbps',
+                                    },
+                                    {
+                                        bitrate: 192_000,
+                                        caption: '192 kbps',
+                                    },
+                                    {
+                                        bitrate: 256_000,
+                                        caption: '256 kbps',
+                                    },
+                                    {
+                                        bitrate: 320_000,
+                                        caption: '320 kbps',
+                                    },
+                                ];
+
+                                let bitrateOptions = [
+                                    {
+                                        type: 'video',
+                                        label: 'Video',
+                                        options: VIDEO_BITRATE_OPTIONS
+                                    },
+                                    {
+                                        type: 'audio',
+                                        label: 'Audio',
+                                        options: AUDIO_BITRATE_OPTIONS
+                                    }
+                                ]
+
+                                let recordingSettings = document.createElement('DIV');
+                                recordingSettings.className = 'live-editor-rec-server-dropdown-inner';
+
+                                bitrateOptions.forEach(function (type) {
+
+                                    let bitrateParam = document.createElement('DIV');
+                                    bitrateParam.className = 'live-editor-rec-settings-param live-editor-rec-settings-bitrate';
+                                    recordingSettings.appendChild(bitrateParam);
+                                    let bitrateParamCaption = document.createElement('DIV');
+                                    bitrateParamCaption.className = 'live-editor-rec-settings-caption';
+                                    bitrateParamCaption.innerText = type.label + ' bitrate';
+                                    bitrateParam.appendChild(bitrateParamCaption);
+                                    let bitrateParamSelect = document.createElement('SELECT');
+                                    bitrateParam.appendChild(bitrateParamSelect);
+                                    type.options.forEach(function (value) {
+                                        let option = document.createElement('OPTION');
+                                        option.value = value.bitrate;
+                                        option.innerHTML = value.caption;
+                                        if (value.default) {
+                                            option.selected = true;
+                                            recordingParams.bitrate[type.type] = value.bitrate;
+                                        }
+                                        bitrateParamSelect.appendChild(option);
+                                    });
+                                    recordingSettings.appendChild(bitrateParam);
+
+                                })
+
+
+
+                                return recordingSettings;
+                            }
+
                             function startRecording() {
                                 return new Promise(function (resolve, reject) {
                                     try {
                                         let mediaRecorderCodecs;
-                                        if (mp4Checkbox.checked && (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264'))) {
+                                        if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264')) {
                                             mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
-                                        } else if (webmCheckbox.checked && (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264'))) {
+                                        } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264')) {
                                             mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
                                         }
 
                                         tool.recorder.startRecording({
                                             subtitles: false, //disabled for now due to bug of 100% cpu usage
                                             mediabunnyRecorder: false, //mp4Checkbox.checked && mp4MuxerRecordingSupported
-                                            mediaRecorderCodecs: mediaRecorderCodecs
+                                            mediaRecorderCodecs: mediaRecorderCodecs,
+                                            videoBitrate: recordingParams.bitrate.video,
+                                            audioBitrate: recordingParams.bitrate.audio
                                         })
                                             .then(function () {
                                                 try {
