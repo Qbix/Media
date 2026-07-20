@@ -6,11 +6,12 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
     const _livestreamingTool = options.livestreamingTool;
 
     let _opfsRoot = null;
+    let _recordingsDir = null;
     let _fileHandle = null;
-    let _accessHandle = null;
     let _writableHandle = null;
     let _writePosition = 0;
     let _bytesSinceCommit = 0;
+    let _writeChainPromise = Promise.resolve();
 
     let _mediaStream;
     let _localRecordingsDB = null;
@@ -25,7 +26,10 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
     function initOpfs() {
         return new Promise(async function (resolve, reject) {
             _opfsRoot = await navigator.storage.getDirectory();
-            _fileHandle = await _opfsRoot.getFileHandle(_recorderState.recordingMetadata.fileName, {
+            _recordingsDir = await _opfsRoot.getDirectoryHandle("recordings", {
+                create: true,
+            });
+            _fileHandle = await _recordingsDir.getFileHandle(_recorderState.recordingMetadata.fileName, {
                 create: true
             });
             //_accessHandle = await _fileHandle.createSyncAccessHandle();
@@ -40,23 +44,25 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             await _writableHandle.seek(_writePosition);
             
             _lastCommit = Date.now();
+            
             resolve();
         });
     }
 
     async function appendChunkToFile(typedArrayOrBuffer) {
-        console.log('appendChunkToFile');
+        //console.log((performance.now() / 1000) + ' appendChunkToFile BEFORE', _writePosition, typedArrayOrBuffer.byteLength);
         _writableHandle.write(typedArrayOrBuffer);
         _writePosition += typedArrayOrBuffer.byteLength;
         _bytesSinceCommit += typedArrayOrBuffer.byteLength;
+        //console.log((performance.now() / 1000) + ' appendChunkToFile AFTER', _writePosition);
 
         _recorderState.savedChunksNumber++;
         _recorderState.mediaRecorder.dispatchEvent(
             new CustomEvent("chunksaved", { detail: { chunk: typedArrayOrBuffer } })
         );
 
-        if (_recorderState.state != 'stopped' && (_bytesSinceCommit >= 5 * 1024 * 1024 || Date.now() - _lastCommit > 20000)) {
-            console.warn('commit')
+        if (_recorderState.state != 'stopped' && (_bytesSinceCommit >= 5 * 1024 * 1024 || Date.now() - _lastCommit > 10000)) {
+            //console.warn((performance.now() / 1000) + ' commit')
             await commit();
         }
         //_accessHandle.flush();
@@ -72,8 +78,20 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
         await _writableHandle.seek(_writePosition);
 
         _bytesSinceCommit = 0;
-        
+
         _lastCommit = Date.now();
+    }
+
+    async function saveJson(fileName, data) {
+        const fileHandle = await _recordingsDir.getFileHandle(fileName, {
+            create: true
+        });
+
+        const writable = await fileHandle.createWritable();
+
+        await writable.write(JSON.stringify(data, null, 2));
+
+        await writable.close();
     }
 
     async function downloadFromOPFS() {
@@ -123,6 +141,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
         }
 
         mediaRecorder.addEventListener('dataavailable', function (e) {
+            //console.log('mediaRecorder: dataavailable', e, e.data.size);
             ondataavailable(e.data);
         });
 
@@ -155,31 +174,23 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             if (_recorderState == null) return;
             _recorderState.producedChunksNumber++;
 
-            blob.arrayBuffer().then(function (buffer) {
+            // Start converting to ArrayBuffer right away (parallel, for speed), but
+            // chain the actual file append onto _writeChainPromise so chunks are
+            // written in the order they were produced, not in the order their
+            // (variable-duration) blob.arrayBuffer() conversion happens to resolve.
+            let bufferPromise = blob.arrayBuffer();
 
-                appendChunkToFile(buffer);
-
-                /* let obj = {
-                    buffer: buffer,
-                    timestamp: Date.now(),
-                    roomKey: _recorderState.recordingMetadata.roomKey,
-                    roomStream: _recorderState.recordingMetadata.roomStream,
-                    startTime: _recorderState.recordingMetadata.startTime
-                }
-
-                _localRecordingsDB.save(obj, 'recordingsChunks').then(function (result) {
-                    obj.objectId = result;
-                    _recorderState.chunks.push(obj);
-                    _recorderState.recordingMetadata.chunksCounter = _recorderState.recordingMetadata.chunksCounter + 1;
-                    _localRecordingsDB.save(_recorderState.recordingMetadata, 'recordings').then(function (result) {
-                        _recorderState.savedChunksNumber++;
-                        _recorderState.mediaRecorder.dispatchEvent(
-                            new CustomEvent("chunksaved", { detail: { chunk: obj } })
-                        );
-                    });
-                }); */
-            });
-        }, { codecs: options.codecs, bitrate: 2_000_000 });
+            _writeChainPromise = _writeChainPromise
+                .then(function () {
+                    return bufferPromise;
+                })
+                .then(function (buffer) {
+                    return appendChunkToFile(buffer);
+                })
+                .catch(function (error) {
+                    console.error('appendChunkToFile failed', error);
+                });
+        });
     }
 
     this.startRecording = function () {
@@ -190,9 +201,9 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 return reject();
             }
 
-            if (!_localRecordingsDB) {
+            /* if (!_localRecordingsDB) {
                 _localRecordingsDB = await Q.Media.WebRTC.livestreaming.initRecordingsDB();
-            }
+            } */
             _recorderState.startTime = Date.now();
 
             let extension = 'mp4';
@@ -221,7 +232,15 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 await initOpfs();
             }
 
-            _localRecordingsDB.save(metadata, 'recordings').then(function (result) {
+            await saveJson(metadata.fileName + '.json', metadata);
+            try {
+                startMediaRecorder();
+            } catch (error) {
+                reject(error);
+            }
+            _recorderState.state = 'started';
+            resolve();
+            /* _localRecordingsDB.save(metadata, 'recordings').then(function (result) {
                 metadata.objectId = result;
                 try {
                     startMediaRecorder();
@@ -230,7 +249,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 }
                 _recorderState.state = 'started';
                 resolve();
-            });
+            }); */
         });
     }
 
@@ -244,15 +263,17 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
     this.stopRecording = function (cancel) {
         //console.log('stopRecordingOnSever');
         return new Promise(async function (resolve, reject) {
-            console.log('stopRecording START');
+            //console.log('stopRecording START');
             _recorderState.mediaRecorder.addEventListener('chunksaved', async function (e) {
                 //console.log('mediaRecorder: chunksaved', _recorderState.savedChunksNumber, _recorderState.finalChunksNumber);
 
-                console.log('stopRecording: chunksaved');
+                //console.log((performance.now() / 1000) + ' stopRecording: chunksaved');
                 //wait on last chunk to be saved
                 if (_recorderState.savedChunksNumber < _recorderState.finalChunksNumber) {
                     return;
                 }
+                //console.log((performance.now() / 1000) + ' stopRecording: finish');
+
                 if (cancel) return resolve();
 
                 if (_recorderState != null) {
