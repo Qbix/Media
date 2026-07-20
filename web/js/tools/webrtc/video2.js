@@ -253,8 +253,11 @@
                 if (!tool.activeItem) {
                     //some Android phones doesn't allow to get stream from the camera if stream from another camera is active (throws "NotReadableError: Could not start video source")
                     //so we need to stop old stream BEFORE requesting the new one
-                    tool.stopCurrentStream(); 
-                    tool.getCameraStream({}).then(function (videoStream) {
+                    tool.stopCurrentStream();
+                    //try to get an HD stream first, and fall back to whatever resolution the browser picks if that fails
+                    tool.getCameraStream({ width: 1280, height: 720 }).catch(function () {
+                        return tool.getCameraStream({});
+                    }).then(function (videoStream) {
                         
                         tool.setPending(false);
 
@@ -350,7 +353,10 @@
                                 //some Android phones doesn't allow to get stream from the camera if stream from another camera is active (throws "NotReadableError: Could not start video source")
                                 //so we need to stop old stream BEFORE requesting the new one
                                 tool.stopCurrentStream();
-                                tool.getCameraStream({ deviceId: mediaDevice.deviceId }).then(function (videoStream) {
+                                //try to get an HD stream first, and fall back to whatever resolution the browser picks if that fails
+                                tool.getCameraStream({ deviceId: mediaDevice.deviceId, width: 1280, height: 720 }).catch(function () {
+                                    return tool.getCameraStream({ deviceId: mediaDevice.deviceId });
+                                }).then(function (videoStream) {
                                     tool.toggleButton(btnInstance);
                                     tool.setPending(false, [radioBtnItem]);
                                     
@@ -386,32 +392,49 @@
                         tool.cameraListButtons.set(cameraItem.deviceId, cameraItem);
                     });
                     tool.pendingDevicesUpdate = false;
-                    if(tool.queueDevicesUpdate) {
+                    if (tool.queueDevicesUpdate) {
                         tool.queueDevicesUpdate = false;
                         tool.loadCamerasList();
                     }
                 })
+
+                /* let cameraItem = new ButtonInstance({
+                    className: 'Media_webrtc_video_camera_item',
+                    label: 'Settings',
+                    type: 'camera',
+                    handler: async function (e) {
+                        if (e) e.preventDefault();
+                        if (e) e.stopPropagation();
+                        
+                    }
+                });
+                tool.videoinputListEl.insertBefore(cameraItem.button, tool.videoinputListEl.firstChild); */
+
             },
             getCameraStream: function (camera) {
 
-                var constraints
+                var constraints = {};
                 if (camera != null && camera.deviceId != null && camera.deviceId != '') {
-                    constraints = { deviceId: { exact: camera.deviceId } };
+                    constraints.deviceId = { exact: camera.deviceId };
                     if (typeof cordova != 'undefined' && _isiOS && options.useCordovaPlugins) {
-                        constraints = { deviceId: camera.deviceId }
+                        constraints.deviceId = camera.deviceId;
                     }
                 } else if (camera != null && camera.groupId != null && camera.groupId != '') {
-                    constraints = { groupId: { exact: camera.groupId } };
+                    constraints.groupId = { exact: camera.groupId };
                     if (typeof cordova != 'undefined' && _isiOS && options.useCordovaPlugins) {
-                        constraints = { groupId: camera.groupId }
+                        constraints.groupId = camera.groupId;
                     }
-                } else {
-                    constraints = true;
+                }
+                if (camera != null && camera.width != null) {
+                    constraints.width = { exact: camera.width };
+                }
+                if (camera != null && camera.height != null) {
+                    constraints.height = { exact: camera.height };
                 }
 
                 return navigator.mediaDevices.getUserMedia({
                     'audio': false,
-                    'video': constraints
+                    'video': Object.keys(constraints).length ? constraints : true
                 })
             },
             clearCameraList: function () {
@@ -448,6 +471,9 @@
                     });
 
                 });
+            },
+            createVideoSettings: function () {
+                
             }
         }
 
