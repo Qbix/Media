@@ -107,7 +107,8 @@
             tool.importChildModules().then(function () {
                 tool.eventDispatcher = new Q.Media.WebRTC.EventSystem();
                 tool.RTMPSender = new Q.Media.WebRTC.livestreaming.RTMPSender(tool);
-                tool.recorder = new Q.Media.WebRTC.livestreaming.Recorder(tool);
+                tool.videoRecorder = new Q.Media.WebRTC.livestreaming.Recorder(tool);
+                tool.audioRecorder = new Q.Media.WebRTC.livestreaming.Recorder(tool);
                 tool.canvasComposer = Q.Media.WebRTC.livestreaming.CanvasComposer(tool);
                 tool.declareOrRefreshEventHandlers();
 

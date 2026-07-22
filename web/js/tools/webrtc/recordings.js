@@ -403,6 +403,7 @@
                                     recordingId: chunkItem.recordingId,
                                     format: chunkItem.format,
                                     storage: chunkItem.storage,
+                                    fileHandle: chunkItem.fileHandle,
                                  };
                             }
                         }
@@ -713,15 +714,15 @@
                                     "-" + dateFormat.getMinutes() +
                                     "-" + dateFormat.getSeconds();
 
-                                if (recordingItem.storage == 'opfs') {
-                                    tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
-                                        fileHandle.getFile().then(function (file) {
+                                if (recordingItem.fileHandle || recordingItem.storage == 'opfs') {
+                                    //tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
+                                        recordingItem.fileHandle.getFile().then(function (file) {
                                             const url = URL.createObjectURL(file);
                                             let downloadLink = document.createElement('A');
                                             downloadLink.style.position = 'absolute';
                                             downloadLink.style.top = '-999999px';
                                             downloadLink.href = url;
-                                            downloadLink.download = downloadName + '.' + recordingItem.format;
+                                            downloadLink.download = file.name;
                                             document.body.appendChild(downloadLink);
                                             downloadLink.click();
                                             setTimeout(() => {
@@ -729,14 +730,14 @@
                                                 downloadLink.remove();
                                             }, 1000);
                                         });
-                                    }).catch(function (e) {
+                                    /* }).catch(function (e) {
                                         console.error(e);
-                                    });
+                                    }); */
                                 } else {
                                     tool.downloadFromIndexedDB(recordingItem, downloadName);
                                 }
                             });
-    
+                            
                             Q.activate(
                                 Q.Tool.setUpElement(
                                     "DIV",
@@ -753,7 +754,22 @@
                                     let tool = this;
                                     setTimeout(function () {
                                         roomInfoDate.innerHTML = tool.element.textContent;
-                                        //download.download = tool.element.textContent.replace(/[\s, :]/g,"_") + '.webm';
+                                        Q.activate(
+                                            Q.Tool.setUpElement(
+                                                "DIV",
+                                                "Q/timestamp",
+                                                {
+                                                    time: recordingItem.startTime,
+                                                    capitalized: true,
+                                                    relative: true
+                                                }
+                                            ),
+                                            {},
+                                            function () {
+                                                let tool = this;
+                                                roomInfoDate.innerHTML += ' (' + tool.element.textContent + ')';
+                                            }
+                                        );
                                     }, 200)
                                 }
                             );
