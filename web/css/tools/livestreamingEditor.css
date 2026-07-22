@@ -1079,6 +1079,22 @@
     border-color: #ffffff;
 }
 
+/*low storage quota warning dialog (shown before/during local recording)*/
+.live-editor-rec-low-storage-warning {
+    padding: 15px;
+    color: red;
+    font-weight: normal;
+    font-size: 18px;
+}
+.live-editor-rec-low-storage-warning p {
+    margin: 0 0 15px;
+}
+.live-editor-rec-low-storage-warning-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
 /*end: streaming to facebook/rtmp/p2p broadcast section*/
 
 .live-editor-dialog-body .live-editor-sources {
