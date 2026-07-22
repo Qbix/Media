@@ -12,6 +12,13 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
     let _writePosition = 0;
     let _bytesSinceCommit = 0;
     let _writeChainPromise = Promise.resolve();
+    let _lastCommit = null;
+
+    const _externalFileHandle = options.fileHandle || null;
+    let _usingOPFS = !_externalFileHandle;
+    let _lowQuotaDialog = null;
+
+    const LOW_OPFS_QUOTA_THRESHOLD_MB = 50;
 
     let _mediaStream;
     let _localRecordingsDB = null;
@@ -23,12 +30,21 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
         producedChunksNumber: 0,
     };
 
-    function initOpfs() {
+    function initOpfsDir() {
         return new Promise(async function (resolve, reject) {
             _opfsRoot = await navigator.storage.getDirectory();
             _recordingsDir = await _opfsRoot.getDirectoryHandle("recordings", {
                 create: true,
             });
+
+            resolve();
+        });
+    }
+
+    // Creates/opens the actual recording file inside OPFS. Only used when
+    // recording is being written to OPFS (not to an externally picked disk file).
+    function initOpfsFile() {
+        return new Promise(async function (resolve, reject) {
             _fileHandle = await _recordingsDir.getFileHandle(_recorderState.recordingMetadata.fileName, {
                 create: true
             });
@@ -42,10 +58,136 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             });
 
             await _writableHandle.seek(_writePosition);
-            
+
             _lastCommit = Date.now();
-            
+
             resolve();
+        });
+    }
+
+    async function initExternalFile() {
+        _fileHandle = _externalFileHandle;
+        _writePosition = 0;
+
+        _writableHandle = await _fileHandle.createWritable({
+            keepExistingData: false
+        });
+
+        await _writableHandle.seek(0);
+
+        _lastCommit = Date.now();
+    }
+
+    async function checkOpfsQuota() {
+        if (_lowQuotaDialog) return;
+        if (!navigator.storage || !navigator.storage.estimate) return;
+
+        try {
+            const estimate = await navigator.storage.estimate();
+            const availableMB = ((estimate.quota || 0) - (estimate.usage || 0)) / 1_000_000;
+
+            if (availableMB < LOW_OPFS_QUOTA_THRESHOLD_MB) {
+                showLowQuotaDuringRecordingDialog(availableMB);
+            }
+        } catch (error) {
+            console.error('checkOpfsQuota failed', error);
+        }
+    }
+
+    function showLowQuotaDuringRecordingDialog(availableMB) {
+        let container = document.createElement('DIV');
+        container.className = 'live-editor-rec-low-storage-warning';
+
+        let message = document.createElement('P');
+        message.innerHTML = 'Browser storage is almost full: about ' + Math.max(0, Math.round(availableMB))
+            + ' MB left. Stop recording, or save it to a location on disk to keep going.';
+        container.appendChild(message);
+
+        let buttonsCon = document.createElement('DIV');
+        buttonsCon.className = 'live-editor-rec-low-storage-warning-buttons';
+        container.appendChild(buttonsCon);
+
+        let stopBtn = document.createElement('BUTTON');
+        stopBtn.className = 'livestream_button live-editor-rec-stop-btn';
+        stopBtn.innerHTML = 'Stop recording';
+        buttonsCon.appendChild(stopBtn);
+
+        let saveOnDiskBtn = document.createElement('BUTTON');
+        saveOnDiskBtn.className = 'livestream_button live-editor-rec-save-on-disk-btn';
+        saveOnDiskBtn.innerHTML = 'Save on disk';
+        buttonsCon.appendChild(saveOnDiskBtn);
+
+        if (!window.showSaveFilePicker) {
+            saveOnDiskBtn.classList.add('Q_disabled');
+        }
+
+        _lowQuotaDialog = Q.Dialogs.push({
+            title: "Storage quota warning",
+            content: container,
+            onClose: function () {
+                _lowQuotaDialog = null;
+            }
+        });
+
+        stopBtn.addEventListener('click', function () {
+            Q.Dialogs.close(_lowQuotaDialog);
+            _lowQuotaDialog = null;
+            if (typeof options.onRequestStop == 'function') {
+                options.onRequestStop();
+            } else {
+                thisInstance.stopRecording();
+            }
+        });
+
+        saveOnDiskBtn.addEventListener('click', async function () {
+            if (!window.showSaveFilePicker) {
+                return;
+            }
+            try {
+                const newHandle = await window.showSaveFilePicker({
+                    suggestedName: _recorderState.recordingMetadata.fileName,
+                    types: [{
+                        description: 'Video recording',
+                        accept: {
+                            'video/webm': ['.webm'],
+                            'video/mp4': ['.mp4']
+                        }
+                    }]
+                });
+
+                await moveRecordingToExternalFile(newHandle);
+
+                Q.Dialogs.close(_lowQuotaDialog);
+                _lowQuotaDialog = null;
+            } catch (error) {
+                console.error('showLowQuotaDuringRecordingDialog: save on disk failed or cancelled', error);
+            }
+        });
+    }
+
+    function moveRecordingToExternalFile(newHandle) {
+        const oldRecordingsDir = _recordingsDir;
+        const oldFileName = _fileHandle.name;
+
+        return _writeChainPromise = _writeChainPromise.then(async function () {
+            await _writableHandle.close();
+
+            const oldFile = await _fileHandle.getFile();
+            const newWritable = await newHandle.createWritable({ keepExistingData: false });
+
+            await newWritable.write(await oldFile.arrayBuffer());
+
+            _fileHandle = newHandle;
+            _writableHandle = newWritable;
+            _usingOPFS = false;
+
+            if (oldRecordingsDir) {
+                try {
+                    await oldRecordingsDir.removeEntry(oldFileName);
+                } catch (error) {
+                    console.error('moveRecordingToExternalFile: failed to remove old OPFS file', error);
+                }
+            }
         });
     }
 
@@ -80,6 +222,10 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
         _bytesSinceCommit = 0;
 
         _lastCommit = Date.now();
+
+        if (_usingOPFS) {
+            await checkOpfsQuota();
+        }
     }
 
     async function saveJson(fileName, data) {
@@ -229,10 +375,17 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             }
 
             if (!_opfsRoot) {
-                await initOpfs();
+                await initOpfsDir();
             }
 
             await saveJson(metadata.fileName + '.json', metadata);
+
+            if (_usingOPFS) {
+                await initOpfsFile();
+            } else {
+                await initExternalFile();
+            }
+
             try {
                 startMediaRecorder();
             } catch (error) {
@@ -261,9 +414,15 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
      * @return {*} 
      */
     this.stopRecording = function (cancel) {
-        //console.log('stopRecordingOnSever');
+        console.log('stopRecording');
         return new Promise(async function (resolve, reject) {
-            //console.log('stopRecording START');
+            console.log('stopRecording START');
+
+            if (_lowQuotaDialog) {
+                Q.Dialogs.close(_lowQuotaDialog);
+                _lowQuotaDialog = null;
+            }
+
             _recorderState.mediaRecorder.addEventListener('chunksaved', async function (e) {
                 //console.log('mediaRecorder: chunksaved', _recorderState.savedChunksNumber, _recorderState.finalChunksNumber);
 
@@ -278,7 +437,9 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
 
                 if (_recorderState != null) {
                     if (_writableHandle) await _writableHandle.close();
-                    downloadFromOPFS();
+                    if (_usingOPFS) {
+                        downloadFromOPFS();
+                    }
                     _recorderState.chunks = [];
                     _recorderState.recordingMetadata = null;
                     _recorderState.startTime = null;
@@ -292,6 +453,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 _recorderState.finalChunksNumber = _recorderState.producedChunksNumber;
                 //console.log('mediaRecorder: stop 2', e);
             });
+            console.log('stopRecordingOnSever: stop recorder local', _recorderState.mediaRecorder.state);
             if (_recorderState.mediaRecorder && _recorderState.mediaRecorder.state != 'inactive') {
                 //console.log('stopRecordingOnSever: stop recorder local');
                 if (_recorderState.mediaRecorder.stream) {
