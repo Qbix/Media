@@ -181,6 +181,10 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             _writableHandle = newWritable;
             _usingOPFS = false;
 
+            _recorderState.recordingMetadata.fileHandle = _fileHandle;
+            
+            _localRecordingsDB.save(_recorderState.recordingMetadata, 'recordings').then(function (result) { });
+
             if (oldRecordingsDir) {
                 try {
                     await oldRecordingsDir.removeEntry(oldFileName);
@@ -269,6 +273,8 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             }`;
     }
 
+    const _audioOnly = !!(_codecs && _codecs.indexOf('audio/') === 0);
+
     function createRecorder(ondataavailable) {
         //codecs = getSupportedStreamingCodec();
 
@@ -276,11 +282,22 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
 
         _mediaStream = originalMediaStream.clone();
 
-        let mediaRecorder = new MediaRecorder(_mediaStream, {
-            mimeType: _codecs,
-            audioBitsPerSecond: options.audioBitrate ?? 128000,
-            videoBitsPerSecond: options.videoBitrate ?? 2 * 1024 * 1024
-        });
+        if (_audioOnly) {
+            _mediaStream.getVideoTracks().forEach(function (track) {
+                _mediaStream.removeTrack(track);
+                track.stop();
+            });
+        }
+
+        let mediaRecorderOptions = { mimeType: _codecs };
+        if (_mediaStream.getAudioTracks().length) {
+            mediaRecorderOptions.audioBitsPerSecond = options.audioBitrate ?? 128000;
+        }
+        if (_mediaStream.getVideoTracks().length) {
+            mediaRecorderOptions.videoBitsPerSecond = options.videoBitrate ?? 2 * 1024 * 1024;
+        }
+
+        let mediaRecorder = new MediaRecorder(_mediaStream, mediaRecorderOptions);
 
         mediaRecorder.onerror = function (e) {
             console.error(e);
@@ -347,16 +364,16 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 return reject();
             }
 
-            /* if (!_localRecordingsDB) {
+            if (!_localRecordingsDB) {
                 _localRecordingsDB = await Q.Media.WebRTC.livestreaming.initRecordingsDB();
-            } */
+            }
             _recorderState.startTime = Date.now();
 
             let extension = 'mp4';
-            if (options.codec && options.codec.includes('mp4')) {
-                extension = 'mp4';
-            } else if (options.codec && options.codec.includes('webm')) {
-                extension = 'webm';
+            if (_codecs && _codecs.includes('mp4')) {
+                extension = _audioOnly ? 'm4a' : 'mp4';
+            } else if (_codecs && _codecs.includes('webm')) {
+                extension = _audioOnly ? 'weba' : 'webm';
             }
 
             let metadata = _recorderState.recordingMetadata = {
@@ -386,14 +403,15 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 await initExternalFile();
             }
 
-            try {
+            _recorderState.recordingMetadata.fileHandle = _fileHandle;
+            /* try {
                 startMediaRecorder();
             } catch (error) {
                 reject(error);
             }
             _recorderState.state = 'started';
-            resolve();
-            /* _localRecordingsDB.save(metadata, 'recordings').then(function (result) {
+            resolve(); */
+            _localRecordingsDB.save(metadata, 'recordings').then(function (result) {
                 metadata.objectId = result;
                 try {
                     startMediaRecorder();
@@ -402,7 +420,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 }
                 _recorderState.state = 'started';
                 resolve();
-            }); */
+            });
         });
     }
 

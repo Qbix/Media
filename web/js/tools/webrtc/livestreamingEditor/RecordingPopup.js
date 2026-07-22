@@ -22,6 +22,10 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
         bitrate: {
             video: null,
             audio: null
+        },
+        recording: {
+            video: true,
+            audio: false
         }
     }
 
@@ -144,11 +148,12 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                     })
                     .catch(function (error) {
                         if (error === 'cancelled') {
-                            // user dismissed the low storage warning without choosing an option
+                            // user dismissed the low storage warning, or chose to stop
+                            // entirely after one of video/audio recording failed to start
                             updateRecordingState('inactive');
                             return;
                         }
-                        tool.recorder.cancelRecording();
+                        cancelAllActiveRecordings();
                         tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStartingRecording", tool.text) || 'Error while starting recording');
                         updateRecordingState('inactive');
                         console.error(error);
@@ -198,7 +203,8 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
 
         function showLowStorageDialog(availableMB, resolve, reject) {
             var canvasSize = tool.canvasComposer.videoComposer.getCanvasSize();
-            var totalBitrate = (recordingParams.bitrate.video || 0) + (recordingParams.bitrate.audio || 0);
+            var totalBitrate = (recordingParams.recording.video ? (recordingParams.bitrate.video || 0) : 0)
+                + (recordingParams.recording.audio ? (recordingParams.bitrate.audio || 0) : 0);
             var mbPerMinute = parseFloat(calculateSize(totalBitrate, canvasSize, 1)) || 0;
             var minutesLeft = mbPerMinute > 0 ? (availableMB / mbPerMinute) : 0;
 
@@ -404,6 +410,29 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
 
             let recordingSettings = document.createElement('DIV');
             recordingSettings.className = 'live-editor-rec-server-dropdown-inner';
+            /* let locationParam = document.createElement('DIV');
+            locationParam.className = 'live-editor-rec-settings-param live-editor-rec-settings-location';
+            recordingSettings.appendChild(locationParam); */
+            let kindParam = document.createElement('DIV');
+            kindParam.className = 'live-editor-rec-settings-param live-editor-rec-settings-kind';
+            recordingSettings.appendChild(kindParam);
+            [{ kind: 'video', caption: 'Video', checked: recordingParams.recording.video }, { kind: 'audio', caption: 'Audio',  checked: recordingParams.recording.audio }].forEach(function (kindItem) {
+                let kindParamType = document.createElement('LABEL');
+                kindParam.appendChild(kindParamType);
+                let kindParamTypeInput = document.createElement('INPUT');
+                kindParamTypeInput.value = kindItem.kind;
+                if(kindItem.checked) kindParamTypeInput.checked = true;
+                kindParamTypeInput.type = 'checkbox';
+                kindParamType.appendChild(kindParamTypeInput);
+
+                kindParamTypeInput.addEventListener('change', function (e) {
+                    recordingParams.recording[kindItem.kind] = e.target.checked;
+                })
+
+                let kindParamTypeCaption = document.createElement('DIV');
+                kindParamTypeCaption.innerHTML = kindItem.caption
+                kindParamType.appendChild(kindParamTypeCaption);
+            })
 
             bitrateOptions.forEach(function (type) {
                 let bitrateParam = document.createElement('DIV');
@@ -434,20 +463,44 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             return recordingSettings;
         }
 
-        function startRecording(fileHandle) {
+        var _activeRecorderKinds = { video: false, audio: false };
+
+        function getSupportedVideoCodecs() {
+            if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264')) {
+                return MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
+            } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264')) {
+                return MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
+            }
+        }
+
+        function getSupportedAudioCodecs() {
+            if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                return 'audio/mp4';
+            } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+                return 'audio/webm;codecs=opus';
+            } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+                return 'audio/webm';
+            }
+        }
+
+        function cancelAllActiveRecordings() {
+            if (_activeRecorderKinds.video) {
+                tool.videoRecorder.cancelRecording();
+                _activeRecorderKinds.video = false;
+            }
+            if (_activeRecorderKinds.audio) {
+                tool.audioRecorder.cancelRecording();
+                _activeRecorderKinds.audio = false;
+            }
+        }
+
+        function startVideoRecording(fileHandle) {
             return new Promise(function (resolve, reject) {
                 try {
-                    let mediaRecorderCodecs;
-                    if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264') || MediaRecorder.isTypeSupported('video/mp4;codecs:h264')) {
-                        mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/mp4;codecs=h264') ? 'video/mp4;codecs=h264' : 'video/mp4;codecs:h264';
-                    } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264') || MediaRecorder.isTypeSupported('video/webm;codecs:h264')) {
-                        mediaRecorderCodecs = MediaRecorder.isTypeSupported('video/webm;codecs=h264') ? 'video/webm;codecs=h264' : 'video/webm;codecs:h264';
-                    }
-
-                    tool.recorder.startRecording({
+                    tool.videoRecorder.startRecording({
                         subtitles: false, //disabled for now due to bug of 100% cpu usage
                         mediabunnyRecorder: false, //mp4Checkbox.checked && mp4MuxerRecordingSupported
-                        mediaRecorderCodecs: mediaRecorderCodecs,
+                        mediaRecorderCodecs: getSupportedVideoCodecs(),
                         videoBitrate: recordingParams.bitrate.video,
                         audioBitrate: recordingParams.bitrate.audio,
                         fileHandle: fileHandle || null,
@@ -463,15 +516,15 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                             try {
                                 tool.speechRecognizer = new Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer({
                                     webrtcSignalingLib: tool.webrtcSignalingLib,
-                                    startTimeSinceOrigin: tool.recorder.startTimeSinceOrigin,
+                                    startTimeSinceOrigin: tool.videoRecorder.startTimeSinceOrigin,
                                     onSegment: function (e) {
                                         //console.log('speechRecognizer onSegment')
-                                        //if(e.segment) tool.recorder.addSubtitle(e.formatted);
+                                        //if(e.segment) tool.videoRecorder.addSubtitle(e.formatted);
                                     }
                                 })
                                 tool.speechRecognizer.start();
                             } catch (error) {
-                                tool.recorder.cancelRecording(); 
+                                tool.videoRecorder.cancelRecording();
                                 return reject(error);
                             }
                             resolve();
@@ -487,15 +540,141 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             });
         }
 
-        function stopRecording() {
-            return new Promise(async function (resolve, reject) {
+        function startAudioRecording() {
+            return new Promise(function (resolve, reject) {
+                try {
+                    tool.audioRecorder.startRecording({
+                        subtitles: false,
+                        mediabunnyRecorder: false,
+                        mediaRecorderCodecs: getSupportedAudioCodecs(),
+                        audioBitrate: recordingParams.bitrate.audio,
+                        fileName: generateFileName('capture_audio'),
+                        onRequestStop: function () {
+                            updateRecordingState('pending');
+                            stopRecording().then(function () {
+                                updateRecordingState('inactive');
+                            });
+                        }
+                    })
+                        .then(function () {
+                            resolve();
+                        })
+                        .catch(function (error) {
+                            reject(error);
+                        });
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        function showPartialRecordingFailureDialog(failedKind) {
+            return new Promise(function (resolve) {
+                var succeededKind = failedKind == 'video' ? 'audio' : 'video';
+
+                var container = document.createElement('DIV');
+                container.className = 'live-editor-rec-partial-failure-warning';
+
+                var message = document.createElement('P');
+                message.innerHTML = 'The ' + failedKind + ' recording failed to start. '
+                    + 'You can continue with just the ' + succeededKind + ' recording, or stop recording entirely.';
+                container.appendChild(message);
+
+                var buttonsCon = document.createElement('DIV');
+                buttonsCon.className = 'live-editor-rec-low-storage-warning-buttons';
+                container.appendChild(buttonsCon);
+
+                var continueBtn = document.createElement('BUTTON');
+                continueBtn.className = 'livestream_button';
+                continueBtn.innerHTML = 'Continue';
+                buttonsCon.appendChild(continueBtn);
+
+                var stopBtn = document.createElement('BUTTON');
+                stopBtn.className = 'livestream_button';
+                stopBtn.innerHTML = 'Stop';
+                buttonsCon.appendChild(stopBtn);
+
+                var dialog = Q.Dialogs.push({
+                    title: "Recording failed to start",
+                    content: container,
+                    onClose: function () {
+                        resolve('stop');
+                    }
+                });
+
+                continueBtn.addEventListener('click', function () {
+                    Q.Dialogs.close(dialog);
+                    resolve('continue');
+                });
+
+                stopBtn.addEventListener('click', function () {
+                    Q.Dialogs.close(dialog);
+                    resolve('stop');
+                });
+            });
+        }
+
+        function startRecording(fileHandle) {
+            return new Promise(function (resolve, reject) {
+                var starts = [];
+
+                if (recordingParams.recording.video) {
+                    starts.push({ kind: 'video', promise: startVideoRecording(fileHandle) });
+                }
+                if (recordingParams.recording.audio) {
+                    starts.push({ kind: 'audio', promise: startAudioRecording() });
+                }
+
+                if (!starts.length) {
+                    reject('No recording kind selected');
+                    return;
+                }
+
+                Promise.allSettled(starts.map(function (s) { return s.promise; }))
+                    .then(function (results) {
+                        var succeeded = [];
+                        var failed = [];
+
+                        results.forEach(function (result, i) {
+                            var kind = starts[i].kind;
+                            if (result.status == 'fulfilled') {
+                                succeeded.push(kind);
+                                _activeRecorderKinds[kind] = true;
+                            } else {
+                                failed.push({ kind: kind, error: result.reason });
+                            }
+                        });
+
+                        if (!failed.length) {
+                            return resolve();
+                        }
+
+                        if (!succeeded.length) {
+                            return reject(failed[0].error);
+                        }
+
+                        // Partial failure: one kind started, the other didn't.
+                        showPartialRecordingFailureDialog(failed[0].kind).then(function (action) {
+                            if (action == 'continue') {
+                                resolve();
+                            } else {
+                                cancelAllActiveRecordings();
+                                reject('cancelled');
+                            }
+                        });
+                    });
+            });
+        }
+
+        function stopVideoRecording() {
+            return new Promise(function (resolve) {
                 if (tool.speechRecognizer) {
-                    //await tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
-                    tool.recorder.stopRecording()
+                    //await tool.videoRecorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
+                    tool.videoRecorder.stopRecording()
                         .then(function (recordingData) {
                             if (tool.speechRecognizer) {
                                 tool.speechRecognizer.stop();
-                                //tool.recorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
+                                //tool.videoRecorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
                                 //console.log('speechRecognizer srt', tool.speechRecognizer.exportJSON())
                             }
 
@@ -508,15 +687,47 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
 
                 } else {
 
-                    tool.recorder.stopRecording()
+                    tool.videoRecorder.stopRecording()
                         .then(function (recordingData) {
                             resolve();
                         })
                         .catch(function () {
                             tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
                             resolve();
-                        });;
+                        });
                 }
+            });
+        }
+
+        function stopAudioRecording() {
+            return new Promise(function (resolve) {
+                tool.audioRecorder.stopRecording()
+                    .then(function (recordingData) {
+                        resolve();
+                    })
+                    .catch(function () {
+                        tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
+                        resolve();
+                    });
+            });
+        }
+
+        function stopRecording() {
+            return new Promise(async function (resolve, reject) {
+                var stops = [];
+
+                if (_activeRecorderKinds.video) {
+                    stops.push(stopVideoRecording());
+                }
+                if (_activeRecorderKinds.audio) {
+                    stops.push(stopAudioRecording());
+                }
+
+                _activeRecorderKinds.video = false;
+                _activeRecorderKinds.audio = false;
+
+                await Promise.allSettled(stops);
+                resolve();
             });
         }
 

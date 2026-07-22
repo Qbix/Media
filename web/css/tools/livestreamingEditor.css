@@ -3021,3 +3021,10 @@
 .live-editor-chat-tool-con .Media_presentation_commands_tool {
     max-width: 100%;
 }
+
+.live-editor-rec-settings-kind {
+    display: flex;
+}
+.live-editor-rec-settings-kind label {
+    display: flex;
+}
