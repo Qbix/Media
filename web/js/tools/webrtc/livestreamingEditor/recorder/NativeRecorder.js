@@ -211,7 +211,6 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
             //console.warn((performance.now() / 1000) + ' commit')
             await commit();
         }
-        //_accessHandle.flush();
     }
 
     async function commit() {
@@ -310,6 +309,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
 
         mediaRecorder.addEventListener('error', function (e) {
             console.log('mediaRecorder: error', e);
+            console.error(e);
         });
         mediaRecorder.addEventListener('pause', function (e) {
             //console.log('mediaRecorder: pause', e);
@@ -432,9 +432,9 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
      * @return {*} 
      */
     this.stopRecording = function (cancel) {
-        console.log('stopRecording');
+        //console.log('stopRecording');
         return new Promise(async function (resolve, reject) {
-            console.log('stopRecording START');
+            //console.log('stopRecording START');
 
             if (_lowQuotaDialog) {
                 Q.Dialogs.close(_lowQuotaDialog);
@@ -471,7 +471,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 _recorderState.finalChunksNumber = _recorderState.producedChunksNumber;
                 //console.log('mediaRecorder: stop 2', e);
             });
-            console.log('stopRecordingOnSever: stop recorder local', _recorderState.mediaRecorder.state);
+            //console.log('stopRecordingOnSever: stop recorder local', _recorderState.mediaRecorder.state);
             if (_recorderState.mediaRecorder && _recorderState.mediaRecorder.state != 'inactive') {
                 //console.log('stopRecordingOnSever: stop recorder local');
                 if (_recorderState.mediaRecorder.stream) {

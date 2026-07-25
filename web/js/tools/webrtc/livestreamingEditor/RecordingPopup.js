@@ -63,17 +63,20 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
         startButtonTimer.className = 'live-editor-drop-down-btn-timer';
         startButtonTextCon.appendChild(startButtonTimer);
 
-        var dropDownArrCon = document.createElement('DIV');
+        /* var dropDownArrCon = document.createElement('DIV');
         dropDownArrCon.className = 'live-editor-drop-down-btn-arr-con';
         startLocRecordingBtnInner.appendChild(dropDownArrCon);
 
         var dropDownArr = document.createElement('DIV');
         dropDownArr.className = 'live-editor-drop-down-btn-arr';
-        dropDownArrCon.appendChild(dropDownArr);
+        dropDownArrCon.appendChild(dropDownArr); */
+
+        let settingsEl = generateSettings();
+        recordingCon.appendChild(settingsEl);
 
         var recordingsContainer = document.createElement('DIV');
         recordingsContainer.className = 'live-editor-stream-to-section-recs';
-        recordingButtons.appendChild(recordingsContainer);
+        recordingCon.appendChild(recordingsContainer);
 
         var getRecordingsBtn = document.createElement('BUTTON');
         getRecordingsBtn.className = 'livestream_button';
@@ -117,8 +120,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             startLocalRecBtn.classList.add('Q_disabled');
         } */
 
-        let settingsEl = generateSettings();
-        Q.activate(
+        /* Q.activate(
             Q.Tool.setUpElement(
                 dropDownArrCon,
                 "Media/webrtc/popupDialog",
@@ -133,7 +135,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             function () {
 
             }
-        );
+        ); */
 
         startButtonTextCon.addEventListener('click', function () {
 
@@ -375,7 +377,6 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                 {
                     bitrate: 128_000,
                     caption: '128 kbps',
-                    default: true
                 },
                 {
                     bitrate: 160_000,
@@ -384,6 +385,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                 {
                     bitrate: 192_000,
                     caption: '192 kbps',
+                    default: true
                 },
                 {
                     bitrate: 256_000,
@@ -409,7 +411,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             ]
 
             let recordingSettings = document.createElement('DIV');
-            recordingSettings.className = 'live-editor-rec-server-dropdown-inner';
+            recordingSettings.className = 'live-editor-stream-to-section-conf';
             /* let locationParam = document.createElement('DIV');
             locationParam.className = 'live-editor-rec-settings-param live-editor-rec-settings-location';
             recordingSettings.appendChild(locationParam); */

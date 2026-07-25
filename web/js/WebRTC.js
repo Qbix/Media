@@ -7635,7 +7635,6 @@
                     '{{Media}}/js/tools/webrtc/EventSystem.js',
                     "{{Media}}/js/tools/webrtc/app.js",
                     "{{Media}}/js/tools/webrtc/HackTimer.js",
-                    "{{Media}}/js/tools/webrtc/RecordRTC.js",
                     "https://accounts.google.com/gsi/client",
                 ], function () {
                     import(Q.url('{{Media}}/js/tools/webrtc/mediabunny.js')).then((Mediabunny) => {
