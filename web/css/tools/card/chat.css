@@ -90,13 +90,18 @@
 }
 
 /* ── + menu items ─────────────────────────────────────────────────────────── */
+/* Emojis are now passed via addMenuItem({ emoji: ... }) and rendered in the
+   icon slot, so they line up with the real image icons of the other addons. */
 
-.Streams_chat_addon.Media_card_chat_stat    .Streams_chat_addon_title:before { content: '📊 '; }
-.Streams_chat_addon.Media_card_chat_glossary .Streams_chat_addon_title:before { content: '📖 '; }
-.Streams_chat_addon.Media_card_chat_quote    .Streams_chat_addon_title:before { content: '💬 '; }
-.Streams_chat_addon.Media_card_chat_profile  .Streams_chat_addon_title:before { content: '👤 '; }
-.Streams_chat_addon.Media_card_chat_article  .Streams_chat_addon_title:before { content: '📰 '; }
-.Streams_chat_addon.Media_card_chat_comparison .Streams_chat_addon_title:before { content: '⚖️ '; }
+.Streams_chat_addon .Streams_chat_addon_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.Streams_chat_addon .Streams_chat_addon_emoji {
+    font-size: 20px;   /* match the rendered width of .Streams_chat_addon_icon img */
+    line-height: 1;
+}
 
 /* ── AI card previews in Streams/chat ──────────────────────────────────── */
 

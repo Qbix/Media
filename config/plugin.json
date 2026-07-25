@@ -30,7 +30,11 @@
 			"Communities/profile/tabs": ["Media/after/Communities_profile_tabs"],
 			"Db/Row/Users_Contact/saveExecute": ["Media/after/Users_Contact_saveExecute"],
 			"Db/Row/Users_Contact/removeExecute": ["Media/after/Users_Contact_removeExecute"],
-			"Users/Label/can": ["Media/after/Users_Label_can"]
+			"Users/Label/can": ["Media/after/Users_Label_can"],
+			"Streams/message/Streams/join": ["Media/after/Streams_message_Streams_join"],
+			"Streams/message/Streams/leave": ["Media/after/Streams_message_Streams_leave"],
+			"Streams/message/Media/livestream/start": ["Media/after/Streams_message_Media_livestream_start"],
+			"Streams/message/Media/livestream/stop": ["Media/after/Streams_message_Media_livestream_stop"],
 		},
 		"text": {
 			"Media": {

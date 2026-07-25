@@ -304,19 +304,28 @@
                 var tool = this;
 
                 stream.onEphemeral('Media/presentation/graph/update').set(function (e) {
-                    // … (move from old _initBackground body verbatim)
+                    if (e && e.action) {
+                        tool._updateGraph(e);
+                    }
                 }, tool);
                 stream.onEphemeral('Media/presentation/table/update').set(function (e) {
-                    // …
+                    if (e && e.action) {
+                        tool._updateTable(e);
+                    }
                 }, tool);
                 stream.onEphemeral('Media/presentation/reaction/burst').set(function (e) {
-                    // …
+                    if (e && e.emoji) {
+                        tool._showReaction(e.emoji);
+                    }
                 }, tool);
                 stream.onEphemeral('Media/livestream/reaction').set(function (e) {
-                    // …
+                    if (e && e.reaction) {
+                        tool._showReaction(e.reaction);
+                    }
                 }, tool);
                 stream.onEphemeral('Q/style').set(function (e) {
-                    // …
+                    if (!e) return;
+                    Q.handle(Q.Socket.onEvent('Q/style'), tool, [e]);
                 }, tool);
             },
 
