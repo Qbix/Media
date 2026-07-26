@@ -29,7 +29,7 @@ Q.Media.WebRTC.livestreaming.Recorder = function (tool) {
                     subtitles: options.subtitles,
                     recording: true,
                     bitrateMode: 'constant',
-                    bitrate: 2_000_000,
+                    bitrate: options.videoBitrate,
                     keyFrameInterval: 1,
                     latencyMode: 'quality',
                     roomStream: roomStream,
@@ -56,13 +56,17 @@ Q.Media.WebRTC.livestreaming.Recorder = function (tool) {
                         return reject(error);
                     });
             } else {
-                _activeRecorder = new Q.Media.WebRTC.livestreaming.NativeRecorder({ 
+                _activeRecorder = new Q.Media.WebRTC.livestreaming.NativeRecorder({
                     livestreamingTool: tool,
                     codecs: options.mediaRecorderCodecs,
+                    videoBitrate: options.videoBitrate,
+                    audioBitrate: options.audioBitrate,
                     publisherId: roomStream.fields.publisherId,
                     streamName: roomStream.fields.name,
                     title: roomStream.fields.title,
                     startTime: roomStream.getAttribute('startTime'),
+                    fileHandle: options.fileHandle,
+                    onRequestStop: options.onRequestStop,
                 });
 
                 _activeRecorder.startRecording()
@@ -110,6 +114,7 @@ Q.Media.WebRTC.livestreaming.Recorder = function (tool) {
     }
 
     this.cancelRecording = function () {
+        console.log('cancelRecording')
         _activeRecorder.cancelRecording();
         _activeRecorder = null;
         tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.recordingCanceled", tool.text) || 'Recording canceled', true);

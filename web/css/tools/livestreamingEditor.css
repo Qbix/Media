@@ -1002,6 +1002,9 @@
     display: inline-block;
     padding: 0;
     user-select: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 .live-editor-stream-to-section-rec .live-editor-rec-start-btn:active,
 .live-editor-stream-to-section-rec .live-editor-rec-start-btn:hover {
@@ -1057,6 +1060,9 @@
     display: flex;
     justify-content: center;
 }
+.live-editor-stream-to-section-recs .livestream_button{
+    width: 100%;
+}
 
 /*save in the cloud checkbox*/
 .webrtc-popup-dialog.live-editor-rec-server-dropdown {
@@ -1068,8 +1074,9 @@
     background-color: #ffffff;
     border-radius: 5px;
 }
-.webrtc-popup-dialog.live-editor-rec-server-dropdown .live-editor-rec-server-dropdown-inner {
+.live-editor-stream-to-section-conf {
     padding: 10px;
+    margin-top: 10px;
     user-select: none;
 }
 .webrtc-popup-dialog.live-editor-rec-server-dropdown.webrtc-popup-dialog-mid-below-position .webrtc-popup-dialog-arrow {
@@ -1077,6 +1084,22 @@
 }
 .webrtc-popup-dialog.live-editor-rec-server-dropdown.webrtc-popup-dialog-mid-below-position .webrtc-popup-dialog-arrow::after {
     border-color: #ffffff;
+}
+
+/*low storage quota warning dialog (shown before/during local recording)*/
+.live-editor-rec-low-storage-warning {
+    padding: 15px;
+    color: red;
+    font-weight: normal;
+    font-size: 18px;
+}
+.live-editor-rec-low-storage-warning p {
+    margin: 0 0 15px;
+}
+.live-editor-rec-low-storage-warning-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
 }
 
 /*end: streaming to facebook/rtmp/p2p broadcast section*/
@@ -3004,4 +3027,22 @@
 }
 .live-editor-chat-tool-con .Media_presentation_commands_tool {
     max-width: 100%;
+}
+
+.live-editor-rec-settings-kind {
+    display: flex;
+}
+.live-editor-rec-settings-kind label {
+    display: flex;
+    margin-left: 15px;
+}
+.live-editor-rec-settings-kind label:first-child {
+    margin-left: 0;
+}
+.live-editor-stream-to-section-conf .live-editor-rec-settings-param {
+    color: white;
+    margin: 10px 0;
+}
+.live-editor-stream-to-section-conf .live-editor-rec-settings-param select{
+    width: 100%;
 }

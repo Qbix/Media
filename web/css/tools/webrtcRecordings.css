@@ -16,7 +16,7 @@
   padding: 5px 0 5px 0;
   margin: 0 0 5px 0;
   /* color: #161616; */
-  border-top: 1px solid #ccc;
+  /* border-top: 1px solid #ccc; */
   border-bottom: 1px solid #ccc;
   font-size: 14px;
 }
@@ -74,6 +74,7 @@
 .webrtc-recordings .webrtc-recordings-tabs {
   display: flex;
   margin-bottom: 10px;
+  display: none;
 }
 .webrtc-recordings .webrtc-recordings-tabs .webrtc-recordings-tabs-item {
   display: flex;
