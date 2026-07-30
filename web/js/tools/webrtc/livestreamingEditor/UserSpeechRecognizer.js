@@ -27,6 +27,7 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
 
     // ===== STATE =====
 
+    const thisInstance = this;
     this.state = 'inactive';
     let recordingStartTime = options.startTimeSinceOrigin;
     let captions = [];
@@ -85,7 +86,7 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
 
     recognition.addEventListener('result', function (event) {
         if(_participant.isLocal && _participant.localMediaControlsState.mic == false) return;
-        if(this.state == 'inactive') return; //result events can still fire after you call SpeechRecognition.stop(), so we should stop adding new captions after recording is stopped
+        if(thisInstance.state == 'inactive') return; //result events can still fire after you call SpeechRecognition.stop(), so we should stop adding new captions after recording is stopped
 
         let interimTranscript = "";
 
@@ -274,7 +275,7 @@ Q.Media.WebRTC.livestreaming.UserSpeechRecognizer = function (options) {
         return captions.map((c, i) => {
             return (
                 formatTime(c.start, '.') + " --> " + formatTime(c.end || now(), '.') + "\n" +
-                c.text.trim() + "\n"
+                "<v " + c.displayName + "><c.userId-" + c.userId + ">" + c.text.trim() + "</c></v>\n"
             );
         }).join("\n");
     };

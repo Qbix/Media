@@ -376,6 +376,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 extension = _audioOnly ? 'weba' : 'webm';
             }
 
+            let baseName = generateFileName();
             let metadata = _recorderState.recordingMetadata = {
                 roomKey: options.publisherId && options.streamName ? options.publisherId + '|' + options.streamName : '',
                 roomStream: options.publisherId ? {
@@ -388,7 +389,8 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                 chunksCounter: 0,
                 chunksUploadedCounter: 0,
                 codec: options.codecs,
-                fileName: generateFileName() + '.' + extension
+                baseName: baseName,
+                fileName: baseName + '.' + extension
             }
 
             if (!_opfsRoot) {
@@ -453,6 +455,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
 
                 if (cancel) return resolve();
 
+                let metadata = _recorderState.recordingMetadata;
                 if (_recorderState != null) {
                     if (_writableHandle) await _writableHandle.close();
                     if (_usingOPFS) {
@@ -463,7 +466,7 @@ Q.Media.WebRTC.livestreaming.NativeRecorder = function (options) {
                     _recorderState.startTime = null;
                     _recorderState.mediaRecorder = null;
                 }
-                resolve();
+                resolve(metadata);
             });
 
             _recorderState.mediaRecorder.addEventListener('stop', function (e) {
