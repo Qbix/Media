@@ -531,7 +531,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             });
         }
 
-        function generateFileName(prefix = 'capture') {
+        function generateFileName(prefix = 'Recording') {
             const now = new Date();
 
             const pad = (value) => String(value).padStart(2, '0');
