@@ -991,6 +991,7 @@
 
 .live-editor-stream-to-section-rec {
     min-width: 250px;
+    position: relative;
 }
 .live-editor-stream-to-section-rec .live-editor-rec-start {
    display: flex;
@@ -1078,6 +1079,16 @@
     padding: 10px;
     margin-top: 10px;
     user-select: none;
+}
+.live-editor-stream-to-section-conf.live-editor-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.live-editor-stream-to-section-conf.live-editor-disabled::after {
+    position: absolute;
+    background-color: #cccccc27;
+    width: 100%;
+    height: 100%;
 }
 .webrtc-popup-dialog.live-editor-rec-server-dropdown.webrtc-popup-dialog-mid-below-position .webrtc-popup-dialog-arrow {
     z-index: 1;

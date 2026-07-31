@@ -322,7 +322,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
         dropDownArr.className = 'live-editor-drop-down-btn-arr';
         dropDownArrCon.appendChild(dropDownArr); */
 
-        let settingsEl = generateSettings();
+        let settingsEl = thisInstance.settingsEl = generateSettings();
         recordingCon.appendChild(settingsEl);
 
         var recordingsContainer = document.createElement('DIV');
@@ -672,7 +672,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             [
                 { kind: 'video', caption: 'Video', checked: recordingParams.recording.video }, 
                 { kind: 'audio', caption: 'Audio',  checked: recordingParams.recording.audio },
-                { kind: 'transcript', caption: 'Transcript',  checked: recordingParams.recording.audio },
+                { kind: 'transcript', caption: 'Transcript',  checked: recordingParams.recording.transcript },
             
             ].forEach(function (kindItem) {
                 let kindParamType = document.createElement('LABEL');
@@ -983,7 +983,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                         .then(function (recordingData) {
                             resolve();
                         })
-                        .catch(function () {
+                        .catch(function (e) {
                             console.error(e);
                             tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
                             resolve();
@@ -998,7 +998,8 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                     .then(function (recordingData) {
                         resolve();
                     })
-                    .catch(function () {
+                    .catch(function (e) {
+                        console.error(e);
                         tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
                         resolve();
                     });
@@ -1032,9 +1033,11 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
         function updateRecordingUI() {
             if (tool.state.localRecording.state == 'pending') {
                 startLocRecordingBtn.classList.add('Q_working');
+                thisInstance.settingsEl.classList.add('live-editor-disabled');
             } else if (tool.state.localRecording.state == 'active') {
                 startLocRecordingBtn.classList.remove('Q_working');
                 startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
+                thisInstance.settingsEl.classList.add('live-editor-disabled');
                 startButtonText.innerHTML = 'Stop Recording';
                 startButtonTimer.innerHTML = '';
                 tool.streamingAndRecording.showLiveIndicator('rec');
@@ -1045,6 +1048,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                 _localRecordingTimer.start();
             } else { //inactive
                 startLocRecordingBtn.classList.remove('Q_working');
+                thisInstance.settingsEl.classList.remove('live-editor-disabled');
                 startLocRecordingBtn.classList.remove('live-editor-rec-start-btn-active');
                 startButtonText.innerHTML = 'Start Recording';
                 startButtonTimer.innerHTML = '';
