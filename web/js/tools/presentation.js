@@ -503,7 +503,6 @@
                     tool.cardSwitchQueue.push({ args: Array.prototype.slice.call(arguments) });
                     return;
                 }
-                tool.pendingCardSwitching = true;
                 var displayTools = {
                     'Media/card/stat': 'Media/presentation/card/stat',
                     'Media/card/glossary': 'Media/presentation/card/glossary',
@@ -546,6 +545,7 @@
 
                 function activateCardTool() {
                     console.log('aaaaaaa 3')
+                    tool.pendingCardSwitching = true;
                     Q.activate(cardEl, {}, function () {
                         var cardTool = tool._currentForegroundTool = this;
                         tool.aiToolsElement.appendChild(cardEl);
