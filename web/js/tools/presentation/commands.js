@@ -53,6 +53,7 @@
             '<span class="Media_presentation_commands_title">Control</span>' +
             '<div class="Media_presentation_commands_header_right">' +
             '  <button class="Media_presentation_commands_mic_btn" title="Start / stop microphone">' +
+            '    <img class="Media_presentation_commands_mic_btn_animation" src="' + (Q.url('{{Media}}/img/listening_circles.svg')) + '" alt="Listening Animation">' +
             '    <svg class="Media_presentation_commands_mic_icon" viewBox="0 0 24 24" width="22" height="22"' +
             '         fill="currentColor" aria-hidden="true">' +
             '      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66' +
@@ -184,6 +185,10 @@
             autoMic: false,
             screenUrl: null,
             isOwnLivestream: false,
+            sounds: {
+                startedListening: { url: Q.url('{{Media}}/audio/started_listening.mp3') },
+                endedListening: { url: Q.url('{{Media}}/audio/end_listening.mp3') }
+            },
             // Per-participant stream (participant's own stream, related to presentation)
             // publishedBy the logged-in user, used for their personal tool state
             toolPublisherId: null,
@@ -508,11 +513,42 @@
                     autoRestart: true,   // iOS Safari stops on silence — auto-restart
                 });
 
+
+                //Q.Speech.Recognition.onResult.removeAllHandlers()
+                /* let fileText = Q.url('{{baseUrl}}/Q/uploads/podcast_transcript.json');
+                tool.processTranscriptStream(fileText); */
                 state._micActive = true;
-                tool._updateMicUI(true);
+                tool._updateMicUI('active');
 
                 // Open the transcript session for all users — role guard is on the server
                 tool._connectTranscript();
+            },
+
+            processTranscriptStream: async function (url) {
+                try {
+                    // 1. Fetch the file via URL
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    // 2. Parse the JSON file
+                    const data = await response.json();
+
+                    // Helper delay function
+                    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+                    // 3. Iterate through each object with a 100ms timeout delay
+                    let i = 0;
+                    for (const item of data) {
+                        console.log(i +'/' + data.length)
+                        Q.Streams.Transcript.send(item);
+                        i++
+                        //await delay(100);
+                    }
+                } catch (error) {
+                    console.error("Failed to process transcript stream:", error);
+                }
             },
 
             _stopMic: function () {
@@ -574,11 +610,28 @@
                 });
             },
 
-            _updateMicUI: function (active) {
-                var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
-                $btn.toggleClass('Media_presentation_commands_mic_active', active);
-                $btn.attr('title', active ? 'Stop microphone' : 'Start microphone');
+            _updateMicUI: function (state) {
+                if (state == 'active') {
+                    var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
+                    $btn.toggleClass('Media_presentation_commands_mic_active', true);
+                    $btn.attr('title', 'Stop microphone');
+                } else if (state == 'startedListening' || state == 'endedListening') {
+                    var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
+                    if(state == 'startedListening') {
+                        $btn.toggleClass('Media_presentation_commands_mic_listening', true);
+
+                    } else {
+                        $btn.toggleClass('Media_presentation_commands_mic_listening', false);
+                    }
+                } else {
+                    var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
+                    $btn.toggleClass('Media_presentation_commands_mic_active', false);
+                    $btn.toggleClass('Media_presentation_commands_mic_listening', false);
+                    $btn.attr('title', 'Start microphone');
+                }
                 // Pulsing red dot appears via CSS when active class is set
+
+                //background: url("animation.svg") center / contain no-repeat;
             },
 
             // ── Transcript session ───────────────────────────────────────────────────
@@ -596,7 +649,21 @@
 
                 // Server echoes back all final transcripts for caption display
                 Q.Socket.onEvent('Streams/utterance').set(function (data) {
-                    tool._showCaption(data.transcript);
+                    //tool._showCaption(data.transcript);
+                }, tool);
+
+
+                Q.Socket.onEvent('Streams/startedListening').set(function (data) {
+                    tool._updateMicUI('startedListening');
+                    tool._playSound('startedListening');
+                }, tool);
+                Q.Socket.onEvent('Streams/endedListening').set(function (data) {
+                    tool._updateMicUI('endedListening');
+                    tool._playSound('endedListening');
+                }, tool);
+                Q.Socket.onEvent('Streams/pendingListening').set(function (data) {
+                    //tool._showCurrentRequest(data.requestText);
+                    tool._showCaption(data.requestText);
                 }, tool);
 
                 // Relay ephemeral events to the presentation stream
@@ -1460,6 +1527,17 @@
                 $cap.text(text);
                 clearTimeout(this._captionTimer);
                 this._captionTimer = setTimeout(function () { $cap.text(''); }, 4000);
+            },
+
+            _playSound: function (type, volume = 1) {
+                if(this.state.sounds[type].player) {
+                    this.state.sounds[type].player.currentTime = 0;
+                    this.state.sounds[type].player.play();
+                } else {
+                    this.state.sounds[type].player = new Audio(this.state.sounds[type].url);
+                    this.state.sounds[type].player.volume = volume;
+                    this.state.sounds[type].player.play();
+                }
             },
 
             // ── Proposal feed (host only) ──────────────────────────────────────────

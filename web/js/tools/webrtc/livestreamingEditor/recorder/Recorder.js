@@ -89,7 +89,7 @@ Q.Media.WebRTC.livestreaming.Recorder = function (tool) {
         });
     }
 
-    this.stopRecording = function(download) {
+    this.stopRecording = function() {
          return new Promise(function (resolve, reject) {
             if(!_activeRecorder) {
                 return reject('No active recordings');

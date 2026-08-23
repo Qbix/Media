@@ -14,6 +14,8 @@
         remove: '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.87 122.87"><title>remove</title><path d="M18,18A61.45,61.45,0,1,1,0,61.44,61.28,61.28,0,0,1,18,18ZM77.38,39l6.53,6.54a4,4,0,0,1,0,5.63L73.6,61.44,83.91,71.75a4,4,0,0,1,0,5.63l-6.53,6.53a4,4,0,0,1-5.63,0L61.44,73.6,51.13,83.91a4,4,0,0,1-5.63,0L39,77.38a4,4,0,0,1,0-5.63L49.28,61.44,39,51.13a4,4,0,0,1,0-5.63L45.5,39a4,4,0,0,1,5.63,0L61.44,49.28,71.75,39a4,4,0,0,1,5.63,0ZM61.44,10.54a50.91,50.91,0,1,0,36,14.91,50.83,50.83,0,0,0-36-14.91Z"/></svg>'
     }    
 
+    let _streamingIcons = Q.getObject('Q.Media.WebRTC.livestreaming.streamingIcons');
+    
     /**
      * Media/webrtc/recordings tool.
      * Shows local and server webrtc recordings
@@ -215,8 +217,8 @@
                 }
 
                 tool.getLocalRecordings().then(function (recordings) {
-                  tool.listOfLocalRecordedRooms = createListOfRecordedRooms(recordings);
-                  listOfLocalRecordings.appendChild(tool.listOfLocalRecordedRooms);
+                    tool.listOfLocalRecordedRooms = createListOfRecordedRooms(recordings);
+                    listOfLocalRecordings.appendChild(tool.listOfLocalRecordedRooms);
                 })
 
                 async function saveUnfinishedRecordings(download) {
@@ -392,6 +394,14 @@
                             },
                         };
 
+                        for(let w in Q.Media.WebRTCRooms) {
+                            let roomStream = Q.Media.WebRTCRooms[w].roomStream();
+                            if(room.room.name == roomStream.fields.name && room.room.publisherId == roomStream.fields.publisherId) {
+                                room.room.ongoing = true;
+                                break;
+                            }
+                        }
+
                         let recordingSessions = {};
                         for(let c in recordings[r]) {
                             let chunkItem = recordings[r][c];
@@ -404,6 +414,7 @@
                                     format: chunkItem.format,
                                     storage: chunkItem.storage,
                                     fileHandle: chunkItem.fileHandle,
+                                    codec: chunkItem.codec
                                  };
                             }
                         }
@@ -435,7 +446,7 @@
                     listOfRecordedRooms.appendChild(loadMoreButtonCon);
                     let loadMoreButton = document.createElement('BUTTON');
                     loadMoreButton.className = 'webrtc-recordings-ser-list-more-btn';
-                    loadMoreButton.innerHTML = 'Load';
+                    loadMoreButton.innerHTML = 'Load more';
                     loadMoreButtonCon.appendChild(loadMoreButton);
 
                     loadMoreButton.addEventListener('click', fetchMore);
@@ -463,7 +474,9 @@
 
                     //tool.reloadLocalTabContent = reloadListOfRooms;
 
-                    function fetchMore() {
+                    function fetchMore(e) {
+                        if(e) e.stopPropagation();
+                        if(e) e.preventDefault();
                         if (_fetchedAll) {
                             return;
                         }
@@ -477,6 +490,12 @@
 
                             if (listOfRoomStreams.length != 0) {
                                 loadMoreButton.classList.remove('webrtc-recordings-btn-disabled');
+                            }
+
+                            if(roomsListContent.childElementCount == _recordingsFromDB.length) {
+                                loadMoreButton.classList.add('webrtc-recordings-btn-hidden');
+                            } else {
+                                loadMoreButton.classList.remove('webrtc-recordings-btn-hidden');
                             }
 
                             if (_fetchQueue.length != 0 && listOfRoomStreams.length != 0) {
@@ -520,7 +539,13 @@
                             let roomInfoContainerInner = document.createElement('DIV');
                             roomInfoContainerInner.className = 'webrtc-recordings-ser-list-item-inner';
                             roomInfoContainer.appendChild(roomInfoContainerInner);
-    
+                            if (recItem.room.ongoing) {
+                                let roomIsLive = document.createElement('DIV');
+                                roomIsLive.className = 'webrtc-recordings-ser-list-item-live';
+                                roomIsLive.innerHTML = 'ongoing';
+                                roomInfoContainerInner.appendChild(roomIsLive);
+                            }
+
                             let roomInfoTitle = document.createElement('DIV');
                             roomInfoTitle.className = 'webrtc-recordings-ser-list-item-title';
                             roomInfoTitle.innerHTML = recItem.room.title;
@@ -535,8 +560,39 @@
                             roomInfoContainer.appendChild(expandableCon);
     
                             roomInfoContainer.addEventListener('click', function () {
-                                showRoomRecordings(recItem);
+                                //showRoomRecordings(recItem);
+                                if (!recItem.expandableTool.state.expanded) {
+                                    recItem.expandableContentEl.innerHTML = '';
+                                        createListOfRecordingsByRoom(recItem).then(function (roomRecordings) {
+                                            tool.activeListOfLocalRecordings = roomRecordings;
+                                            recItem.expandableContentEl.appendChild(tool.activeListOfLocalRecordings.listOfRecordingsEl);
+                                            recItem.expandableTool.expand();
+                                        });
+                                   
+                                } else {
+                                    recItem.expandableContentEl.innerHTML = '';
+                                    recItem.expandableTool.collapse();
+                                }
                             });
+
+                            Q.activate(
+                                Q.Tool.setUpElement(
+                                    expandableCon,
+                                    'Q/expandable',
+                                    {
+                                        title: '',
+                                        content: '',
+                                        evenIfFilled: true,
+                                        scrollContainer: false
+                                    },
+                                    ''
+                                ),
+                                {},
+                                function () {
+                                    recItem.expandableTool = this;
+                                    recItem.expandableContentEl = recItem.expandableTool.element.querySelector('.Q_expandable_content');
+                                }
+                            );
                             
                             Q.activate(
                                 Q.Tool.setUpElement(
@@ -579,143 +635,168 @@
                 }
 
                 function createListOfRecordingsByRoom(roomItem) {
-                    let _currentHeight = 0;
-                    let _currentOffset = 0;
-                    let _limit = 5;
-                    let _isFetching = false;
-                    let _fetchedAll = false;
-                    let _fetchQueue = [];
+                    return new Promise(function (resolve, reject) {
+                        let _currentHeight = 0;
+                        let _currentOffset = 0;
+                        let _limit = 5;
+                        let _isFetching = false;
+                        let _fetchedAll = false;
+                        let _fetchQueue = [];
 
-                    let listOfRecordings = document.createElement('DIV');
-                    listOfRecordings.className = 'webrtc-recordings-ser-recs';
-                    listOfLocalRecordings.appendChild(listOfRecordings);
+                        let listOfRecordings = document.createElement('DIV');
+                        listOfRecordings.className = 'webrtc-recordings-ser-recs';
+                        //listOfLocalRecordings.appendChild(listOfRecordings);
 
-                    let listEl = document.createElement('DIV');
-                    listEl.className = 'webrtc-recordings-ser-recs-list';
-                    listOfRecordings.appendChild(listEl);
+                        let listEl = document.createElement('DIV');
+                        listEl.className = 'webrtc-recordings-ser-recs-list';
+                        listOfRecordings.appendChild(listEl);
 
-                    let loadMoreButtonCon = document.createElement('DIV');
-                    loadMoreButtonCon.className = 'webrtc-recordings-ser-list-more';
-                    listOfRecordings.appendChild(loadMoreButtonCon);
-                    let loadMoreButton = document.createElement('BUTTON');
-                    loadMoreButton.className = 'webrtc-recordings-ser-list-more-btn';
-                    loadMoreButton.innerHTML = 'Load';
-                    loadMoreButtonCon.appendChild(loadMoreButton);
+                        let loadMoreButtonCon = document.createElement('DIV');
+                        loadMoreButtonCon.className = 'webrtc-recordings-ser-list-more';
+                        listOfRecordings.appendChild(loadMoreButtonCon);
+                        let loadMoreButton = document.createElement('BUTTON');
+                        loadMoreButton.className = 'webrtc-recordings-ser-list-more-btn';
+                        loadMoreButton.innerHTML = 'Load more';
+                        loadMoreButtonCon.appendChild(loadMoreButton);
 
-                    loadMoreButton.addEventListener('click', fetchMore);
+                        loadMoreButton.addEventListener('click', fetchMore);
 
-                    fetchMore();
-
-                    return {
-                        listOfRecordingsEl: listOfRecordings,
-                        remove: function () {
-                            if(listOfRecordings) {
-                                listOfRecordings.remove();
-                            }
-                        }
-                    };
-
-                    function showButtonLoader() {
-                        loadMoreButton.classList.add('webrtc-recordings-btn-loading');
-                    }
-
-                    function hideButtonLoader() {
-                        loadMoreButton.classList.remove('webrtc-recordings-btn-loading');
-                    }
-
-                    function fetchMore() {
-                        if (_fetchedAll) {
-                            return;
-                        }
-                        if (_isFetching) {
-                            _fetchQueue.push({ foo: 'bar' });
-                            return;
-                        }
-                        _isFetching = true;
-                        showButtonLoader();
-                        getMeetingRecordings(_currentOffset, _limit).then(function (recordingsList) {
-                            hideButtonLoader();
-                            renderListOfRecordings(recordingsList);
-                            _currentOffset += _limit;
-                            _isFetching = false;
-
-                            if (recordingsList.length != 0) {
-                                loadMoreButton.classList.remove('webrtc-recordings-btn-disabled');
-                            }
-
-                            if (recordingsList.length == 0) {
-                                _fetchQueue = [];
-                                _fetchedAll = true;
-                                loadMoreButton.classList.add('webrtc-recordings-btn-disabled');
-                            }
+                        fetchMore().then(function () {
+                            resolve({
+                                listOfRecordingsEl: listOfRecordings,
+                                remove: function () {
+                                    if (listOfRecordings) {
+                                        listOfRecordings.remove();
+                                    }
+                                }
+                            });
                         });
-                    }
 
-                    function getMeetingRecordings(offset, limit) {
-                        return new Promise(function (resolve, reject) {
-                            let recordings = roomItem.recordings.slice(offset, offset + limit); 
-                            resolve(recordings);
-                        });
-                    }
+                        function showButtonLoader() {
+                            loadMoreButton.classList.add('webrtc-recordings-btn-loading');
+                        }
 
-                    function renderListOfRecordings(recordingsList) {
-                        for(let i in recordingsList) {
-                            let recordingItem = recordingsList[i];
-                            //let attributes = JSON.parse(recordingStream.attributes);
-                            //link = Q.url(attributes.link);
+                        function hideButtonLoader() {
+                            loadMoreButton.classList.remove('webrtc-recordings-btn-loading');
+                        }
 
-                            let roomInfoContainer = document.createElement('DIV');
-                            roomInfoContainer.className = 'webrtc-recordings-ser-list-item';
-                            listEl.appendChild(roomInfoContainer);
-    
-                            let roomInfoContainerInner = document.createElement('DIV');
-                            roomInfoContainerInner.className = 'webrtc-recordings-ser-list-item-inner';
-                            roomInfoContainer.appendChild(roomInfoContainerInner);
-    
-                            let roomInfoDate = document.createElement('DIV');
-                            roomInfoDate.className = 'webrtc-recordings-ser-list-item-date';
-                            roomInfoContainerInner.appendChild(roomInfoDate);
-    
-                            let controlsCon = document.createElement('DIV');
-                            controlsCon.className = 'webrtc-recordings-ser-list-item-controls';
-                            roomInfoContainerInner.appendChild(controlsCon);
-    
-                            let remove = document.createElement('DIV');
-                            remove.className = 'webrtc-recordings-controls-item webrtc-recordings-ser-list-item-remove';
-                            remove.innerHTML = _icons.remove;
-                            controlsCon.appendChild(remove);
-    
-                            let download = document.createElement('DIV');
-                            download.className = 'webrtc-recordings-controls-item webrtc-recordings-ser-list-item-download';
-                            download.innerHTML = _icons.download;
-                            if(recordingItem.format == 'opfs') controlsCon.appendChild(download); //TODO: implement removing chunks from indexedDb or refactor webm recording
+                        function fetchMore(e) {
+                            return new Promise(function (resolve, reject) {
+                                if (e) e.stopPropagation();
+                                if (e) e.preventDefault();
+                                if (_fetchedAll) {
+                                    return;
+                                }
+                                if (_isFetching) {
+                                    _fetchQueue.push({ foo: 'bar' });
+                                    return;
+                                }
+                                _isFetching = true;
+                                showButtonLoader();
+                                getMeetingRecordings(_currentOffset, _limit).then(function (recordingsList) {
+                                    hideButtonLoader();
+                                    renderListOfRecordings(recordingsList);
+                                    _currentOffset += _limit;
+                                    _isFetching = false;
 
-                            remove.addEventListener('click', function (e) {
-                                e.stopPropagation();
-                                e.preventDefault();
-                                tool.localRecordingsDB.delete(recordingItem.objectId,'recordings').then(function () {
-                                    tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
-                                        fileHandle.remove();
-                                    }).catch(function (e) {
-                                         console.error(e);
+                                    if (recordingsList.length != 0) {
+                                        loadMoreButton.classList.remove('webrtc-recordings-btn-disabled');
+                                    }
+                                    
+                                    if (listEl.childElementCount == roomItem.recordings.length) {
+                                        loadMoreButton.classList.add('webrtc-recordings-btn-hidden');
+                                    } else {
+                                        loadMoreButton.classList.remove('webrtc-recordings-btn-hidden');
+                                    }
+
+                                    if (recordingsList.length == 0) {
+                                        _fetchQueue = [];
+                                        _fetchedAll = true;
+                                        loadMoreButton.classList.add('webrtc-recordings-btn-disabled');
+                                    }
+                                    resolve();
+                                });
+                            });
+                        }
+
+                        function getMeetingRecordings(offset, limit) {
+                            return new Promise(function (resolve, reject) {
+                                let recordings = roomItem.recordings.slice(offset, offset + limit);
+                                resolve(recordings);
+                            });
+                        }
+
+                        function renderListOfRecordings(recordingsList) {
+                            for (let i in recordingsList) {
+                                let recordingItem = recordingsList[i];
+                                //let attributes = JSON.parse(recordingStream.attributes);
+                                //link = Q.url(attributes.link);
+
+                                let roomInfoContainer = document.createElement('DIV');
+                                roomInfoContainer.className = 'webrtc-recordings-ser-list-item';
+                                listEl.appendChild(roomInfoContainer);
+
+                                let roomInfoContainerInner = document.createElement('DIV');
+                                roomInfoContainerInner.className = 'webrtc-recordings-ser-list-item-inner';
+                                roomInfoContainer.appendChild(roomInfoContainerInner);
+                                
+                                if(_streamingIcons) {
+                                    let roomInfoDate = document.createElement('DIV');
+                                    roomInfoDate.className = 'webrtc-recordings-ser-list-item-kind';
+                                    roomInfoContainerInner.appendChild(roomInfoDate);
+                                    if(recordingItem.codec && recordingItem.codec.indexOf('audio') != -1) {
+                                        roomInfoDate.innerHTML = _streamingIcons.enabledSpeaker;
+                                    } else {
+                                        roomInfoDate.innerHTML = _streamingIcons.participantsEnabledCamera;
+                                    }
+                                }
+
+                                let roomInfoDate = document.createElement('DIV');
+                                roomInfoDate.className = 'webrtc-recordings-ser-list-item-date';
+                                roomInfoContainerInner.appendChild(roomInfoDate);
+
+                                let controlsCon = document.createElement('DIV');
+                                controlsCon.className = 'webrtc-recordings-ser-list-item-controls';
+                                roomInfoContainerInner.appendChild(controlsCon);
+
+                                let remove = document.createElement('DIV');
+                                remove.className = 'webrtc-recordings-controls-item webrtc-recordings-ser-list-item-remove';
+                                remove.innerHTML = _icons.remove;
+                                controlsCon.appendChild(remove);
+
+                                let download = document.createElement('DIV');
+                                download.className = 'webrtc-recordings-controls-item webrtc-recordings-ser-list-item-download';
+                                download.innerHTML = _icons.download;
+                                if (recordingItem.format == 'opfs') controlsCon.appendChild(download); //TODO: implement removing chunks from indexedDb or refactor webm recording
+
+                                remove.addEventListener('click', function (e) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    tool.localRecordingsDB.delete(recordingItem.objectId, 'recordings').then(function () {
+                                        tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
+                                            fileHandle.remove();
+                                        }).catch(function (e) {
+                                            console.error(e);
+                                        });
+                                        roomInfoContainer.parentElement.removeChild(roomInfoContainer);
+
                                     });
-                                    roomInfoContainer.parentElement.removeChild(roomInfoContainer);
 
                                 });
-                                
-                            });
-                            
-                            roomInfoContainer.addEventListener('click', function () {
-                                let dateFormat = new Date(parseInt(recordingItem.startTime));
-                                let downloadName = dateFormat.getDate() +
-                                    "-" + (dateFormat.getMonth() + 1) +
-                                    "-" + dateFormat.getFullYear() +
-                                    "_" + dateFormat.getHours() +
-                                    "-" + dateFormat.getMinutes() +
-                                    "-" + dateFormat.getSeconds();
 
-                                if (recordingItem.fileHandle || recordingItem.storage == 'opfs') {
-                                    //tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
+                                roomInfoContainer.addEventListener('click', function (e) {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    let dateFormat = new Date(parseInt(recordingItem.startTime));
+                                    let downloadName = dateFormat.getDate() +
+                                        "-" + (dateFormat.getMonth() + 1) +
+                                        "-" + dateFormat.getFullYear() +
+                                        "_" + dateFormat.getHours() +
+                                        "-" + dateFormat.getMinutes() +
+                                        "-" + dateFormat.getSeconds();
+
+                                    if (recordingItem.fileHandle || recordingItem.storage == 'opfs') {
+                                        //tool.opfsRoot.getFileHandle(recordingItem.recordingId + '.' + recordingItem.format).then(function (fileHandle) {
                                         recordingItem.fileHandle.getFile().then(function (file) {
                                             const url = URL.createObjectURL(file);
                                             let downloadLink = document.createElement('A');
@@ -730,52 +811,52 @@
                                                 downloadLink.remove();
                                             }, 1000);
                                         });
-                                    /* }).catch(function (e) {
-                                        console.error(e);
-                                    }); */
-                                } else {
-                                    tool.downloadFromIndexedDB(recordingItem, downloadName);
-                                }
-                            });
-                            
-                            Q.activate(
-                                Q.Tool.setUpElement(
-                                    "DIV",
-                                    "Q/timestamp",
-                                    {
-                                        time: recordingItem.startTime,
-                                        capitalized: true,
-                                        relative: false,
-                                        format: '{day-week} {date+week} {year+year} %l:%M:%S %P'
+                                        /* }).catch(function (e) {
+                                            console.error(e);
+                                        }); */
+                                    } else {
+                                        tool.downloadFromIndexedDB(recordingItem, downloadName);
                                     }
-                                ),
-                                {},
-                                function () {
-                                    let tool = this;
-                                    setTimeout(function () {
-                                        roomInfoDate.innerHTML = tool.element.textContent;
-                                        Q.activate(
-                                            Q.Tool.setUpElement(
-                                                "DIV",
-                                                "Q/timestamp",
-                                                {
-                                                    time: recordingItem.startTime,
-                                                    capitalized: true,
-                                                    relative: true
-                                                }
-                                            ),
-                                            {},
-                                            function () {
-                                                let tool = this;
-                                                roomInfoDate.innerHTML += ' (' + tool.element.textContent + ')';
-                                            }
-                                        );
-                                    }, 200)
-                                }
-                            );
-                        }
-                    }
+                                });
 
+                                Q.activate(
+                                    Q.Tool.setUpElement(
+                                        "DIV",
+                                        "Q/timestamp",
+                                        {
+                                            time: recordingItem.startTime,
+                                            capitalized: true,
+                                            relative: false,
+                                            format: '{day-week} {date+week} {year+year} %l:%M:%S %P'
+                                        }
+                                    ),
+                                    {},
+                                    function () {
+                                        let tool = this;
+                                        setTimeout(function () {
+                                            roomInfoDate.innerHTML = tool.element.textContent;
+                                            Q.activate(
+                                                Q.Tool.setUpElement(
+                                                    "DIV",
+                                                    "Q/timestamp",
+                                                    {
+                                                        time: recordingItem.startTime,
+                                                        capitalized: true,
+                                                        relative: true
+                                                    }
+                                                ),
+                                                {},
+                                                function () {
+                                                    let tool = this;
+                                                    roomInfoDate.innerHTML += ' (' + tool.element.textContent + ')';
+                                                }
+                                            );
+                                        }, 200)
+                                    }
+                                );
+                            }
+                        }
+                    });
                 }
 
                 function renderBreadcrumbs(roomTitle, recordingIndex) {

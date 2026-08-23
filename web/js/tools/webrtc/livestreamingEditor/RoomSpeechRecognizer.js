@@ -25,6 +25,7 @@ Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer = function (options) {
             if (speechRecognizers.has(participant)) continue;
 
             const userSpeechRecognizer = new Q.Media.WebRTC.livestreaming.UserSpeechRecognizer({
+                lang: options.lang,
                 autoRestart: true,
                 startTimeSinceOrigin: options.startTimeSinceOrigin,
                 participant: participant,
@@ -77,10 +78,25 @@ Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer = function (options) {
         return captions.map((c, i) => {
             return (
                 formatTime(c.start, '.') + " --> " + formatTime(c.end || now(), '.') + "\n" +
-                c.text.trim() + "\n"
+                "<v " + c.displayName + "><c.userId-" + c.userId + ">" + c.text.trim() + "</c></v>\n"
             );
         }).join("\n");
     };
+
+    this.downloadVtt = function (filename = "subtitles") {
+        const content = this.exportWebVTT();
+        const blob = new Blob([content], { type: "text/vtt" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename + '.vtt';
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
     this.saveToIndexedDB = function () {
 

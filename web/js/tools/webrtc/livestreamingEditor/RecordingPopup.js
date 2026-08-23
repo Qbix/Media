@@ -25,8 +25,259 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
         },
         recording: {
             video: true,
-            audio: false
+            audio: false,
+            transcript: false
+        },
+        transcriptLang: null
+    }
+
+    /**
+ * getSupportedSpeechRecognitionLanguages()
+ *
+ * Returns an array of { lang, langString } objects representing languages
+ * commonly supported by the Web Speech API's SpeechRecognition interface,
+ * sorted so that:
+ *
+ *   1. The page's default language (<html lang="...">), if it matches a
+ *      supported entry, comes first and gets `default: true`.
+ *   2. Languages from navigator.languages come next, in the user's
+ *      preference order (skipping anything already placed in step 1).
+ *   3. Every remaining supported language follows, in table order.
+ *
+ * IMPORTANT CAVEAT:
+ * The Web Speech API spec does NOT define a fixed list of supported
+ * languages — that's entirely up to the underlying recognition service
+ * (e.g. Chrome's cloud-based engine, or a given OS's on-device engine).
+ * The table below reflects the commonly documented set of BCP-47 tags
+ * Chrome's speech recognition service has historically accepted. It is
+ * NOT guaranteed by spec, may differ across browsers/OS versions, and
+ * can change without notice. If you need certainty for a given tag, use
+ * SpeechRecognition.available({ langs: [...] }) where supported, or test
+ * on your target browsers directly.
+ */
+    function getSupportedSpeechRecognitionLanguages() {
+        const ALL_LANGUAGES = [
+            { lang: 'af-ZA', langString: 'Afrikaans' },
+            { lang: 'am-ET', langString: 'Amharic' },
+            { lang: 'ar-AE', langString: 'Arabic (United Arab Emirates)' },
+            { lang: 'ar-BH', langString: 'Arabic (Bahrain)' },
+            { lang: 'ar-DZ', langString: 'Arabic (Algeria)' },
+            { lang: 'ar-EG', langString: 'Arabic (Egypt)' },
+            { lang: 'ar-IL', langString: 'Arabic (Israel)' },
+            { lang: 'ar-IQ', langString: 'Arabic (Iraq)' },
+            { lang: 'ar-JO', langString: 'Arabic (Jordan)' },
+            { lang: 'ar-KW', langString: 'Arabic (Kuwait)' },
+            { lang: 'ar-LB', langString: 'Arabic (Lebanon)' },
+            { lang: 'ar-MA', langString: 'Arabic (Morocco)' },
+            { lang: 'ar-OM', langString: 'Arabic (Oman)' },
+            { lang: 'ar-PS', langString: 'Arabic (Palestinian Territories)' },
+            { lang: 'ar-QA', langString: 'Arabic (Qatar)' },
+            { lang: 'ar-SA', langString: 'Arabic (Saudi Arabia)' },
+            { lang: 'ar-TN', langString: 'Arabic (Tunisia)' },
+            { lang: 'ar-YE', langString: 'Arabic (Yemen)' },
+            { lang: 'az-AZ', langString: 'Azerbaijani' },
+            { lang: 'eu-ES', langString: 'Basque' },
+            { lang: 'bn-BD', langString: 'Bengali (Bangladesh)' },
+            { lang: 'bn-IN', langString: 'Bengali (India)' },
+            { lang: 'bs-BA', langString: 'Bosnian' },
+            { lang: 'bg-BG', langString: 'Bulgarian' },
+            { lang: 'ca-ES', langString: 'Catalan' },
+            { lang: 'zh-CN', langString: 'Chinese (Simplified, China)' },
+            { lang: 'zh-HK', langString: 'Chinese (Traditional, Hong Kong)' },
+            { lang: 'zh-TW', langString: 'Chinese (Traditional, Taiwan)' },
+            { lang: 'hr-HR', langString: 'Croatian' },
+            { lang: 'cs-CZ', langString: 'Czech' },
+            { lang: 'da-DK', langString: 'Danish' },
+            { lang: 'nl-BE', langString: 'Dutch (Belgium)' },
+            { lang: 'nl-NL', langString: 'Dutch (Netherlands)' },
+            { lang: 'en-AU', langString: 'English (Australia)' },
+            { lang: 'en-CA', langString: 'English (Canada)' },
+            { lang: 'en-GB', langString: 'English (United Kingdom)' },
+            { lang: 'en-GH', langString: 'English (Ghana)' },
+            { lang: 'en-IN', langString: 'English (India)' },
+            { lang: 'en-IE', langString: 'English (Ireland)' },
+            { lang: 'en-KE', langString: 'English (Kenya)' },
+            { lang: 'en-NG', langString: 'English (Nigeria)' },
+            { lang: 'en-NZ', langString: 'English (New Zealand)' },
+            { lang: 'en-PH', langString: 'English (Philippines)' },
+            { lang: 'en-ZA', langString: 'English (South Africa)' },
+            { lang: 'en-TZ', langString: 'English (Tanzania)' },
+            { lang: 'en-US', langString: 'English (United States)' },
+            { lang: 'et-EE', langString: 'Estonian' },
+            { lang: 'fil-PH', langString: 'Filipino' },
+            { lang: 'fi-FI', langString: 'Finnish' },
+            { lang: 'fr-BE', langString: 'French (Belgium)' },
+            { lang: 'fr-CA', langString: 'French (Canada)' },
+            { lang: 'fr-FR', langString: 'French (France)' },
+            { lang: 'fr-CH', langString: 'French (Switzerland)' },
+            { lang: 'gl-ES', langString: 'Galician' },
+            { lang: 'ka-GE', langString: 'Georgian' },
+            { lang: 'de-AT', langString: 'German (Austria)' },
+            { lang: 'de-DE', langString: 'German (Germany)' },
+            { lang: 'de-CH', langString: 'German (Switzerland)' },
+            { lang: 'el-GR', langString: 'Greek' },
+            { lang: 'gu-IN', langString: 'Gujarati' },
+            { lang: 'he-IL', langString: 'Hebrew' },
+            { lang: 'hi-IN', langString: 'Hindi' },
+            { lang: 'hu-HU', langString: 'Hungarian' },
+            { lang: 'is-IS', langString: 'Icelandic' },
+            { lang: 'id-ID', langString: 'Indonesian' },
+            { lang: 'it-IT', langString: 'Italian (Italy)' },
+            { lang: 'it-CH', langString: 'Italian (Switzerland)' },
+            { lang: 'ja-JP', langString: 'Japanese' },
+            { lang: 'jv-ID', langString: 'Javanese' },
+            { lang: 'kn-IN', langString: 'Kannada' },
+            { lang: 'km-KH', langString: 'Khmer' },
+            { lang: 'ko-KR', langString: 'Korean' },
+            { lang: 'lo-LA', langString: 'Lao' },
+            { lang: 'lv-LV', langString: 'Latvian' },
+            { lang: 'lt-LT', langString: 'Lithuanian' },
+            { lang: 'ms-MY', langString: 'Malay' },
+            { lang: 'ml-IN', langString: 'Malayalam' },
+            { lang: 'mr-IN', langString: 'Marathi' },
+            { lang: 'ne-NP', langString: 'Nepali' },
+            { lang: 'nb-NO', langString: 'Norwegian Bokmål' },
+            { lang: 'fa-IR', langString: 'Persian' },
+            { lang: 'pl-PL', langString: 'Polish' },
+            { lang: 'pt-BR', langString: 'Portuguese (Brazil)' },
+            { lang: 'pt-PT', langString: 'Portuguese (Portugal)' },
+            { lang: 'pa-IN', langString: 'Punjabi' },
+            { lang: 'ro-RO', langString: 'Romanian' },
+            { lang: 'ru-RU', langString: 'Russian' },
+            { lang: 'sr-RS', langString: 'Serbian' },
+            { lang: 'si-LK', langString: 'Sinhala' },
+            { lang: 'sk-SK', langString: 'Slovak' },
+            { lang: 'sl-SI', langString: 'Slovenian' },
+            { lang: 'es-AR', langString: 'Spanish (Argentina)' },
+            { lang: 'es-BO', langString: 'Spanish (Bolivia)' },
+            { lang: 'es-CL', langString: 'Spanish (Chile)' },
+            { lang: 'es-CO', langString: 'Spanish (Colombia)' },
+            { lang: 'es-CR', langString: 'Spanish (Costa Rica)' },
+            { lang: 'es-DO', langString: 'Spanish (Dominican Republic)' },
+            { lang: 'es-EC', langString: 'Spanish (Ecuador)' },
+            { lang: 'es-SV', langString: 'Spanish (El Salvador)' },
+            { lang: 'es-ES', langString: 'Spanish (Spain)' },
+            { lang: 'es-US', langString: 'Spanish (United States)' },
+            { lang: 'es-GT', langString: 'Spanish (Guatemala)' },
+            { lang: 'es-HN', langString: 'Spanish (Honduras)' },
+            { lang: 'es-MX', langString: 'Spanish (Mexico)' },
+            { lang: 'es-NI', langString: 'Spanish (Nicaragua)' },
+            { lang: 'es-PA', langString: 'Spanish (Panama)' },
+            { lang: 'es-PY', langString: 'Spanish (Paraguay)' },
+            { lang: 'es-PE', langString: 'Spanish (Peru)' },
+            { lang: 'es-PR', langString: 'Spanish (Puerto Rico)' },
+            { lang: 'es-UY', langString: 'Spanish (Uruguay)' },
+            { lang: 'es-VE', langString: 'Spanish (Venezuela)' },
+            { lang: 'su-ID', langString: 'Sundanese' },
+            { lang: 'sw-KE', langString: 'Swahili (Kenya)' },
+            { lang: 'sw-TZ', langString: 'Swahili (Tanzania)' },
+            { lang: 'sv-SE', langString: 'Swedish' },
+            { lang: 'ta-IN', langString: 'Tamil (India)' },
+            { lang: 'ta-LK', langString: 'Tamil (Sri Lanka)' },
+            { lang: 'ta-MY', langString: 'Tamil (Malaysia)' },
+            { lang: 'ta-SG', langString: 'Tamil (Singapore)' },
+            { lang: 'te-IN', langString: 'Telugu' },
+            { lang: 'th-TH', langString: 'Thai' },
+            { lang: 'tr-TR', langString: 'Turkish' },
+            { lang: 'uk-UA', langString: 'Ukrainian' },
+            { lang: 'ur-IN', langString: 'Urdu (India)' },
+            { lang: 'ur-PK', langString: 'Urdu (Pakistan)' },
+            { lang: 'uz-UZ', langString: 'Uzbek' },
+            { lang: 'vi-VN', langString: 'Vietnamese' },
+            { lang: 'zu-ZA', langString: 'Zulu' },
+        ];
+
+        // Grabs the primary subtag ("en" from "en-US") so a bare "en" can still
+        // match a regional entry like "en-US".
+        const primarySubtag = (tag) => tag.toLowerCase().split('-')[0];
+
+        // When a tag has NO region ("en" instead of "en-US"), which regional
+        // variant should it resolve to? Without this, a bare code fell back to
+        // "whichever regional entry happens to appear first in ALL_LANGUAGES" —
+        // which for English was en-AU, purely because of table order, not
+        // because it meant anything. "en" now explicitly means "en-US".
+        // The rest are reasonable common defaults — tune them to your audience
+        // if a different regional variant makes more sense for you.
+        const DEFAULT_REGION_FOR_BARE_LANG = {
+            en: 'en-US',
+            ar: 'ar-EG',
+            es: 'es-ES',
+            fr: 'fr-FR',
+            de: 'de-DE',
+            it: 'it-IT',
+            nl: 'nl-NL',
+            pt: 'pt-BR',
+            zh: 'zh-CN',
+            sw: 'sw-TZ',
+            ta: 'ta-IN',
+            ur: 'ur-PK',
+        };
+
+        const usedTags = new Set(); // exact lang tags already placed in `result`
+        const usedPrimaryLangs = new Set(); // primary subtags already represented in `result`
+        const result = [];
+
+        function claim(tag, markAsDefault) {
+            if (!tag) return false;
+
+            const lowerTag = tag.toLowerCase();
+            const primary = primarySubtag(lowerTag);
+
+            // A variant of this language (any region) is already in the result —
+            // don't add a second one. This is what stops "en-US" in
+            // navigator.languages from bumping in a *different* English variant
+            // once "en" has already resolved to en-US as the default.
+            if (usedPrimaryLangs.has(primary)) return false;
+
+            // 1. Exact regional match, e.g. "zh-cn" -> "zh-CN"
+            let match = ALL_LANGUAGES.find((entry) => entry.lang.toLowerCase() === lowerTag);
+
+            // 2. Bare language code (no region): use the known default region
+            if (!match && !lowerTag.includes('-')) {
+                const preferredTag = DEFAULT_REGION_FOR_BARE_LANG[primary];
+                if (preferredTag) {
+                    match = ALL_LANGUAGES.find((entry) => entry.lang.toLowerCase() === preferredTag.toLowerCase());
+                }
+            }
+
+            // 3. Last resort: first table entry that shares the primary subtag
+            if (!match) {
+                match = ALL_LANGUAGES.find((entry) => primarySubtag(entry.lang) === primary);
+            }
+
+            if (!match) return false;
+
+            usedTags.add(match.lang);
+            usedPrimaryLangs.add(primary);
+            result.push(markAsDefault ? { ...match, default: true } : { ...match });
+            return true;
         }
+
+        // 1. Page default language
+        const htmlLang = document.documentElement.lang;
+        claim(htmlLang, true);
+
+        // 2. navigator.languages, in the user's preference order
+        const preferredLangs =
+            navigator.languages && navigator.languages.length
+                ? navigator.languages
+                : navigator.language
+                    ? [navigator.language]
+                    : [];
+
+        preferredLangs.forEach((tag) => claim(tag, false));
+
+        // 3. Everything else, in table order. Dedup by exact tag (not by primary
+        // subtag) so other regional variants of an already-placed language —
+        // en-AU, en-GB, etc. — still show up further down the list.
+        ALL_LANGUAGES.forEach((entry) => {
+            if (!usedTags.has(entry.lang)) {
+                usedTags.add(entry.lang);
+                result.push({ ...entry });
+            }
+        });
+
+        return result;
     }
 
     function createSectionElement() {
@@ -71,7 +322,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
         dropDownArr.className = 'live-editor-drop-down-btn-arr';
         dropDownArrCon.appendChild(dropDownArr); */
 
-        let settingsEl = generateSettings();
+        let settingsEl = thisInstance.settingsEl = generateSettings();
         recordingCon.appendChild(settingsEl);
 
         var recordingsContainer = document.createElement('DIV');
@@ -280,7 +531,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             });
         }
 
-        function generateFileName(prefix = 'capture') {
+        function generateFileName(prefix = 'Recording') {
             const now = new Date();
 
             const pad = (value) => String(value).padStart(2, '0');
@@ -400,12 +651,12 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             let bitrateOptions = [
                 {
                     type: 'video',
-                    label: 'Video',
+                    label: 'Video bitrate',
                     options: VIDEO_BITRATE_OPTIONS
                 },
                 {
                     type: 'audio',
-                    label: 'Audio',
+                    label: 'Audio bitrate',
                     options: AUDIO_BITRATE_OPTIONS
                 }
             ]
@@ -418,7 +669,12 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
             let kindParam = document.createElement('DIV');
             kindParam.className = 'live-editor-rec-settings-param live-editor-rec-settings-kind';
             recordingSettings.appendChild(kindParam);
-            [{ kind: 'video', caption: 'Video', checked: recordingParams.recording.video }, { kind: 'audio', caption: 'Audio',  checked: recordingParams.recording.audio }].forEach(function (kindItem) {
+            [
+                { kind: 'video', caption: 'Video', checked: recordingParams.recording.video }, 
+                { kind: 'audio', caption: 'Audio',  checked: recordingParams.recording.audio },
+                { kind: 'transcript', caption: 'Transcript',  checked: recordingParams.recording.transcript },
+            
+            ].forEach(function (kindItem) {
                 let kindParamType = document.createElement('LABEL');
                 kindParam.appendChild(kindParamType);
                 let kindParamTypeInput = document.createElement('INPUT');
@@ -442,7 +698,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                 recordingSettings.appendChild(bitrateParam);
                 let bitrateParamCaption = document.createElement('DIV');
                 bitrateParamCaption.className = 'live-editor-rec-settings-caption';
-                bitrateParamCaption.innerText = type.label + ' bitrate';
+                bitrateParamCaption.innerText = type.label;
                 bitrateParam.appendChild(bitrateParamCaption);
                 let bitrateParamSelect = document.createElement('SELECT');
                 bitrateParam.appendChild(bitrateParamSelect);
@@ -458,9 +714,38 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                 });
                 recordingSettings.appendChild(bitrateParam);
 
+                bitrateParamSelect.addEventListener('change', function (e) {
+                    recordingParams.bitrate[type.type] = parseInt(e.target.value);
+                })
             })
 
 
+            let transcriptLangs = getSupportedSpeechRecognitionLanguages();
+            let transcriptLangParam = document.createElement('DIV');
+            transcriptLangParam.className = 'live-editor-rec-settings-param live-editor-rec-settings-lang';
+            recordingSettings.appendChild(transcriptLangParam);
+            let transcriptLangParamCaption = document.createElement('DIV');
+            transcriptLangParamCaption.className = 'live-editor-rec-settings-caption';
+            transcriptLangParamCaption.innerText = 'Transcript language';
+            transcriptLangParam.appendChild(transcriptLangParamCaption);
+            let transcriptLangParamSelect = document.createElement('SELECT');
+            transcriptLangParam.appendChild(transcriptLangParamSelect);
+            transcriptLangs.forEach(function (value) {
+                let option = document.createElement('OPTION');
+                option.value = value.lang;
+                option.innerHTML = value.langString;
+                if (value.default) {
+                    option.selected = true;
+                    recordingParams.transcriptLang = value.lang;
+                }
+                transcriptLangParamSelect.appendChild(option);
+            });
+            recordingSettings.appendChild(transcriptLangParam);
+
+
+            transcriptLangParamSelect.addEventListener('change', function (e) {
+                recordingParams.transcriptLang = e.target.value;
+            })
 
             return recordingSettings;
         }
@@ -515,19 +800,22 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                         }
                     })
                         .then(function () {
-                            try {
-                                tool.speechRecognizer = new Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer({
-                                    webrtcSignalingLib: tool.webrtcSignalingLib,
-                                    startTimeSinceOrigin: tool.videoRecorder.startTimeSinceOrigin,
-                                    onSegment: function (e) {
-                                        //console.log('speechRecognizer onSegment')
-                                        //if(e.segment) tool.videoRecorder.addSubtitle(e.formatted);
-                                    }
-                                })
-                                tool.speechRecognizer.start();
-                            } catch (error) {
-                                tool.videoRecorder.cancelRecording();
-                                return reject(error);
+                            if (recordingParams.recording.transcript) {
+                                try {
+                                    tool.speechRecognizer = new Q.Media.WebRTC.livestreaming.RoomSpeechRecognizer({
+                                        lang: recordingParams.transcriptLang,
+                                        webrtcSignalingLib: tool.webrtcSignalingLib,
+                                        startTimeSinceOrigin: tool.videoRecorder.startTimeSinceOrigin,
+                                        onSegment: function (e) {
+                                            //console.log('speechRecognizer onSegment')
+                                            //if(e.segment) tool.videoRecorder.addSubtitle(e.formatted);
+                                        }
+                                    })
+                                    tool.speechRecognizer.start();
+                                } catch (error) {
+                                    tool.videoRecorder.cancelRecording();
+                                    return reject(error);
+                                }
                             }
                             resolve();
                         })
@@ -678,13 +966,15 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                                 tool.speechRecognizer.stop();
                                 //tool.videoRecorder.patchCaptions(tool.speechRecognizer.exportWebVTT());
                                 //console.log('speechRecognizer srt', tool.speechRecognizer.exportJSON())
+                                tool.speechRecognizer.downloadVtt(recordingData.baseName);
                             }
 
                             resolve();
                         })
-                        .catch(function () {
+                        .catch(function (e) {
+                            console.error(e);
                             tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
-                            resolve();
+                            resolve(e);
                         });
 
                 } else {
@@ -693,7 +983,8 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                         .then(function (recordingData) {
                             resolve();
                         })
-                        .catch(function () {
+                        .catch(function (e) {
+                            console.error(e);
                             tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
                             resolve();
                         });
@@ -707,7 +998,8 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                     .then(function (recordingData) {
                         resolve();
                     })
-                    .catch(function () {
+                    .catch(function (e) {
+                        console.error(e);
                         tool.webrtcUserInterface.notice.show(Q.getObject("webrtc.notices.errorWhileStoppingRecording", tool.text) || 'Error while stopping recording occured');
                         resolve();
                     });
@@ -741,9 +1033,11 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
         function updateRecordingUI() {
             if (tool.state.localRecording.state == 'pending') {
                 startLocRecordingBtn.classList.add('Q_working');
+                thisInstance.settingsEl.classList.add('live-editor-disabled');
             } else if (tool.state.localRecording.state == 'active') {
                 startLocRecordingBtn.classList.remove('Q_working');
                 startLocRecordingBtn.classList.add('live-editor-rec-start-btn-active');
+                thisInstance.settingsEl.classList.add('live-editor-disabled');
                 startButtonText.innerHTML = 'Stop Recording';
                 startButtonTimer.innerHTML = '';
                 tool.streamingAndRecording.showLiveIndicator('rec');
@@ -754,6 +1048,7 @@ Q.Media.WebRTC.livestreaming.RecordingPopup = function (tool) {
                 _localRecordingTimer.start();
             } else { //inactive
                 startLocRecordingBtn.classList.remove('Q_working');
+                thisInstance.settingsEl.classList.remove('live-editor-disabled');
                 startLocRecordingBtn.classList.remove('live-editor-rec-start-btn-active');
                 startButtonText.innerHTML = 'Start Recording';
                 startButtonTimer.innerHTML = '';
