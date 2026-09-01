@@ -2,8 +2,8 @@
 
 function Media_livestreamSubscription_response_subscription($params)
 {
-    $publisherId = Q_Request::required('publisherId');
-    $streamName = Q_Request::required('streamName');
+    $publisherId = Q_Request::requireFields('publisherId', true);
+    $streamName = Q_Request::requireFields('streamName', true);
     $userId = Users::loggedInUser(true)->id;
 
     $subscription = Streams_Subscription::select('*')

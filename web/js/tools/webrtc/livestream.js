@@ -128,7 +128,6 @@
                 });
                
                 Q.Page.onActivate('').set(function(e){
-                    console.log('Q.Page.onActivat', e, arguments)
                     if ((location.pathname).indexOf("/livestream") != -1) {
                         tool.state.mode = 'full';
                         tool.updateWidgetStateOnStreamUpdate()
@@ -297,7 +296,7 @@
                 var tool = this;
                 window.livestreamStream = tool.livestreamStream;
                 tool.livestreamStream.onMessage("Streams/changed").set(function (message) {
-                    console.log('declareStreamEventHandlers: Streams/changed', message);
+                    //console.log('declareStreamEventHandlers: Streams/changed', message);
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
                         tool.syncLivestreamsList();
@@ -309,7 +308,7 @@
                     
                 });
                 tool.livestreamStream.onMessage("Media/livestream/start").set(function (message) {
-                    console.log('declareStreamEventHandlers: Media/livestream/start');
+                    //console.log('declareStreamEventHandlers: Media/livestream/start');
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
                         tool.syncLivestreamsList();
@@ -320,7 +319,7 @@
                     });
                 });
                 tool.livestreamStream.onMessage("Media/livestream/stop").set(function (message) {
-                    console.log('declareStreamEventHandlers: Media/livestream/stop');
+                    //console.log('declareStreamEventHandlers: Media/livestream/stop');
                     tool.joinOrLeaveLivestreamAudience('leave');
                     var prevNumOfLives = tool.activeLivestreamings.length;
                     tool.refreshLivestreamStream().then(function () {
@@ -2898,7 +2897,7 @@
                         if (data.event === 'onStateChange') {
                             handlePlayerStateChange(data);
                         } else if (data.event === 'onReady') {
-                            console.log('Player is ready');
+                            //console.log('Player is ready');
                         }
                     }, false);
 

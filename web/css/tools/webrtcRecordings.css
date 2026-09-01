@@ -16,7 +16,7 @@
   padding: 5px 0 5px 0;
   margin: 0 0 5px 0;
   /* color: #161616; */
-  border-top: 1px solid #ccc;
+  /* border-top: 1px solid #ccc; */
   border-bottom: 1px solid #ccc;
   font-size: 14px;
 }
@@ -74,6 +74,7 @@
 .webrtc-recordings .webrtc-recordings-tabs {
   display: flex;
   margin-bottom: 10px;
+  display: none;
 }
 .webrtc-recordings .webrtc-recordings-tabs .webrtc-recordings-tabs-item {
   display: flex;
@@ -138,6 +139,8 @@
   cursor: pointer;
   width: 100%;
   display: flex;
+  position: relative;
+  flex-direction: column;
 }
 .webrtc-recordings-ser-list-item-inner {
   display: flex;
@@ -161,6 +164,27 @@
   margin-left: 10px;
   white-space: nowrap;
 }
+.webrtc-recordings-ser-list-item-live {
+   font-size: 12px;
+    margin-right: 5px;
+    padding: 3px;
+    white-space: nowrap;
+    background-color: #007a10;
+    color: white;
+    border-radius: 3px;
+}
+.webrtc-recordings-ser-list-item-kind {
+    width: 24px;
+    height: 24px;
+    position: relative;
+}
+.webrtc-recordings-ser-list-item-kind svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+.webrtc-recordings-ser-list-item-kind svg path {
+    fill: #7a7a7a;
+}
 .webrtc-recordings-ser-list-item .webrtc-recordings-ser-list-item-controls {
   display: flex;
   justify-content: flex-end;
@@ -180,6 +204,33 @@
 }
 .webrtc-recordings-ser-list-item .webrtc-recordings-ser-list-item-controls .webrtc-recordings-controls-item svg path{
   fill: #8a8a8a;
+}
+
+.webrtc-recordings-ser-list-item .webrtc-recordings-ser-list-item-exp {
+   /*  position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0; */
+}
+.webrtc-recordings-ser-list-item .webrtc-recordings-ser-list-item-exp .Q_expandable_container {
+   margin-top: 0;
+   font-weight: normal !important;
+   padding: 0;
+}
+.webrtc-recordings-ser-list-item .webrtc-recordings-ser-list-item-exp .Q_expandable_title {
+   display: none;
+}
+.webrtc-recordings-ser-list-item .webrtc-recordings-ser-list-item-exp .Q_expandable_content{
+    margin-top: 10px;
+}
+.webrtc-recordings-ser-list-item .webrtc-recordings-ser-recs button {
+    padding: 10px;
+    background-color: #007a10;
+}
+.webrtc-recordings-ser-list-item .webrtc-recordings-ser-recs button:hover {
+    background-color: #0f9d22;
 }
 
 
@@ -248,11 +299,19 @@
   font-size: 16px;
   cursor: pointer;
   position: relative;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 6%);
+}
+.webrtc-recordings-ser-list-more button:hover {
+  background-color: #09a1d4;
 }
 
 .webrtc-recordings-ser-list-more button.webrtc-recordings-btn-disabled {
   background-color: #999999;
   pointer-events: none;
+}
+.webrtc-recordings-ser-list-more button.webrtc-recordings-btn-hidden {
+  display: none;
 }
 .webrtc-recordings-ser-list-more button.webrtc-recordings-btn-loading {
   padding-right: 40px;

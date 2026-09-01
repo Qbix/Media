@@ -282,8 +282,8 @@ Q.plugins.Streams.Commands.register({
     'video/seek/relative': {
         captures: { rel: 'duration' },   // duration returns { delta, forward }
         emit: function (captures, stream, sessionState) {
-            return c.delta != null ? Presentation.handleNavigation('video/seek/relative', {
-                pos: (c.forward ? '+' : '-') + c.delta
+            return captures.delta != null ? Presentation.handleNavigation('video/seek/relative', {
+                pos: (captures.forward ? '+' : '-') + captures.delta
             }, stream, sessionState) : null;
         }
     },

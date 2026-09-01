@@ -22,7 +22,7 @@
 
 .Media_presentation_tool .Media_presentation_ai_tools .Media_ai_tool {
     position: relative;
-    scale: 1.5;
+    /* scale: 1.5; */
 }
 
 .Media_presentation_tool .Media_presentation_ai_tools .Media_ai_tool .Media_presentation_hero {

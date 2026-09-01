@@ -78,6 +78,38 @@
     color: #e85447;
     animation: Media_mic_pulse 2s ease infinite;
 }
+.Media_presentation_commands_tool .Media_presentation_commands_mic_btn.Media_presentation_commands_mic_active svg {
+    z-index: 1;
+}
+
+.Media_presentation_commands_tool
+.Media_presentation_commands_mic_btn_animation {
+    visibility: hidden;
+    width: 90px;
+    z-index: 0;
+    position: absolute;
+
+    transform: scale(0.5);
+    opacity: 0;
+
+    transition:
+        opacity 0.5s ease,
+        transform 0.5s ease,
+        visibility 0s linear 0.5s;
+}
+
+.Media_presentation_commands_tool
+.Media_presentation_commands_mic_btn.Media_presentation_commands_mic_listening
+.Media_presentation_commands_mic_btn_animation {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+
+    transition:
+        opacity 0.5s ease,
+        transform 0.5s ease,
+        visibility 0s linear 0s;
+}
 
 @keyframes Media_mic_pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(232, 84, 71, 0.3); }
