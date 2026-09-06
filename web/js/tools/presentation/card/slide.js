@@ -54,7 +54,15 @@ Q.Tool.define("Media/presentation/card/slide", function (options) {
 }, {
     html:         '',
     credit:       '',
-    buildAuto:    false,
+    // Defaults to true: unlike Media/slide (which advances builds via
+    // Media/slide/build stream messages/ephemerals), this inline AI-card
+    // variant has no manual-advance mechanism at all -- if buildAuto were
+    // false and the LLM's JSON response happened to omit the (optional)
+    // buildAuto field, every data-build element would stay at opacity:0
+    // forever, with no way to ever reveal it. Defaulting to true means a
+    // card is never silently, unrecoverably blank just because the model
+    // didn't think to set this field.
+    buildAuto:    true,
     buildStagger: 500,
     buildDuration: 400,
     buildEffect:  'dissolve'
