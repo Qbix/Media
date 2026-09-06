@@ -38,6 +38,17 @@
     Q.Tool.define('Media/presentation/commands', function (options) {
         var tool = this;
         var state = tool.state;
+
+        // AI/voice/wakeRequestApproach in local/app.json (see
+        // AI/handlers/AI/before/Q_responseExtras.php), when set, overrides
+        // this tool's own wakeRequestApproach option -- lets a deployment
+        // force one approach for everyone without editing call sites.
+        var configuredApproach = Q.plugins && Q.plugins.AI && Q.plugins.AI.voice
+            && Q.plugins.AI.voice.wakeRequestApproach;
+        if (configuredApproach) {
+            state.wakeRequestApproach = configuredApproach;
+        }
+
         // ── Track which preview is currently active ────────────────────────────
         tool._activePreview = null;
 
@@ -198,6 +209,21 @@
             _micActive: false,
             _aiStarted: false,
             audioTrack: null,
+            // Which path answers a "Hey Safebots, ..." wake command:
+            //   'text-pipeline' -- WakeWord assembles the command text,
+            //     sent via 'AI/safebots/request' to the server's text-model
+            //     Pipeline (has web search, so it can look up current facts).
+            //   'realtime-api'  -- mic audio streams directly to an OpenAI
+            //     Realtime session (see AI/web/js/AI/RealtimeSafebots.js);
+            //     lower latency, but the Realtime API has no web-search
+            //     capability, so it can only answer from its own training
+            //     knowledge -- not suitable for anything needing current data.
+            // This default is overridden near the top of this tool's
+            // constructor if AI/voice/wakeRequestApproach is set in
+            // local/app.json (see AI/before/Q_responseExtras.php) -- that
+            // lets a deployment force one approach for everyone without
+            // touching call sites.
+            wakeRequestApproach: 'text-pipeline',
             modes: {
                 composition: true,  // AI proposes visualization cards from speech
                 navigation: true,  // voice commands control slides/video/zoom
@@ -653,28 +679,25 @@
                 }, tool);
 
 
-                Q.Socket.onEvent('Streams/startedListening').set(function (data) {
-                    tool._updateMicUI('startedListening');
-                    tool._playSound('startedListening');
-                }, tool);
-                Q.Socket.onEvent('Streams/endedListening').set(function (data) {
-                    tool._updateMicUI('endedListening');
-                    tool._playSound('endedListening');
-                }, tool);
-                Q.Socket.onEvent('Streams/pendingListening').set(function (data) {
-                    //tool._showCurrentRequest(data.requestText);
-                    tool._showCaption(data.requestText);
-                }, tool);
+                // Wake-word lifecycle (started/pending/ended listening) used to be
+                // driven by these server events, back when the server detected the
+                // wake word from the buffered transcript. Detection now happens
+                // entirely client-side (see AI/WakeWord.js and _connectWakeWord
+                // below), which fixed the premature-cutoff bug the server-side
+                // timer had -- so the UI updates are wired to the WakeWord
+                // instance's own events instead, not these (now dead) server ones.
 
                 // Relay ephemeral events to the presentation stream
                 // (control commands, gallery queries, style changes → shared screen)
                 Q.Socket.onEvent('AI/ephemeral').set(function (data) {
+                    tool._clearSafebotsFocusing();
                     if (!tool._stream || !data.type) return;
                     tool._stream.ephemeral(data.type, data.payload || {});
                 }, tool);
 
                 // Committed proposal → relay to stream → shared screen renders the card
                 Q.Socket.onEvent('AI/proposal/show').set(function (data) {
+                    tool._clearSafebotsFocusing();
                     if (!tool._stream) return;
                     tool._stream.ephemeral('Media/presentation/show', {
                         publisherId: state.publisherId,
@@ -686,12 +709,14 @@
                 }, tool);
 
                 Q.Socket.onEvent('AI/error').set(function (data) {
+                    tool._clearSafebotsFocusing();
                     console.warn('AI error:', data.message, data.code);
                 }, tool);
 
                 // Host-only events
                 if (state.isHost) {
                     Q.Socket.onEvent('AI/veto/show').set(function (data) {
+                        tool._clearSafebotsFocusing();
                         tool._showProposal(data.proposal, data.windowMs);
                     }, tool);
                     Q.Socket.onEvent('AI/veto/commit').set(function (data) {
@@ -701,6 +726,7 @@
                         tool._removeProposal(data.proposalId);
                     }, tool);
                     Q.Socket.onEvent('AI/coaching').set(function (data) {
+                        tool._clearSafebotsFocusing();
                         tool._showCoaching(data.text, data.sourceUri);
                     }, tool);
 
@@ -814,16 +840,166 @@
                     if(!context.payload) context.payload = {};
                     context.payload.state = tool._collectCurrentState();
                 }, 'Presentation-transcript')
-                /* Q.Speech.Recognition.onResult.set(function (chunk) {
-                    if (!chunk || !chunk.isFinal) { return; }
-                    tool._emitWithState('Streams/utterance', {
-                        transcript: chunk.transcript,
-                        isFinal: chunk.isFinal,
-                        confidence: chunk.confidence,
-                        speaker: Q.Users.loggedInUserId()
-                    });
-                }, 'Streams.Transcript'); */
+
+                tool._connectWakeWord();
             },
+            /**
+             * Lazily load and wire up AI.WakeWord, then hand it every
+             * Q.Speech.Recognition result. One instance per tool (not shared
+             * across tool instances the way the old prototype-level
+             * _transcriptProcessor object was), created once and reused
+             * across restarts so an in-progress wake command survives a
+             * session restart.
+             *
+             * This is the ONLY Q.Speech.Recognition.onResult subscriber once
+             * wake-word is connected -- Q.Streams.Transcript's own listener
+             * (wired by Q.Streams.Transcript.start(), called just before this
+             * in _startSession) is removed here. Without that, both fired
+             * independently on every raw result: Streams.Transcript forwarded
+             * the FULL unfiltered text (including "Hey Safebots, ... thanks")
+             * to the ambient/REGULAR_BUFFER pipeline, while WakeWord answered
+             * the same command directly -- so every wake-triggered proposal
+             * got duplicated a few seconds later as an ambient one built from
+             * the same text. Instead, WakeWord.procesTranscriptEvent()
+             * returns whatever's left of each result that ISN'T wake-command
+             * text (see WakeWord.js's _extractAmbientText), and only THAT
+             * gets forwarded to Q.Streams.Transcript.send() -- mirroring the
+             * text-splicing the old server-side wake-word logic used to do.
+             */
+            _connectWakeWord: function () {
+                var tool = this;
+
+                function _wireListener() {
+                    Q.Speech.Recognition.onResult.remove('Streams.Transcript');
+                    Q.Speech.Recognition.onResult.set(function (e) {
+                        var ambientChunk = tool._wakeWord.procesTranscriptEvent(e);
+                        if (ambientChunk) {
+                            Q.Streams.Transcript.send(ambientChunk);
+                        }
+                    }, 'Streams.Commands.Transcript');
+                }
+
+                if (tool._wakeWord) {
+                    _wireListener();
+                    tool._connectRealtimeSafebots();
+                    return;
+                }
+
+                Q.require(Q.url('{{AI}}/js/AI/WakeWord.js'), function (WakeWord) {
+                    if (!WakeWord && Q.AI && Q.AI.WakeWord) {
+                        WakeWord = Q.AI.WakeWord;
+                    }
+                    if (!WakeWord) {
+                        console.warn('Media/presentation/commands: failed to load AI.WakeWord');
+                        return;
+                    }
+                    tool._wakeWord = new WakeWord();
+                    tool._wakeWord.on('wakeStart', function (transcript) {
+                        tool._updateMicUI('startedListening');
+                        tool._playSound('startedListening');
+                    });
+                    tool._wakeWord.on('pendingCommand', function (text) {
+                        tool._showCaption(text);
+                    });
+                    tool._wakeWord.on('wakeEnd', function (fullCommand) {
+                        tool._updateMicUI('endedListening');
+                        tool._playSound('endedListening');
+
+                        // Held up (persist=true) until a response signal clears it
+                        // -- see _clearSafebotsFocusing -- since the LLM round-trip
+                        // can easily outlast _showCaption's normal 4s auto-clear.
+                        tool._awaitingSafebotsAnswer = true;
+                        tool._showCaption('Safebots is focusing on your request…', true);
+                        clearTimeout(tool._safebotsFocusingTimeout);
+                        tool._safebotsFocusingTimeout = setTimeout(function () {
+                            tool._clearSafebotsFocusing();
+                        }, 20000);
+                    });
+                    tool._wakeWord.on('command', function (text) {
+                        if (tool.state.wakeRequestApproach !== 'text-pipeline') return;
+                        // Server runs it through the same LLM pipeline, VetoQueue,
+                        // and durable chat-post an ambient proposal goes through
+                        // (see AI.js's 'AI/safebots/request' handler) -- the result
+                        // comes back over the existing AI/proposal/show, AI/coaching,
+                        // AI/ephemeral events this tool already listens for, so no
+                        // new response-handling code is needed here.
+                        _qEmit('AI/safebots/request', { text: text });
+                    });
+                    _wireListener();
+                    tool._connectRealtimeSafebots();
+                });
+            },
+
+            /**
+             * Alternative answer path for a "Hey Safebots, ..." wake command,
+             * selected via state.wakeRequestApproach = 'realtime-api' (the
+             * default, 'text-pipeline', instead sends assembled text through
+             * 'AI/safebots/request' -- see the 'command' handler in
+             * _connectWakeWord above). Pre-warms an OpenAI Realtime WebRTC
+             * connection and streams mic audio to it while a wake word is
+             * open. Lower latency, but the Realtime API has no web-search
+             * capability, so it can only answer from its own training
+             * knowledge -- not suitable for anything needing current data.
+             * Requires tool._wakeWord to already exist (it hooks that
+             * instance's wakeStart/wakeEnd events) -- see the two call sites
+             * in _connectWakeWord above.
+             */
+            _connectRealtimeSafebots: function () {
+                var tool = this;
+                if (tool.state.wakeRequestApproach !== 'realtime-api') return;
+                if (tool._realtimeSafebots) {
+                    tool._realtimeSafebots.connect();
+                    return;
+                }
+                if (!tool._wakeWord) return;
+
+                // Q.require() only takes a single src, and these load order
+                // -sensitive -- OpenaiRealtime.js/GeminiLive.js each register
+                // themselves onto AI.Voice at load time (browser branch
+                // expects it already loaded), so each has to finish before
+                // the next starts. Both protocol files are loaded regardless
+                // of which one is actually configured server-side (see
+                // AI/handlers/AI/voice/post.php / AI.voice.routes.conversational)
+                // -- registering a protocol nobody uses this session is
+                // harmless, and this way the client doesn't need to know in
+                // advance which provider AI/voice will hand back.
+                Q.require(Q.url('{{AI}}/js/AI/Voice.js'), function (Voice) {
+                    // AI.Voice's UMD wrapper sets the global `AI` namespace
+                    // (window.AI), a plain object distinct from Q.AI/
+                    // Q.plugins.AI (set separately by AI/web/js/AI.js) --
+                    // this fallback must check the former, not the latter.
+                    if (!Voice && window.AI && window.AI.Voice) Voice = window.AI.Voice;
+                    if (!Voice) {
+                        console.warn('Media/presentation/commands: failed to load AI.Voice');
+                        return;
+                    }
+                    Q.require(Q.url('{{AI}}/js/AI/Voice/OpenaiRealtime.js'), function () {
+                    Q.require(Q.url('{{AI}}/js/AI/Voice/GeminiLive.js'), function () {
+                        Q.require(Q.url('{{AI}}/js/AI/RealtimeSafebots.js'), function (RealtimeSafebots) {
+                            if (!RealtimeSafebots && window.AI && window.AI.RealtimeSafebots) {
+                                RealtimeSafebots = window.AI.RealtimeSafebots;
+                            }
+                            if (!RealtimeSafebots) {
+                                console.warn('Media/presentation/commands: failed to load AI.RealtimeSafebots');
+                                return;
+                            }
+                            tool._realtimeSafebots = new RealtimeSafebots(tool._wakeWord, {
+                                Voice: Voice,
+                                audioTrack: tool.state.audioTrack || null
+                            });
+                            tool._realtimeSafebots.on('result', function (result) {
+                                _qEmit('AI/safebots/realtimeResult', { result: result });
+                            });
+                            tool._realtimeSafebots.on('error', function (err) {
+                                console.warn('Safebots Realtime error:', err && err.message);
+                            });
+                            tool._realtimeSafebots.connect();
+                        });
+                    });
+                    });
+                });
+            },
+
             _getSessionToken: function () {
                 var tool = this;
                 if (tool.sessionToken == null) {
@@ -1518,7 +1694,7 @@
 
             // ── Live caption ───────────────────────────────────────────────────────
 
-            _showCaption: function (text) {
+            _showCaption: function (text, persist) {
                 var $cap = $(this.element).find('.Media_presentation_commands_caption');
                 if (!$cap.length) {
                     $cap = $('<div class="Media_presentation_commands_caption"></div>');
@@ -1526,7 +1702,27 @@
                 }
                 $cap.text(text);
                 clearTimeout(this._captionTimer);
-                this._captionTimer = setTimeout(function () { $cap.text(''); }, 4000);
+                if (!persist) {
+                    this._captionTimer = setTimeout(function () { $cap.text(''); }, 4000);
+                }
+            },
+
+            /**
+             * Safebots command lifecycle shows a caption ("...is focusing on your
+             * request...") that must stay up across the whole LLM round-trip, not
+             * just 4s -- so it's shown with persist=true and cleared explicitly
+             * here, either when a response signal arrives (AI/proposal/show,
+             * AI/coaching, AI/ephemeral, AI/error, host-only AI/veto/show) or,
+             * as a safety net, after a timeout -- some pipeline outcomes (e.g.
+             * action:'none') never emit anything back to the client at all, and
+             * a guest's own 'propose' request may wait on host veto for a while.
+             */
+            _clearSafebotsFocusing: function () {
+                var tool = this;
+                if (!tool._awaitingSafebotsAnswer) return;
+                tool._awaitingSafebotsAnswer = false;
+                clearTimeout(tool._safebotsFocusingTimeout);
+                tool._showCaption('');
             },
 
             _playSound: function (type, volume = 1) {
@@ -1632,6 +1828,9 @@
                         Q.Speech.Recognition.onResult.remove(tool);
                     clearTimeout(tool._captionTimer);
                     clearTimeout(tool._coachingTimer);
+                    clearTimeout(tool._safebotsFocusingTimeout);
+                    if (tool._wakeWord) tool._wakeWord.destroy();
+                    tool._wakeWord = null;
 
                     if (tool._debouncedPosts) {
                         Object.keys(tool._debouncedPosts).forEach(function (key) {
