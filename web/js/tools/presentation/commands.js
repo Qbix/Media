@@ -850,13 +850,32 @@
              * _transcriptProcessor object was), created once and reused
              * across restarts so an in-progress wake command survives a
              * session restart.
+             *
+             * This is the ONLY Q.Speech.Recognition.onResult subscriber once
+             * wake-word is connected -- Q.Streams.Transcript's own listener
+             * (wired by Q.Streams.Transcript.start(), called just before this
+             * in _startSession) is removed here. Without that, both fired
+             * independently on every raw result: Streams.Transcript forwarded
+             * the FULL unfiltered text (including "Hey Safebots, ... thanks")
+             * to the ambient/REGULAR_BUFFER pipeline, while WakeWord answered
+             * the same command directly -- so every wake-triggered proposal
+             * got duplicated a few seconds later as an ambient one built from
+             * the same text. Instead, WakeWord.procesTranscriptEvent()
+             * returns whatever's left of each result that ISN'T wake-command
+             * text (see WakeWord.js's _extractAmbientText), and only THAT
+             * gets forwarded to Q.Streams.Transcript.send() -- mirroring the
+             * text-splicing the old server-side wake-word logic used to do.
              */
             _connectWakeWord: function () {
                 var tool = this;
 
                 function _wireListener() {
+                    Q.Speech.Recognition.onResult.remove('Streams.Transcript');
                     Q.Speech.Recognition.onResult.set(function (e) {
-                        tool._wakeWord.procesTranscriptEvent(e);
+                        var ambientChunk = tool._wakeWord.procesTranscriptEvent(e);
+                        if (ambientChunk) {
+                            Q.Streams.Transcript.send(ambientChunk);
+                        }
                     }, 'Streams.Commands.Transcript');
                 }
 
