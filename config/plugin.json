@@ -55,7 +55,7 @@
 		    "clipEditor": { "module": "Media", "action": "clipEditor" },
             "Media/clipEditor/webhook": {"module": "Media", "action": "clipEditor"},
 		    "livestreamAuth": { "module": "Media", "action": "livestreamAuth" },
-			"dropVideo": {"module": "Media", "action": "dropVideo"},
+			"Media/dropVideo": {"module": "Media", "action": "dropVideo"},
 			"games": {"module":  "Media", "action":  "games"},
 			"games/:publisherId/:clipId": {"module":  "Media", "action":  "games"},
 		    "callCenter": { "module": "Media", "action": "callCenter" },
