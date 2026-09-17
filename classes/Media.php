@@ -421,6 +421,65 @@ abstract class Media
 		return implode(":", $items);
 	}
 
+	/**
+	 * Path to the file holding a Safecloud video's manifest + rootKey.
+	 *
+	 * The full manifest (including its bindingProof signature/publicKey,
+	 * serialized as verbose per-byte objects) is far larger than the 1023-
+	 * character hard limit on Streams_Stream::$attributes
+	 * (Base_Streams_Stream::beforeSet_attributes()), so it can't be stored
+	 * directly on the stream. Only a tiny reference (source + rootCid) lives
+	 * on the stream's "video" attribute; the actual manifest + rootKey live
+	 * in a file keyed by rootCid, read back by Media/clip/response/column.php
+	 * and handed to the client via script data for that one page — the
+	 * same pattern already used for AI transcript files in that same file.
+	 * @method safecloudVideoFile
+	 * @static
+	 * @param {string} $rootCid
+	 * @return {string}
+	 */
+	static function safecloudVideoFile($rootCid)
+	{
+		return APP_FILES_DIR . DS . 'Media' . DS . 'safecloud' . DS . "{$rootCid}.json";
+	}
+
+	/**
+	 * @method safecloudVideoWrite
+	 * @static
+	 * @param {string} $rootCid
+	 * @param {array} $manifest
+	 * @param {string} $rootKey
+	 */
+	static function safecloudVideoWrite($rootCid, $manifest, $rootKey)
+	{
+		$file = self::safecloudVideoFile($rootCid);
+		$dir = dirname($file);
+		if (!is_dir($dir)) {
+			mkdir($dir, 0755, true);
+		}
+		file_put_contents($file, Q::json_encode(array(
+			'manifest' => $manifest,
+			'rootKey' => $rootKey
+		)));
+	}
+
+	/**
+	 * @method safecloudVideoRead
+	 * @static
+	 * @param {string} $rootCid
+	 * @return {array|null} {manifest, rootKey} or null if not found/unreadable
+	 */
+	static function safecloudVideoRead($rootCid)
+	{
+		$file = self::safecloudVideoFile($rootCid);
+		if (!$rootCid || !is_file($file)) {
+			return null;
+		}
+		$json = file_get_contents($file);
+		$data = $json ? json_decode($json, true) : null;
+		return $data ?: null;
+	}
+
 	static $columns = array();
 	static $options = array();
 }

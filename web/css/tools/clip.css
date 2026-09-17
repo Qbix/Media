@@ -177,6 +177,20 @@ html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_j
     min-height: 75px;
 }
 
+.Media_clip_tool .Media_episode_categories {
+    padding: 0 5px 10px 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.Media_clip_tool .Media_episode_category {
+    background-color: rgba(128, 128, 128, 0.15);
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
 .Media_clips_settings_btn,
 .Media_clips_call_btn {
     position: absolute;
