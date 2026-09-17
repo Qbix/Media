@@ -115,6 +115,13 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
     margin-right: 5px
 }
 
+#dashboard .Q_tabs_tabs .Q_tab_upload::before,
+.Q_listing_wrapper .Q_tabs_tabs .Q_tab_upload::before {
+    font-family: 'qplatform-media';
+    content: "\e961";
+    margin-right: 5px
+}
+
 .Q_notMobile.Media_channels .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,
 .Q_notMobile.Media_channel .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,
 .Q_notMobile.Media_clips .Q_columns_stretchFirstColumn[data-column-count='2'] .Q_column_0,

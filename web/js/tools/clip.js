@@ -144,13 +144,19 @@
 
             var video = tool.stream.getAttribute('video') || {};
             var audio = tool.stream.getAttribute('audio') || {};
+            // Safecloud-sourced videos have no video.url (see the
+            // Safecloud branch below, which reads manifest/rootKey from
+            // script data instead) — the template needs to show the
+            // .Media_video player/tab for those too, not just plain URLs.
+            var hasVideo = !!(video.url || video.source === "safecloud");
             var showAddClip = userId && tool.stream.fields.type !== "Media/clip" && !tool.isLive();
             var showSegmentClips = !tool.isLive();
             var fields = {
                 video: video,
                 audio: audio,
-                videoCurrent: video.url ? "Q_current" : null,
-                audioCurrent: !video.url && audio.url ? "Q_current" : null,
+                hasVideo: hasVideo,
+                videoCurrent: hasVideo ? "Q_current" : null,
+                audioCurrent: !hasVideo && audio.url ? "Q_current" : null,
                 segmentsAreVisible: tool.stream.fields.type == 'Media/clip' && showSegmentClips ? "Q_current" : null,
                 publisherId: state.publisherId,
                 streamName: state.streamName,
@@ -342,6 +348,21 @@
                                 }
                             }
 
+                            // Categories picked in Media/videoUpload's Streams/interests
+                            // step (see Media/dropVideo post handler) — shown right
+                            // under the description, independent of whether one exists.
+                            var categories = tool.stream.getAttribute("categories") || [];
+                            var categoriesClassName = "Media_episode_categories";
+                            if (categories.length && !$("." + categoriesClassName, $chatMessages).length) {
+                                var $categories = $("<div class='" + categoriesClassName + "'>");
+                                Q.each(categories, function (i, category) {
+                                    $("<span class='Media_episode_category'>")
+                                        .text(category)
+                                        .appendTo($categories);
+                                });
+                                $categories.insertBefore(tool.$('.Media_clip_participants'));
+                            }
+
                             Q.onLayout($chatMessages[0]).set(function () {
                                 if (!$.contains(document, $chatMessages[0])) {
                                     return $chatMessages.remove();
@@ -373,7 +394,32 @@
                 });
 
                 var video = tool.stream.getAttribute("video") || {};
-                if (video.url) {
+                // The stream's own "video" attribute only ever holds a tiny
+                // {source, rootCid} reference for safecloud uploads — the
+                // full manifest/rootKey are too large for the attributes
+                // column's 1023-char limit (Base_Streams_Stream::
+                // beforeSet_attributes()), so Media/clip/response/column.php
+                // reads them back from disk (Media::safecloudVideoRead())
+                // and injects them as script data for this one page load.
+                var safecloudVideo = Q.getObject("Media.clip.video", Q.plugins);
+                if (video.source === "safecloud" && safecloudVideo && safecloudVideo.manifest) {
+                    // Safecloud-encrypted upload (see Media/videoUpload,
+                    // Media/dropVideo) — plays via the same Safecloud/video
+                    // tool already proven out on /safecloud/demo, not Q/video
+                    // (which has no Safecloud awareness at all). clipStart/
+                    // clipEnd/ads/floating are not supported for these yet —
+                    // known v1 limitation, not an oversight.
+                    $(".Media_video", tool.element).tool("Safecloud/video", Q.extend({
+                        manifest: safecloudVideo.manifest,
+                        capability: { rootKey: safecloudVideo.rootKey },
+                        jetUrl: Q.getObject("Media.clip.jetUrl", Q.plugins) || undefined,
+                        onPlay: tool.joinClip.bind(tool),
+                        onPlaying: tool.watchClip.bind(tool)
+                    }, state.qVideoOptions)).activate(function () {
+                        tool.videoTool = this;
+                        pipeToolActivated.fill("media")();
+                    });
+                } else if (video.url) {
                     $(".Media_video", tool.element).tool("Q/video", Q.extend({
                         url: video.url,
                         clipStart: video.clipStart,
@@ -873,7 +919,7 @@
         + '{{/if}}'
         + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
         + '		<div class="Media_clip_credits">{{text.CreditsEarned}}: <span>0</span></div>'
-        + '{{#if video.url}}'
+        + '{{#if hasVideo}}'
         + '		<div class="{{videoCurrent}} Media_video Media_player"></div>'
         + '{{/if}}'
         + '{{#if audio.url}}'
@@ -887,13 +933,13 @@
         + '</div></div>'
         + '{{#if showSwitch}}'
         + '		<div class="Media_tabs">'
-        + '     {{#if video.url}}'
+        + '     {{#if hasVideo}}'
         + '		    <div class="Media_tab {{videoCurrent}}" data-clip="Media_video">{{Video}}</div>'
         + '     {{/if}}'
         + '     {{#if audio.url}}'
         + '		    <div class="Media_tab {{audioCurrent}}" data-clip="Media_audio">{{Audio}}</div>'
         + '     {{/if}}'
-        + '     {{#if video.url}}'
+        + '     {{#if hasVideo}}'
         + '		    <div class="Media_tab" data-clip="Media_clips_list"><span class="Media_clips_list_count"></span> {{Clips}}</div>'
         + '     {{/if}}'
         + '		</div>'

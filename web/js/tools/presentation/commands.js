@@ -689,10 +689,23 @@
 
                 // Relay ephemeral events to the presentation stream
                 // (control commands, gallery queries, style changes → shared screen)
+                //
+                // Stream.prototype.ephemeral takes ONE payload object that
+                // must itself carry "type" (see
+                // Streams/web/js/methods/Streams/Stream/ephemeral.js's doc
+                // comment, and Streams.js's server-side ephemeral handler,
+                // which rejects with "Payload must have type set" otherwise)
+                // -- not (type, payload) as two separate arguments. Calling
+                // it the wrong way here meant every AI/ephemeral relay was
+                // silently rejected server-side (no callback was passed, so
+                // even the rejection went nowhere) -- most visibly for
+                // "table"/"graph" proposals, which route through this path
+                // exclusively (see AI/classes/AI/CardCommit.js) with no
+                // durable-message fallback the way other card types have.
                 Q.Socket.onEvent('AI/ephemeral').set(function (data) {
                     tool._clearSafebotsFocusing();
                     if (!tool._stream || !data.type) return;
-                    tool._stream.ephemeral(data.type, data.payload || {});
+                    tool._stream.ephemeral(Q.extend({}, data.payload || {}, { type: data.type }));
                 }, tool);
 
                 // Committed proposal → relay to stream → shared screen renders the card

@@ -31,6 +31,27 @@ function Media_clip_response_column(&$params, &$result)
 	Q_Response::setSlot('title', $title);
 	Q_Response::addStylesheet("{{Media}}/css/columns/episode.css");
 
+	$video = $stream->getAttribute('video');
+	if (Q::ifset($video, 'source', null) === 'safecloud') {
+		// Not auto-loaded app-wide — needed here so Q.Safecloud.* exists
+		// client-side when a safecloud clip is opened directly, not just
+		// right after uploading in the same page session.
+		Q_Response::addScript('{{Safecloud}}/js/Safecloud.js', 'head');
+		Q_Response::addScript('{{Safecloud}}/js/Safecloud/DataTrees.js', 'head');
+		Q_Response::setScriptData('Q.plugins.Media.clip.jetUrl',
+			Q_Config::get('Safecloud', 'jetUrl', Q_Request::baseUrl()));
+
+		// The stream's own "video" attribute only holds a rootCid reference
+		// (see Media::safecloudVideoWrite() — the full manifest is too large
+		// for the attributes column's 1023-char limit). Read the actual
+		// manifest + rootKey back from disk and hand them to the client for
+		// this one page load only.
+		$safecloudVideo = Media::safecloudVideoRead(Q::ifset($video, 'rootCid', null));
+		if ($safecloudVideo) {
+			Q_Response::setScriptData('Q.plugins.Media.clip.video', $safecloudVideo);
+		}
+	}
+
 	// Load and parse transcript
 	$transcriptFile = APP_FILES_DIR . DS . 'AI' . DS . 'transcriptions' . DS . "{$episodeName}.mp3.transcript";
 	$transcript = '';
