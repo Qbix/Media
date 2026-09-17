@@ -35,8 +35,15 @@
  * 2. Brand CSS loaded via Q/style ephemeral or publisher stylesheet
  * 3. Inline <style> in the HTML field — slide-specific overrides
  *
- * All rules are scoped via .Media_presentation_slide_tool to avoid leaking
- * into other parts of the page. The slide tool adds this class to its element.
+ * Author/AI-written rules should be scoped to .Media_slide_content -- the
+ * direct container the HTML field is rendered into below -- NOT to
+ * .Media_presentation_slide_tool, the ancestor wrapper this tool adds to its
+ * own element; that wrapper's only child is .Media_slide_content, so a rule
+ * scoped to the wrapper (e.g. a multi-column/row layout) ends up styling an
+ * element with just one child instead of the actual content elements. Note
+ * "scoped" here only means the selector, not true isolation: a <style> tag
+ * injected via innerHTML still applies document-wide to every element
+ * matching that class, including other slide instances that share it.
  *
  * CHILD TOOL ACTIVATION
  * ─────────────────────

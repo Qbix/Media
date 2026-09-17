@@ -96,6 +96,25 @@
                 'Streams/webpage': 'Media/presentation/webpage',
                 'Streams/question': 'Media/presentation/question'
             },
+            /**
+             * Per-visualizationType max width for AI-proposed inline cards
+             * (see _showInlineCard) -- each value is either a bare
+             * percentage string ("70%", applied as max-width so the card
+             * can use more of a wide screen instead of being capped at a
+             * fixed px width meant for compact single-focus cards) or a
+             * literal CSS declaration string ("max-width: 900px"). A type
+             * not listed here falls back to "default". Compact,
+             * single-focus types (stat/quote/profile/glossary/article) are
+             * intentionally left out so they keep the modest default width
+             * instead of being stretched to fill a large screen -- only
+             * multi-column/freeform layouts that actually benefit from
+             * extra horizontal room are listed explicitly.
+             */
+            cardSizing: {
+                'Media/card/slide':      '90%',
+                'Media/card/comparison': '70%',
+                'default':               'max-width: 860px'
+            },
             animation: {
                 duration: 500
             },
@@ -491,6 +510,269 @@
             // ── Inline cards and generated tools ──────────────────────────────────
 
             /**
+             * Size an inline card per state.cardSizing (see its doc comment
+             * above for the config shape) -- two distinct modes:
+             *   - A bare percentage ("70%"): the card is scaled UNIFORMLY,
+             *     in EITHER direction, so it touches that percentage of the
+             *     viewport in whichever dimension binds first (like
+             *     object-fit:contain, but also scaling UP past 100% for
+             *     content smaller than the target -- see _fitCardToPercent).
+             *     A max-width alone can only ever shrink oversized content;
+             *     it leaves short content at its own small natural size.
+             *   - A literal CSS declaration ("max-width: 900px"): applied
+             *     as-is, a simple ceiling with no scaling -- content
+             *     smaller than this is left at its natural size. This is
+             *     presentation.css's shared .Media_presentation_card_screen
+             *     rule's old behavior, still the right choice for compact,
+             *     single-focus types that shouldn't be blown up to fill a
+             *     large screen.
+             * Must be called AFTER cardEl is attached to the document --
+             * percentage mode measures real rendered size, which a detached
+             * node doesn't have.
+             * @method _applyCardSizing
+             * @param {HTMLElement} cardEl
+             * @param {String} streamType
+             */
+            _applyCardSizing: function (cardEl, streamType) {
+                var tool = this;
+                var pct = tool._percentSizingFor(streamType);
+                if (pct != null) {
+                    tool._fitCardToPercent(cardEl, pct);
+                } else {
+                    var sizing = tool.state.cardSizing || {};
+                    var rule = sizing[streamType] || sizing['default'] || 'max-width: 860px';
+                    cardEl.style.cssText += ';' + rule;
+                }
+            },
+
+            /**
+             * Look up streamType in state.cardSizing and, if it's a bare
+             * percentage, return the number -- else null (flat CSS
+             * declaration, or nothing configured). Shared by
+             * _applyCardSizing and _showInlineCard, which needs to know
+             * this BEFORE cardEl is even attached (see _showInlineCard's
+             * pre-hide for percent-mode cards).
+             * @method _percentSizingFor
+             * @param {String} streamType
+             * @return {Number|null}
+             */
+            _percentSizingFor: function (streamType) {
+                var sizing = this.state.cardSizing || {};
+                var rule = sizing[streamType] || sizing['default'] || 'max-width: 860px';
+                var pctMatch = /^\s*(\d+(?:\.\d+)?)\s*%\s*$/.exec(rule);
+                return pctMatch ? parseFloat(pctMatch[1]) : null;
+            },
+
+            /**
+             * Uniformly scale cardEl ITSELF (via CSS transform, preserving
+             * aspect ratio -- background, padding, border-radius, shadow,
+             * content, all together as one unit) so its bounding box
+             * touches pct% of the viewport in whichever dimension binds
+             * first: shrinking it if naturally larger, growing it if
+             * naturally smaller. Never distorts aspect ratio (one scale
+             * factor for both axes), so the result is AT MOST pct% in one
+             * dimension and EXACTLY pct% in the other, not necessarily
+             * pct% of total area.
+             *
+             * An earlier version of this scaled an inner wrapper around
+             * cardEl's content instead of cardEl itself, then tried to
+             * make cardEl's fit-content sizing follow that wrapper's new
+             * size -- but left .Media_presentation_card_screen's
+             * max-width: 860px in place, which silently kept capping
+             * cardEl at 860px regardless, decoupling it from the
+             * (uncapped) wrapper and clipping/overflowing content grown
+             * past that cap. Scaling cardEl directly avoids needing that
+             * two-box relationship at all: clear the cap, measure cardEl's
+             * own true natural size, scale cardEl.
+             * @method _fitCardToPercent
+             * @param {HTMLElement} cardEl
+             * @param {Number} pct
+             */
+            _fitCardToPercent: function (cardEl, pct) {
+                var tool = this;
+                var frac = (pct || 0) / 100;
+                if (!frac) return;
+
+                // Percent mode replaces the flat cap entirely -- leaving it
+                // in place would clamp cardEl's natural size to 860px
+                // before this ever gets to measure or scale it. Using a
+                // large-but-FINITE value rather than 'none' matters here:
+                // 'none' was observed to change how width:fit-content
+                // resolves for cardEl's nested width:100%-ish children
+                // (.Media_presentation_hero etc.) -- they filled whatever
+                // width cardEl was allowed instead of shrinking to their
+                // real content's need, leaving a big empty gap next to a
+                // much narrower visible card. A large finite max-width
+                // keeps the same "clamp, don't remove" resolution path the
+                // old max-width: 860px rule used (which correctly shrank
+                // to content for anything narrower than 860px), just with
+                // enough room that it only ever acts as a safety ceiling.
+                cardEl.style.maxWidth = '10000px';
+
+                // Measuring right here would be too early for a card type
+                // whose own content renders asynchronously (e.g. a nested
+                // tool activation or template render inside cardEl that
+                // hasn't resolved yet) -- offsetWidth/offsetHeight would
+                // catch it still nearly-empty, computing an absurd
+                // compensating scale (a comparison card was observed
+                // scaling to 7.97x this way). Wait for the size to actually
+                // stop changing before trusting it.
+                tool._whenSizeSettled(cardEl, function () {
+                    var naturalW = cardEl.offsetWidth;
+                    var naturalH = cardEl.offsetHeight;
+                    // Reveal regardless of whether a valid scale comes out
+                    // of this -- cardEl was hidden (see _showInlineCard)
+                    // specifically to wait for scaling here, so any early
+                    // return below must still hand back control, or a
+                    // measurement edge case would leave the card invisible
+                    // forever instead of just unscaled.
+                    if (!naturalW || !naturalH) { tool._revealScaledCard(cardEl); return; }
+
+                    var targetW = window.innerWidth  * frac;
+                    var targetH = window.innerHeight * frac;
+                    var scale   = Math.min(targetW / naturalW, targetH / naturalH);
+                    if (!scale || !isFinite(scale)) { tool._revealScaledCard(cardEl); return; }
+
+                    tool._whenAnimationSettled(cardEl, function () {
+                        // .Media_presentation_transition_rise's @keyframes
+                        // animation (added to cardEl in _showInlineCard)
+                        // holds transform via animation-fill-mode:
+                        // forwards, which takes cascade priority over ANY
+                        // style rule -- inline included -- for as long as
+                        // it's considered active, which with "forwards" is
+                        // forever, not just during playback. Setting
+                        // transform while that hold is in effect is
+                        // silently ignored (Chrome DevTools flags this as
+                        // "Overridden by animation styles"). Killing the
+                        // animation via inline style first releases the
+                        // hold and hands transform back to the normal
+                        // cascade.
+                        //
+                        // cardEl's actual centering comes from its FLEX
+                        // parent (.Media_presentation_ai_tools:
+                        // display:flex; justify-content:center;
+                        // align-items:center) -- despite
+                        // .Media_presentation_card_screen also declaring
+                        // position:relative + transform:translateY(-50%) (a
+                        // leftover top:50%-based centering technique whose
+                        // top:50% half is commented out in
+                        // presentation.css, so it was never actually
+                        // centering anything; it was just as silently
+                        // overridden by Media_rise as our own transform
+                        // was, so it never visibly mattered before now).
+                        // Composing translateY(-50%) in here -- as an
+                        // earlier version of this did -- double-shifts the
+                        // card, since flex already centers its
+                        // untransformed box and this then moves it up by
+                        // another 50% of its own height on top of that.
+                        // scale() alone, with the default (center)
+                        // transform-origin, keeps the box centered on
+                        // whatever point flex already placed it at,
+                        // growing/shrinking symmetrically around it.
+                        cardEl.style.animation = 'none';
+                        cardEl.style.transform = 'scale(' + scale + ')';
+                        tool._revealScaledCard(cardEl);
+                    });
+                });
+            },
+
+            /**
+             * Fade cardEl in now that its final (scaled) size is set --
+             * paired with _showInlineCard hiding it (visibility: hidden,
+             * not opacity, which stays measurable) as soon as it's created
+             * for any percent-sized type, so the card never has a chance
+             * to flash at its wrong, unscaled size before this runs.
+             * Killing Media_rise's animation earlier already left opacity
+             * wherever that animation's "to" keyframe held it (1, in
+             * practice) rather than the animation's own "from" (0), so
+             * this explicitly sets a 0 starting point itself, then forces
+             * a paint (double rAF -- one isn't reliably enough for the
+             * browser to register the starting value before the next
+             * change, a well-known transition gotcha) before transitioning
+             * to visible/opaque, or the fade wouldn't visibly play at all.
+             * @method _revealScaledCard
+             * @param {HTMLElement} cardEl
+             */
+            _revealScaledCard: function (cardEl) {
+                cardEl.style.transition = 'none';
+                cardEl.style.opacity    = '0';
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        cardEl.style.visibility = 'visible';
+                        cardEl.style.transition = 'opacity 0.35s ease';
+                        cardEl.style.opacity    = '1';
+                    });
+                });
+            },
+
+            /**
+             * Call cb once el's size stops changing (debounced via
+             * ResizeObserver), instead of assuming any single fixed delay
+             * is long enough for whatever async work el's content is still
+             * doing. Falls back to a fixed delay only if ResizeObserver
+             * isn't available at all.
+             * @method _whenSizeSettled
+             * @param {HTMLElement} el
+             * @param {Function} cb
+             */
+            _whenSizeSettled: function (el, cb) {
+                if (typeof ResizeObserver === 'undefined') {
+                    setTimeout(cb, 150);
+                    return;
+                }
+                var done = false;
+                var settleTimer = null;
+                var capTimer = null;
+                function finish() {
+                    if (done) return;
+                    done = true;
+                    clearTimeout(settleTimer);
+                    clearTimeout(capTimer);
+                    ro.disconnect();
+                    cb();
+                }
+                var ro = new ResizeObserver(function () {
+                    clearTimeout(settleTimer);
+                    settleTimer = setTimeout(finish, 120);
+                });
+                ro.observe(el);
+                // Absolute cap in case something prevents ResizeObserver
+                // from ever settling (or firing at all) -- better to
+                // measure a possibly-still-growing size late than to hang
+                // forever and never apply any sizing.
+                capTimer = setTimeout(finish, 2000);
+            },
+
+            /**
+             * Call cb once none of el's CSS animations are still running or
+             * pending -- using the Web Animations API's per-animation
+             * .finished promise, not a guessed timeout, since
+             * animation-fill-mode: forwards means an animation stays
+             * "present" on the element indefinitely after it completes, so
+             * a naive style/attribute check can't distinguish "still
+             * playing" from "finished but held".
+             * @method _whenAnimationSettled
+             * @param {HTMLElement} el
+             * @param {Function} cb
+             */
+            _whenAnimationSettled: function (el, cb) {
+                if (typeof el.getAnimations !== 'function') {
+                    setTimeout(cb, 450);
+                    return;
+                }
+                var pending = el.getAnimations().filter(function (a) {
+                    return a.playState === 'running' || a.playState === 'pending';
+                });
+                if (!pending.length) {
+                    cb();
+                    return;
+                }
+                Promise.all(pending.map(function (a) {
+                    return a.finished.catch(function () {});
+                })).then(cb);
+            },
+
+            /**
              * Show an AI-proposed card or chart inline on the canvas.
              * streamType maps to a presentation wrapper tool.
              * visualizationData is passed as the tool's state (inline: true skips stream fetch).
@@ -527,6 +809,20 @@
                     null, tool.prefix
                 );
                 cardEl.className += ' Media_ai_tool Media_presentation_screen Media_presentation_card_screen Media_presentation_transition_rise';
+                // Percent-sized cards need async measurement (see
+                // _fitCardToPercent) before their final size is known --
+                // without this, the card briefly appears and plays its
+                // entrance animation at the WRONG (natural, unscaled) size,
+                // then visibly snaps to the correct one a moment later.
+                // Hiding via visibility (not display:none, which would
+                // report 0 for offsetWidth/offsetHeight and break
+                // measurement, and not opacity, which the entrance
+                // animation is already driving) keeps it fully measurable
+                // while invisible; _fitCardToPercent reveals it with its
+                // own fade-in once the real scale is applied.
+                if (tool._percentSizingFor(streamType) != null) {
+                    cardEl.style.visibility = 'hidden';
+                }
 
                 var prev = tool._currentForeground;
                 if (prev) {
@@ -549,6 +845,12 @@
                     Q.activate(cardEl, {}, function () {
                         var cardTool = tool._currentForegroundTool = this;
                         tool.aiToolsElement.appendChild(cardEl);
+                        // Must run AFTER attaching -- percent-based sizing
+                        // measures cardEl's rendered content, which has no
+                        // real layout size until it's actually in the
+                        // document (Q.activate above runs the card tool's
+                        // own constructor while cardEl is still detached).
+                        tool._applyCardSizing(cardEl, streamType);
                         //debugger
                         tool.pendingCardSwitching = false;
                         if (tool.cardSwitchQueue.length != 0) {
