@@ -480,6 +480,64 @@ abstract class Media
 		return $data ?: null;
 	}
 
+	/**
+	 * Computes the one-time-purchase payment status of a Media/episode
+	 * stream for a given viewer, reading prices straight off the stream's
+	 * own "payment" attribute (never off current config — see
+	 * Media.episode.paymentMechanism's docs: config only shapes new
+	 * uploads, playback always reads each episode's saved attribute).
+	 *
+	 * "paidSoFar" and "fullyPaid" come from Assets_Credits::getPaymentsInfo(),
+	 * which sums ALL credit payments the viewer has made toward this stream
+	 * regardless of reason — so a one-time "EpisodeAccess" purchase and
+	 * accrued "WatchPaidEpisode" per-minute charges both count toward the
+	 * same total, and cumulative per-minute payments that reach the full
+	 * price make fullyPaid become true on their own, with no separate
+	 * "unlocked" flag anywhere.
+	 *
+	 * @method episodePaymentStatus
+	 * @static
+	 * @param {Streams_Stream} $stream
+	 * @param {string|null} $userId Logged-in viewer's id, or null if not logged in
+	 * @return {array} {perStreamAmount, perMinuteAmount, currency, paidSoFar, remaining, fullyPaid, isOwner}
+	 */
+	static function episodePaymentStatus($stream, $userId = null)
+	{
+		$payment = $stream->getAttribute('payment');
+		$perStreamAmount = floatval(Q::ifset($payment, 'amount', 0));
+		$perMinuteAmount = floatval(Q::ifset($payment, 'perMinute', 0));
+		$currency = Q::ifset($payment, 'currency', 'credits');
+
+		$isOwner = $userId && $userId === $stream->publisherId;
+		$paidSoFar = 0;
+		$fullyPaid = $isOwner || $perStreamAmount <= 0;
+
+		if (!$isOwner && $perStreamAmount > 0 && $userId) {
+			$info = Assets_Credits::getPaymentsInfo($userId, array(
+				'publisherId' => $stream->publisherId,
+				'streamName' => $stream->name
+			));
+			$paidSoFar = floatval(Q::ifset($info, 'conclusion', 'amount', 0));
+			$fullyPaid = !empty(Q::ifset($info, 'conclusion', 'fullyPaid', false));
+		}
+
+		// Estimate only — the actual charge (Assets::pay(), via Assets/pay)
+		// independently applies any discounts at charge time, so this can be
+		// a slight over-estimate for a user with a referral/inviter discount;
+		// good enough for what's just a displayed "how much is left" label.
+		$remaining = $fullyPaid ? 0 : max(0, $perStreamAmount - $paidSoFar);
+
+		return array(
+			'perStreamAmount' => $perStreamAmount,
+			'perMinuteAmount' => $perMinuteAmount,
+			'currency' => $currency,
+			'paidSoFar' => $paidSoFar,
+			'remaining' => $remaining,
+			'fullyPaid' => $fullyPaid,
+			'isOwner' => $isOwner
+		);
+	}
+
 	static $columns = array();
 	static $options = array();
 }

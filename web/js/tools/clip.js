@@ -393,6 +393,25 @@
                     }, tool);
                 });
 
+                // One-time full-episode payment gate — Media/clip/response/
+                // column.php computes this server-side (using
+                // Assets_Credits::getPaymentsInfo(), same check Calendars
+                // uses for paid events) and, if payment is required, never
+                // sends the safecloud manifest/rootKey down in the first
+                // place, so there's no player to instantiate here at all;
+                // show an unlock button instead.
+                var payment = Q.getObject("Media.clip.payment", Q.plugins) || {};
+                if (payment.required) {
+                    // rootCid itself isn't secret (only the manifest/rootKey
+                    // that's withheld above are) — it's always present in the
+                    // stream's own "video" attribute regardless of payment
+                    // status, so it's safe to read here to let the paywall
+                    // pre-flight-check content availability before charging.
+                    var videoRef = tool.stream.getAttribute("video") || {};
+                    tool.renderPaywall(payment, videoRef.rootCid);
+                    return pipeToolActivated.fill("media")();
+                }
+
                 var video = tool.stream.getAttribute("video") || {};
                 // The stream's own "video" attribute only ever holds a tiny
                 // {source, rootCid} reference for safecloud uploads — the
@@ -441,6 +460,16 @@
                         // $toolElement.css("height", Math.min($toolElement.parent().width()/1.78, 300));
                     });
                 }
+
+                // Persistent, non-blocking "buy full access" upsell — shown
+                // alongside a per-minute-billed video that's actively
+                // playing (payment.required is false here, so per-minute
+                // access was never gated on this button at all; it's purely
+                // an optional upgrade path).
+                if (payment.upsell) {
+                    tool.renderUpsell(payment.upsell);
+                }
+
                 var audio = tool.stream.getAttribute("audio") || {};
                 if (audio.url) {
                     $(".Media_audio", tool.element).tool("Q/audio", Q.extend({
@@ -818,7 +847,153 @@
             return this.state.streamName.includes("Media/live/");
         },
         /**
-         * Send request to server with info about user watch clip
+         * Shown instead of a player when the episode requires a one-time
+         * payment the current user hasn't made yet (see the payment.required
+         * check in refresh()). Clicking "Unlock" goes through Q.Assets.pay(),
+         * which already handles spending existing credits vs. falling
+         * through to a credit-purchase dialog if the user is short — no
+         * custom "not enough credits" UI needs to be built here.
+         * @method renderPaywall
+         * @param {Object} payment {upsell: {amount, currency}, ...} — the
+         *   full script-data object from Media/clip/response/column.php;
+         *   only reachable here when perStream is the sole mechanism and
+         *   not yet paid, so payment.upsell.amount === the full price.
+         * @param {String} [rootCid] Safecloud rootCid, if this episode's
+         *   video is Safecloud-sourced — used to confirm at least one Drop
+         *   can actually serve the content BEFORE charging, so a user isn't
+         *   charged only to hit "No Drops available" once they try to play.
+         */
+        renderPaywall: function (payment, rootCid) {
+            var tool = this;
+            var state = tool.state;
+            var amount = payment.upsell.amount;
+            var currency = payment.upsell.currency;
+            var label = (tool.text.UnlockEpisode || "Unlock this episode for {{amount}} {{currency}}")
+                .interpolate({amount: amount, currency: currency});
+            var $wrap = $(".Media_video", tool.element)
+                .empty()
+                .addClass("Media_clip_paywall");
+            var $button = $("<button class='Q_button Media_clip_unlock'>")
+                .text(label)
+                .appendTo($wrap);
+            var $status = $("<div class='Media_clip_paywall_status'>").appendTo($wrap);
+
+            function pay() {
+                Q.Assets.pay({
+                    amount: amount,
+                    currency: currency,
+                    reason: "EpisodeAccess",
+                    toStream: {
+                        publisherId: state.publisherId,
+                        streamName: state.streamName
+                    },
+                    onSuccess: function () {
+                        // Simplest correct way to get the now-unlocked
+                        // manifest/rootKey: let the server recompute
+                        // payment.required and re-render the whole column.
+                        location.reload();
+                    },
+                    onFailure: function () {
+                        $button.prop("disabled", false);
+                    }
+                });
+            }
+
+            $button.on(Q.Pointer.fastclick, function () {
+                $button.prop("disabled", true);
+
+                if (!rootCid || !Q.Safecloud || !Q.Safecloud.Jets) {
+                    return pay(); // nothing to pre-flight-check, e.g. non-Safecloud video
+                }
+
+                $status.text(tool.text.CheckingAvailability || "Checking availability…");
+                Q.Safecloud.Jets.checkAvailable(rootCid, function (err, result) {
+                    if (err) {
+                        // The check itself failing (timeout, Jet unreachable)
+                        // isn't proof the content is unavailable — fail open
+                        // rather than permanently blocking a legitimate
+                        // purchase over a flaky side-channel query.
+                        console.warn("Media/clip: checkAvailable failed, proceeding anyway:", err);
+                        $status.text("");
+                        return pay();
+                    }
+                    if (!result || !result.available) {
+                        $status.text(tool.text.ContentUnavailable
+                            || "This video isn't available to play right now — please try again later.");
+                        $button.prop("disabled", false);
+                        return;
+                    }
+                    $status.text("");
+                    pay();
+                });
+            });
+        },
+        /**
+         * Persistent, non-blocking "buy full access" button shown alongside
+         * a video that's already playing (per-minute billing, if any, is
+         * active independently of this) — clicking it works exactly like
+         * renderPaywall's button, just not gating anything.
+         *
+         * The displayed/charged amount is kept up to date client-side as
+         * per-minute charges come in (see watchClip's "charged" handling)
+         * so a viewer who's already paid some of it off via per-minute
+         * billing is only asked for the remainder, not the full price
+         * again — without needing a fresh server round-trip to check.
+         * @method renderUpsell
+         * @param {Object} upsell {amount, currency} — remaining balance at
+         *   page-load time
+         */
+        renderUpsell: function (upsell) {
+            var tool = this;
+            var state = tool.state;
+            tool.remainingUpsell = upsell.amount;
+
+            var $badge = $("<div class='Media_clip_upsell'>").insertAfter(tool.$(".Media_clip_credits"));
+            var $btn = $("<button class='Q_button Media_clip_upsell_button'>").appendTo($badge);
+
+            function updateLabel() {
+                if (tool.remainingUpsell <= 0) {
+                    $badge.remove();
+                    return;
+                }
+                $btn.text((tool.text.UnlockRemaining || "Unlock full access for {{amount}} {{currency}}")
+                    .interpolate({amount: tool.remainingUpsell, currency: upsell.currency}));
+            }
+            updateLabel();
+
+            // Called from watchClip() after each successful per-minute
+            // charge, so the button's price (and eventual removal, once
+            // enough has accrued) stays in sync without polling the server.
+            tool.updateUpsellLabel = updateLabel;
+
+            $btn.on(Q.Pointer.fastclick, function () {
+                $btn.prop("disabled", true);
+                Q.Assets.pay({
+                    amount: tool.remainingUpsell,
+                    currency: upsell.currency,
+                    reason: "EpisodeAccess",
+                    toStream: {
+                        publisherId: state.publisherId,
+                        streamName: state.streamName
+                    },
+                    onSuccess: function () {
+                        // Simplest correct way to get full-access semantics
+                        // (stop per-minute charging, hide the upsell) applied
+                        // consistently everywhere: let the server recompute
+                        // fullyPaid and re-render the whole column.
+                        location.reload();
+                    },
+                    onFailure: function () {
+                        $btn.prop("disabled", false);
+                    }
+                });
+            });
+        },
+        /**
+         * Send request to server with info about user watch clip — the
+         * server decides whether this is a free earn, a per-minute charge,
+         * or a no-op (already fully paid), based on the episode's own
+         * payment attribute — see Media/clip/response/watch.php.
          * @method watchClip
          */
         watchClip: function (watchingTool) {
@@ -846,9 +1021,53 @@
                 // this need to avoid situation when server lags and time shifted
                 tool.watchingTime = 0;
 
-                var $clipCredits = $(".Media_clip_credits span", tool.element);
-                $clipCredits.text(parseInt($clipCredits.text()) + state.credits);
-                //$clipCredits.parent().show();
+                // The "watch" slot's own value carries what actually
+                // happened this tick — see Media_clip_response_watch's
+                // three outcomes (earn / charge / insufficientCredits).
+                var watch = Q.getObject(["slots", "watch"], response) || {};
+
+                if (watch.insufficientCredits) {
+                    var payment = Q.getObject("Media.clip.payment", Q.plugins) || {};
+                    if (tool.videoTool && tool.videoTool.pause) {
+                        tool.videoTool.pause();
+                    }
+                    Q.Assets.pay({
+                        amount: payment.perMinuteAmount,
+                        currency: payment.currency || "credits",
+                        reason: "WatchPaidEpisode",
+                        toStream: {
+                            publisherId: state.publisherId,
+                            streamName: state.streamName
+                        },
+                        onSuccess: function () {
+                            // Topped up — resume playback; the next tick
+                            // will charge normally.
+                            if (tool.videoTool && tool.videoTool.play) {
+                                tool.videoTool.play();
+                            }
+                        }
+                    });
+                    return;
+                }
+
+                if (watch.charged) {
+                    if (typeof tool.remainingUpsell === "number") {
+                        tool.remainingUpsell = Math.max(0, tool.remainingUpsell - (watch.amount || 0));
+                        if (tool.updateUpsellLabel) {
+                            tool.updateUpsellLabel();
+                        }
+                    }
+                    return;
+                }
+
+                // Only an explicit {earned:true} bumps the UI counter — every
+                // other outcome (throttled/no-op, paid-in-full free viewing,
+                // etc.) returns an empty {} and must NOT fall through to here.
+                if (watch.earned) {
+                    var $clipCredits = $(".Media_clip_credits span", tool.element);
+                    $clipCredits.text(parseInt($clipCredits.text()) + state.credits);
+                    //$clipCredits.parent().show();
+                }
             }, {
                 fields: {
                     publisherId: state.publisherId,

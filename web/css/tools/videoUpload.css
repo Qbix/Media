@@ -47,11 +47,18 @@
 }
 
 .Media_videoUpload_title,
-.Media_videoUpload_description {
+.Media_videoUpload_description,
+.Media_videoUpload_priceStream,
+.Media_videoUpload_pricePerMinute {
 	font-size: 15px;
 	padding: 8px;
 	border: 1px solid silver;
 	border-radius: 4px;
+}
+
+.Media_videoUpload_priceStream,
+.Media_videoUpload_pricePerMinute {
+	max-width: 160px;
 }
 
 .Media_videoUpload_description {
@@ -74,6 +81,26 @@
 	padding: 1px 4px;
 }
 
+.Media_videoUpload_pricing {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.Media_videoUpload_allowPerMinuteLabel {
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+}
+.Media_videoUpload_allowPerMinuteLabel span {
+	font-weight: normal;
+}
+
+.Media_videoUpload_perMinutePreview {
+	font-size: 13px;
+	color: #666;
+}
+
 .Media_videoUpload_save {
 	align-self: flex-start;
 }
@@ -81,9 +108,14 @@
 @media (prefers-color-scheme: dark) {
 	.Media_videoUpload_title,
 	.Media_videoUpload_description,
-	.Media_videoUpload_categories {
+	.Media_videoUpload_categories,
+	.Media_videoUpload_priceStream,
+	.Media_videoUpload_pricePerMinute {
 		background-color: #2b2b2b;
 		color: unset;
 		border-color: #555;
+	}
+	.Media_videoUpload_perMinutePreview {
+		color: #999;
 	}
 }

@@ -55,7 +55,7 @@
 		    "clipEditor": { "module": "Media", "action": "clipEditor" },
             "Media/clipEditor/webhook": {"module": "Media", "action": "clipEditor"},
 		    "livestreamAuth": { "module": "Media", "action": "livestreamAuth" },
-			"dropVideo": {"module": "Media", "action": "dropVideo"},
+			"Media/dropVideo": {"module": "Media", "action": "dropVideo"},
 			"games": {"module":  "Media", "action":  "games"},
 			"games/:publisherId/:clipId": {"module":  "Media", "action":  "games"},
 		    "callCenter": { "module": "Media", "action": "callCenter" },
@@ -437,6 +437,17 @@
 			"commissions": {
 				"watching": "1%"
 			}
+		},
+		"payments": {
+			"reasons": {
+				"EpisodeAccess": {
+					"withoutIntentToken": {
+						"currency": "USD",
+						"min": 0,
+						"max": 1000
+					}
+				}
+			}
 		}
 	},
 	"Media": {
@@ -460,7 +471,18 @@
 			}
 		},
 		"episode": {
-			"templateStyle": "classic" /* can be "classic", "square", "tall" */
+			"templateStyle": "classic", /* can be "classic", "square", "tall" */
+			/* Which payment mechanisms the /dropVideo upload form offers for NEW
+			   uploads. One or both of "perStream", "perMinute". This ONLY affects
+			   which fields the upload form shows going forward — playback/gating
+			   always reads the mechanism straight off each episode's own stored
+			   payment attribute, so changing this never affects existing episodes. */
+			"paymentMechanism": ["perStream", "perMinute"],
+			"payment": { /* default prices offered on the Media/dropVideo upload form; 0 = free/disabled */
+				"currency": "credits",
+				"amount": 0, /* one-time price for full-episode access */
+				"perMinute": 0 /* price per minute of watching, when set directly (perMinute-only mechanism) */
+			}
 		},
 		"pageSizes": {
 			"clips": 50,

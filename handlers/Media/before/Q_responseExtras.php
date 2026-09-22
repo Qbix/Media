@@ -14,6 +14,8 @@ function Media_before_Q_responseExtras() {
 	Q_Response::setScriptData("Q.plugins.Media.liveShow", Q_Config::get("Media", "liveShow", null));
 	Q_Response::setScriptData("Q.plugins.Media.clip.webrtc", Q_Config::get("Media", "clip", "webrtc", null));
 	Q_Response::setScriptData("Q.plugins.Media.episode.templateStyle", Q_Config::get("Media", "episode", "templateStyle", null));
+	Q_Response::setScriptData("Q.plugins.Media.episode.payment", Q_Config::get("Media", "episode", "payment", array()));
+	Q_Response::setScriptData("Q.plugins.Media.episode.paymentMechanism", Q_Config::get("Media", "episode", "paymentMechanism", array("perStream", "perMinute")));
 
 	// collect user id's with label Users/hosts
 	$hosts = Users_Contact::select()->where(array(

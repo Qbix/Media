@@ -20,6 +20,20 @@
  *     Media/episode type's default icon if empty or missing.
  *   @param {string} [$_REQUEST.categories] JSON-encoded array of "Category: Interest"
  *     strings picked in the Streams/interests picker (see Media/videoUpload)
+ *   @param {string} [$_REQUEST.priceStream] One-time full-episode price, in credits.
+ *     0 or absent means free (default taken from Media.episode.payment.amount config).
+ *     Ignored entirely when Media.episode.paymentMechanism is perMinute-only.
+ *   @param {string} [$_REQUEST.pricePerMinute] Price per minute watched, in credits.
+ *     Only used directly when Media.episode.paymentMechanism is perMinute-only;
+ *     when both mechanisms are enabled, the per-minute price is instead derived
+ *     server-side from priceStream/videoDuration (see $_REQUEST.allowPerMinute)
+ *     and this value is ignored — the client never gets to set it directly in
+ *     that case, exactly so it can't be tampered with independently of the price
+ *     the creator actually set.
+ *   @param {string} [$_REQUEST.allowPerMinute] "1" if the creator checked
+ *     "also allow per-minute" (both-mechanisms case only)
+ *   @param {string} [$_REQUEST.videoDuration] Video length in seconds, used with
+ *     priceStream to derive the per-minute rate (both-mechanisms case only)
  * @return {void}
  */
 function Media_dropVideo_post($params = array())
@@ -52,6 +66,51 @@ function Media_dropVideo_post($params = array())
 	}
 	$categories = array_values(array_filter(array_map('strval', $categories)));
 
+	// Which mechanisms this community currently allows for NEW uploads (see
+	// Media/before/Q_responseExtras.php — the upload form only shows fields
+	// matching this). Read fresh here too, authoritatively, rather than
+	// trusting whichever fields the client happened to submit — this is
+	// what makes it safe to derive the per-minute price server-side below
+	// instead of accepting a client-supplied one in the "both" case.
+	$mechanisms = Q_Config::get('Media', 'episode', 'paymentMechanism', array('perStream', 'perMinute'));
+	$hasStream = in_array('perStream', $mechanisms);
+	$hasMinute = in_array('perMinute', $mechanisms);
+
+	// Prices default to the community/app's configured defaults (which the
+	// upload form itself already shows as the pre-filled field values) —
+	// re-reading them here too means a tampered/omitted client field can't
+	// silently make an episode free.
+	$priceStreamInput = Q::ifset($params, 'priceStream', null);
+	$priceStream = $hasStream
+		? (is_numeric($priceStreamInput)
+			? max(0, floatval($priceStreamInput))
+			: floatval(Q_Config::get('Media', 'episode', 'payment', 'amount', 0)))
+		: 0;
+
+	if ($hasStream && $hasMinute) {
+		// Per-minute isn't independently settable here — it's derived from
+		// the full price and the video's own length, so a tampered client
+		// field claiming a different rate (or a wildly wrong duration) can't
+		// produce a per-minute price disconnected from the price the
+		// creator actually set for the whole episode.
+		$allowPerMinute = filter_var(Q::ifset($params, 'allowPerMinute', false), FILTER_VALIDATE_BOOLEAN);
+		$videoDuration = floatval(Q::ifset($params, 'videoDuration', 0));
+		if ($allowPerMinute && $priceStream > 0 && $videoDuration > 0) {
+			$durationMinutes = max(1, $videoDuration / 60);
+			$pricePerMinute = round($priceStream / $durationMinutes, 2);
+		} else {
+			$pricePerMinute = 0;
+		}
+	} elseif ($hasMinute) {
+		// perMinute-only mechanism: creator sets the rate directly.
+		$pricePerMinuteInput = Q::ifset($params, 'pricePerMinute', null);
+		$pricePerMinute = is_numeric($pricePerMinuteInput)
+			? max(0, floatval($pricePerMinuteInput))
+			: floatval(Q_Config::get('Media', 'episode', 'payment', 'perMinute', 0));
+	} else {
+		$pricePerMinute = 0;
+	}
+
 	// The full manifest (with its bindingProof signature/publicKey, which
 	// alone is several hundred bytes serialized as per-byte objects) is far
 	// larger than the 1023-character hard limit on Streams_Stream's own
@@ -69,7 +128,17 @@ function Media_dropVideo_post($params = array())
 				'source' => 'safecloud',
 				'rootCid' => $rootCid
 			),
-			'categories' => $categories
+			'categories' => $categories,
+			// "amount" is the one-time full-episode price — this exact key
+			// is what Assets_Credits::getPaymentsInfo() reads to compute
+			// whether a user has paid enough (see Media/clip/response/column.php,
+			// mirrors how Calendars prices Calendars/event). "perMinute" is
+			// an extra key it ignores; reserved for the future per-minute feature.
+			'payment' => array(
+				'currency' => 'credits',
+				'amount' => $priceStream,
+				'perMinute' => $pricePerMinute
+			)
 		)
 		// no 'icon' set -> falls back to the Media/episode type's default icon
 	));
