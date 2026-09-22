@@ -175,6 +175,16 @@ html.Media_clip #content .Media_clip_tool.Media_clip_live .Q_button.Media_clip_j
     cursor: pointer;
     padding-bottom:10px;
 }
+.Media_clip_tool .Media_episode_edit {
+    display: inline-block;
+    margin: 5px;
+    font-size: 13px;
+    color: #2d7ff9;
+    text-decoration: none;
+}
+.Media_clip_tool .Media_episode_edit:hover {
+    text-decoration: underline;
+}
 .Media_clip_tool .Media_episode_description  {
     padding: 20px 0 10px 0;
     overflow: auto;

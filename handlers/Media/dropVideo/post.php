@@ -1,23 +1,44 @@
 <?php
 /**
- * Creates a Media/episode stream from a video already uploaded to
+ * Creates or publishes a Media/episode stream from a video uploaded to
  * Safecloud encrypted storage (see Media/videoUpload tool / Safecloud/upload
- * tool). Relates it to the uploader's own Media/channel/main — relating to
- * the community's Media/episodes category (and Streams/chats/main) happens
- * automatically via the existing Media_after_Streams_create_Media_episode
- * hook for every Media/episode stream, regardless of how it was created.
+ * tool).
+ *
+ * Two modes, distinguished by whether $_REQUEST.streamName is present:
+ *
+ *  - CREATE (no streamName): called right after the Safecloud upload
+ *    finishes, before the uploader has filled in title/description/
+ *    categories/price. Creates the episode immediately as a draft
+ *    (attributes.draft = true) with just a filename-derived title, so the
+ *    uploader already has a working share link and standalone-player link
+ *    while filling in the rest of the form — but Media_after_Streams_
+ *    create_Media_episode skips relating a draft into Media/episodes,
+ *    Streams/chats/main or the uploader's channel, so it isn't listed or
+ *    visible anywhere yet. Only reachable by direct link (Streams access
+ *    control still applies normally — draft only affects listing).
+ *
+ *  - PUBLISH (streamName present): called when the uploader clicks Save on
+ *    the details form. Updates the existing draft (or a previously
+ *    published episode being edited — see Media/episodeEdit) with the
+ *    final title/description/categories/price, clears the draft flag, and
+ *    — only the first time, when a draft is being published — performs the
+ *    Media/episodes/Streams-chats/channel relates that were skipped at
+ *    create time.
  *
  * @class HTTP
  * @method post
  * @param {array} [$_REQUEST] Parameters that can come from the request
- *   @param {string} [$_REQUEST.title] Defaults to the uploaded file's name
+ *   @param {string} [$_REQUEST.streamName] Existing episode's stream name —
+ *     present means "publish/update", absent means "create a new draft".
+ *   @param {string} [$_REQUEST.publisherId] Defaults to the logged-in user.
+ *   @param {string} [$_REQUEST.title] Defaults to the uploaded file's name (create only)
  *   @param {string} [$_REQUEST.content] Optional description
- *   @param {string} $_REQUEST.manifest JSON-encoded Safecloud public manifest
- *   @param {string} $_REQUEST.rootKey Safecloud root decryption key (base64)
+ *   @param {string} [$_REQUEST.manifest] JSON-encoded Safecloud public manifest (create only)
+ *   @param {string} [$_REQUEST.rootKey] Safecloud root decryption key, base64 (create only)
  *   @param {string} [$_REQUEST.videoThumbnail] "data:image/jpeg;base64,..." data URL
  *     of a frame grabbed client-side from the video (see Safecloud/upload's
  *     captureVideoThumbnail). Used as the episode's icon; falls back to the
- *     Media/episode type's default icon if empty or missing.
+ *     Media/episode type's default icon if empty or missing. (create only)
  *   @param {string} [$_REQUEST.categories] JSON-encoded array of "Category: Interest"
  *     strings picked in the Streams/interests picker (see Media/videoUpload)
  *   @param {string} [$_REQUEST.priceStream] One-time full-episode price, in credits.
@@ -40,24 +61,17 @@ function Media_dropVideo_post($params = array())
 {
 	$params = array_merge($_REQUEST, $params);
 	$publisherId = Q::ifset($params, 'publisherId', Users::loggedInUser(true)->id);
+	$streamName = Q::ifset($params, 'streamName', null);
 
-	$manifestJson = Q::ifset($params, 'manifest', null);
-	$rootKey = Q::ifset($params, 'rootKey', null);
-	$manifest = $manifestJson ? json_decode($manifestJson, true) : null;
-
-	if (empty($manifest) || empty($rootKey)) {
-		throw new Q_Exception_RequiredField(array('field' => 'manifest/rootKey'));
-	}
-
-	$title = trim((string) Q::ifset($params, 'title', ''));
-	if ($title === '') {
-		$title = Q::ifset($manifest, 'name', 'Untitled Episode');
-	}
-
-	$rootCid = Q::ifset($manifest, 'rootCid', null);
-	if (empty($rootCid)) {
-		throw new Q_Exception_RequiredField(array('field' => 'manifest.rootCid'));
-	}
+	// ── Which mechanisms this community currently allows for NEW uploads
+	// (see Media/before/Q_responseExtras.php — the upload form only shows
+	// fields matching this). Re-read fresh here, authoritatively, rather
+	// than trusting whichever fields the client happened to submit — this
+	// is what makes it safe to derive the per-minute price server-side
+	// below instead of accepting a client-supplied one in the "both" case.
+	$mechanisms = Q_Config::get('Media', 'episode', 'paymentMechanism', array('perStream', 'perMinute'));
+	$hasStream = in_array('perStream', $mechanisms);
+	$hasMinute = in_array('perMinute', $mechanisms);
 
 	$categoriesJson = Q::ifset($params, 'categories', null);
 	$categories = $categoriesJson ? json_decode($categoriesJson, true) : array();
@@ -66,20 +80,6 @@ function Media_dropVideo_post($params = array())
 	}
 	$categories = array_values(array_filter(array_map('strval', $categories)));
 
-	// Which mechanisms this community currently allows for NEW uploads (see
-	// Media/before/Q_responseExtras.php — the upload form only shows fields
-	// matching this). Read fresh here too, authoritatively, rather than
-	// trusting whichever fields the client happened to submit — this is
-	// what makes it safe to derive the per-minute price server-side below
-	// instead of accepting a client-supplied one in the "both" case.
-	$mechanisms = Q_Config::get('Media', 'episode', 'paymentMechanism', array('perStream', 'perMinute'));
-	$hasStream = in_array('perStream', $mechanisms);
-	$hasMinute = in_array('perMinute', $mechanisms);
-
-	// Prices default to the community/app's configured defaults (which the
-	// upload form itself already shows as the pre-filled field values) —
-	// re-reading them here too means a tampered/omitted client field can't
-	// silently make an episode free.
 	$priceStreamInput = Q::ifset($params, 'priceStream', null);
 	$priceStream = $hasStream
 		? (is_numeric($priceStreamInput)
@@ -111,6 +111,51 @@ function Media_dropVideo_post($params = array())
 		$pricePerMinute = 0;
 	}
 
+	if ($streamName) {
+		$episode = _Media_dropVideo_publish(
+			$publisherId, $streamName, $params, $categories, $priceStream, $pricePerMinute
+		);
+	} else {
+		$episode = _Media_dropVideo_createDraft($publisherId, $params, $categories, $priceStream, $pricePerMinute);
+	}
+
+	Q_Response::setSlot('result', true);
+	Q_Response::setSlot('stream', $episode->exportArray());
+}
+
+/**
+ * CREATE branch — see Media_dropVideo_post's docblock.
+ * @return {Streams_Stream}
+ */
+function _Media_dropVideo_createDraft($publisherId, $params, $categories, $priceStream, $pricePerMinute)
+{
+	$manifestJson = Q::ifset($params, 'manifest', null);
+	$rootKey = Q::ifset($params, 'rootKey', null);
+	$manifest = $manifestJson ? json_decode($manifestJson, true) : null;
+	// Not nested under the "video" attribute on purpose — Media_after_
+	// Streams_create_Media_episode reads video.duration (in seconds) to
+	// decide whether to run YouTube-style auto-clip-segmentation, which
+	// safecloud uploads deliberately opt out of (Protocol.md: the plain
+	// manifest carries no duration, only the encrypted index track does).
+	// Kept as its own top-level attribute purely so Media/episodeEdit can
+	// re-derive a per-minute rate later without needing the rootKey to
+	// decrypt anything.
+	$videoDuration = floatval(Q::ifset($params, 'videoDuration', 0));
+
+	if (empty($manifest) || empty($rootKey)) {
+		throw new Q_Exception_RequiredField(array('field' => 'manifest/rootKey'));
+	}
+
+	$title = trim((string) Q::ifset($params, 'title', ''));
+	if ($title === '') {
+		$title = Q::ifset($manifest, 'name', 'Untitled Episode');
+	}
+
+	$rootCid = Q::ifset($manifest, 'rootCid', null);
+	if (empty($rootCid)) {
+		throw new Q_Exception_RequiredField(array('field' => 'manifest.rootCid'));
+	}
+
 	// The full manifest (with its bindingProof signature/publicKey, which
 	// alone is several hundred bytes serialized as per-byte objects) is far
 	// larger than the 1023-character hard limit on Streams_Stream's own
@@ -124,10 +169,12 @@ function Media_dropVideo_post($params = array())
 		'title' => $title,
 		'content' => Q::ifset($params, 'content', null),
 		'attributes' => array(
+			'draft' => true,
 			'video' => array(
 				'source' => 'safecloud',
 				'rootCid' => $rootCid
 			),
+			'videoDuration' => $videoDuration,
 			'categories' => $categories,
 			// "amount" is the one-time full-episode price — this exact key
 			// is what Assets_Credits::getPaymentsInfo() reads to compute
@@ -164,20 +211,78 @@ function Media_dropVideo_post($params = array())
 		$episode = Streams_Stream::fetch($publisherId, $publisherId, $episode->name, true);
 	}
 
-	// Relate to the uploader's own channel so it shows up there and so
-	// Media/clip.js's joinClip() (which looks for a "Media/channel/*"
-	// relation) can join the viewer to it. The community's Media/episodes
-	// category and Streams/chats/main are already handled automatically by
-	// Media_after_Streams_create_Media_episode for every Media/episode
-	// stream, regardless of publisher.
-	Streams::fetchOneOrCreate($publisherId, $publisherId, 'Media/channel/main');
-	$episode->relateTo(
-		(object) array('publisherId' => $publisherId, 'name' => 'Media/channel/main'),
-		'Media/episode',
-		$publisherId,
-		array('skipAccess' => true, 'weight' => time())
-	);
+	return $episode;
+}
 
-	Q_Response::setSlot('result', true);
-	Q_Response::setSlot('stream', $episode->exportArray());
+/**
+ * PUBLISH branch — see Media_dropVideo_post's docblock. Updates an existing
+ * episode (draft or already-published — Media/episodeEdit reuses this same
+ * path) with the final details, and performs the relates that
+ * Media_after_Streams_create_Media_episode skipped at draft-creation time,
+ * the first time a draft actually gets published.
+ * @return {Streams_Stream}
+ */
+function _Media_dropVideo_publish($publisherId, $streamName, $params, $categories, $priceStream, $pricePerMinute)
+{
+	$user = Users::loggedInUser(true);
+	$episode = Streams_Stream::fetch($user->id, $publisherId, $streamName, true);
+	if (!$episode->testWriteLevel('edit')) {
+		throw new Users_Exception_NotAuthorized();
+	}
+
+	$wasDraft = (bool) $episode->getAttribute('draft');
+
+	$title = trim((string) Q::ifset($params, 'title', ''));
+	if ($title !== '') {
+		$episode->title = $title;
+	}
+	if (array_key_exists('content', $params)) {
+		$episode->content = Q::ifset($params, 'content', '');
+	}
+
+	$episode->setAttribute('draft', false);
+	$episode->setAttribute('categories', $categories);
+	$episode->setAttribute('payment', array(
+		'currency' => 'credits',
+		'amount' => $priceStream,
+		'perMinute' => $pricePerMinute
+	));
+	$episode->save();
+
+	if ($wasDraft) {
+		$communityId = Users::communityId();
+		$weight = time();
+
+		$episodesStreamName = "Media/episodes";
+		if (empty(Streams_RelatedTo::select()->where(array(
+			"toPublisherId" => $communityId,
+			"toStreamName" => $episodesStreamName,
+			"type" => $episode->type,
+			"fromPublisherId" => $episode->publisherId,
+			"fromStreamName" => $episode->name
+		))->limit(1)->fetchDbRow())) {
+			$episode->relateTo((object) array("publisherId" => $communityId, "name" => $episodesStreamName), $episode->type, $communityId, array(
+				'skipAccess' => true,
+				'weight' => $weight
+			));
+		}
+
+		$episode->relateTo((object) array("publisherId" => $communityId, "name" => "Streams/chats/main"), $episode->type, $communityId, array(
+			'skipAccess' => true,
+			'weight' => $weight
+		));
+
+		// Relate to the uploader's own channel so it shows up there and so
+		// Media/clip.js's joinClip() (which looks for a "Media/channel/*"
+		// relation) can join the viewer to it.
+		Streams::fetchOneOrCreate($publisherId, $publisherId, 'Media/channel/main');
+		$episode->relateTo(
+			(object) array('publisherId' => $publisherId, 'name' => 'Media/channel/main'),
+			'Media/episode',
+			$publisherId,
+			array('skipAccess' => true, 'weight' => $weight)
+		);
+	}
+
+	return $episode;
 }

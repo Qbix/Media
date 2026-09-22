@@ -7,6 +7,17 @@ function Media_after_Streams_create_Media_episode ($params) {
 	$weight = $episode->getAttribute("publishTime") ?: time();
 	$communityId = Users::communityId();
 
+	// A freshly-uploaded video (Media/videoUpload) creates its episode
+	// immediately, as a draft, so the uploader gets a working share link
+	// and standalone-player link before filling in the rest of the form —
+	// but it must NOT show up in the public /clips listing or the
+	// uploader's channel until they actually click Save. Media/dropVideo's
+	// post handler does that relating itself, explicitly, once the draft
+	// flag is cleared (see its "publish" branch).
+	if ($episode->getAttribute("draft")) {
+		return;
+	}
+
 	// relate to Media/episodes if not related
 	$episodesStreamName = "Media/episodes";
 	if (empty(Streams_RelatedTo::select()->where(array(

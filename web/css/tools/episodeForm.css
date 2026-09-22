@@ -1,0 +1,202 @@
+.Media_episodeForm_tool {
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+.Media_episodeForm_columns {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 32px;
+}
+
+.Media_episodeForm_left {
+	flex: 1 1 380px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	min-width: 280px;
+}
+
+.Media_episodeForm_right {
+	flex: 1 1 280px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	min-width: 260px;
+	max-width: 360px;
+}
+
+.Media_episodeForm_label {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 14px;
+}
+
+.Media_episodeForm_label span {
+	font-weight: bold;
+}
+
+.Media_episodeForm_title,
+.Media_episodeForm_description,
+.Media_episodeForm_priceStream,
+.Media_episodeForm_pricePerMinute {
+	font-size: 15px;
+	padding: 8px;
+	border: 1px solid silver;
+	border-radius: 4px;
+}
+
+.Media_episodeForm_priceStream,
+.Media_episodeForm_pricePerMinute {
+	max-width: 160px;
+}
+
+.Media_episodeForm_description {
+	min-height: 100px;
+	resize: vertical;
+}
+
+.Media_episodeForm_categories {
+	max-height: 220px;
+	overflow-y: auto;
+	border: 1px solid silver;
+	border-radius: 4px;
+	padding: 8px;
+}
+
+.Media_episodeForm_categories .Streams_interest_title.Q_selected {
+	background-color: #2d7ff9;
+	color: #fff;
+	border-radius: 3px;
+	padding: 1px 4px;
+}
+
+.Media_episodeForm_pricing {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.Media_episodeForm_allowPerMinuteLabel {
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+}
+.Media_episodeForm_allowPerMinuteLabel span {
+	font-weight: normal;
+}
+
+.Media_episodeForm_perMinutePreview {
+	font-size: 13px;
+	color: #666;
+}
+
+.Media_episodeForm_poster {
+	width: 100%;
+	border-radius: 6px;
+	background: #eee;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+}
+
+.Media_episodeForm_linkRow {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	background: #f7f7f7;
+	border-radius: 6px;
+	padding: 10px 12px;
+}
+
+.Media_episodeForm_linkLabel {
+	font-size: 12px;
+	color: #666;
+}
+
+.Media_episodeForm_linkValue {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.Media_episodeForm_link {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 13px;
+}
+
+.Media_episodeForm_copy {
+	flex: 0 0 auto;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	font-size: 15px;
+	padding: 2px 4px;
+	border-radius: 4px;
+	color: #444;
+}
+.Media_episodeForm_copy:hover {
+	background: rgba(0, 0, 0, 0.08);
+}
+.Media_episodeForm_copy.Media_episodeForm_copied {
+	color: #1a9e4e;
+}
+
+.Media_episodeForm_footer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 12px;
+	margin-top: 20px;
+	padding-top: 16px;
+	border-top: 1px solid #e5e5e5;
+}
+
+.Media_episodeForm_error {
+	color: #c0392b;
+	font-size: 13px;
+	flex: 1 1 auto;
+	text-align: right;
+}
+
+.Media_episodeForm_save {
+	flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+	.Media_episodeForm_right {
+		max-width: none;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	.Media_episodeForm_title,
+	.Media_episodeForm_description,
+	.Media_episodeForm_categories,
+	.Media_episodeForm_priceStream,
+	.Media_episodeForm_pricePerMinute {
+		background-color: #2b2b2b;
+		color: unset;
+		border-color: #555;
+	}
+	.Media_episodeForm_perMinutePreview {
+		color: #999;
+	}
+	.Media_episodeForm_linkRow {
+		background: #262626;
+	}
+	.Media_episodeForm_linkLabel {
+		color: #999;
+	}
+	.Media_episodeForm_copy {
+		color: #ccc;
+	}
+	.Media_episodeForm_footer {
+		border-top-color: #444;
+	}
+}

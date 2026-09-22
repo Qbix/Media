@@ -1,17 +1,6 @@
 Q.page("Media/dropVideo", function () {
-	var el = document.querySelector('.Media_videoUpload_tool');
-	if (!el) {
-		return;
-	}
-	var tool = Q.Tool.from(el, 'Media/videoUpload');
-	if (!tool) {
-		return;
-	}
-	tool.state.onSaved.add(function (err, stream) {
-		if (err || !stream) {
-			return;
-		}
-		// Media/episode's own declared url template, e.g. /clip/:publisherId/:streamName
-		location.href = stream.url || Q.url('clips');
-	}, 'Media/dropVideo');
+	// Media/videoUpload now handles the whole flow itself, in place —
+	// including showing the "video published" confirmation dialog (with
+	// its own share/standalone-player links) once Save succeeds — so this
+	// page no longer needs to navigate away on save.
 });

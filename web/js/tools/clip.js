@@ -326,6 +326,20 @@
                                 return console.warn("Media/clip: element chatMessages not found");
                             }
 
+                            // Creator-only "Edit video" link to Media/episodeEdit,
+                            // shown right above the description (inserted first,
+                            // so the description's own insertBefore below ends up
+                            // right after it, not before).
+                            var editClassName = "Media_episode_edit";
+                            if (tool.stream.fields.type === "Media/episode"
+                            && tool.stream.testWriteLevel("edit")
+                            && !$("." + editClassName, $chatMessages).length) {
+                                $("<a class='" + editClassName + "'>")
+                                    .attr("href", tool.stream.url() + "/edit")
+                                    .text(Q.getObject(["clip", "EditVideo"], tool.text) || "Edit video")
+                                    .insertBefore(tool.$(".Media_clip_participants"));
+                            }
+
                             var description = tool.stream.fields.content;
                             if (description) {
                                 var urls = description.matchTypes('url', {requireScheme: true});
