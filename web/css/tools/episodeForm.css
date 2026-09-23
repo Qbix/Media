@@ -1,206 +1,641 @@
+/* Redesign based on Media_episodeForm_redesign.html.
+   Uses only the existing class names rendered by Media/videoUpload +
+   Media/episodeForm + Streams/interests + Q/expandable — no markup or
+   tool-behavior changes.
+
+   Font: the design calls for 'DM Sans' (body) and 'Bricolage Grotesque'
+   (unused by any rule below, kept here in case a heading adopts it later).
+   Loaded via @import so the tool stays self-contained; if avoiding the
+   external Google Fonts request matters for production, drop this import
+   and self-host the two woff2 files instead — every rule below already
+   falls back to system-ui/-apple-system if the font isn't loaded. */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap');
+
+/* Light mode (default) — the reference design was dark-only; these are the
+   same roles (card/line/text/etc.) re-picked so the same layout looks
+   correct against the site's light background. Site-wide theme follows
+   system preference, so this tool must too — see the dark override below
+   instead of assuming the dark palette unconditionally. */
 .Media_episodeForm_tool {
-	width: 100%;
-	max-width: 900px;
-	margin: 0 auto;
-}
+  --ef-bg: #f4f3f8;
+  --ef-card: #ffffff;
+  --ef-card-2: #f1f0f5;
+  --ef-line: #e3e1ea;
+  --ef-line-2: #d7d4e0;
+  --ef-hover: #ececf2;
+  --ef-text: #1c1b22;
+  --ef-text-2: #2a2833;
+  --ef-muted: #6b687a;
+  --ef-faint: #948fa0;
+  --ef-accent: #ff6b7d;
+  --ef-accent-hover: #ff8594;
+  --ef-accent-ink: #24070d;
+  --ef-link: #d6335f;
+  --ef-link-hover: #b91f49;
+  --ef-ok: #1a9e4e;
+  --ef-err: #c0392b;
+  --ef-knob: #ffffff;
+  --ef-track-off: #d9d6e2;
+  --ef-radius: 12px;
 
-.Media_episodeForm_columns {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 32px;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: 32px;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  color: var(--ef-text);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  /* Without this, some browsers still paint native form-control chrome
+     (autofill background among them) using the light UA theme even though
+     every background here is authored via var(--ef-bg) — the input's box
+     itself follows our CSS either way, but this keeps the two consistent. */
+  color-scheme: light;
 }
-
-.Media_episodeForm_left {
-	flex: 1 1 380px;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	min-width: 280px;
-}
-
-.Media_episodeForm_right {
-	flex: 1 1 280px;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	min-width: 260px;
-	max-width: 360px;
-}
-
-.Media_episodeForm_label {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	font-size: 14px;
-}
-
-.Media_episodeForm_label span {
-	font-weight: bold;
-}
-
-.Media_episodeForm_title,
-.Media_episodeForm_description,
-.Media_episodeForm_priceStream,
-.Media_episodeForm_pricePerMinute {
-	font-size: 15px;
-	padding: 8px;
-	border: 1px solid silver;
-	border-radius: 4px;
-}
-
-.Media_episodeForm_priceStream,
-.Media_episodeForm_pricePerMinute {
-	max-width: 160px;
-}
-
-.Media_episodeForm_description {
-	min-height: 100px;
-	resize: vertical;
-}
-
-.Media_episodeForm_categories {
-	/* Fixed, not max — the Streams/interests filter re-renders its list on
-	   every keystroke with only however many categories match, so a
-	   max-height let the box shrink to fit whatever's left and shifted
-	   every element below it on the page as you typed. */
-	height: 220px;
-	overflow-y: auto;
-	border: 1px solid silver;
-	border-radius: 4px;
-	padding: 8px;
-}
-
-.Media_episodeForm_categories .Streams_interest_title.Q_selected {
-	background-color: #2d7ff9;
-	color: #fff;
-	border-radius: 3px;
-	padding: 1px 4px;
-}
-
-.Media_episodeForm_pricing {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.Media_episodeForm_allowPerMinuteLabel {
-	flex-direction: row;
-	align-items: center;
-	gap: 8px;
-}
-.Media_episodeForm_allowPerMinuteLabel span {
-	font-weight: normal;
-}
-
-.Media_episodeForm_perMinutePreview {
-	font-size: 13px;
-	color: #666;
-}
-
-.Media_episodeForm_poster {
-	width: 100%;
-	border-radius: 6px;
-	background: #eee;
-	aspect-ratio: 16 / 9;
-	object-fit: cover;
-}
-
-.Media_episodeForm_linkRow {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	background: #f7f7f7;
-	border-radius: 6px;
-	padding: 10px 12px;
-}
-
-.Media_episodeForm_linkLabel {
-	font-size: 12px;
-	color: #666;
-}
-
-.Media_episodeForm_linkValue {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.Media_episodeForm_link {
-	flex: 1 1 auto;
-	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	font-size: 13px;
-}
-
-.Media_episodeForm_copy {
-	flex: 0 0 auto;
-	border: none;
-	background: transparent;
-	cursor: pointer;
-	font-size: 15px;
-	padding: 2px 4px;
-	border-radius: 4px;
-	color: #444;
-}
-.Media_episodeForm_copy:hover {
-	background: rgba(0, 0, 0, 0.08);
-}
-.Media_episodeForm_copy.Media_episodeForm_copied {
-	color: #1a9e4e;
-}
-
-.Media_episodeForm_footer {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	gap: 12px;
-	margin-top: 20px;
-	padding-top: 16px;
-	border-top: 1px solid #e5e5e5;
-}
-
-.Media_episodeForm_error {
-	color: #c0392b;
-	font-size: 13px;
-	flex: 1 1 auto;
-	text-align: right;
-}
-
-.Media_episodeForm_save {
-	flex: 0 0 auto;
-}
-
-@media (max-width: 600px) {
-	.Media_episodeForm_right {
-		max-width: none;
-	}
-}
+.Media_episodeForm_tool *,
+.Media_episodeForm_tool *::before,
+.Media_episodeForm_tool *::after { box-sizing: border-box; }
 
 @media (prefers-color-scheme: dark) {
-	.Media_episodeForm_title,
-	.Media_episodeForm_description,
-	.Media_episodeForm_categories,
-	.Media_episodeForm_priceStream,
-	.Media_episodeForm_pricePerMinute {
-		background-color: #2b2b2b;
-		color: unset;
-		border-color: #555;
-	}
-	.Media_episodeForm_perMinutePreview {
-		color: #999;
-	}
-	.Media_episodeForm_linkRow {
-		background: #262626;
-	}
-	.Media_episodeForm_linkLabel {
-		color: #999;
-	}
-	.Media_episodeForm_copy {
-		color: #ccc;
-	}
-	.Media_episodeForm_footer {
-		border-top-color: #444;
-	}
+  .Media_episodeForm_tool {
+    --ef-bg: #0e0d12;
+    --ef-card: #17161d;
+    --ef-card-2: #1b1a22;
+    --ef-line: #25232e;
+    --ef-line-2: #2c2a36;
+    --ef-hover: #1f1e27;
+    --ef-text: #f3f1f7;
+    --ef-text-2: #e4e1ec;
+    --ef-muted: #a7a3b5;
+    --ef-faint: #8a8699;
+    --ef-link: #ff8f9c;
+    --ef-link-hover: #ffb3bc;
+    --ef-ok: #6ee7a8;
+    --ef-err: #ff8a80;
+    --ef-track-off: #34323f;
+    color-scheme: dark;
+  }
+}
+
+/* Wider step-2 container so the two cards fit side by side — see
+   videoUpload.css's Media_videoUpload_step2 rule for the matching width. */
+.Media_videoUpload_tool .Media_episodeForm_tool { max-width: 1120px; }
+
+/* ---------- Layout: left card (fields + footer) | right card (preview) ---------- */
+.Media_episodeForm_tool {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-areas:
+    "left   right"
+    "footer right";
+  column-gap: 32px;
+  align-items: start;
+}
+.Media_episodeForm_tool .Media_episodeForm_columns { display: contents; }
+
+.Media_episodeForm_tool .Media_episodeForm_left {
+  grid-area: left;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: var(--ef-card);
+  border: 1px solid var(--ef-line);
+  border-bottom: 0;
+  border-radius: 20px 20px 0 0;
+  padding: 32px 32px 8px;
+}
+.Media_episodeForm_tool .Media_episodeForm_right {
+  grid-area: right;
+  max-width: none;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--ef-card);
+  border: 1px solid var(--ef-line);
+  border-radius: 20px;
+  padding: 16px 16px 22px;
+}
+
+/* ---------- Labels ---------- */
+.Media_episodeForm_tool .Media_episodeForm_label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ef-text);
+}
+.Media_episodeForm_tool .Media_episodeForm_label > span {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.Media_episodeForm_tool .Media_episodeForm_descriptionLabel > span {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.Media_episodeForm_tool .Media_episodeForm_descriptionLabel > span::after {
+  content: "Optional";
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ef-muted);
+}
+
+/* ---------- Text fields ---------- */
+.Media_episodeForm_tool .Media_episodeForm_title,
+.Media_episodeForm_tool .Media_episodeForm_description,
+.Media_episodeForm_tool .Media_episodeForm_priceStream,
+.Media_episodeForm_tool .Media_episodeForm_pricePerMinute,
+.Media_episodeForm_tool .Streams_interests_filter_input {
+  width: 100%;
+  max-width: none;
+  height: 48px;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid var(--ef-line-2);
+  border-radius: var(--ef-radius);
+  /* Fans.css has a site-wide input[type=text]/textarea rule that forces
+     background-color/color with !important — a plain background/color
+     declaration here can never win against that regardless of selector
+     specificity, only another !important can. */
+  background-color: var(--ef-bg) !important;
+  color: var(--ef-text) !important;
+  font: inherit;
+  font-size: 15px;
+  box-shadow: none;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.Media_episodeForm_tool .Media_episodeForm_description {
+  height: auto;
+  min-height: 104px;
+  padding: 14px 16px;
+  line-height: 1.5;
+  resize: vertical;
+}
+.Media_episodeForm_tool .Media_episodeForm_title:focus,
+.Media_episodeForm_tool .Media_episodeForm_description:focus,
+.Media_episodeForm_tool .Media_episodeForm_priceStream:focus,
+.Media_episodeForm_tool .Media_episodeForm_pricePerMinute:focus,
+.Media_episodeForm_tool .Streams_interests_filter_input:focus {
+  border-color: var(--ef-accent);
+  box-shadow: 0 0 0 4px rgba(255,107,125,.16);
+}
+.Media_episodeForm_tool input::placeholder,
+.Media_episodeForm_tool textarea::placeholder { color: var(--ef-faint); }
+
+/* Chrome/Safari paint their own opaque background the instant a field is
+   autofilled (or even just matches a saved value) via an internal
+   box-shadow hack that sits on top of our `background`, regardless of
+   theme — this is the browser's autofill chrome, not something `var(--ef-bg)`
+   above can reach. Without this override it shows up as a plain white
+   (or pale yellow) box even in dark mode. The absurd transition-delay is
+   the standard workaround: it stops the browser's own fade-in from
+   flashing the native color before ours takes over. */
+.Media_episodeForm_tool input:-webkit-autofill,
+.Media_episodeForm_tool input:-webkit-autofill:focus,
+.Media_episodeForm_tool textarea:-webkit-autofill,
+.Media_episodeForm_tool textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ef-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--ef-bg) inset;
+  box-shadow: 0 0 0 1000px var(--ef-bg) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* ---------- Categories (Streams/interests) ---------- */
+.Media_episodeForm_tool .Media_episodeForm_categoriesLabel {
+  gap: 14px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ef-line);
+  margin-top: 4px;
+}
+.Media_episodeForm_tool .Media_episodeForm_categories {
+  height: auto;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.Media_episodeForm_tool .Streams_interests_filter { position: relative; margin: 0; padding: 0; }
+.Media_episodeForm_tool .Streams_interests_filter .Q_placeholders_container {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.Media_episodeForm_tool .Streams_interests_filter_input {
+  padding-left: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238a8699' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 16px center;
+  background-size: 18px 18px;
+}
+.Media_episodeForm_tool .Streams_interests_filter .Q_placeholder {
+  position: absolute;
+  left: 45px;
+  top: 0;
+  height: 48px;
+  line-height: 48px;
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  font-style: normal;
+  color: var(--ef-faint);
+  pointer-events: none;
+  background: none;
+}
+.Media_episodeForm_tool .Streams_interests_container {
+  height: 220px;
+  overflow-y: auto;
+  padding: 8px 16px 16px;
+  border: 1px solid var(--ef-line);
+  border-radius: 14px;
+  background: var(--ef-bg);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ef-line-2) transparent;
+}
+.Media_episodeForm_tool .Streams_interests_container::-webkit-scrollbar { width: 8px; }
+.Media_episodeForm_tool .Streams_interests_container::-webkit-scrollbar-thumb { background: var(--ef-line-2); border-radius: 8px; }
+
+/* Group header (Q/expandable) */
+.Media_episodeForm_tool .Q_expandable_tool { margin: 0; padding: 0; border: 0; background: none; }
+.Media_episodeForm_tool .Q_expandable_tool + .Q_expandable_tool { border-top: 1px solid var(--ef-line); }
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title,
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title:hover,
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title.Q_hover,
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title.Q_expanded,
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title.Q_pressed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--ef-muted);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+}
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title:hover,
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title.Q_expanded { color: var(--ef-text-2); }
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title img { display: none; }
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title span {
+  font: inherit; color: inherit; background: none; padding: 0; margin: 0; float: none;
+}
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title .Streams_interests_category_title { order: 1; flex: 1 1 auto; }
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title .Q_expandable_count {
+  order: 2;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--ef-accent);
+  color: var(--ef-accent-ink);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 22px;
+  text-align: center;
+}
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title .Q_expandable_count:empty { display: none; }
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title::after {
+  content: "";
+  order: 3;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: rotate(-90deg);
+  transition: transform .15s;
+}
+.Media_episodeForm_tool .Q_expandable_tool h2.Q_expandable_title.Q_expanded::after { transform: none; }
+.Media_episodeForm_tool .Q_expandable_container { margin: 0; padding: 0; border: 0; background: none; }
+.Media_episodeForm_tool .Q_expandable_content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 2px 0 14px;
+  margin: 0;
+  text-align: left;
+}
+
+/* Interest chips */
+.Media_episodeForm_tool .Streams_interest_sep { display: none; }
+.Media_episodeForm_tool .Streams_interest_title,
+.Media_episodeForm_tool .Streams_interests_unlisted .Streams_interest_title {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid var(--ef-line-2);
+  border-radius: 999px;
+  background: var(--ef-card-2);
+  color: var(--ef-text-2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color .15s, background-color .15s, color .15s;
+}
+.Media_episodeForm_tool .Streams_interest_title:hover { border-color: var(--ef-accent); }
+.Media_episodeForm_tool .Streams_interest_title.Q_selected,
+.Media_episodeForm_categories .Streams_interest_title.Q_selected {
+  background: var(--ef-accent);
+  border-color: var(--ef-accent);
+  color: var(--ef-accent-ink);
+  font-weight: 600;
+  padding: 0 14px;
+  border-radius: 999px;
+}
+.Media_episodeForm_tool .Streams_interests_unlisted { margin: 0; padding: 0; background: none; }
+.Media_episodeForm_tool .Streams_interests_unlisted:not(:empty) { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- Pricing ---------- */
+.Media_episodeForm_tool .Media_episodeForm_pricing {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  column-gap: 16px;
+  row-gap: 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--ef-line);
+  margin-top: 4px;
+}
+.Media_episodeForm_tool .Media_episodeForm_pricing::before {
+  content: "Pricing";
+  grid-column: 1 / -1;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.Media_episodeForm_tool .Media_episodeForm_priceStreamLabel {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  position: relative;
+  align-self: start;
+}
+.Media_episodeForm_tool .Media_episodeForm_priceStreamLabel > span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ef-muted);
+}
+.Media_episodeForm_tool .Media_episodeForm_priceStream { padding-right: 84px; -moz-appearance: textfield; }
+.Media_episodeForm_tool .Media_episodeForm_priceStream::-webkit-outer-spin-button,
+.Media_episodeForm_tool .Media_episodeForm_priceStream::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.Media_episodeForm_tool .Media_episodeForm_priceStreamLabel::after {
+  content: "credits";
+  position: absolute;
+  right: 16px;
+  bottom: 0;
+  height: 48px;
+  line-height: 48px;
+  font-size: 14px;
+  color: var(--ef-muted);
+  pointer-events: none;
+}
+
+/* Per-minute box = checkbox label (top) + preview text (bottom).
+   (Only styled for the "both mechanisms" case, matching the reference
+   design — the perMinute-only Media_episodeForm_pricePerMinuteLabel case
+   falls back to the shared text-field/label rules above.) */
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel,
+.Media_episodeForm_tool .Media_episodeForm_perMinutePreview {
+  grid-column: 2;
+  background: var(--ef-card-2);
+  border: 1px solid var(--ef-line);
+}
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel {
+  grid-row: 2;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px 4px;
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  cursor: pointer;
+}
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel > span {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ef-text);
+}
+.Media_episodeForm_tool .Media_episodeForm_perMinutePreview {
+  grid-row: 3;
+  padding: 0 84px 16px 18px;
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ef-muted);
+}
+.Media_episodeForm_tool .Media_episodeForm_perMinutePreview:empty { padding-bottom: 12px; }
+.Media_episodeForm_tool .Media_episodeForm_perMinutePreview .Media_episodeForm_pricePerMinute { margin-top: 10px; max-width: 200px; }
+/* Dim the box while the toggle is disabled */
+.Media_episodeForm_tool .Media_episodeForm_pricing:has(.Media_episodeForm_allowPerMinute:disabled) .Media_episodeForm_allowPerMinuteLabel,
+.Media_episodeForm_tool .Media_episodeForm_pricing:has(.Media_episodeForm_allowPerMinute:disabled) .Media_episodeForm_perMinutePreview { opacity: .55; }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel:has(:disabled) { cursor: not-allowed; }
+
+/* Switch (styled native checkbox) */
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute {
+  -webkit-appearance: none;
+          appearance: none;
+  position: relative;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 28px;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ef-track-off);
+  cursor: pointer;
+  transition: background-color .15s;
+}
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--ef-knob);
+  transition: left .15s, background-color .15s;
+}
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:checked { background: var(--ef-accent); }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:checked::before { left: 23px; background: var(--ef-accent-ink); }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:disabled { cursor: not-allowed; }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:focus-visible { outline: 2px solid var(--ef-accent); outline-offset: 2px; }
+
+/* ---------- Footer (sits under the left card, visually part of it) ---------- */
+.Media_episodeForm_tool .Media_episodeForm_footer {
+  grid-area: footer;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 20px 32px 32px;
+  background: var(--ef-card);
+  border: 1px solid var(--ef-line);
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+}
+.Media_episodeForm_tool .Media_episodeForm_error {
+  flex: 1 1 auto;
+  font-size: 13px;
+  color: var(--ef-err);
+  text-align: left;
+}
+.Media_episodeForm_tool .Q_button.Media_episodeForm_save,
+.Media_episodeForm_tool .Media_episodeForm_save {
+  flex: 0 0 auto;
+  height: 48px;
+  margin: 0;
+  padding: 0 28px;
+  /* Fans.css's "#page .Q_button" rule carries an ID selector, which beats
+     any number of classes regardless of source order — !important is the
+     only way to win against that without matching the ID ourselves. */
+  border: 0 !important;
+  border-radius: var(--ef-radius) !important;
+  background: var(--ef-accent) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--ef-accent-ink) !important;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background-color .15s;
+}
+.Media_episodeForm_tool .Media_episodeForm_save:hover { background: var(--ef-accent-hover) !important; }
+.Media_episodeForm_tool .Media_episodeForm_save:focus-visible { outline: 2px solid var(--ef-accent); outline-offset: 2px; }
+.Media_episodeForm_tool .Media_episodeForm_save:disabled { opacity: .6; cursor: default; }
+
+/* ---------- Right card: poster + links ---------- */
+.Media_episodeForm_tool .Media_episodeForm_poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 14px;
+  background: var(--ef-bg);
+  margin-bottom: 4px;
+}
+.Media_episodeForm_tool .Media_episodeForm_linkRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 6px;
+  background: none;
+  border-radius: 0;
+}
+.Media_episodeForm_tool .Media_episodeForm_onSiteRow {
+  padding-top: 18px;
+  border-top: 1px solid var(--ef-line);
+  margin: 0 6px;
+  padding-left: 0;
+  padding-right: 0;
+}
+.Media_episodeForm_tool .Media_episodeForm_linkLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ef-muted);
+}
+.Media_episodeForm_tool .Media_episodeForm_linkValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 4px 0 14px;
+  border: 1px solid var(--ef-line);
+  border-radius: var(--ef-radius);
+  background: var(--ef-bg);
+}
+.Media_episodeForm_tool .Media_episodeForm_link {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: var(--ef-link);
+  text-decoration: none;
+}
+.Media_episodeForm_tool .Media_episodeForm_link:hover { color: var(--ef-link-hover); }
+.Media_episodeForm_tool .Media_episodeForm_copy {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: var(--ef-hover);
+  color: var(--ef-muted);
+  font-size: 0;           /* hides the "⧉" glyph, icon drawn below */
+  cursor: pointer;
+  transition: background-color .15s, color .15s;
+}
+.Media_episodeForm_tool .Media_episodeForm_copy::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V6a2 2 0 0 1 2-2h8'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V6a2 2 0 0 1 2-2h8'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.Media_episodeForm_tool .Media_episodeForm_copy:hover { background: var(--ef-line-2); color: var(--ef-text); }
+.Media_episodeForm_tool .Media_episodeForm_copy.Media_episodeForm_copied { color: var(--ef-ok); }
+.Media_episodeForm_tool .Media_episodeForm_copy.Media_episodeForm_copied::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+}
+.Media_episodeForm_tool .Media_episodeForm_copy:focus-visible,
+.Media_episodeForm_tool .Media_episodeForm_link:focus-visible { outline: 2px solid var(--ef-accent); outline-offset: 2px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .Media_episodeForm_tool {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "right" "left" "footer";
+    row-gap: 0;
+  }
+  .Media_episodeForm_tool .Media_episodeForm_right { margin-bottom: 20px; }
+  .Media_episodeForm_tool .Media_episodeForm_poster { max-height: 320px; }
+}
+@media (max-width: 640px) {
+  .Media_episodeForm_tool .Media_episodeForm_left { padding: 20px 16px 4px; border-radius: 16px 16px 0 0; }
+  .Media_episodeForm_tool .Media_episodeForm_footer { padding: 16px 16px 20px; border-radius: 0 0 16px 16px; }
+  .Media_episodeForm_tool .Media_episodeForm_right { border-radius: 16px; }
+  .Media_episodeForm_tool .Media_episodeForm_pricing { grid-template-columns: minmax(0, 1fr); }
+  .Media_episodeForm_tool .Media_episodeForm_priceStreamLabel { grid-row: 2; margin-bottom: 16px; }
+  .Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel { grid-column: 1; grid-row: 3; }
+  .Media_episodeForm_tool .Media_episodeForm_perMinutePreview { grid-column: 1; grid-row: 4; padding-right: 18px; }
+  .Media_episodeForm_tool .Media_episodeForm_save { width: 100%; }
 }

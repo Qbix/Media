@@ -9,15 +9,50 @@
     min-width: 50%;
 }
 
-.Media_videoUpload_step2 .Media_videoUpload_tool,
-.Media_videoUpload_tool.Media_videoUpload_step2 {
-	max-width: 900px;
+/* Same design tokens as Media/episodeForm's redesign (episodeForm.css).
+   Custom properties don't share across stylesheets, so these are
+   duplicated here rather than left undefined — otherwise step 1 (this
+   drop zone) and step 2 (Media/episodeForm) would read as two unrelated
+   visual styles instead of one continuous upload flow. */
+.Media_videoUpload_tool {
+  --ef-bg: #f4f3f8;
+  --ef-card: #ffffff;
+  --ef-card-2: #f1f0f5;
+  --ef-line: #e3e1ea;
+  --ef-line-2: #d7d4e0;
+  --ef-text: #1c1b22;
+  --ef-muted: #6b687a;
+  --ef-accent: #ff6b7d;
+  --ef-accent-hover: #ff8594;
+  --ef-accent-ink: #24070d;
+  --ef-ok: #1a9e4e;
+  --ef-err: #c0392b;
+  --ef-warn: #b36b00;
+  --ef-radius: 12px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  .Media_videoUpload_tool {
+    --ef-bg: #0e0d12;
+    --ef-card: #17161d;
+    --ef-card-2: #1b1a22;
+    --ef-line: #25232e;
+    --ef-line-2: #2c2a36;
+    --ef-text: #f3f1f7;
+    --ef-muted: #a7a3b5;
+    --ef-ok: #6ee7a8;
+    --ef-err: #ff8a80;
+    --ef-warn: #ffaa00;
+    color-scheme: dark;
+  }
 }
 
-.Media_videoUpload_tool .Safecloud_upload_label {
-    font-size: 18px;
-    color: #2c2c2c;
+.Media_videoUpload_step2 .Media_videoUpload_tool,
+.Media_videoUpload_tool.Media_videoUpload_step2 {
+	max-width: 1120px;
+	align-items: flex-start;
 }
+
 .Media_videoUpload_tool .Q_expandable_title img {
     display: none;
 }
@@ -29,6 +64,112 @@
 
 .Media_videoUpload_form {
 	width: 100%;
+}
+
+/* ── Safecloud/upload — restyled to match episodeForm.css's redesign ──── */
+
+.Media_videoUpload_tool .Safecloud_upload_tool {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    gap: 14px;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_zone {
+    border: 2px dashed var(--ef-line-2);
+    background: var(--ef-card-2);
+    border-radius: 20px;
+    padding: 48px 24px;
+    transition: border-color .2s, background-color .2s;
+}
+.Media_videoUpload_tool .Safecloud_upload_zone:hover {
+    border-color: var(--ef-accent);
+    background: var(--ef-card);
+}
+.Media_videoUpload_tool .Safecloud_upload_dragover {
+    border-color: var(--ef-accent) !important;
+    background: var(--ef-card) !important;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 999px;
+    background: rgba(255, 107, 125, .12);
+    color: var(--ef-accent);
+    font-size: 32px;
+    text-shadow: none;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ef-text);
+    margin-bottom: 4px;
+}
+.Media_videoUpload_tool .Safecloud_upload_sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ef-muted);
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_progress {
+    height: 6px;
+    background: var(--ef-line-2);
+    border-radius: 999px;
+}
+.Media_videoUpload_tool .Safecloud_upload_progress_fill {
+    background: var(--ef-accent);
+    box-shadow: 0 0 8px rgba(255, 107, 125, .5);
+    border-radius: 999px;
+}
+.Media_videoUpload_tool .Safecloud_upload_progress_pct {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ef-muted);
+}
+
+.Media_videoUpload_tool .Safecloud_upload_status {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ef-muted);
+    letter-spacing: normal;
+    text-transform: none;
+}
+.Media_videoUpload_tool .Safecloud_upload_status.working { color: var(--ef-warn); }
+.Media_videoUpload_tool .Safecloud_upload_status.ok      { color: var(--ef-ok); }
+.Media_videoUpload_tool .Safecloud_upload_status.error   { color: var(--ef-err); }
+
+.Media_videoUpload_tool .Safecloud_upload_noDrops {
+    padding: 14px 16px;
+    border: 1px solid var(--ef-line);
+    background: var(--ef-card-2);
+    border-radius: var(--ef-radius);
+}
+.Media_videoUpload_tool .Safecloud_upload_noDropsMessage {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ef-text);
+}
+.Media_videoUpload_tool .Safecloud_upload_openDrop.Q_button {
+    background: var(--ef-accent) !important;
+    background-image: none !important;
+    border: 0 !important;
+    border-radius: var(--ef-radius) !important;
+    box-shadow: none !important;
+    color: var(--ef-accent-ink) !important;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-shadow: none;
+    padding: 10px 20px;
+}
+.Media_videoUpload_tool .Safecloud_upload_openDrop.Q_button:hover {
+    background: var(--ef-accent-hover) !important;
 }
 
 /* ── "Video published" dialog (Q.Dialogs) ─────────────────────────────── */
