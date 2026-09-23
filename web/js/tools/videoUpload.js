@@ -6,23 +6,29 @@
 	 */
 
 	/**
-	 * Upload a video file to Safecloud encrypted storage, collect title and
-	 * description, and (by default) POST to Media/dropVideo to create a
-	 * Media/episode stream from it.
+	 * Upload a video file to Safecloud encrypted storage, then collect
+	 * title/description/categories/price and POST to Media/dropVideo to
+	 * turn it into a Media/episode stream.
 	 *
-	 * Reusable outside this tool's own page: pass options.action = null and
-	 * handle options.onSave yourself (it always fires with the collected
-	 * payload, regardless of whether the default POST runs) to embed this
-	 * tool somewhere that needs different save behavior.
+	 * As soon as the upload finishes, the episode is created right away as
+	 * a draft (unlisted — see Media_after_Streams_create_Media_episode and
+	 * Media/dropVideo/post.php) so the details form's share link and
+	 * standalone-player link both work immediately, the same way YouTube
+	 * Studio's upload flow gives you a working watch link before you've
+	 * finished filling in the details. Clicking Save updates that same
+	 * draft with the final details and publishes it (relates it into
+	 * Media/episodes, the uploader's channel, etc.) — see
+	 * Media/episodeForm for the actual form UI, shared with Media/episodeEdit.
 	 *
 	 * @class Media videoUpload
 	 * @constructor
 	 * @param {Object} [options]
 	 *   @param {String} [options.jetUrl] Safecloud Jet server URL, passed through to Safecloud/upload
-	 *   @param {String} [options.action='Media/dropVideo'] Q.req endpoint to POST to when Save is clicked. Pass null to disable the automatic POST (reusability hook).
-	 *   @param {String} [options.posterUrl] Placeholder thumbnail shown in step 2 — just a static image for now.
-	 *   @param {Q.Event} [options.onSave] Fires with (payload) when Save is clicked, before any request is sent.
-	 *   @param {Q.Event} [options.onSaved] Fires with (err, stream) after the default POST completes (only if options.action is set).
+	 *   @param {String} [options.action='Media/dropVideo'] Q.req endpoint used for both
+	 *     the initial draft-creation POST (no streamName) and the publish-on-Save
+	 *     POST (with streamName) — see Media/dropVideo/post.php.
+	 *   @param {String} [options.posterUrl] Fallback thumbnail if no video frame could be captured.
+	 *   @param {Q.Event} [options.onSaved] Fires with (err, stream) after the publish POST completes.
 	 *   @param {Q.Event} [options.onError]
 	 */
 	Q.Tool.define("Media/videoUpload", function (options) {
@@ -34,7 +40,6 @@
 		jetUrl: null,
 		action: "Media/dropVideo",
 		posterUrl: "{{Media}}/img/icons/Media/episode/400.png",
-		onSave: new Q.Event(),
 		onSaved: new Q.Event(),
 		onError: new Q.Event(function (err) {
 			console.warn("Media/videoUpload error:", err && err.message || err);
@@ -67,28 +72,28 @@
 		},
 
 		/**
-		 * Step 2 — title/description/save form, shown once the file has
-		 * finished uploading and encrypting.
+		 * Step 2 — creates the episode as a draft right away, then shows the
+		 * shared Media/episodeForm (title/description/categories/price +
+		 * share links) once the file has finished uploading and encrypting.
 		 * @method videoStored
 		 * @param {Object} manifest
 		 * @param {String} rootKey
 		 * @param {String} [videoThumbnail] Data URL of a frame grabbed from the
 		 *   video during the "Preparing…" stage (see Safecloud/upload's
 		 *   captureVideoThumbnail). Falls back to state.posterUrl if missing.
+		 * @param {Number} [videoDuration] Video length in seconds, if known —
+		 *   used to derive a per-minute price from the full-episode price
+		 *   when both payment mechanisms are enabled (see Media.episode.paymentMechanism).
 		 */
-		videoStored: function (manifest, rootKey, videoThumbnail) {
+		videoStored: function (manifest, rootKey, videoThumbnail, videoDuration) {
 			var tool = this;
 			var state = tool.state;
-			var text = tool.text.videoUpload || {};
 
 			tool.manifest = manifest;
 			tool.rootKey = rootKey;
 			tool.videoThumbnail = videoThumbnail || null;
-			// Categories/subcategories the user picks for THIS video, keyed by
-			// "Category: Interest" (matching Streams/interests' own title
-			// format) — kept separate from the uploader's own personal
-			// interests, see the Streams/interests onReady/onClick handling below.
-			tool.selectedCategories = {};
+			tool.videoDuration = videoDuration || 0;
+			tool.draftStream = null;
 
 			var $te = $(tool.element);
 			$te.empty()
@@ -96,151 +101,195 @@
 				.addClass("Media_videoUpload_step2");
 
 			var defaultTitle = String(manifest.name || "").replace(/\.[^.\/]+$/, "");
+			var posterUrl = tool.videoThumbnail || Q.url(state.posterUrl);
 
-			var $form = $(
-				"<div class='Media_videoUpload_form'>" +
-					"<img class='Media_videoUpload_poster' alt=''/>" +
-					"<label class='Media_videoUpload_label Media_videoUpload_titleLabel'>" +
-						"<span>" + (text.Title || "Title") + "</span>" +
-						"<input type='text' class='Media_videoUpload_title' required/>" +
-					"</label>" +
-					"<label class='Media_videoUpload_label Media_videoUpload_descriptionLabel'>" +
-						"<span>" + (text.Description || "Description") + "</span>" +
-						"<textarea class='Media_videoUpload_description'></textarea>" +
-					"</label>" +
-					"<label class='Media_videoUpload_label Media_videoUpload_categoriesLabel'>" +
-						"<span>" + (text.Categories || "Categories") + "</span>" +
-						"<div class='Media_videoUpload_categories'></div>" +
-					"</label>" +
-					"<button class='Q_button Media_videoUpload_save' disabled>" +
-						(text.Save || "Save") +
-					"</button>" +
-				"</div>"
-			).appendTo($te);
-
-			$(".Media_videoUpload_poster", $form).attr(
-				"src", tool.videoThumbnail || Q.url(state.posterUrl));
-
-			var $title = $(".Media_videoUpload_title", $form).val(defaultTitle);
-			var $description = $(".Media_videoUpload_description", $form);
-			var $save = $(".Media_videoUpload_save", $form);
-
-			$(".Media_videoUpload_categories", $form).tool("Streams/interests", {
-				canAdd: false,
-				all: false,
-				onReady: function () {
-					// This picker is for the video's own categories, not the
-					// uploader's personal profile interests — Streams/interests
-					// pre-checks whatever the logged-in user already follows,
-					// so clear that here to start every video with a blank slate.
-					this.$(".Streams_interest_title.Q_selected").removeClass("Q_selected");
-					this.$(".Q_expandable_tool").each(function () {
-						var expandable = this.Q && this.Q("Q/expandable");
-						if (expandable) {
-							expandable.state.count = "";
-							expandable.stateChanged(["count"]);
-						}
-					});
-				},
-				onClick: function (element, normalizedTitle, category, interest, wasSelected) {
-					if (normalizedTitle === "*") {
-						return false;
-					}
-					tool.toggleCategory(category, interest, element);
-					return false; // cancel Streams/interests' own Interests.add/remove
+			var $form = $("<div class='Media_videoUpload_form'>").appendTo($te);
+			$form.tool("Media/episodeForm", {
+				title: defaultTitle,
+				posterUrl: posterUrl,
+				videoDuration: tool.videoDuration,
+				saveLabel: (tool.text.videoUpload || {}).Publish || "Save",
+				onSave: function (fields) {
+					tool.publish(fields);
 				}
-			}).activate();
+			}).activate(function () {
+				tool.formTool = this;
 
-			function updateSaveState() {
-				$save.prop("disabled", !$.trim($title.val()));
-			}
-			$title.on("input", updateSaveState);
-			updateSaveState();
+				// Standalone player link only needs the manifest/rootKey we
+				// already have in memory — no server round trip.
+				if (Q.Safecloud && Q.Safecloud.Client && Q.Safecloud.Client.createShareLink) {
+					Q.Safecloud.Client.createShareLink(manifest, rootKey, {
+						embed: true,
+						jetUrl: state.jetUrl
+					}).then(function (r) {
+						tool.standaloneUrl = r && r.embedUrl;
+						tool.formTool.setLinks(tool.onSiteUrl, tool.standaloneUrl);
+					}).catch(function () {});
+				}
 
-			$save.on(Q.Pointer.fastclick, function () {
-				$save.prop("disabled", true).text(text.Saving || "Saving…");
-				tool.save($title.val(), $description.val());
+				// Create the draft episode right away so the "share on
+				// site" link (and Save itself, which just updates this
+				// same stream) both work as soon as possible — never
+				// blocks on the user filling in the rest of the form first.
+				if (!state.action) {
+					return;
+				}
+				Q.req(state.action, ["result", "stream"], function (err, response) {
+					var msg = Q.firstErrorMessage(err, response && response.errors);
+					if (msg) {
+						Q.handle(state.onError, tool, [new Error(msg)]);
+						return;
+					}
+					var stream = Q.getObject(["slots", "stream"], response);
+					if (!stream) { return; }
+					tool.draftStream = stream;
+					tool.onSiteUrl = stream.url;
+					tool.formTool.setLinks(tool.onSiteUrl, tool.standaloneUrl);
+				}, {
+					method: "post",
+					fields: {
+						title: defaultTitle,
+						manifest: JSON.stringify(manifest),
+						rootKey: rootKey,
+						videoThumbnail: tool.videoThumbnail || "",
+						videoDuration: tool.videoDuration
+					}
+				});
 			});
 		},
 
 		/**
-		 * Toggles one "Category: Interest" pair on/off for this video, and
-		 * keeps the Streams/interests expandable's little counter in sync
-		 * the way the tool would have, had we not canceled its own handling.
-		 * @method toggleCategory
-		 * @param {String} category
-		 * @param {String} interest
-		 * @param {Element} element The clicked .Streams_interest_title span
+		 * Publishes the draft episode created in videoStored() with the
+		 * final details from Media/episodeForm, then shows a confirmation
+		 * dialog with the finished episode's links.
+		 * @method publish
+		 * @param {Object} fields From Media/episodeForm's onSave — see its docs.
 		 */
-		toggleCategory: function (category, interest, element) {
-			var tool = this;
-			var $el = $(element);
-			var key = category + ": " + interest;
-
-			if (tool.selectedCategories[key]) {
-				delete tool.selectedCategories[key];
-				$el.removeClass("Q_selected");
-			} else {
-				tool.selectedCategories[key] = true;
-				$el.addClass("Q_selected");
-			}
-
-			var $expandable = $el.closest(".Q_expandable_tool");
-			var expandable = $expandable.length && $expandable[0].Q("Q/expandable");
-			if (expandable) {
-				var count = $expandable.find(".Streams_interest_title.Q_selected").length;
-				expandable.state.count = count || "";
-				expandable.stateChanged(["count"]);
-			}
-		},
-
-		/**
-		 * @method save
-		 * @param {String} title
-		 * @param {String} content
-		 */
-		save: function (title, content) {
+		publish: function (fields) {
 			var tool = this;
 			var state = tool.state;
-			var payload = {
-				title: title,
-				content: content,
-				manifest: tool.manifest,
-				rootKey: tool.rootKey,
-				videoThumbnail: tool.videoThumbnail,
-				categories: Object.keys(tool.selectedCategories || {})
-			};
 
-			// Always fires — the raw, embedder-agnostic hook that keeps this
-			// tool reusable outside its own default POST-to-Media/dropVideo
-			// behavior (e.g. a future Streams/video/preview integration can
-			// set action:null and take it from here itself).
-			Q.handle(state.onSave, tool, [payload]);
-
-			if (!state.action) {
+			if (!state.action || !tool.draftStream) {
+				// Draft creation hasn't resolved yet (or reuse without a
+				// server action) — the raw fields are still available to
+				// an embedder that only wants Media/episodeForm's output.
+				tool.formTool.showError(
+					(tool.text.videoUpload || {}).NotReady
+					|| "Still preparing your upload — please wait a moment and try again."
+				);
 				return;
 			}
 
 			Q.req(state.action, ["result", "stream"], function (err, response) {
 				var msg = Q.firstErrorMessage(err, response && response.errors);
 				if (msg) {
+					tool.formTool.showError(msg);
 					Q.handle(state.onError, tool, [new Error(msg)]);
 					return;
 				}
 				var stream = Q.getObject(["slots", "stream"], response);
+				tool.formTool.setSaving(false);
 				Q.handle(state.onSaved, tool, [null, stream]);
+				tool.showPublishedDialog(stream);
 			}, {
 				method: "post",
 				fields: {
-					title: payload.title,
-					content: payload.content,
-					manifest: JSON.stringify(payload.manifest),
-					rootKey: payload.rootKey,
-					videoThumbnail: payload.videoThumbnail || "",
-					categories: JSON.stringify(payload.categories)
+					streamName: tool.draftStream.name,
+					publisherId: tool.draftStream.publisherId,
+					title: fields.title,
+					content: fields.content,
+					categories: JSON.stringify(fields.categories),
+					priceStream: fields.priceStream,
+					pricePerMinute: fields.pricePerMinute,
+					allowPerMinute: fields.allowPerMinute ? "1" : "",
+					videoDuration: fields.videoDuration
 				}
 			});
+		},
+
+		/**
+		 * @method showPublishedDialog
+		 * @param {Object} stream The published episode's exported stream fields
+		 */
+		showPublishedDialog: function (stream) {
+			var tool = this;
+			var text = tool.text.videoUpload || {};
+			var posterUrl = stream.icon
+				? Q.Streams.iconUrl(stream.icon, 400)
+				: (tool.videoThumbnail || Q.url(tool.state.posterUrl));
+			var duration = _formatDuration(tool.videoDuration);
+			var uploadedOn = new Date().toLocaleDateString();
+
+			var $content = $(
+				"<div class='Media_videoUpload_published'>" +
+					"<div class='Media_videoUpload_publishedSummary'>" +
+						"<div class='Media_videoUpload_publishedThumb'>" +
+							"<img alt=''/>" +
+							"<span class='Media_videoUpload_publishedDuration'></span>" +
+						"</div>" +
+						"<div class='Media_videoUpload_publishedInfo'>" +
+							"<div class='Media_videoUpload_publishedTitle'></div>" +
+							"<div class='Media_videoUpload_publishedDate'></div>" +
+						"</div>" +
+					"</div>" +
+					"<div class='Media_videoUpload_publishedLinks'></div>" +
+					"<div class='Media_videoUpload_publishedFooter'>" +
+						"<button class='Q_button Media_videoUpload_publishedClose'>" +
+							(text.Close || "Close") +
+						"</button>" +
+					"</div>" +
+				"</div>"
+			);
+			$(".Media_videoUpload_publishedThumb img", $content).attr("src", posterUrl);
+			$(".Media_videoUpload_publishedDuration", $content).text(duration);
+			$(".Media_videoUpload_publishedTitle", $content).text(stream.title || "");
+			$(".Media_videoUpload_publishedDate", $content)
+				.text((text.UploadedOn || "Uploaded {{date}}").interpolate({date: uploadedOn}));
+
+			function linkRow(labelText, url) {
+				if (!url) { return; }
+				var $row = $("<div class='Media_videoUpload_publishedLinkRow'>").appendTo(
+					$(".Media_videoUpload_publishedLinks", $content));
+				$("<span class='Media_videoUpload_publishedLinkLabel'>").text(labelText).appendTo($row);
+				var $value = $("<div class='Media_videoUpload_publishedLinkValue'>").appendTo($row);
+				$("<a target='_blank' rel='noopener'>").attr("href", url).text(url).appendTo($value);
+				var copyLabel = text.Copy || "Copy";
+				var $copy = $("<button type='button' class='Media_videoUpload_publishedCopy' title='" +
+					copyLabel + "'>&#x29C9;</button>").appendTo($value);
+				$copy.on(Q.Pointer.fastclick, function () {
+					if (!navigator.clipboard) { return; }
+					navigator.clipboard.writeText(url).then(function () {
+						$copy.addClass("Media_videoUpload_publishedCopied");
+						setTimeout(function () {
+							$copy.removeClass("Media_videoUpload_publishedCopied");
+						}, 1500);
+					}).catch(function () {});
+				});
+			}
+			linkRow(text.OnSiteLink || "Share link", tool.onSiteUrl || stream.url);
+			linkRow(text.StandaloneLink || "Standalone player link", tool.standaloneUrl);
+
+			var dialog = Q.Dialogs.push({
+				title: text.PublishedTitle || "Video published",
+				className: "Media_videoUpload_publishedDialog",
+				content: $content[0],
+				removeOnClose: true,
+				onActivate: function () {
+					$(".Media_videoUpload_publishedClose", $content).on(Q.Pointer.fastclick, function () {
+						Q.Dialogs.pop();
+						location.href = stream.url || tool.onSiteUrl || Q.url('clips');
+					});
+				}
+			});
+			return dialog;
 		}
 	});
+
+	function _formatDuration(seconds) {
+		seconds = Math.max(0, Math.round(seconds || 0));
+		var m = Math.floor(seconds / 60);
+		var s = seconds % 60;
+		return m + ":" + (s < 10 ? "0" : "") + s;
+	}
 
 })(Q, Q.jQuery);

@@ -31,6 +31,35 @@ function Media_clip_response_column(&$params, &$result)
 	Q_Response::setSlot('title', $title);
 	Q_Response::addStylesheet("{{Media}}/css/columns/episode.css");
 
+	// Payment gate. Media::episodePaymentStatus() reads prices straight off
+	// this episode's own "payment" attribute (set at upload time via
+	// Media/videoUpload/Media/dropVideo) and, via
+	// Assets_Credits::getPaymentsInfo(), how much this viewer has already
+	// paid toward it — one-time purchases and accrued per-minute charges
+	// both count toward the same running total.
+	//
+	// Hard-gate (withhold the Safecloud key entirely, below) ONLY when a
+	// one-time price is set and per-minute ISN'T offered as a fallback —
+	// if per-minute billing is available, playback is never blocked on it;
+	// per-minute charging (Media/clip/response/watch.php) or having fully
+	// paid governs access incrementally instead of withholding the key.
+	$loggedInUser = Users::loggedInUser(false, false);
+	$status = Media::episodePaymentStatus($stream, $loggedInUser ? $loggedInUser->id : null);
+	$hasPerStream = $status['perStreamAmount'] > 0;
+	$hasPerMinute = $status['perMinuteAmount'] > 0;
+	$paymentRequired = $hasPerStream && !$hasPerMinute && !$status['fullyPaid'];
+
+	Q_Response::setScriptData('Q.plugins.Media.clip.payment', array(
+		'required' => $paymentRequired,
+		'perMinuteActive' => $hasPerMinute && !$status['fullyPaid'],
+		'perMinuteAmount' => $status['perMinuteAmount'],
+		'upsell' => ($hasPerStream && !$status['fullyPaid']) ? array(
+			'amount' => $status['remaining'],
+			'currency' => $status['currency']
+		) : null,
+		'currency' => $status['currency']
+	));
+
 	$video = $stream->getAttribute('video');
 	if (Q::ifset($video, 'source', null) === 'safecloud') {
 		// Not auto-loaded app-wide — needed here so Q.Safecloud.* exists
@@ -45,10 +74,16 @@ function Media_clip_response_column(&$params, &$result)
 		// (see Media::safecloudVideoWrite() — the full manifest is too large
 		// for the attributes column's 1023-char limit). Read the actual
 		// manifest + rootKey back from disk and hand them to the client for
-		// this one page load only.
-		$safecloudVideo = Media::safecloudVideoRead(Q::ifset($video, 'rootCid', null));
-		if ($safecloudVideo) {
-			Q_Response::setScriptData('Q.plugins.Media.clip.video', $safecloudVideo);
+		// this one page load only — but never for a paid episode the current
+		// user hasn't paid for yet: that key is what actually lets someone
+		// decrypt the video, so withholding it (not just hiding the player in
+		// the UI) is the one part of this feature that's real enforcement
+		// rather than an honor-system client-side check.
+		if (!$paymentRequired) {
+			$safecloudVideo = Media::safecloudVideoRead(Q::ifset($video, 'rootCid', null));
+			if ($safecloudVideo) {
+				Q_Response::setScriptData('Q.plugins.Media.clip.video', $safecloudVideo);
+			}
 		}
 	}
 

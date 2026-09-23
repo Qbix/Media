@@ -79,6 +79,16 @@
 			css: "{{Media}}/css/tools/videoUpload.css",
 			text: ["Media/content"]
 		},
+		"Media/episodeForm": {
+			js: "{{Media}}/js/tools/episodeForm.js",
+			css: "{{Media}}/css/tools/episodeForm.css",
+			text: ["Media/content"]
+		},
+		"Media/episodeEdit": {
+			js: "{{Media}}/js/tools/episodeEdit.js",
+			css: "{{Media}}/css/tools/episodeEdit.css",
+			text: ["Media/content"]
+		},
 		"Media/episode/preview": {
 			js: "{{Media}}/js/tools/episode/preview.js",
 			css: "{{Media}}/css/tools/episodePreview.css"
