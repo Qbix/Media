@@ -93,9 +93,21 @@
 
             var publishTime = stream.getAttribute("publishTime") || Q.getObject("publishTime", stream.getAttribute("video"));
 			var dateFormatted, dateFormattedForCard;
+			var publishDate;
 
-            if(publishTime) {
-                var publishDate = new Date(parseInt(publishTime) * 1000);
+			if (publishTime) {
+				publishDate = new Date(parseInt(publishTime) * 1000);
+			} else if (stream.fields && stream.fields.insertedTime) {
+				// Neither attribute is set for episodes saved before either the
+				// YouTube-scrape path (which sets video.publishTime) or the
+				// safecloud-upload path (which now sets publishTime on first
+				// publish — see Media/dropVideo/post.php) ran, and for a
+				// safecloud upload that predates that fix — fall back to the
+				// stream's own insertedTime rather than showing no date at all.
+				publishDate = new Date(stream.fields.insertedTime.replace(' ', 'T') + 'Z');
+			}
+
+            if(publishDate) {
                 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 var year = publishDate.getFullYear();
                 var month = months[publishDate.getMonth()];

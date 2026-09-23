@@ -243,6 +243,15 @@ function _Media_dropVideo_publish($publisherId, $streamName, $params, $categorie
 	}
 
 	$episode->setAttribute('draft', false);
+	if ($wasDraft) {
+		// Media/episode/preview.js reads this (falling back to
+		// video.publishTime, which the YouTube-scrape path sets instead) to
+		// show the upload date in the episode list — safecloud uploads never
+		// set either, which is why "Streams_preview_episode_info_date_text"
+		// was rendering empty. Only set on the draft->published transition,
+		// not every edit, so a later Media/episodeEdit save doesn't bump it.
+		$episode->setAttribute('publishTime', time());
+	}
 	$episode->setAttribute('categories', $categories);
 	$episode->setAttribute('payment', array(
 		'currency' => 'credits',
