@@ -59,7 +59,11 @@
 }
 
 .Media_episodeForm_categories {
-	max-height: 220px;
+	/* Fixed, not max — the Streams/interests filter re-renders its list on
+	   every keystroke with only however many categories match, so a
+	   max-height let the box shrink to fit whatever's left and shifted
+	   every element below it on the page as you typed. */
+	height: 220px;
 	overflow-y: auto;
 	border: 1px solid silver;
 	border-radius: 4px;

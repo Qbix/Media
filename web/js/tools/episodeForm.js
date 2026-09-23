@@ -87,10 +87,18 @@
 				"</label>"
 			).appendTo($left);
 			$(
-				"<label class='Media_episodeForm_label Media_episodeForm_categoriesLabel'>" +
+				// A plain <div>, not <label> — this wraps a whole
+				// Streams/interests widget (its own filter <input> plus a
+				// tree of category spans), and a <label> containing any
+				// descendant form control auto-focuses the FIRST one found
+				// on any click anywhere inside it. With a real <label> here,
+				// clicking any category/subcategory kept stealing focus
+				// into the filter input and jumping the scroll position to
+				// it, no matter what Q/expandable or Q/placeholders did.
+				"<div class='Media_episodeForm_label Media_episodeForm_categoriesLabel'>" +
 					"<span>" + (text.Categories || "Categories") + "</span>" +
 					"<div class='Media_episodeForm_categories'></div>" +
-				"</label>"
+				"</div>"
 			).appendTo($left);
 			var $pricing = $("<div class='Media_episodeForm_pricing'>").appendTo($left);
 

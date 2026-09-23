@@ -44,8 +44,8 @@
 		"routes@start": {
 			"clip/:clipId": {"module": "Media", "action": "clip"},
 			"clip/:publisherId/:clipId": {"module":  "Media", "action":  "clip"},
-			"clip/:publisherId/:clipId/edit": {"module": "Media", "action": "episodeEdit"},
 			"clip/:publisherId/:episodeDate/:clipTime": {"module":  "Media", "action":  "clip"},
+			"clip/:publisherId/:clipId/edit": {"module": "Media", "action": "episodeEdit"},
 			"clips": {"module":  "Media", "action":  "clips"},
 			"youtube": {"module":  "Media", "action":  "youtube"},
 			"youtube/:videoId/": {"module":  "Media", "action":  "clip"},

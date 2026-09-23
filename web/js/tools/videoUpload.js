@@ -251,7 +251,20 @@
 				var $row = $("<div class='Media_videoUpload_publishedLinkRow'>").appendTo(
 					$(".Media_videoUpload_publishedLinks", $content));
 				$("<span class='Media_videoUpload_publishedLinkLabel'>").text(labelText).appendTo($row);
-				$("<a target='_blank' rel='noopener'>").attr("href", url).text(url).appendTo($row);
+				var $value = $("<div class='Media_videoUpload_publishedLinkValue'>").appendTo($row);
+				$("<a target='_blank' rel='noopener'>").attr("href", url).text(url).appendTo($value);
+				var copyLabel = text.Copy || "Copy";
+				var $copy = $("<button type='button' class='Media_videoUpload_publishedCopy' title='" +
+					copyLabel + "'>&#x29C9;</button>").appendTo($value);
+				$copy.on(Q.Pointer.fastclick, function () {
+					if (!navigator.clipboard) { return; }
+					navigator.clipboard.writeText(url).then(function () {
+						$copy.addClass("Media_videoUpload_publishedCopied");
+						setTimeout(function () {
+							$copy.removeClass("Media_videoUpload_publishedCopied");
+						}, 1500);
+					}).catch(function () {});
+				});
 			}
 			linkRow(text.OnSiteLink || "Share link", tool.onSiteUrl || stream.url);
 			linkRow(text.StandaloneLink || "Standalone player link", tool.standaloneUrl);
@@ -264,6 +277,7 @@
 				onActivate: function () {
 					$(".Media_videoUpload_publishedClose", $content).on(Q.Pointer.fastclick, function () {
 						Q.Dialogs.pop();
+						location.href = stream.url || tool.onSiteUrl || Q.url('clips');
 					});
 				}
 			});
