@@ -3,9 +3,10 @@ function Media_clips_response($params)
 {
 	$text = Q_Text::get('Media/content');
 	$clipsColumn = Q::event('Media/clips/response/column');
+	$category = Q::ifset($_GET, 'category', null);
 	Media::$columns = array(
 		'clips' => array(
-			'title' => $text['Clips'],
+			'title' => $category ? $category : $text['Clips'],
 			'column' => $clipsColumn,
 			'columnClass' => 'Media_column_clips'
 		)

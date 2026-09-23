@@ -24,7 +24,10 @@
 	 * @param {Object} [options]
 	 *   @param {String} [options.title]
 	 *   @param {String} [options.content]
-	 *   @param {Array} [options.categories] Pre-selected "Category: Interest" strings
+	 *   @param {Array} [options.categories] Pre-selected interest names (bare,
+ *     e.g. "Bodybuilding" — not "Category: Interest"). Legacy full
+ *     "Category: Interest" strings from episodes saved before this format
+ *     changed are still accepted and normalized on load.
 	 *   @param {String} [options.posterUrl] Thumbnail <img> src
 	 *   @param {Number} [options.videoDuration] Video length in seconds, if known
 	 *   @param {Number} [options.priceStream] Initial one-time full-episode price
@@ -62,13 +65,23 @@
 			var text = tool.text.episodeForm || {};
 			var $te = $(tool.element).addClass("Media_episodeForm_tool").empty();
 
-			// Categories/subcategories picked for this episode, keyed by
-			// "Category: Interest" (matching Streams/interests' own title
-			// format) — kept separate from the viewer's personal interests.
+			// Categories/subcategories picked for this episode. Internally
+			// still keyed by "Category: Interest" (matching Streams/interests'
+			// own DOM id format, Q.normalize(category + ": " + interest) —
+			// see interests.js) so the picker's checkboxes can be restored —
+			// but the VALUE stored per key (and what actually gets saved/
+			// displayed/filtered on) is just the bare interest name, per the
+			// user's preference for "Bodybuilding" over "Fitness & Wellness:
+			// Bodybuilding". Populated properly once Streams/interests'
+			// onReady fires below (needs the loaded taxonomy to resolve a
+			// bare saved interest name back to its parent category); until
+			// then this just holds the raw options.categories values.
 			tool.selectedCategories = {};
-			(state.categories || []).forEach(function (key) {
-				tool.selectedCategories[key] = true;
-			});
+			tool.savedCategories = state.categories || [];
+			// Saved interests that couldn't be matched back to a parent
+			// category in the current taxonomy (see onReady below) — carried
+			// through to Save unchanged instead of silently dropped.
+			tool.unresolvedCategories = [];
 
 			var $columns = $("<div class='Media_episodeForm_columns'>").appendTo($te);
 			var $left = $("<div class='Media_episodeForm_left'>").appendTo($columns);
@@ -245,6 +258,38 @@
 					// so clear that here to start with a blank slate before
 					// applying this episode's own saved categories, if any.
 					interests.$(".Streams_interest_title.Q_selected").removeClass("Q_selected");
+
+					// Resolve tool.savedCategories (bare interest names, or —
+					// for episodes saved before this format changed — legacy
+					// "Category: Interest" strings) into the full
+					// "Category: Interest" keys the highlight loop below and
+					// toggleCategory() both key on. Only possible now, once
+					// Streams/interests has finished loading the taxonomy
+					// (interests.tree()) it needs to look up a bare
+					// interest's parent category.
+					tool.savedCategories.forEach(function (saved) {
+						var category, interest;
+						var colonIndex = saved.indexOf(": ");
+						if (colonIndex >= 0) {
+							// Legacy full string — trust it outright, no lookup needed.
+							category = saved.slice(0, colonIndex);
+							interest = saved.slice(colonIndex + 2);
+						} else {
+							interest = saved;
+							category = tool.findCategoryForInterest(interest);
+							if (!category) {
+								// Not found anywhere in the current taxonomy (e.g. it
+								// was removed/renamed since this episode was saved) —
+								// nothing to highlight, but carry it forward so a
+								// re-save without touching categories doesn't
+								// silently drop it.
+								tool.unresolvedCategories.push(interest);
+								return;
+							}
+						}
+						tool.selectedCategories[category + ": " + interest] = interest;
+					});
+
 					interests.$(".Q_expandable_tool").each(function () {
 						var expandable = this.Q && this.Q("Q/expandable");
 						if (expandable) {
@@ -294,10 +339,21 @@
 			$save.on(Q.Pointer.fastclick, function () {
 				if ($save.prop("disabled")) { return; }
 				$error.text("");
+				// Values (bare interest names), not keys ("Category: Interest") —
+				// the parent is kept only for restoring/highlighting the picker,
+				// see refresh() above. Deduped: two different parent categories
+				// could in principle share a child interest name.
+				var seen = {}, categoriesToSave = [];
+				Q.each(tool.selectedCategories, function (key, interest) {
+					if (!seen[interest]) { seen[interest] = true; categoriesToSave.push(interest); }
+				});
+				(tool.unresolvedCategories || []).forEach(function (interest) {
+					if (!seen[interest]) { seen[interest] = true; categoriesToSave.push(interest); }
+				});
 				var fields = {
 					title: $title.val(),
 					content: $description.val(),
-					categories: Object.keys(tool.selectedCategories || {}),
+					categories: categoriesToSave,
 					priceStream: Math.max(0, parseFloat($priceStream ? $priceStream.val() : 0) || 0),
 					pricePerMinute: Math.max(0, parseFloat($pricePerMinute ? $pricePerMinute.val() : 0) || 0),
 					allowPerMinute: $allowPerMinute ? $allowPerMinute.prop("checked") : false,
@@ -306,6 +362,32 @@
 				tool.setSaving(true);
 				Q.handle(state.onSave, tool, [fields]);
 			});
+		},
+
+		/**
+		 * Looks up which top-level category a bare interest name belongs to,
+		 * by searching the taxonomy Streams/interests already loaded
+		 * (Q.Streams.Interests.all[communityId][category][subcategory]).
+		 * Only meaningful after that picker's onReady has fired. Returns the
+		 * first matching category, or null if not found anywhere (e.g. the
+		 * interest was removed/renamed in the taxonomy since it was saved).
+		 * @method findCategoryForInterest
+		 * @param {String} interest
+		 * @return {String|null}
+		 */
+		findCategoryForInterest: function (interest) {
+			var communityId = Q.Users.communityId;
+			var all = Q.getObject([communityId], Q.Streams.Interests.all) || {};
+			for (var category in all) {
+				var buckets = all[category];
+				for (var subcategory in buckets) {
+					if (buckets[subcategory]
+					&& Object.prototype.hasOwnProperty.call(buckets[subcategory], interest)) {
+						return category;
+					}
+				}
+			}
+			return null;
 		},
 
 		/**
@@ -324,7 +406,11 @@
 				delete tool.selectedCategories[key];
 				$el.removeClass("Q_selected");
 			} else {
-				tool.selectedCategories[key] = true;
+				// Value is the bare interest name — what actually gets saved/
+				// displayed/filtered on (see the Save handler above); the key
+				// keeps the parent only so this picker's own state can be
+				// restored/highlighted correctly.
+				tool.selectedCategories[key] = interest;
 				$el.addClass("Q_selected");
 			}
 

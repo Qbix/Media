@@ -26,11 +26,18 @@ echo '<div class="Media_shows_layout"><a href="' . $url . '">' . ($layout == 'ca
 <button class="Q_button Media_liveShow Q_pulsate"><?php echo $LiveShow ?></button>
 <?php } ?>
 
+<?php if (!empty($category)) { ?>
+<div class="Media_clips_categoryFilter">
+	<?php echo htmlspecialchars($category) ?>
+	<a class="Media_clips_categoryFilter_clear" href="<?php echo Q_Request::baseUrl() . '/clips' ?>">&times;</a>
+</div>
+<?php } ?>
+
 <?php
 
 echo Q::tool('Streams/related', array(
 	"stream" => $episodesStream,
-	"relationType" => 'Media/episode',
+	"relationType" => $relationType,
 	"realtime" => true,
 	"sortable" => false,
 	"closeable" => false,

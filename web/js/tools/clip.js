@@ -370,7 +370,18 @@
                             if (categories.length && !$("." + categoriesClassName, $chatMessages).length) {
                                 var $categories = $("<div class='" + categoriesClassName + "'>");
                                 Q.each(categories, function (i, category) {
-                                    $("<span class='Media_episode_category'>")
+                                    // A real link, not a span — Q's own
+                                    // link-interception SPA-navigates this,
+                                    // landing on /clips filtered to whatever
+                                    // Media/episode streams are related to
+                                    // the shared search index under
+                                    // "attribute/categories=<this category>"
+                                    // (see Media/clips/response/column.php
+                                    // and Media/episode's "syncRelations"
+                                    // config, which keeps that relation in
+                                    // sync automatically on every save).
+                                    $("<a class='Media_episode_category'>")
+                                        .attr("href", Q.url("clips") + "?category=" + encodeURIComponent(category))
                                         .text(category)
                                         .appendTo($categories);
                                 });

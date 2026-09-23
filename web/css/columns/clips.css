@@ -1,0 +1,25 @@
+.Media_clips_categoryFilter {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin: 10px 0;
+	padding: 4px 6px 4px 12px;
+	border-radius: 999px;
+	background: rgba(128, 128, 128, 0.15);
+	font-size: 13px;
+}
+.Media_clips_categoryFilter_clear {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	color: inherit;
+	text-decoration: none;
+	font-size: 15px;
+	line-height: 1;
+}
+.Media_clips_categoryFilter_clear:hover {
+	background: rgba(128, 128, 128, 0.3);
+}

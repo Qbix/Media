@@ -39,8 +39,10 @@
  *     of a frame grabbed client-side from the video (see Safecloud/upload's
  *     captureVideoThumbnail). Used as the episode's icon; falls back to the
  *     Media/episode type's default icon if empty or missing. (create only)
- *   @param {string} [$_REQUEST.categories] JSON-encoded array of "Category: Interest"
- *     strings picked in the Streams/interests picker (see Media/videoUpload)
+ *   @param {string} [$_REQUEST.categories] JSON-encoded array of bare interest
+ *     names (e.g. "Bodybuilding") picked in the Streams/interests picker
+ *     (see Media/videoUpload) — episodeForm.js keeps track of each one's
+ *     parent category only to restore/highlight the picker, not for saving
  *   @param {string} [$_REQUEST.priceStream] One-time full-episode price, in credits.
  *     0 or absent means free (default taken from Media.episode.payment.amount config).
  *     Ignored entirely when Media.episode.paymentMechanism is perMinute-only.
