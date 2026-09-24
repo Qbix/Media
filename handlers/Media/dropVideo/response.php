@@ -14,7 +14,13 @@ function Media_dropVideo_response($params)
 	Q_Response::addScript('{{Safecloud}}/js/Safecloud/DataTrees.js', 'head');
 	Q_Response::addScript('{{Media}}/js/pages/dropVideo.js');
 
-	$jetUrl = Q_Config::get('Safecloud', 'jetUrl', Q_Request::baseUrl());
+	// Falls back to Qbix's own node server (the Jet normally shares that
+	// process — see Safecloud_Jets.listen()) before falling back further
+	// to this page's own URL, so a same-server Jet needs no separate
+	// Safecloud.jetUrl config entry; only a standalone third-party Jet
+	// (see Safecloud/demo/jet.js) needs to set one explicitly.
+	$jetUrl = Q_Config::get('Safecloud', 'jetUrl',
+		Q_Config::get('Q', 'node', 'url', Q_Request::baseUrl()));
 	Q_Response::setScriptData('Q.plugins.Media.dropVideo.jetUrl', $jetUrl);
 
 	$text = Q_Text::get('Media/content');
