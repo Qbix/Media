@@ -4,6 +4,28 @@ function Media_clip_response_column(&$params, &$result)
 {
 	$url = Q_Request::url();
 	$stream = $params['stream'];
+
+	// Visibility ("Private" — see Media/dropVideo/post.php, readLevel
+	// 'none') gate — checked FIRST, before anything below (metas,
+	// payment status, the Safecloud key) reads/exposes anything about
+	// this stream to a viewer who isn't the publisher and isn't
+	// otherwise granted access. Unlike the payment gate a few lines
+	// down (a real, deliberate exception to the usual "just hide it in
+	// the UI" approach for this feature), Streams' own readLevel system
+	// already enforces this at the data-export layer — this check exists
+	// only so a blocked viewer sees a clear message instead of Media/clip.js
+	// silently rendering a blank/broken page around empty stream fields.
+	$loggedInUser = Users::loggedInUser(false, false);
+	$isPublisher = $loggedInUser && $loggedInUser->id === $stream->publisherId;
+	if (!$isPublisher && !$stream->testReadLevel('content')) {
+		Q_Response::setScriptData('Q.plugins.Media.clip.private', true);
+		$text = Q_Text::get('Media/content');
+		$message = Q::ifset($text, 'clip', 'PrivateVideo', 'This video is private.');
+		Q_Response::setSlot('title', Q::ifset($text, 'clip', 'PrivateVideoTitle', 'Private video'));
+		return "<div class='Media_clip_private' style='padding:64px 24px;text-align:center;"
+			. "color:#888;font-size:15px;'>" . Q_Html::text($message) . "</div>";
+	}
+
 	$title = $stream->title;
 	$allAttributes = $stream->getAllAttributes();
 	$parts = explode('/', $episodeName = $stream->name);
@@ -43,7 +65,6 @@ function Media_clip_response_column(&$params, &$result)
 	// if per-minute billing is available, playback is never blocked on it;
 	// per-minute charging (Media/clip/response/watch.php) or having fully
 	// paid governs access incrementally instead of withholding the key.
-	$loggedInUser = Users::loggedInUser(false, false);
 	$status = Media::episodePaymentStatus($stream, $loggedInUser ? $loggedInUser->id : null);
 	$hasPerStream = $status['perStreamAmount'] > 0;
 	$hasPerMinute = $status['perMinuteAmount'] > 0;

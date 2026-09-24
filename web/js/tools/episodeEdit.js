@@ -25,6 +25,7 @@
 	 *   @param {String} [options.title]
 	 *   @param {String} [options.content]
 	 *   @param {Array} [options.categories]
+	 *   @param {String} [options.visibility="public"] "private" | "unlisted" | "public"
 	 *   @param {String} [options.posterUrl]
 	 *   @param {String} [options.onSiteUrl] The episode's own clip-page URL.
 	 *   @param {Number} [options.videoDuration]
@@ -49,6 +50,7 @@
 		title: '',
 		content: '',
 		categories: [],
+		visibility: 'public',
 		posterUrl: null,
 		onSiteUrl: null,
 		videoDuration: 0,
@@ -74,6 +76,7 @@
 					title: state.title,
 					content: state.content,
 					categories: state.categories,
+					visibility: state.visibility,
 					posterUrl: state.posterUrl,
 					videoDuration: state.videoDuration,
 					priceStream: state.priceStream,
@@ -82,6 +85,9 @@
 					onSiteUrl: state.onSiteUrl,
 					onSave: function (fields) {
 						tool.save(fields);
+					},
+					onDelete: function () {
+						tool.deleteVideo();
 					}
 				}).activate(function () {
 					tool.formTool = this;
@@ -127,10 +133,38 @@
 					title: fields.title,
 					content: fields.content,
 					categories: JSON.stringify(fields.categories),
+					visibility: fields.visibility,
 					priceStream: fields.priceStream,
 					pricePerMinute: fields.pricePerMinute,
 					allowPerMinute: fields.allowPerMinute ? "1" : "",
 					videoDuration: fields.videoDuration
+				}
+			});
+		},
+
+		/**
+		 * @method deleteVideo
+		 */
+		deleteVideo: function () {
+			var tool = this;
+			var state = tool.state;
+
+			// "deleteVideo" is a slot on the SAME Media/episodeEdit action
+			// this page itself renders under, handled by
+			// handlers/Media/episodeEdit/post.php — not a standalone route
+			// (see Media/webrtc/post.php for the established pattern).
+			Q.req('Media/episodeEdit', ["deleteVideo"], function (err, response) {
+				var msg = Q.firstErrorMessage(err, response && response.errors);
+				if (msg) {
+					tool.formTool.showError(msg);
+					return;
+				}
+				location.href = Q.url('clips');
+			}, {
+				method: "post",
+				fields: {
+					streamName: state.streamName,
+					publisherId: state.publisherId
 				}
 			});
 		}

@@ -35,8 +35,12 @@
 	 *   @param {Boolean} [options.allowPerMinute] Initial state of the "also allow per-minute" checkbox
 	 *   @param {String} [options.onSiteUrl] Link to this episode's own clip page. Pass null while unknown yet — shows a "Creating…" placeholder.
 	 *   @param {String} [options.standaloneUrl] Link to the standalone Safecloud player. Pass null while unknown yet.
+	 *   @param {String} [options.visibility="public"] "private" | "unlisted" | "public"
 	 *   @param {String} [options.saveLabel] Overrides the Save button's label
 	 *   @param {Q.Event} [options.onSave] Fires with (fields) when Save is clicked and validation passes
+	 *   @param {Q.Event} [options.onDelete] Fires (after the user confirms) when Delete video is clicked.
+	 *     The embedder does the actual server call and then calls tool.setDeleting(false)/tool.showError()
+	 *     on failure, same contract as onSave.
 	 */
 	Q.Tool.define("Media/episodeForm", function (options) {
 		var tool = this;
@@ -54,8 +58,10 @@
 		allowPerMinute: false,
 		onSiteUrl: null,
 		standaloneUrl: null,
+		visibility: 'public',
 		saveLabel: null,
-		onSave: new Q.Event()
+		onSave: new Q.Event(),
+		onDelete: new Q.Event()
 	},
 
 	{
@@ -99,6 +105,35 @@
 					"<textarea class='Media_episodeForm_description'></textarea>" +
 				"</label>"
 			).appendTo($left);
+
+			// Visibility affects only whether/where this episode is
+			// listed/readable — never the paywall (payment status is
+			// entirely separate, see the Pricing section below).
+			var visibilityOptions = [
+				['public',   text.VisibilityPublic   || 'Public',   text.VisibilityPublicDesc   || 'Listed normally on the clips page and your channel.'],
+				['unlisted', text.VisibilityUnlisted || 'Unlisted', text.VisibilityUnlistedDesc || 'Not listed on the clips page, but visible on your channel and accessible via link.'],
+				['private',  text.VisibilityPrivate  || 'Private',  text.VisibilityPrivateDesc  || 'Only you can view this video’s page.']
+			];
+			var $visibilityLabel = $(
+				"<div class='Media_episodeForm_label Media_episodeForm_visibilityLabel'>" +
+					"<span>" + (text.Visibility || "Visibility") + "</span>" +
+					"<div class='Media_episodeForm_visibility'></div>" +
+				"</div>"
+			).appendTo($left);
+			var $visibility = $(".Media_episodeForm_visibility", $visibilityLabel);
+			visibilityOptions.forEach(function (opt) {
+				var id = tool.prefix + "Media_episodeForm_visibility_" + opt[0];
+				$(
+					"<label class='Media_episodeForm_visibilityOption' for='" + id + "'>" +
+						"<input type='radio' name='" + tool.prefix + "Media_episodeForm_visibility'" +
+							" id='" + id + "' value='" + opt[0] + "'/>" +
+						"<span class='Media_episodeForm_visibilityOptionTitle'>" + opt[1] + "</span>" +
+						"<span class='Media_episodeForm_visibilityOptionDesc'>" + opt[2] + "</span>" +
+					"</label>"
+				).appendTo($visibility);
+			});
+			$visibility.find("input[value='" + (state.visibility || 'public') + "']").prop("checked", true);
+
 			$(
 				// A plain <div>, not <label> — this wraps a whole
 				// Streams/interests widget (its own filter <input> plus a
@@ -148,6 +183,8 @@
 			tool.setLinks(state.onSiteUrl, state.standaloneUrl);
 
 			var $footer = $("<div class='Media_episodeForm_footer'>").appendTo($te);
+			var $delete = $("<button type='button' class='Q_button Media_episodeForm_delete'>" +
+				(text.Delete || "Delete video") + "</button>").appendTo($footer);
 			var $error = $("<div class='Media_episodeForm_error'>").appendTo($footer);
 			var $save = $("<button class='Q_button Media_episodeForm_save' disabled>" +
 				(state.saveLabel || text.Save || "Save") + "</button>").appendTo($footer);
@@ -155,8 +192,17 @@
 			tool.elements = {
 				title: $title, description: $description,
 				onSiteLink: $onSiteLink, standaloneLink: $standaloneLink,
-				save: $save, error: $error
+				save: $save, error: $error, delete: $delete
 			};
+
+			$delete.on(Q.Pointer.fastclick, function () {
+				Q.confirm(text.DeleteConfirm
+					|| "Delete this video? This cannot be undone.", function (result) {
+					if (!result) { return; }
+					tool.setDeleting(true);
+					Q.handle(state.onDelete, tool);
+				});
+			});
 
 			// Which mechanisms this episode's payment fields offer — controlled
 			// by Media.episode.paymentMechanism (see Media/before/Q_responseExtras.php).
@@ -354,6 +400,7 @@
 					title: $title.val(),
 					content: $description.val(),
 					categories: categoriesToSave,
+					visibility: $visibility.find("input:checked").val() || 'public',
 					priceStream: Math.max(0, parseFloat($priceStream ? $priceStream.val() : 0) || 0),
 					pricePerMinute: Math.max(0, parseFloat($pricePerMinute ? $pricePerMinute.val() : 0) || 0),
 					allowPerMinute: $allowPerMinute ? $allowPerMinute.prop("checked") : false,
@@ -458,6 +505,21 @@
 			tool.elements.save
 				.prop("disabled", saving)
 				.text(saving ? (text.Saving || "Saving…") : (tool.state.saveLabel || text.Save || "Save"));
+			tool.elements.delete.prop("disabled", saving);
+		},
+
+		/**
+		 * @method setDeleting
+		 * @param {Boolean} deleting
+		 */
+		setDeleting: function (deleting) {
+			var tool = this;
+			var text = tool.text.episodeForm || {};
+			if (!tool.elements) { return; }
+			tool.elements.delete
+				.prop("disabled", deleting)
+				.text(deleting ? (text.Deleting || "Deleting…") : (text.Delete || "Delete video"));
+			tool.elements.save.prop("disabled", deleting);
 		},
 
 		/**
@@ -467,6 +529,7 @@
 		showError: function (message) {
 			var tool = this;
 			tool.setSaving(false);
+			tool.setDeleting(false);
 			if (tool.elements) { tool.elements.error.text(message || ""); }
 		}
 	});

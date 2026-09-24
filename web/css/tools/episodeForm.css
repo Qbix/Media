@@ -204,6 +204,47 @@
   transition: background-color 9999s ease-in-out 0s;
 }
 
+/* ---------- Visibility ---------- */
+.Media_episodeForm_tool .Media_episodeForm_visibilityLabel {
+  gap: 10px;
+  padding-top: 4px;
+}
+.Media_episodeForm_tool .Media_episodeForm_visibility {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.Media_episodeForm_tool .Media_episodeForm_visibilityOption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  row-gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid var(--ef-line-2);
+  border-radius: var(--ef-radius);
+  cursor: pointer;
+  transition: border-color .15s, background-color .15s;
+}
+.Media_episodeForm_tool .Media_episodeForm_visibilityOption:has(input:checked) {
+  border-color: var(--ef-accent);
+  background: rgba(255, 107, 125, .08);
+}
+.Media_episodeForm_tool .Media_episodeForm_visibilityOption input {
+  grid-row: 1 / span 2;
+  margin: 3px 0 0;
+  accent-color: var(--ef-accent);
+}
+.Media_episodeForm_tool .Media_episodeForm_visibilityOptionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ef-text);
+}
+.Media_episodeForm_tool .Media_episodeForm_visibilityOptionDesc {
+  font-size: 13px;
+  color: var(--ef-muted);
+  line-height: 1.4;
+}
+
 /* ---------- Categories (Streams/interests) ---------- */
 .Media_episodeForm_tool .Media_episodeForm_categoriesLabel {
   gap: 14px;
@@ -507,6 +548,35 @@
   color: var(--ef-err);
   text-align: left;
 }
+.Media_episodeForm_tool .Q_button.Media_episodeForm_delete,
+.Media_episodeForm_tool .Media_episodeForm_delete {
+  flex: 0 0 auto;
+  /* Pushes this to the opposite end of the footer from Save/error, which
+     stay grouped together via the footer's own justify-content: flex-end. */
+  margin-right: auto;
+  height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--ef-err) !important;
+  border-radius: var(--ef-radius) !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--ef-err) !important;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background-color .15s, color .15s;
+}
+.Media_episodeForm_tool .Media_episodeForm_delete:hover {
+  background: var(--ef-err) !important;
+  color: #fff !important;
+}
+.Media_episodeForm_tool .Media_episodeForm_delete:disabled {
+  opacity: .5;
+  cursor: default;
+}
 .Media_episodeForm_tool .Q_button.Media_episodeForm_save,
 .Media_episodeForm_tool .Media_episodeForm_save {
   flex: 0 0 auto;
@@ -638,4 +708,8 @@
   .Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel { grid-column: 1; grid-row: 3; }
   .Media_episodeForm_tool .Media_episodeForm_perMinutePreview { grid-column: 1; grid-row: 4; padding-right: 18px; }
   .Media_episodeForm_tool .Media_episodeForm_save { width: 100%; }
+  .Media_episodeForm_tool .Media_episodeForm_footer { flex-wrap: wrap; }
+  .Media_episodeForm_tool .Media_episodeForm_delete { width: 100%; margin-right: 0; order: 3; }
+  .Media_episodeForm_tool .Media_episodeForm_error { order: 1; width: 100%; }
+  .Media_episodeForm_tool .Media_episodeForm_save { order: 2; }
 }

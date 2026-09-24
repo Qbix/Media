@@ -10,6 +10,13 @@
  */
 function Media_episodeEdit_response($params)
 {
+	if (!Q_Request::slotName('content')) {
+		// An AJAX request for some other slot (e.g. episodeEdit/post.php's
+		// "deleteVideo") doesn't carry :clipId in the URI the way the page's
+		// own GET route does — nothing here is relevant to it.
+		return;
+	}
+
 	$uri = Q_Dispatcher::uri();
 	$publisherId = Q::ifset($uri, 'publisherId', Users::currentCommunityId(true));
 	$clipId = Q::ifset($uri, 'clipId', null);
@@ -65,6 +72,7 @@ function Media_episodeEdit_response($params)
 		'title' => $episode->title,
 		'content' => $episode->content,
 		'categories' => $episode->getAttribute('categories') ?: array(),
+		'visibility' => $episode->getAttribute('visibility') ?: 'public',
 		'posterUrl' => $episode->iconUrl(400),
 		'onSiteUrl' => $episode->url(),
 		'videoDuration' => floatval($episode->getAttribute('videoDuration', 0)),
