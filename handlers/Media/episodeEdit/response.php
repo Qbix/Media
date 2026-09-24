@@ -60,7 +60,10 @@ function Media_episodeEdit_response($params)
 	Q_Response::addScript('{{Safecloud}}/js/Safecloud.js', 'head');
 	Q_Response::addScript('{{Safecloud}}/js/Safecloud/DataTrees.js', 'head');
 
-	$jetUrl = Q_Config::get('Safecloud', 'jetUrl', Q_Request::baseUrl());
+	// Falls back to Qbix's own node server (see
+	// Media/dropVideo/response.php's identical fallback for why).
+	$jetUrl = Q_Config::get('Safecloud', 'jetUrl',
+		Q_Config::get('Q', 'node', 'url', Q_Request::baseUrl()));
 
 	$text = Q_Text::get('Media/content');
 	Q_Response::setSlot('title', Q::ifset($text, 'episodeEdit', 'PageTitle', 'Edit video'));

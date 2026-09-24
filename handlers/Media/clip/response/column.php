@@ -88,8 +88,11 @@ function Media_clip_response_column(&$params, &$result)
 		// right after uploading in the same page session.
 		Q_Response::addScript('{{Safecloud}}/js/Safecloud.js', 'head');
 		Q_Response::addScript('{{Safecloud}}/js/Safecloud/DataTrees.js', 'head');
+		// Falls back to Qbix's own node server (see
+		// Media/dropVideo/response.php's identical fallback for why).
 		Q_Response::setScriptData('Q.plugins.Media.clip.jetUrl',
-			Q_Config::get('Safecloud', 'jetUrl', Q_Request::baseUrl()));
+			Q_Config::get('Safecloud', 'jetUrl',
+				Q_Config::get('Q', 'node', 'url', Q_Request::baseUrl())));
 
 		// The stream's own "video" attribute only holds a rootCid reference
 		// (see Media::safecloudVideoWrite() — the full manifest is too large
