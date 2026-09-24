@@ -257,8 +257,10 @@
    the card instead of overlapping its edge. */
 .Media_videoUpload_publishedDialog .Q_close {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  /* .Q_dialog_title is ~40px tall (line-height:40px) — center a 28px
+     button within that, not against the dialog's own top edge. */
+  top: 6px;
+  right: 10px;
   width: 28px;
   height: 28px;
   display: flex;
@@ -435,7 +437,7 @@
 .Media_videoUpload_publishedFooter {
 	display: flex;
 	justify-content: flex-end;
-	padding-top: 4px;
+	padding-top: 6px;
 	border-top: 1px solid var(--ef-line);
 }
 
