@@ -370,7 +370,18 @@
                             if (categories.length && !$("." + categoriesClassName, $chatMessages).length) {
                                 var $categories = $("<div class='" + categoriesClassName + "'>");
                                 Q.each(categories, function (i, category) {
-                                    $("<span class='Media_episode_category'>")
+                                    // A real link, not a span — Q's own
+                                    // link-interception SPA-navigates this,
+                                    // landing on /clips filtered to whatever
+                                    // Media/episode streams are related to
+                                    // the shared search index under
+                                    // "attribute/categories=<this category>"
+                                    // (see Media/clips/response/column.php
+                                    // and Media/episode's "syncRelations"
+                                    // config, which keeps that relation in
+                                    // sync automatically on every save).
+                                    $("<a class='Media_episode_category'>")
+                                        .attr("href", Q.url("clips") + "?category=" + encodeURIComponent(category))
                                         .text(category)
                                         .appendTo($categories);
                                 });
@@ -902,10 +913,31 @@
                         streamName: state.streamName
                     },
                     onSuccess: function () {
-                        // Simplest correct way to get the now-unlocked
-                        // manifest/rootKey: let the server recompute
-                        // payment.required and re-render the whole column.
-                        location.reload();
+                        // The server withholds the safecloud manifest/rootKey
+                        // (Q.plugins.Media.clip.video) from script data
+                        // entirely while payment.required is true (see
+                        // Media/clip/response/column.php) — a pure
+                        // client-side refresh() has no way to get the
+                        // now-unlockable key, so at least one round-trip is
+                        // unavoidable. But it doesn't need a full page
+                        // reload: re-request just this route's "column"
+                        // slot, apply its scriptData/scriptLines the same
+                        // way Q.loadUrl would (Q.loadUrl is itself the only
+                        // normal caller of processScriptDataAndLines — nothing
+                        // stops calling it directly), then let refresh()
+                        // re-render in place from the now-updated globals.
+                        var url = Q.url('clip/' + state.publisherId + '/'
+                            + state.streamName.split('/').pop());
+                        Q.req(url, ['column'], function (err, response) {
+                            var msg = Q.firstErrorMessage(err);
+                            if (msg) {
+                                $status.text(msg);
+                                $button.prop("disabled", false);
+                                return;
+                            }
+                            Q.Response.processScriptDataAndLines(response);
+                            tool.refresh();
+                        }, { method: 'get', quiet: true });
                     },
                     onFailure: function () {
                         $button.prop("disabled", false);
@@ -991,11 +1023,21 @@
                         streamName: state.streamName
                     },
                     onSuccess: function () {
-                        // Simplest correct way to get full-access semantics
-                        // (stop per-minute charging, hide the upsell) applied
-                        // consistently everywhere: let the server recompute
-                        // fullyPaid and re-render the whole column.
-                        location.reload();
+                        // No reload (and no other round-trip) needed here at
+                        // all: the video behind this button is already
+                        // playing (this button only ever shows alongside one
+                        // — see the JSDoc above), and per-minute charging is
+                        // entirely server-driven per watch tick (see
+                        // watchClip/Media/clip/response/watch.php) — it just
+                        // stops charging on its own once the server sees
+                        // this episode as fully paid. Client-side there's
+                        // nothing to do except what a real per-minute charge
+                        // already does at the same spot (watchClip's
+                        // "charged" handling above): zero out the tracked
+                        // remaining balance and let updateUpsellLabel() hide
+                        // the button.
+                        tool.remainingUpsell = 0;
+                        tool.updateUpsellLabel();
                     },
                     onFailure: function () {
                         $btn.prop("disabled", false);

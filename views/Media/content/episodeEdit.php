@@ -6,6 +6,7 @@
 	'title' => $title,
 	'content' => $content,
 	'categories' => $categories,
+	'visibility' => $visibility,
 	'posterUrl' => $posterUrl,
 	'onSiteUrl' => $onSiteUrl,
 	'videoDuration' => $videoDuration,

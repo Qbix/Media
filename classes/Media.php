@@ -481,6 +481,70 @@ abstract class Media
 	}
 
 	/**
+	 * Deletes the server's own copy of a Safecloud video's manifest/rootKey.
+	 * This is the one thing that actually enforces "delete this video" —
+	 * Safecloud has no mechanism for an owner to instruct every Drop that
+	 * might be caching a rootCid's ciphertext to erase it (Drops only ever
+	 * evict passively, by their own local storage pressure); once this file
+	 * is gone, any ciphertext still sitting on some Drop is unrecoverable
+	 * without the key this app just discarded — permanently undecryptable,
+	 * even though the raw bytes may not be physically erased everywhere.
+	 * @method safecloudVideoDelete
+	 * @static
+	 * @param {string} $rootCid
+	 */
+	static function safecloudVideoDelete($rootCid)
+	{
+		$file = self::safecloudVideoFile($rootCid);
+		if ($rootCid && is_file($file)) {
+			unlink($file);
+		}
+	}
+
+	/**
+	 * Deletes a Media/episode (or Media/clip) stream created via Safecloud
+	 * upload — the "Delete video" action, shared by two entry points that
+	 * each reuse whichever POST action their own page already talks to
+	 * (Media/dropVideo's "deleteVideo" slot for the upload form, still on a
+	 * fresh draft; Media/episodeEdit's "deleteVideo" slot for the edit
+	 * page, on an already-published episode) rather than a standalone
+	 * route of its own.
+	 *
+	 * Discards the server's own copy of the Safecloud manifest/rootKey (see
+	 * safecloudVideoDelete()'s own doc comment for why that's the actual
+	 * enforcement here), then hard-deletes the stream itself via
+	 * Streams::remove() — not the softer close() used by
+	 * Media/channel/delete.php and Media/feed/delete.php — since the intent
+	 * is to actually free things up (relations, messages, the uploads
+	 * directory), not leave a closed stream around for subscribers who
+	 * might still want its last messages.
+	 * @method deleteEpisode
+	 * @static
+	 * @param {string} $publisherId
+	 * @param {string} $streamName
+	 * @param {Users_User} $user The logged-in user requesting the delete
+	 * @throws {Users_Exception_NotAuthorized} If $user isn't the publisher or a community admin
+	 */
+	static function deleteEpisode($publisherId, $streamName, $user)
+	{
+		$episode = Streams_Stream::fetch($user->id, $publisherId, $streamName, true);
+
+		$adminLabels = Q_Config::get('Users', 'communities', 'admins', null);
+		if ($publisherId != $user->id
+		&& !(bool) Users::roles(null, $adminLabels, array(), $user->id)) {
+			throw new Users_Exception_NotAuthorized();
+		}
+
+		$video = $episode->getAttribute('video');
+		$rootCid = Q::ifset($video, 'rootCid', null);
+		if ($rootCid) {
+			self::safecloudVideoDelete($rootCid);
+		}
+
+		Streams::remove($publisherId, array($streamName));
+	}
+
+	/**
 	 * Computes the one-time-purchase payment status of a Media/episode
 	 * stream for a given viewer, reading prices straight off the stream's
 	 * own "payment" attribute (never off current config — see

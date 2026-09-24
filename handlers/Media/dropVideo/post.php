@@ -8,22 +8,27 @@
  *
  *  - CREATE (no streamName): called right after the Safecloud upload
  *    finishes, before the uploader has filled in title/description/
- *    categories/price. Creates the episode immediately as a draft
- *    (attributes.draft = true) with just a filename-derived title, so the
- *    uploader already has a working share link and standalone-player link
- *    while filling in the rest of the form — but Media_after_Streams_
- *    create_Media_episode skips relating a draft into Media/episodes,
- *    Streams/chats/main or the uploader's channel, so it isn't listed or
- *    visible anywhere yet. Only reachable by direct link (Streams access
- *    control still applies normally — draft only affects listing).
+ *    categories/price/visibility. Creates the episode immediately as a
+ *    draft (attributes.draft = true, attributes.visibility = 'private',
+ *    readLevel = none) with just a filename-derived title, so the uploader
+ *    already has a working share link and standalone-player link while
+ *    filling in the rest of the form — but genuinely readable by nobody
+ *    but the publisher yet (readLevel enforces this for real, not just a
+ *    listing convention), and not related into Media/episodes,
+ *    Streams/chats/main, or the uploader's channel.
  *
  *  - PUBLISH (streamName present): called when the uploader clicks Save on
  *    the details form. Updates the existing draft (or a previously
  *    published episode being edited — see Media/episodeEdit) with the
  *    final title/description/categories/price, clears the draft flag, and
- *    — only the first time, when a draft is being published — performs the
- *    Media/episodes/Streams-chats/channel relates that were skipped at
- *    create time.
+ *    applies the chosen visibility (private/unlisted/public) — readLevel
+ *    and every visibility-dependent relation (Media/episodes, the category
+ *    search hub, the uploader's channel) are re-applied on EVERY publish
+ *    call, not just the first, so changing an already-published episode's
+ *    visibility later actually takes effect instead of only ever adding
+ *    relations in. Streams/chats/main is related once, on the first
+ *    draft->published transition only, regardless of visibility (it's
+ *    discussion bookkeeping, not a content-discovery surface).
  *
  * @class HTTP
  * @method post
@@ -39,8 +44,10 @@
  *     of a frame grabbed client-side from the video (see Safecloud/upload's
  *     captureVideoThumbnail). Used as the episode's icon; falls back to the
  *     Media/episode type's default icon if empty or missing. (create only)
- *   @param {string} [$_REQUEST.categories] JSON-encoded array of "Category: Interest"
- *     strings picked in the Streams/interests picker (see Media/videoUpload)
+ *   @param {string} [$_REQUEST.categories] JSON-encoded array of bare interest
+ *     names (e.g. "Bodybuilding") picked in the Streams/interests picker
+ *     (see Media/videoUpload) — episodeForm.js keeps track of each one's
+ *     parent category only to restore/highlight the picker, not for saving
  *   @param {string} [$_REQUEST.priceStream] One-time full-episode price, in credits.
  *     0 or absent means free (default taken from Media.episode.payment.amount config).
  *     Ignored entirely when Media.episode.paymentMechanism is perMinute-only.
@@ -55,6 +62,10 @@
  *     "also allow per-minute" (both-mechanisms case only)
  *   @param {string} [$_REQUEST.videoDuration] Video length in seconds, used with
  *     priceStream to derive the per-minute rate (both-mechanisms case only)
+ *   @param {string} [$_REQUEST.visibility] "private" | "unlisted" | "public"
+ *     (publish/edit only — a freshly created draft is always "private"
+ *     regardless of this param, until the first Save). Defaults to "public"
+ *     if missing/invalid.
  * @return {void}
  */
 function Media_dropVideo_post($params = array())
@@ -62,6 +73,17 @@ function Media_dropVideo_post($params = array())
 	$params = array_merge($_REQUEST, $params);
 	$publisherId = Q::ifset($params, 'publisherId', Users::loggedInUser(true)->id);
 	$streamName = Q::ifset($params, 'streamName', null);
+
+	// "Delete video" for the upload form — lets the uploader abandon a
+	// draft they haven't Saved yet (Media/episodeEdit's own "deleteVideo"
+	// slot, in its own post.php, covers the already-published-episode
+	// case). A separate slot on this SAME action, not a standalone route —
+	// see Media/webrtc/post.php for the established pattern this follows.
+	if (Q_Request::slotName('deleteVideo')) {
+		Media::deleteEpisode($publisherId, $streamName, Users::loggedInUser(true));
+		Q_Response::setSlot('deleteVideo', true);
+		return;
+	}
 
 	// ── Which mechanisms this community currently allows for NEW uploads
 	// (see Media/before/Q_responseExtras.php — the upload form only shows
@@ -111,9 +133,11 @@ function Media_dropVideo_post($params = array())
 		$pricePerMinute = 0;
 	}
 
+	$visibility = _Media_dropVideo_visibility(Q::ifset($params, 'visibility', null));
+
 	if ($streamName) {
 		$episode = _Media_dropVideo_publish(
-			$publisherId, $streamName, $params, $categories, $priceStream, $pricePerMinute
+			$publisherId, $streamName, $params, $categories, $priceStream, $pricePerMinute, $visibility
 		);
 	} else {
 		$episode = _Media_dropVideo_createDraft($publisherId, $params, $categories, $priceStream, $pricePerMinute);
@@ -121,6 +145,17 @@ function Media_dropVideo_post($params = array())
 
 	Q_Response::setSlot('result', true);
 	Q_Response::setSlot('stream', $episode->exportArray());
+}
+
+/**
+ * Validates a visibility value from the client, defaulting to "public" —
+ * never trust an unrecognized value into readLevel/relation logic below.
+ * @return {string} "private" | "unlisted" | "public"
+ */
+function _Media_dropVideo_visibility($visibility)
+{
+	$allowed = array('private', 'unlisted', 'public');
+	return in_array($visibility, $allowed, true) ? $visibility : 'public';
 }
 
 /**
@@ -168,8 +203,17 @@ function _Media_dropVideo_createDraft($publisherId, $params, $categories, $price
 	$episode = Streams::create($publisherId, $publisherId, 'Media/episode', array(
 		'title' => $title,
 		'content' => Q::ifset($params, 'content', null),
+		// A draft is always genuinely Private, not just unlisted from the
+		// clips page — readLevel 'none' means only the publisher (who
+		// always has full access regardless of readLevel) can read it at
+		// all, closing a real gap: before this, a draft's readLevel stayed
+		// at the type's default (full/public) and only the *listing*
+		// relate was skipped, so anyone who obtained/guessed a draft's
+		// direct URL could already view it.
+		'readLevel' => Streams::$READ_LEVEL['none'],
 		'attributes' => array(
 			'draft' => true,
+			'visibility' => 'private',
 			'video' => array(
 				'source' => 'safecloud',
 				'rootCid' => $rootCid
@@ -217,12 +261,14 @@ function _Media_dropVideo_createDraft($publisherId, $params, $categories, $price
 /**
  * PUBLISH branch — see Media_dropVideo_post's docblock. Updates an existing
  * episode (draft or already-published — Media/episodeEdit reuses this same
- * path) with the final details, and performs the relates that
- * Media_after_Streams_create_Media_episode skipped at draft-creation time,
- * the first time a draft actually gets published.
+ * path) with the final details. Visibility (private/unlisted/public) is
+ * re-applied on every save, not just the first publish, so switching an
+ * already-published episode back to Private or Unlisted later actually
+ * takes it out of the places it was related into, not just skips relating
+ * a new one in.
  * @return {Streams_Stream}
  */
-function _Media_dropVideo_publish($publisherId, $streamName, $params, $categories, $priceStream, $pricePerMinute)
+function _Media_dropVideo_publish($publisherId, $streamName, $params, $categories, $priceStream, $pricePerMinute, $visibility)
 {
 	$user = Users::loggedInUser(true);
 	$episode = Streams_Stream::fetch($user->id, $publisherId, $streamName, true);
@@ -241,48 +287,128 @@ function _Media_dropVideo_publish($publisherId, $streamName, $params, $categorie
 	}
 
 	$episode->setAttribute('draft', false);
+	$episode->setAttribute('visibility', $visibility);
+	if ($wasDraft) {
+		// Media/episode/preview.js reads this (falling back to
+		// video.publishTime, which the YouTube-scrape path sets instead) to
+		// show the upload date in the episode list — safecloud uploads never
+		// set either, which is why "Streams_preview_episode_info_date_text"
+		// was rendering empty. Only set on the draft->published transition,
+		// not every edit, so a later Media/episodeEdit save doesn't bump it.
+		$episode->setAttribute('publishTime', time());
+	}
 	$episode->setAttribute('categories', $categories);
 	$episode->setAttribute('payment', array(
 		'currency' => 'credits',
 		'amount' => $priceStream,
 		'perMinute' => $pricePerMinute
 	));
+
+	// Private = only the publisher can read at all (readLevel 'none' —
+	// the publisher always has full access regardless). Unlisted/Public
+	// both stay fully readable via direct link; what differs between them
+	// is purely which places the episode gets related into, below.
+	//
+	// Direct property assignment, NOT ->set('readLevel', ...): Db_Row::set()
+	// is a completely different, generic key-value tree store ($this->p, a
+	// Q_Tree) used elsewhere in this codebase for arbitrary extra config —
+	// it has nothing to do with this object's real readLevel COLUMN, so it
+	// silently no-oped (never even marked the field modified) instead of
+	// erroring, and every visibility change past the initial draft-creation
+	// (which happens to go through Streams::create()'s own, correctly-
+	// implemented handling of the readLevel option) had no effect at all.
+	// Confirmed live: an episode saved as "Unlisted" kept its original
+	// draft-time readLevel of 0 (Private) in the database untouched.
+	$episode->readLevel = ($visibility === 'private')
+		? Streams::$READ_LEVEL['none']
+		: Streams::$READ_LEVEL['max'];
+
 	$episode->save();
 
-	if ($wasDraft) {
-		$communityId = Users::communityId();
-		$weight = time();
+	$communityId = Users::communityId();
+	$weight = time();
 
-		$episodesStreamName = "Media/episodes";
-		if (empty(Streams_RelatedTo::select()->where(array(
-			"toPublisherId" => $communityId,
-			"toStreamName" => $episodesStreamName,
-			"type" => $episode->type,
-			"fromPublisherId" => $episode->publisherId,
-			"fromStreamName" => $episode->name
-		))->limit(1)->fetchDbRow())) {
-			$episode->relateTo((object) array("publisherId" => $communityId, "name" => $episodesStreamName), $episode->type, $communityId, array(
-				'skipAccess' => true,
-				'weight' => $weight
-			));
+	// Site-wide clips listing — Public only.
+	_Media_dropVideo_ensureRelation(
+		$episode, $communityId, "Media/episodes", $episode->type,
+		$visibility === 'public', $weight
+	);
+
+	// Category search hub — Public only. attributes.categories itself is
+	// left untouched by visibility (so the creator's own chosen categories
+	// keep displaying/restoring correctly in the picker regardless of
+	// visibility) — this explicit per-category relate/unrelate is what
+	// actually controls whether the episode is discoverable by category,
+	// run unconditionally every save so it's also corrected on a
+	// visibility-only change (categories attribute unchanged, so
+	// Streams_Stream::syncRelations's own diff-based auto-sync — see the
+	// Media/episode type's "syncRelations" config — would otherwise have
+	// nothing to react to).
+	if ($categories) {
+		$hub = Streams::fetchOne('Streams', 'Streams', 'Streams/search/all', true);
+		if ($hub) {
+			foreach ($categories as $category) {
+				_Media_dropVideo_ensureRelation(
+					$episode, $hub->publisherId, $hub->name,
+					'attribute/categories=' . $category,
+					$visibility === 'public', $weight
+				);
+			}
 		}
+	}
 
+	// Uploader's own channel — shown for Unlisted and Public (per this
+	// app's chosen "Unlisted" semantics: hidden from the site-wide listing
+	// and category browsing, but still visible on the creator's own
+	// channel/profile), hidden for Private. Also what lets Media/clip.js's
+	// joinClip() (which looks for a "Media/channel/*" relation) join a
+	// viewer to it.
+	Streams::fetchOneOrCreate($publisherId, $publisherId, 'Media/channel/main');
+	_Media_dropVideo_ensureRelation(
+		$episode, $publisherId, 'Media/channel/main', 'Media/episode',
+		$visibility !== 'private', $weight
+	);
+
+	// Chat thread — bookkeeping for the episode's own discussion, not a
+	// content-discovery surface, so unaffected by visibility. Only ever
+	// related once, same as before, so its own relation weight/order isn't
+	// touched on every subsequent edit.
+	if ($wasDraft) {
 		$episode->relateTo((object) array("publisherId" => $communityId, "name" => "Streams/chats/main"), $episode->type, $communityId, array(
 			'skipAccess' => true,
 			'weight' => $weight
 		));
-
-		// Relate to the uploader's own channel so it shows up there and so
-		// Media/clip.js's joinClip() (which looks for a "Media/channel/*"
-		// relation) can join the viewer to it.
-		Streams::fetchOneOrCreate($publisherId, $publisherId, 'Media/channel/main');
-		$episode->relateTo(
-			(object) array('publisherId' => $publisherId, 'name' => 'Media/channel/main'),
-			'Media/episode',
-			$publisherId,
-			array('skipAccess' => true, 'weight' => $weight)
-		);
 	}
 
 	return $episode;
+}
+
+/**
+ * Relates or unrelates $episode to/from a single (toPublisherId,
+ * toStreamName, type) target so it matches $shouldBeRelated, without
+ * disturbing an already-correct relation's weight (only a NEW relate call
+ * sets $weight; nothing re-touches one that already exists).
+ */
+function _Media_dropVideo_ensureRelation($episode, $toPublisherId, $toStreamName, $type, $shouldBeRelated, $weight)
+{
+	$existing = Streams_RelatedTo::select()->where(array(
+		"toPublisherId" => $toPublisherId,
+		"toStreamName" => $toStreamName,
+		"type" => $type,
+		"fromPublisherId" => $episode->publisherId,
+		"fromStreamName" => $episode->name
+	))->limit(1)->fetchDbRow();
+
+	if ($shouldBeRelated && !$existing) {
+		$episode->relateTo((object) array("publisherId" => $toPublisherId, "name" => $toStreamName), $type, $toPublisherId, array(
+			'skipAccess' => true,
+			'weight' => $weight
+		));
+	} elseif (!$shouldBeRelated && $existing) {
+		Streams::unrelate(
+			$episode->publisherId, $toPublisherId, $toStreamName, $type,
+			$episode->publisherId, $episode->name,
+			array('skipAccess' => true)
+		);
+	}
 }

@@ -2,7 +2,7 @@
 	"Q": {
 		"pluginInfo": {
 			"Media": {
-				"version": "0.4.3",
+				"version": "0.4.4",
 				"compatible": "0.1",
 				"requires": {
 					"Q": "1.0",
@@ -375,7 +375,8 @@
 					"attributes"
 				],
 				"uri": "Media/clip publisherId={{publisherId}} clipId={{streamName.[2]}}",
-				"url": "{{baseUrl}}/clip/{{publisherId}}/{{streamName.[2]}}"
+				"url": "{{baseUrl}}/clip/{{publisherId}}/{{streamName.[2]}}",
+				"syncRelations": ["from"]
 			},
 			"Media/movie": {
 				"emoji": "📽️",

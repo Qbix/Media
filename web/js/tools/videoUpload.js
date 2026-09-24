@@ -108,9 +108,13 @@
 				title: defaultTitle,
 				posterUrl: posterUrl,
 				videoDuration: tool.videoDuration,
+				visibility: 'public',
 				saveLabel: (tool.text.videoUpload || {}).Publish || "Save",
 				onSave: function (fields) {
 					tool.publish(fields);
+				},
+				onDelete: function () {
+					tool.deleteVideo();
 				}
 			}).activate(function () {
 				tool.formTool = this;
@@ -199,10 +203,43 @@
 					title: fields.title,
 					content: fields.content,
 					categories: JSON.stringify(fields.categories),
+					visibility: fields.visibility,
 					priceStream: fields.priceStream,
 					pricePerMinute: fields.pricePerMinute,
 					allowPerMinute: fields.allowPerMinute ? "1" : "",
 					videoDuration: fields.videoDuration
+				}
+			});
+		},
+
+		/**
+		 * Discards the draft episode created in videoStored() — lets the
+		 * uploader abandon an in-progress upload before ever clicking Save.
+		 * @method deleteVideo
+		 */
+		deleteVideo: function () {
+			var tool = this;
+			if (!tool.draftStream) {
+				// Draft creation hasn't resolved yet — nothing server-side to delete.
+				location.href = Q.url('clips');
+				return;
+			}
+			// "deleteVideo" is a slot on the SAME Media/dropVideo action this
+			// page posts its Save to, handled by handlers/Media/dropVideo/post.php
+			// — not a standalone route (see Media/webrtc/post.php for the
+			// established pattern).
+			Q.req(tool.state.action, ["deleteVideo"], function (err, response) {
+				var msg = Q.firstErrorMessage(err, response && response.errors);
+				if (msg) {
+					tool.formTool.showError(msg);
+					return;
+				}
+				location.href = Q.url('clips');
+			}, {
+				method: "post",
+				fields: {
+					streamName: tool.draftStream.name,
+					publisherId: tool.draftStream.publisherId
 				}
 			});
 		},

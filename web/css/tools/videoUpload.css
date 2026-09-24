@@ -9,15 +9,50 @@
     min-width: 50%;
 }
 
-.Media_videoUpload_step2 .Media_videoUpload_tool,
-.Media_videoUpload_tool.Media_videoUpload_step2 {
-	max-width: 900px;
+/* Same design tokens as Media/episodeForm's redesign (episodeForm.css).
+   Custom properties don't share across stylesheets, so these are
+   duplicated here rather than left undefined — otherwise step 1 (this
+   drop zone) and step 2 (Media/episodeForm) would read as two unrelated
+   visual styles instead of one continuous upload flow. */
+.Media_videoUpload_tool {
+  --ef-bg: #f4f3f8;
+  --ef-card: #ffffff;
+  --ef-card-2: #f1f0f5;
+  --ef-line: #e3e1ea;
+  --ef-line-2: #d7d4e0;
+  --ef-text: #1c1b22;
+  --ef-muted: #6b687a;
+  --ef-accent: #ff6b7d;
+  --ef-accent-hover: #ff8594;
+  --ef-accent-ink: #24070d;
+  --ef-ok: #1a9e4e;
+  --ef-err: #c0392b;
+  --ef-warn: #b36b00;
+  --ef-radius: 12px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  .Media_videoUpload_tool {
+    --ef-bg: #0e0d12;
+    --ef-card: #17161d;
+    --ef-card-2: #1b1a22;
+    --ef-line: #25232e;
+    --ef-line-2: #2c2a36;
+    --ef-text: #f3f1f7;
+    --ef-muted: #a7a3b5;
+    --ef-ok: #6ee7a8;
+    --ef-err: #ff8a80;
+    --ef-warn: #ffaa00;
+    color-scheme: dark;
+  }
 }
 
-.Media_videoUpload_tool .Safecloud_upload_label {
-    font-size: 18px;
-    color: #2c2c2c;
+.Media_videoUpload_step2 .Media_videoUpload_tool,
+.Media_videoUpload_tool.Media_videoUpload_step2 {
+	max-width: 1120px;
+	align-items: flex-start;
 }
+
 .Media_videoUpload_tool .Q_expandable_title img {
     display: none;
 }
@@ -31,18 +66,231 @@
 	width: 100%;
 }
 
-/* ── "Video published" dialog (Q.Dialogs) ─────────────────────────────── */
+/* ── Safecloud/upload — restyled to match episodeForm.css's redesign ──── */
 
+.Media_videoUpload_tool .Safecloud_upload_tool {
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    gap: 14px;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_zone {
+    border: 2px dashed var(--ef-line-2);
+    background: var(--ef-card-2);
+    border-radius: 20px;
+    padding: 48px 24px;
+    transition: border-color .2s, background-color .2s;
+}
+.Media_videoUpload_tool .Safecloud_upload_zone:hover {
+    border-color: var(--ef-accent);
+    background: var(--ef-card);
+}
+.Media_videoUpload_tool .Safecloud_upload_dragover {
+    border-color: var(--ef-accent) !important;
+    background: var(--ef-card) !important;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 999px;
+    background: rgba(255, 107, 125, .12);
+    color: var(--ef-accent);
+    font-size: 32px;
+    text-shadow: none;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ef-text);
+    margin-bottom: 4px;
+}
+.Media_videoUpload_tool .Safecloud_upload_sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ef-muted);
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.Media_videoUpload_tool .Safecloud_upload_progress {
+    height: 6px;
+    background: var(--ef-line-2);
+    border-radius: 999px;
+}
+.Media_videoUpload_tool .Safecloud_upload_progress_fill {
+    background: var(--ef-accent);
+    box-shadow: 0 0 8px rgba(255, 107, 125, .5);
+    border-radius: 999px;
+}
+.Media_videoUpload_tool .Safecloud_upload_progress_pct {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ef-muted);
+}
+
+.Media_videoUpload_tool .Safecloud_upload_status {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ef-muted);
+    letter-spacing: normal;
+    text-transform: none;
+}
+.Media_videoUpload_tool .Safecloud_upload_status.working { color: var(--ef-warn); }
+.Media_videoUpload_tool .Safecloud_upload_status.ok      { color: var(--ef-ok); }
+.Media_videoUpload_tool .Safecloud_upload_status.error   { color: var(--ef-err); }
+
+.Media_videoUpload_tool .Safecloud_upload_noDrops {
+    padding: 14px 16px;
+    border: 1px solid var(--ef-line);
+    background: var(--ef-card-2);
+    border-radius: var(--ef-radius);
+}
+.Media_videoUpload_tool .Safecloud_upload_noDropsMessage {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ef-text);
+}
+.Media_videoUpload_tool .Safecloud_upload_openDrop.Q_button {
+    background: var(--ef-accent) !important;
+    background-image: none !important;
+    border: 0 !important;
+    border-radius: var(--ef-radius) !important;
+    box-shadow: none !important;
+    color: var(--ef-accent-ink) !important;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-shadow: none;
+    padding: 10px 20px;
+}
+.Media_videoUpload_tool .Safecloud_upload_openDrop.Q_button:hover {
+    background: var(--ef-accent-hover) !important;
+}
+
+/* ── "Video published" dialog (Q.Dialogs) ─────────────────────────────── */
+/* Same design tokens/visual language as episodeForm.css's redesign — see
+   the duplication note on .Media_videoUpload_tool above for why these are
+   repeated here instead of shared: Q.Dialogs mounts this dialog's markup
+   outside .Media_videoUpload_tool in the DOM (as a sibling overlay, not a
+   descendant), so custom properties scoped there don't cascade down to it. */
+.Media_videoUpload_publishedDialog {
+  --ef-bg: #f4f3f8;
+  --ef-card: #ffffff;
+  --ef-card-2: #f1f0f5;
+  --ef-line: #e3e1ea;
+  --ef-line-2: #d7d4e0;
+  --ef-hover: #ececf2;
+  --ef-text: #1c1b22;
+  --ef-text-2: #2a2833;
+  --ef-muted: #6b687a;
+  --ef-faint: #948fa0;
+  --ef-accent: #ff6b7d;
+  --ef-accent-hover: #ff8594;
+  --ef-accent-ink: #24070d;
+  --ef-link: #d6335f;
+  --ef-link-hover: #b91f49;
+  --ef-ok: #1a9e4e;
+  --ef-radius: 12px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  .Media_videoUpload_publishedDialog {
+    --ef-bg: #0e0d12;
+    --ef-card: #17161d;
+    --ef-card-2: #1b1a22;
+    --ef-line: #25232e;
+    --ef-line-2: #2c2a36;
+    --ef-hover: #1f1e27;
+    --ef-text: #f3f1f7;
+    --ef-text-2: #e4e1ec;
+    --ef-muted: #a7a3b5;
+    --ef-faint: #8a8699;
+    --ef-link: #ff8f9c;
+    --ef-link-hover: #ffb3bc;
+    --ef-ok: #6ee7a8;
+    color-scheme: dark;
+  }
+}
+
+/* Dialog chrome (Q/dialogs' own .Q_overlay/.Q_dialog_title/.Q_dialog_content/
+   .Q_close) — overriding Q.css's generic dark-gradient title bar and
+   overlay.png background so the whole dialog reads as part of the same
+   upload flow, not a separate, differently-themed piece of UI. */
+.Media_videoUpload_publishedDialog.Q_overlay {
+  background: var(--ef-card);
+  border: 1px solid var(--ef-line);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+/* Q switches to a full-viewport variant (no border/radius/shadow needed)
+   on mobile — same card background/font, just without the "floating card"
+   chrome that only makes sense against a visible backdrop. */
+.Media_videoUpload_publishedDialog.Q_fullscreen_dialog {
+  background: var(--ef-card);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
 .Media_videoUpload_publishedDialog .Q_dialog_slot {
 	min-width: 320px;
 	max-width: 420px;
+}
+.Media_videoUpload_publishedDialog .Q_title_slot,
+.Media_videoUpload_publishedDialog .Q_dialog_title {
+  background: var(--ef-card) !important;
+  border-bottom: 1px solid var(--ef-line);
+  color: var(--ef-text) !important;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+}
+.Media_videoUpload_publishedDialog .Q_dialog_title * { color: inherit !important; }
+/* Q.css's default .Q_overlay .Q_close is a background-image (close.png)
+   floating at top:-15px/right:-15px, designed to sit over a dark overlay —
+   against our white rounded card it rendered as a stray gray wedge poking
+   out of the corner. Replaced with a plain icon button that sits inside
+   the card instead of overlapping its edge. */
+.Media_videoUpload_publishedDialog .Q_close {
+  position: absolute;
+  /* .Q_dialog_title is ~40px tall (line-height:40px) — center a 28px
+     button within that, not against the dialog's own top edge. */
+  top: 6px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ef-hover);
+  background-image: none;
+  border-radius: 50%;
+  z-index: 2;
+}
+.Media_videoUpload_publishedDialog .Q_close::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: var(--ef-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.Media_videoUpload_publishedDialog .Q_close:hover { background-color: var(--ef-line-2); }
+.Media_videoUpload_publishedDialog .Q_close:hover::before { background: var(--ef-text); }
+.Media_videoUpload_publishedDialog .Q_dialog_content {
+  background: var(--ef-card);
+  color: var(--ef-text);
 }
 
 .Media_videoUpload_published {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
-    padding: 15px;
+    padding: 20px;
 }
 
 .Media_videoUpload_publishedSummary {
@@ -61,9 +309,9 @@
 	width: 100%;
 	aspect-ratio: 16 / 9;
 	object-fit: cover;
-	border-radius: 6px;
+	border-radius: var(--ef-radius);
 	display: block;
-	background: #eee;
+	background: var(--ef-bg);
 }
 
 .Media_videoUpload_publishedDuration {
@@ -83,8 +331,9 @@
 }
 
 .Media_videoUpload_publishedTitle {
-	font-weight: bold;
+	font-weight: 600;
 	font-size: 15px;
+	color: var(--ef-text);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: -webkit-box;
@@ -95,7 +344,7 @@
 
 .Media_videoUpload_publishedDate {
 	font-size: 12px;
-	color: #666;
+	color: var(--ef-muted);
 	margin-top: 4px;
 }
 
@@ -105,68 +354,117 @@
 	gap: 10px;
 }
 
+/* Mirrors .Media_episodeForm_linkRow/_linkValue/_copy exactly (same
+   uppercase label + bordered value pill + icon-only copy button) so the
+   two link rows here read as a continuation of episodeForm's own "Share
+   link" / "Standalone player link" rows, not a different style. */
 .Media_videoUpload_publishedLinkRow {
-	background: #f7f7f7;
-	border-radius: 6px;
-	padding: 8px 12px;
+	background: none;
+	border-radius: 0;
+	padding: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 6px;
 }
 
 .Media_videoUpload_publishedLinkLabel {
 	font-size: 12px;
-	color: #666;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--ef-muted);
 }
 
 .Media_videoUpload_publishedLinkValue {
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	height: 44px;
+	padding: 0 4px 0 14px;
+	border: 1px solid var(--ef-line);
+	border-radius: var(--ef-radius);
+	background: var(--ef-bg);
 }
 
 .Media_videoUpload_publishedLinkRow a {
 	flex: 1 1 auto;
 	min-width: 0;
-	font-size: 13px;
+	font-size: 14px;
+	color: var(--ef-link);
+	text-decoration: none;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+.Media_videoUpload_publishedLinkRow a:hover { color: var(--ef-link-hover); }
 
 .Media_videoUpload_publishedCopy {
 	flex: 0 0 auto;
-	border: none;
-	background: transparent;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: 9px;
+	background: var(--ef-hover);
+	color: var(--ef-muted);
+	font-size: 0; /* hides the "⧉" glyph, icon drawn below */
 	cursor: pointer;
-	font-size: 15px;
-	padding: 2px 4px;
-	border-radius: 4px;
-	color: #444;
+	transition: background-color .15s, color .15s;
+}
+.Media_videoUpload_publishedCopy::before {
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: currentColor;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V6a2 2 0 0 1 2-2h8'/%3E%3C/svg%3E") center / contain no-repeat;
+	        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V6a2 2 0 0 1 2-2h8'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 .Media_videoUpload_publishedCopy:hover {
-	background: rgba(0, 0, 0, 0.08);
+	background: var(--ef-line-2);
+	color: var(--ef-text);
 }
 .Media_videoUpload_publishedCopy.Media_videoUpload_publishedCopied {
-	color: #1a9e4e;
+	color: var(--ef-ok);
+}
+.Media_videoUpload_publishedCopy.Media_videoUpload_publishedCopied::before {
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+	        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
 }
 
 .Media_videoUpload_publishedFooter {
 	display: flex;
 	justify-content: flex-end;
+	padding-top: 6px;
+	border-top: 1px solid var(--ef-line);
 }
 
-@media (prefers-color-scheme: dark) {
-	.Media_videoUpload_publishedDate {
-		color: #999;
-	}
-	.Media_videoUpload_publishedLinkRow {
-		background: #262626;
-	}
-	.Media_videoUpload_publishedLinkLabel {
-		color: #999;
-	}
-	.Media_videoUpload_publishedCopy {
-		color: #ccc;
-	}
+/* Matches .Media_episodeForm_save exactly — same accent button used to
+   finish the upload flow, now used to finish viewing this dialog too. */
+.Media_videoUpload_publishedDialog .Q_button.Media_videoUpload_publishedClose,
+.Media_videoUpload_publishedDialog .Media_videoUpload_publishedClose {
+	height: 48px;
+	margin: 0;
+	padding: 0 28px;
+	border: 0 !important;
+	border-radius: var(--ef-radius) !important;
+	background: var(--ef-accent) !important;
+	background-image: none !important;
+	box-shadow: none !important;
+	color: var(--ef-accent-ink) !important;
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 600;
+	text-shadow: none;
+	cursor: pointer;
+	transition: background-color .15s;
+}
+.Media_videoUpload_publishedDialog .Media_videoUpload_publishedClose:hover {
+	background: var(--ef-accent-hover) !important;
+}
+.Media_videoUpload_publishedDialog .Media_videoUpload_publishedClose:focus-visible {
+	outline: 2px solid var(--ef-accent);
+	outline-offset: 2px;
 }

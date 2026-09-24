@@ -1,7 +1,13 @@
 .Media_episodeEdit_tool {
 	display: block;
 	width: 100%;
-	max-width: 900px;
+	/* Media/episodeForm.css already caps itself at 1120px — this wrapper
+	   used to additionally cap at 900px, so the edit page rendered its
+	   two-column layout visibly narrower/more cramped than the upload
+	   flow's identical form (which has no such extra constraint). Matching
+	   1120px here lets episodeForm's own max-width be the only one that
+	   applies, same as on the upload page. */
+	max-width: 1120px;
 	margin: 0 auto;
 	padding: 16px;
 }
