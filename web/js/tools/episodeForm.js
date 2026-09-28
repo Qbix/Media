@@ -34,7 +34,7 @@
 	 *   @param {Number} [options.pricePerMinute] Initial per-minute price (perMinute-only mechanism)
 	 *   @param {Boolean} [options.allowPerMinute] Initial state of the "also allow per-minute" checkbox
  *   @param {Boolean} [options.allowTeaser] Initial state of the "Allow teaser video" checkbox —
- *     lets a not-logged-in viewer watch the first 15 seconds before being asked to sign in
+ *     lets any viewer who hasn't paid (anonymous or logged in) watch the first 15 seconds free
  *   @param {Boolean} [options.allowClips] Initial state of the "Allow people to share a clip"
  *     checkbox — lets any logged-in viewer with access to this episode pick their own
  *     up-to-15-second range and get a shareable link anyone can watch (see Media/clip/preview.js)
@@ -232,13 +232,15 @@
 				).appendTo($pricing).find(".Media_episodeForm_priceStream")
 					.val(state.priceStream || 0);
 
-				// Lets a not-logged-in viewer watch the first 15 seconds
-				// before Media/clip.js prompts them to sign in — see
-				// Media/dropVideo/post.php's allowTeaser handling.
+				// Lets any viewer who hasn't paid — anonymous or logged
+				// in — watch the first 15 seconds free; Media/clip.js
+				// then prompts an anonymous viewer to sign in, or shows
+				// the paywall in place for one who's already signed in —
+				// see Media/dropVideo/post.php's allowTeaser handling.
 				$allowTeaser = $(
 					"<label class='Media_episodeForm_label Media_episodeForm_allowTeaserLabel'>" +
 						"<input type='checkbox' class='Media_episodeForm_allowTeaser'/>" +
-						"<span>" + (text.AllowTeaser || "Allow teaser video (15 seconds, no sign-in required)") + "</span>" +
+						"<span>" + (text.AllowTeaser || "Allow teaser video (first 15 seconds free for everyone)") + "</span>" +
 					"</label>"
 				).appendTo($pricing).find(".Media_episodeForm_allowTeaser")
 					.prop("checked", !!state.allowTeaser);

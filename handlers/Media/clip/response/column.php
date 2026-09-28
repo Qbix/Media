@@ -150,20 +150,22 @@ function Media_clip_response_column(&$params, &$result)
 			if ($safecloudVideo) {
 				Q_Response::setScriptData('Q.plugins.Media.clip.video', $safecloudVideo);
 			}
-		} else if (!$loggedInUser) {
-			// Teaser: a NOT-logged-in viewer of a paywalled episode gets a
-			// grant-based capability limited to the first ~15 seconds
-			// (computed client-side at save time by the creator's own
-			// browser — see Media/dropVideo/post.php's allowTeaser handling
-			// and Media::safecloudTeaserWrite()) instead of nothing. This is
+		} else {
+			// Teaser: any viewer of a paywalled episode who hasn't paid —
+			// anonymous or logged in — gets a grant-based capability
+			// limited to the first ~15 seconds (computed client-side at
+			// save time by the creator's own browser — see
+			// Media/dropVideo/post.php's allowTeaser handling and
+			// Media::safecloudTeaserWrite()) instead of nothing. This is
 			// real enforcement, not an honor-system check: the capability
 			// itself can't decrypt anything past its granted range (the
 			// service worker rejects it — see sw.js's decryptSegment), so
 			// there's no rootKey exposure risk in handing it to an
-			// unauthenticated viewer. A logged-in-but-unpaid viewer still
-			// gets nothing here — the teaser is specifically the "watch a
-			// bit before signing in" carrot, not a way to avoid paying once
-			// signed in.
+			// unauthenticated viewer. A logged-in-but-unpaid viewer gets
+			// the same bounded capability; once it runs out, Media/clip.js's
+			// handleTeaserEnd swaps in the paywall in place instead of
+			// prompting sign-in (that prompt is reserved for viewers who
+			// are still actually anonymous).
 			$safecloudVideo = Media::safecloudVideoRead(Q::ifset($video, 'rootCid', null));
 			$teaserCapability = $safecloudVideo ? Q::ifset($safecloudVideo, 'teaserCapability', null) : null;
 			if ($teaserCapability) {
