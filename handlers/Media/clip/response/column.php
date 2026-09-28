@@ -94,6 +94,48 @@ function Media_clip_response_column(&$params, &$result)
 			Q_Config::get('Safecloud', 'jetUrl',
 				Q_Config::get('Q', 'node', 'url', Q_Request::baseUrl())));
 
+		// Explicit default, overridden below only when this viewer actually
+		// gets something to play. Q.plugins.Media.clip.video is a GLOBAL
+		// namespace that Media/clip.js reads fresh on every activation —
+		// when navigated to via Q/columns (an SPA "open" with a url, e.g.
+		// Media/clip.js's own openClipInSameColumn/"View Full Episode"),
+		// not a full page load, nothing client-side clears a key this
+		// response simply never mentions. Confirmed live: viewing a shared
+		// clip (which sets this to the clip's own bounded capability), then
+		// clicking "View Full Episode" to a PAID episode with no teaser
+		// available to an anonymous viewer — a case where NONE of the
+		// branches below used to set this key at all — left the clip's own
+		// stale capability sitting in the global, so the "episode" column
+		// played the OLD clip instead of showing the paywall. Every branch
+		// below must now be reachable from a clean null, not from whatever
+		// the previous SPA-navigated page happened to leave behind.
+		Q_Response::setScriptData('Q.plugins.Media.clip.video', null);
+
+		// A shared clip (Media/clip stream created via Media/clip/preview.js,
+		// see Media_clip_saveSafecloudClip) — bounded to its own
+		// [clipStart, clipEnd) range for EVERY viewer, unconditionally,
+		// regardless of login or the underlying episode's payment status.
+		// That's what makes it a clip rather than the episode itself: a
+		// trailer doesn't turn into the whole movie just because the movie
+		// happens to be free. (An earlier version of this branch tried to
+		// hand out the full rootKey to a viewer who already had full
+		// access to the episode — meant to fix a real bug, a logged-in
+		// viewer getting a spurious "sign in to keep watching" prompt at
+		// the clip's boundary, but it also meant a free episode's clip
+		// played the ENTIRE video for literally anyone, defeating the
+		// point of sharing a bounded clip at all. The actual fix for that
+		// original bug belongs client-side, in Media/clip.js's
+		// handleTeaserEnd — see its own updated comment.)
+		if (isset($video['clipStart']) && isset($video['clipEnd'])) {
+			$safecloudVideo = Media::safecloudVideoRead(Q::ifset($video, 'rootCid', null));
+			$clipCapability = Media::safecloudClipCapabilityRead($stream->publisherId, $stream->name);
+			if ($safecloudVideo && $clipCapability) {
+				Q_Response::setScriptData('Q.plugins.Media.clip.video', array(
+					'manifest' => $safecloudVideo['manifest'],
+					'capability' => $clipCapability,
+					'teaser' => true
+				));
+			}
 		// The stream's own "video" attribute only holds a rootCid reference
 		// (see Media::safecloudVideoWrite() — the full manifest is too large
 		// for the attributes column's 1023-char limit). Read the actual
@@ -103,7 +145,7 @@ function Media_clip_response_column(&$params, &$result)
 		// decrypt the video, so withholding it (not just hiding the player in
 		// the UI) is the one part of this feature that's real enforcement
 		// rather than an honor-system client-side check.
-		if (!$paymentRequired) {
+		} else if (!$paymentRequired) {
 			$safecloudVideo = Media::safecloudVideoRead(Q::ifset($video, 'rootCid', null));
 			if ($safecloudVideo) {
 				Q_Response::setScriptData('Q.plugins.Media.clip.video', $safecloudVideo);

@@ -59,6 +59,7 @@
 		pricePerMinute: 0,
 		allowPerMinute: false,
 		allowTeaser: false,
+		allowClips: false,
 		manifest: null,
 		rootKey: null,
 		onSaved: new Q.Event(),
@@ -85,6 +86,7 @@
 					pricePerMinute: state.pricePerMinute,
 					allowPerMinute: state.allowPerMinute,
 					allowTeaser: state.allowTeaser,
+					allowClips: state.allowClips,
 					onSiteUrl: state.onSiteUrl,
 					onSave: function (fields) {
 						tool.save(fields);
@@ -156,6 +158,7 @@
 						allowPerMinute: fields.allowPerMinute ? "1" : "",
 						allowTeaser: fields.allowTeaser ? "1" : "",
 						teaserCapability: teaserCapabilityJson,
+						allowClips: fields.allowClips ? "1" : "",
 						videoDuration: fields.videoDuration
 					}
 				});

@@ -57,3 +57,26 @@ button.Media_clip_preview_tool {
 .Media_clip_dialog input {
     height: 40px;
 }
+
+.Media_clip_composer_range {
+    padding: 0 5%;
+}
+.Media_clip_composer_range label {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #666;
+}
+.Media_clip_composer_range input {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+}
+.Media_clip_composer_range input.Q_error {
+    border-color: red;
+}
+.Media_clip_composer_rangeHint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #888;
+}

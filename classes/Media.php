@@ -511,6 +511,83 @@ abstract class Media
 	}
 
 	/**
+	 * Path to a per-viewer shared clip's own grant-based capability file —
+	 * separate from safecloudVideoFile() (keyed by rootCid, shared by every
+	 * viewer) because a clip's capability is scoped to one specific
+	 * (clipPublisherId, clipStreamName) "Media/clip" stream: each viewer who
+	 * shares a clip of the same episode gets their own range and their own
+	 * capability, and "at most one clip per user per video" (enforced in
+	 * Media_clip_post via a relation lookup) is exactly what keeps this
+	 * naturally 1:1 with that viewer's own clip stream.
+	 * @method safecloudClipCapabilityFile
+	 * @static
+	 * @param {string} $clipPublisherId
+	 * @param {string} $clipStreamName
+	 * @return {string}
+	 */
+	static function safecloudClipCapabilityFile($clipPublisherId, $clipStreamName)
+	{
+		return APP_FILES_DIR . DS . 'Media' . DS . 'safecloud' . DS . 'clips' . DS
+			. Q_Utils::splitId($clipPublisherId) . DS
+			. Q_Utils::normalize($clipStreamName) . '.json';
+	}
+
+	/**
+	 * @method safecloudClipCapabilityWrite
+	 * @static
+	 * @param {string} $clipPublisherId
+	 * @param {string} $clipStreamName
+	 * @param {array} $capability Grant-based capability limited to the
+	 *   clip's own [clipStart, clipEnd) range — see
+	 *   Q.Safecloud.Client.createShareLink's teaser mode (a clip is just a
+	 *   teaser with an arbitrary, viewer-chosen range instead of always
+	 *   starting at 0), computed client-side since only a viewer who
+	 *   already holds the episode's rootKey (i.e. has paid/it's free) can
+	 *   compute one.
+	 */
+	static function safecloudClipCapabilityWrite($clipPublisherId, $clipStreamName, $capability)
+	{
+		$file = self::safecloudClipCapabilityFile($clipPublisherId, $clipStreamName);
+		$dir = dirname($file);
+		if (!is_dir($dir)) {
+			mkdir($dir, 0755, true);
+		}
+		file_put_contents($file, Q::json_encode($capability));
+	}
+
+	/**
+	 * @method safecloudClipCapabilityRead
+	 * @static
+	 * @param {string} $clipPublisherId
+	 * @param {string} $clipStreamName
+	 * @return {array|null}
+	 */
+	static function safecloudClipCapabilityRead($clipPublisherId, $clipStreamName)
+	{
+		$file = self::safecloudClipCapabilityFile($clipPublisherId, $clipStreamName);
+		if (!is_file($file)) {
+			return null;
+		}
+		$json = file_get_contents($file);
+		$data = $json ? json_decode($json, true) : null;
+		return $data ?: null;
+	}
+
+	/**
+	 * @method safecloudClipCapabilityDelete
+	 * @static
+	 * @param {string} $clipPublisherId
+	 * @param {string} $clipStreamName
+	 */
+	static function safecloudClipCapabilityDelete($clipPublisherId, $clipStreamName)
+	{
+		$file = self::safecloudClipCapabilityFile($clipPublisherId, $clipStreamName);
+		if (is_file($file)) {
+			unlink($file);
+		}
+	}
+
+	/**
 	 * Deletes the server's own copy of a Safecloud video's manifest/rootKey.
 	 * This is the one thing that actually enforces "delete this video" —
 	 * Safecloud has no mechanism for an owner to instruct every Drop that

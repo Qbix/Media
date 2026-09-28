@@ -66,12 +66,29 @@ Q.Tool.define("Media/clip/preview", ["Streams/preview"], function _Media_clip_pr
 		var state = this.state;
 
 		var $submit = $(".Media_clip_composer_submit:visible", state.mainDialog);
-		var clipTool = Q.Tool.from($(".Q_tabbing_container .Q_tabbing_item.Q_current .Q_clip_tool", state.mainDialog), "Q/clip");
-		var clipStart = clipTool ? clipTool.getPosition("start") : null;
-		var clipEnd = clipTool ? clipTool.getPosition("end") : null;
 		var title = $("input[name=title]:visible", state.mainDialog).val();
+		var $currentContent = $(".Q_tabbing_container .Q_tabbing_item.Q_current", state.mainDialog);
+		var $rangeInputs = $("input[name=clipStart], input[name=clipEnd]", $currentContent);
+		var valid;
 
-		if (clipStart && clipEnd && title) {
+		if ($rangeInputs.length) {
+			// Safecloud branch — plain numeric fields, no Q/clip range
+			// picker overlaid on a live player (see composer()'s own
+			// comment on why: the encrypted HLS player has no scrubbable
+			// preview cheap enough to embed in this dialog yet).
+			var clipStart = parseFloat($("input[name=clipStart]", $currentContent).val());
+			var clipEnd = parseFloat($("input[name=clipEnd]", $currentContent).val());
+			valid = isFinite(clipStart) && isFinite(clipEnd)
+				&& clipStart >= 0 && clipEnd > clipStart && (clipEnd - clipStart) <= 15;
+			$rangeInputs.toggleClass("Q_error", !valid);
+		} else {
+			var clipTool = Q.Tool.from($(".Q_clip_tool", $currentContent), "Q/clip");
+			var start = clipTool ? clipTool.getPosition("start") : null;
+			var end = clipTool ? clipTool.getPosition("end") : null;
+			valid = !!(start && end);
+		}
+
+		if (valid && title) {
 			$submit.removeClass("Q_disabled");
 		} else {
 			$submit.addClass("Q_disabled");
@@ -88,11 +105,131 @@ Q.Tool.define("Media/clip/preview", ["Streams/preview"], function _Media_clip_pr
 		var category = state.category;
 		var stream = this.stream;
 
-		var videoUrl = Q.getObject("url", category.getAttribute("video"));
+		var categoryVideo = category.getAttribute("video") || {};
+		// Safecloud-sourced episodes have no video.url (the encrypted
+		// content only exists behind Q.Safecloud.Client.stream()) — this
+		// composer builds a shareable clip for those from a pair of plain
+		// numeric fields instead of the Q/video + Q/clip live-scrubbing UI
+		// below, which only understands a plain playable URL. Embedding a
+		// real scrubbable preview of the encrypted HLS stream inside this
+		// dialog is a reasonable follow-up, not something this pass needs.
+		var isSafecloud = categoryVideo.source === "safecloud";
+		var videoUrl = Q.getObject("url", categoryVideo);
 		var audioUrl = Q.getObject("url", category.getAttribute("audio"));
 
 		var title = null;
 		var content = null;
+
+		/**
+		 * Safecloud branch of _process() — computes a grant-based
+		 * capability limited to [clipStart, clipEnd) via
+		 * Q.Safecloud.Client.createShareLink (only possible because this
+		 * dialog only ever shows for a viewer who already holds the
+		 * episode's rootKey — see Media/clip.js's showAddClip, which is
+		 * only reachable past its own payment gate) and always POSTs to
+		 * Media/clip — even when editing an already-shared clip (`stream`
+		 * set) — since Media_clip_saveSafecloudClip is what persists the
+		 * new capability server-side; a plain stream.save() (what the
+		 * non-safecloud branch below uses for edits) has no way to do that.
+		 * @method _processSafecloud
+		 */
+		var _processSafecloud = function ($currentContent, _error) {
+			var $title = $("input[name=title]", $currentContent);
+			var titleVal = $title.length ? $title.val() : null;
+			if (Q.isEmpty(titleVal)) {
+				return _error(tool.text.NewClipTitlePlaceholder);
+			}
+			var $content = $("textarea[name=content]", $currentContent);
+			var contentVal = $content.length ? $content.val() : null;
+
+			var clipStart = parseFloat($("input[name=clipStart]", $currentContent).val());
+			var clipEnd = parseFloat($("input[name=clipEnd]", $currentContent).val());
+			if (!isFinite(clipStart) || !isFinite(clipEnd) || clipStart < 0
+			|| clipEnd <= clipStart || (clipEnd - clipStart) > 15) {
+				return _error(tool.text.ClipRangeInvalid
+					|| "Clip must be between 0 and 15 seconds long.");
+			}
+
+			var safecloudVideo = Q.getObject("Media.clip.video", Q.plugins);
+			if (!safecloudVideo || !safecloudVideo.manifest || !safecloudVideo.rootKey
+			|| !Q.Safecloud || !Q.Safecloud.Client || !Q.Safecloud.Client.createShareLink) {
+				return _error(tool.text.ClipNotAvailable
+					|| "Can't create a clip right now — try reloading the page.");
+			}
+
+			Q.Safecloud.Client.createShareLink(safecloudVideo.manifest, safecloudVideo.rootKey, {
+				teaser: [clipStart, clipEnd]
+			}).then(function (r) {
+				if (!r || !r.capability) {
+					throw new Error("Failed to build the clip's capability");
+				}
+				var attrsVideo = {
+					source: "safecloud",
+					rootCid: categoryVideo.rootCid,
+					clipStart: clipStart,
+					clipEnd: clipEnd,
+					// So Media_clip_response_column can look up the ORIGINAL
+					// episode's own payment status when this clip is later
+					// opened — the clip stream itself never has a "payment"
+					// attribute (it isn't priced on its own), so without
+					// this, that check would always read as "free" and hand
+					// out the bounded/shared capability even to a viewer who
+					// already has full paid/free access to the episode.
+					episodePublisherId: category.fields.publisherId,
+					episodeStreamName: category.fields.name
+				};
+				Q.req("Media/clip", ["result"], function (err, response) {
+					var fem = Q.firstErrorMessage(err, response);
+					if (fem) {
+						return _error(fem);
+					}
+					if (Q.getObject("slots.result", response) === "needPayment") {
+						var createCost = Q.getObject("clip.createCost", Q.Media);
+						Q.Assets.pay({
+							amount: createCost.amount,
+							currency: createCost.currency,
+							userId: Q.Users.currentCommunityId,
+							toStream: { streamName: "Media/clip" },
+							reason: "CreatePaidStream",
+							onSuccess: function () {
+								Q.handle(_processSafecloud, tool, [$currentContent, _error]);
+							},
+							onFailure: function () {
+								state.mainDialog.removeClass('Q_uploading');
+							}
+						});
+						return;
+					}
+					// NOT Q.handle(callback, ...) — callback is Streams/preview's
+					// own "go ahead and create the stream yourself now" signal
+					// (see the non-safecloud "new stream" branch below, which
+					// proves the contract: it also never calls callback after
+					// its own Q.req creates the stream). Calling it here — a
+					// request that already fully created/updated the clip
+					// itself via Media_clip_saveSafecloudClip — told
+					// Streams/preview to ALSO run its own generic creation
+					// flow on top, confirmed live: a second "Media/clip"
+					// stream (with none of this attributes.video payload,
+					// since Streams/preview's own flow knows nothing about
+					// it) appeared alongside the correct one from a single
+					// Save click.
+					tool.closeComposer();
+				}, {
+					method: "post",
+					fields: {
+						params: {
+							title: titleVal,
+							content: contentVal,
+							attributes: { video: attrsVideo }
+						},
+						related: tool.preview.state.related,
+						capability: JSON.stringify(r.capability)
+					}
+				});
+			}).catch(function (err) {
+				_error(err && err.message || String(err));
+			});
+		};
 
 		/**
 		 * Process composer submitting
@@ -109,6 +246,11 @@ Q.Tool.define("Media/clip/preview", ["Streams/preview"], function _Media_clip_pr
 			if (!$currentContent.length) {
 				return _error("No action selected");
 			}
+
+			if (action === "video" && isSafecloud) {
+				return _processSafecloud($currentContent, _error);
+			}
+
 			var clipTool = Q.Tool.from($(".Q_clip_tool", $currentContent), "Q/clip");
 			var clipStart = clipTool ? clipTool.getPosition("start") : null;
 			var clipEnd = clipTool ? clipTool.getPosition("end") : null;
@@ -216,7 +358,7 @@ Q.Tool.define("Media/clip/preview", ["Streams/preview"], function _Media_clip_pr
 				fields: {
 					title: title,
 					content: content,
-					isVideo: !!videoUrl,
+					isVideo: !!videoUrl || isSafecloud,
 					isAudio: !!audioUrl,
 					text: tool.text
 				}
@@ -230,7 +372,36 @@ Q.Tool.define("Media/clip/preview", ["Streams/preview"], function _Media_clip_pr
 					state.mainDialog = $(state.mainDialog);
 				}
 
-				if (videoUrl) {
+				if (isSafecloud) {
+					var $videoClipElement = $(".Q_tabbing_container [data-content=video] .Media_clip_composer_clip", state.mainDialog);
+					var savedVideo = stream ? (stream.getAttribute("video") || {}) : {};
+					var defaultStart = Q.getObject("clipStart", savedVideo);
+					var defaultEnd = Q.getObject("clipEnd", savedVideo);
+					if (defaultStart == null) {
+						var pos = (state.playerTool && state.playerTool.getCurrentPosition)
+							? state.playerTool.getCurrentPosition() : 0;
+						defaultStart = Math.max(0, Math.floor(pos || 0));
+					}
+					if (defaultEnd == null) {
+						var duration = (state.playerTool && state.playerTool.getDuration)
+							? state.playerTool.getDuration() : 0;
+						defaultEnd = duration
+							? Math.min(defaultStart + 15, Math.floor(duration))
+							: defaultStart + 15;
+					}
+					$videoClipElement.html(
+						"<div class='Media_clip_composer_range'>"
+						+ "<label>" + (tool.text.ClipStart || "Clip start (seconds)")
+						+ "<input type='number' name='clipStart' min='0' step='1' value='" + defaultStart + "'/></label>"
+						+ "<label>" + (tool.text.ClipEnd || "Clip end (seconds)")
+						+ "<input type='number' name='clipEnd' min='0' step='1' value='" + defaultEnd + "'/></label>"
+						+ "<div class='Media_clip_composer_rangeHint'>"
+						+ (tool.text.ClipRangeHint || "Up to 15 seconds \u2014 anyone with the link can watch this range.")
+						+ "</div></div>"
+					);
+					$("input[name=clipStart], input[name=clipEnd]", $videoClipElement)
+						.on("input change", function () { tool.checkForm(); });
+				} else if (videoUrl) {
 					var $videoElement = $(".Q_tabbing_container [data-content=video] .Media_clip_composer_preview", state.mainDialog);
 					var $videoClipElement = $(".Q_tabbing_container [data-content=video] .Media_clip_composer_clip", state.mainDialog);
 					var videoClipStart = stream ? Q.getObject("clipStart", stream.getAttribute("video")) : null;
@@ -334,6 +505,14 @@ Q.Tool.define("Media/clip/preview", ["Streams/preview"], function _Media_clip_pr
 					e.preventDefault();
 					e.stopPropagation();
 
+					// Guards against a double-submit (a second click before
+					// the first request's async work — createShareLink's
+					// crypto + the POST itself — finishes) creating two
+					// clip streams from one Save action; the server side
+					// now also closes this with an atomic fetchOrCreate
+					// (see Media_clip_saveSafecloudClip), but this is the
+					// cheap first line of defense.
+					if (state.mainDialog.hasClass('Q_uploading')) { return; }
 					state.mainDialog.addClass('Q_uploading');
 					Q.handle(_process, state.mainDialog);
 				});

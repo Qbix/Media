@@ -222,6 +222,7 @@
 						allowPerMinute: fields.allowPerMinute ? "1" : "",
 						allowTeaser: fields.allowTeaser ? "1" : "",
 						teaserCapability: teaserCapabilityJson,
+						allowClips: fields.allowClips ? "1" : "",
 						videoDuration: fields.videoDuration
 					}
 				});

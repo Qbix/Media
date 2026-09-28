@@ -338,6 +338,14 @@ function _Media_dropVideo_publish($publisherId, $streamName, $params, $categorie
 		}
 	}
 
+	// "Allow people to share a clip" — unlike allowTeaser, no capability is
+	// computed/stored here: a clip's range is chosen per-viewer, later, at
+	// watch time (see Media/clip/preview.js), not known up front at
+	// publish time. This is purely the switch Media/clip.js checks (see
+	// its showAddClip) before offering the "Add clip" button at all, and
+	// Media_clip_post re-checks server-side before creating one.
+	$episode->setAttribute('allowClips', filter_var(Q::ifset($params, 'allowClips', false), FILTER_VALIDATE_BOOLEAN));
+
 	// Private = only the publisher can read at all (readLevel 'none' —
 	// the publisher always has full access regardless). Unlisted/Public
 	// both stay fully readable via direct link; what differs between them

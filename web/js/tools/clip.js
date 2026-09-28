@@ -149,7 +149,14 @@
             // script data instead) — the template needs to show the
             // .Media_video player/tab for those too, not just plain URLs.
             var hasVideo = !!(video.url || video.source === "safecloud");
-            var showAddClip = userId && tool.stream.fields.type !== "Media/clip" && !tool.isLive();
+            // For a safecloud-sourced episode, sharing a clip additionally
+            // requires the creator to have checked "Allow people to share a
+            // clip" (see Media/episodeForm.js's allowClips checkbox and
+            // Media_clip_saveSafecloudClip's own server-side re-check) —
+            // unlike the pre-existing plain-URL clip feature below, which
+            // predates that setting and stays available unconditionally.
+            var showAddClip = userId && tool.stream.fields.type !== "Media/clip" && !tool.isLive()
+                && (video.source !== "safecloud" || !!tool.stream.getAttribute("allowClips"));
             var showSegmentClips = !tool.isLive();
             var fields = {
                 video: video,
@@ -460,12 +467,31 @@
                     // Teaser viewers get a grant-based capability straight
                     // from the server (see column.php) instead of the
                     // rootKey — sw.js already accepts either shape.
+                    //
+                    // Both the fixed-range teaser and a shared clip carry
+                    // their own [from, to) range as capability.teaserRange
+                    // (see Q.Safecloud.Client.createShareLink's teaser mode
+                    // — "teaser" here just means "grant-based, time-bounded
+                    // capability," a clip is exactly that with an arbitrary
+                    // range instead of always [0, 15]). Used for two
+                    // things: starting playback AT the range (not always
+                    // from 0 — a clip's whole point is to open right where
+                    // its creator chose, e.g. 5s into a 20s clip, not force
+                    // the viewer to scrub past the start themselves), and
+                    // stopping it exactly at the range's end (state.stopAt,
+                    // below) rather than wherever the grant's own chunk-
+                    // rounded boundary happens to fall, which can run a
+                    // couple of seconds past the intended cutoff.
+                    var teaserRange = safecloudVideo.teaser
+                        ? Q.getObject("capability.teaserRange", safecloudVideo) : null;
                     $(".Media_video", tool.element).tool("Safecloud/video", Q.extend({
                         manifest: safecloudVideo.manifest,
                         capability: safecloudVideo.teaser
                             ? safecloudVideo.capability
                             : { rootKey: safecloudVideo.rootKey },
                         jetUrl: Q.getObject("Media.clip.jetUrl", Q.plugins) || undefined,
+                        at: teaserRange ? teaserRange[0] : 0,
+                        stopAt: teaserRange ? teaserRange[1] : undefined,
                         onPlay: tool.joinClip.bind(tool),
                         onPlaying: tool.watchClip.bind(tool),
                         onTeaserEnd: safecloudVideo.teaser
@@ -539,6 +565,7 @@
                     if (showAddClip) {
                         var videoPlayerTool = Q.Tool.from($(".Q_video_tool:visible", tool.element)[0], "Q/video");
                         var audioPlayerTool = Q.Tool.from($(".Q_audio_tool:visible", tool.element)[0], "Q/audio");
+                        var safecloudPlayerTool = Q.Tool.from($(".Safecloud_video_tool:visible", tool.element)[0], "Safecloud/video");
 
                         // create clip composer
                         $("button[name=addClip]", tool.element).tool("Streams/preview", {
@@ -557,7 +584,7 @@
                             }
                         }).tool("Media/clip/preview", {
                             category: tool.stream,
-                            playerTool: videoPlayerTool || audioPlayerTool
+                            playerTool: videoPlayerTool || audioPlayerTool || safecloudPlayerTool
                         }).activate();
                     }
 
@@ -621,7 +648,25 @@
 
                                 var url = Q.url('clip/' + (publisherId ? publisherId + '/' : '') + clipId);
                                 var o = {
-                                    name: 'profile',
+                                    // NOT 'profile' — this opens a clip, not
+                                    // a user's profile. Left over from a
+                                    // copy-paste of the avatar-click "view
+                                    // profile" navigation a bit above (which
+                                    // legitimately uses 'profile', together
+                                    // with columnClass 'Communities_column_profile'
+                                    // and Communities/css/columns/profile.css).
+                                    // That stylesheet hides
+                                    // .Q_column_slot.Q_content_container for
+                                    // whichever column Q/columns marks with
+                                    // this name (via a data-name attribute) —
+                                    // confirmed live: with 'profile' still
+                                    // here despite the columnClass already
+                                    // having been corrected below, opening a
+                                    // clip from the episode's own clips list
+                                    // always rendered a visually empty
+                                    // column, its real (populated) content
+                                    // just hidden by that unrelated rule.
+                                    name: 'clip',
                                     url: url,
                                     columnClass: 'Media_episode_segment_clip'
                                 };
@@ -1144,11 +1189,14 @@
             });
         },
         /**
-         * Fired by the Safecloud/video tool when a not-logged-in viewer's
-         * teaser playback reaches the end of its granted range (see
-         * Media/clip/response/column.php, which hands out a time-limited
-         * capability instead of the full rootKey for exactly this case).
-         * The video is already paused by the time this fires.
+         * Fired by the Safecloud/video tool when playback reaches the end
+         * of a time-limited capability's granted range — either a
+         * not-logged-in viewer's teaser (see Media/clip/response/column.php's
+         * allowTeaser branch), or anyone's playback of a shared clip (see
+         * its own, unconditionally-bounded branch there — a clip stays
+         * bounded to its own range for EVERY viewer, logged in or not,
+         * regardless of the underlying episode's price). The video is
+         * already paused by the time this fires.
          * @method handleTeaserEnd
          */
         handleTeaserEnd: function () {
@@ -1158,9 +1206,48 @@
             // Client/stream.js and Client/_prefetchLoop.js) can both call
             // this for the same stream — belt-and-suspenders against
             // different flavors of grant-boundary failure. Guard here so
-            // a viewer only ever sees the sign-in dialog once.
+            // a viewer only ever sees the sign-in dialog/redirect once.
             if (tool._teaserEndHandled) { return; }
             tool._teaserEndHandled = true;
+
+            if (tool.stream.fields.type === "Media/clip") {
+                // A shared clip's own range ended — since a clip is ALWAYS
+                // bounded (see column.php's comment on why it can't just
+                // hand out full access to a viewer who happens to already
+                // have it), "sign in to buy" doesn't even apply here: an
+                // already-logged-in viewer (confirmed live: including the
+                // clip's own creator, sampling their own free video) was
+                // getting that exact nonsensical prompt before this fix,
+                // since this method used to unconditionally call
+                // Q.Users.login() regardless of who was watching. The
+                // episode's own page already has every access case
+                // (sign-in, payment, free, already-paid) fully handled —
+                // simplest and most correct is to send the viewer there
+                // instead of duplicating any of that logic here — but only
+                // if they choose to (an automatic redirect the instant
+                // playback stops is jarring and easy to misread as the
+                // page itself failing, especially since it happens with no
+                // warning right as the video is still visibly paused on
+                // screen), not the instant the range ends.
+                var video = tool.stream.getAttribute("video") || {};
+                if (video.episodePublisherId && video.episodeStreamName) {
+                    var episodeUrl = Q.url('clip/' + video.episodePublisherId + '/'
+                        + video.episodeStreamName.split('/').pop());
+                    Q.confirm(
+                        tool.text.ClipEndedExplanation
+                            || "That's the end of this clip.",
+                        function (result) {
+                            if (result) { location.href = episodeUrl; }
+                        },
+                        {
+                            ok: tool.text.WatchFullVideo || "Watch full video",
+                            cancel: tool.text.Close || "Close"
+                        }
+                    );
+                    return;
+                }
+            }
+
             Q.Users.login({
                 explanation: tool.text.TeaserSignInExplanation
                     || "Sign in to buy and keep watching this video.",

@@ -14,6 +14,7 @@
 	'pricePerMinute' => $pricePerMinute,
 	'allowPerMinute' => $allowPerMinute,
 	'allowTeaser' => $allowTeaser,
+	'allowClips' => $allowClips,
 	'manifest' => $manifest,
 	'rootKey' => $rootKey
 )) ?>
