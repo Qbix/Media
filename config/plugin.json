@@ -158,7 +158,22 @@
 		"capability": {
 			"public": {
 				"presentation/:calendarId": ["s"],
-				"livestream/:publisherId/:livestreamId[]": ["s"]
+				"livestream/:publisherId/:livestreamId[]": ["s"],
+				/* Keyed by bare action name (not a route pattern, unlike the
+				   two above) because Users_before_Q_sessionExtras() reads
+				   Q_Config::get('Users','capability','public',$uri->action).
+				   Lets a not-logged-in visitor open the Safecloud Jet socket
+				   connection teaser playback needs — otherwise
+				   Q.Socket.connect.validateAuth() (Users.js) rejects any
+				   socket connection whenever the session's capability has
+				   an empty permissions array, which is the default for
+				   every not-logged-in session (Users/socket is only added
+				   for a logged-in user). The real security boundary for
+				   what a teaser viewer can decrypt is Safecloud's own
+				   signed grant, checked per-chunk by the service worker —
+				   this only clears Qbix's generic "can this session open a
+				   socket at all" gate. */
+				"clip": ["Safecloud/socket"]
 			}
 		}
 	},

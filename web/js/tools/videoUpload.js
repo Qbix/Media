@@ -184,31 +184,47 @@
 				return;
 			}
 
-			Q.req(state.action, ["result", "stream"], function (err, response) {
-				var msg = Q.firstErrorMessage(err, response && response.errors);
-				if (msg) {
-					tool.formTool.showError(msg);
-					Q.handle(state.onError, tool, [new Error(msg)]);
-					return;
-				}
-				var stream = Q.getObject(["slots", "stream"], response);
-				tool.formTool.setSaving(false);
-				Q.handle(state.onSaved, tool, [null, stream]);
-				tool.showPublishedDialog(stream);
-			}, {
-				method: "post",
-				fields: {
-					streamName: tool.draftStream.name,
-					publisherId: tool.draftStream.publisherId,
-					title: fields.title,
-					content: fields.content,
-					categories: JSON.stringify(fields.categories),
-					visibility: fields.visibility,
-					priceStream: fields.priceStream,
-					pricePerMinute: fields.pricePerMinute,
-					allowPerMinute: fields.allowPerMinute ? "1" : "",
-					videoDuration: fields.videoDuration
-				}
+			// Only the creator's own browser holds the rootKey needed to
+			// compute a teaser capability (a grant limited to the first 15
+			// seconds — see Q.Safecloud.Client.createShareLink's teaser
+			// mode and Media/dropVideo/post.php's allowTeaser handling), so
+			// this has to happen here, client-side, before posting.
+			var teaserPromise = (fields.allowTeaser && Q.Safecloud && Q.Safecloud.Client
+				&& Q.Safecloud.Client.createShareLink)
+				? Q.Safecloud.Client.createShareLink(tool.manifest, tool.rootKey, { teaser: 15 })
+					.then(function (r) { return r && r.capability ? JSON.stringify(r.capability) : ""; })
+					.catch(function () { return ""; })
+				: Promise.resolve("");
+
+			teaserPromise.then(function (teaserCapabilityJson) {
+				Q.req(state.action, ["result", "stream"], function (err, response) {
+					var msg = Q.firstErrorMessage(err, response && response.errors);
+					if (msg) {
+						tool.formTool.showError(msg);
+						Q.handle(state.onError, tool, [new Error(msg)]);
+						return;
+					}
+					var stream = Q.getObject(["slots", "stream"], response);
+					tool.formTool.setSaving(false);
+					Q.handle(state.onSaved, tool, [null, stream]);
+					tool.showPublishedDialog(stream);
+				}, {
+					method: "post",
+					fields: {
+						streamName: tool.draftStream.name,
+						publisherId: tool.draftStream.publisherId,
+						title: fields.title,
+						content: fields.content,
+						categories: JSON.stringify(fields.categories),
+						visibility: fields.visibility,
+						priceStream: fields.priceStream,
+						pricePerMinute: fields.pricePerMinute,
+						allowPerMinute: fields.allowPerMinute ? "1" : "",
+						allowTeaser: fields.allowTeaser ? "1" : "",
+						teaserCapability: teaserCapabilityJson,
+						videoDuration: fields.videoDuration
+					}
+				});
 			});
 		},
 

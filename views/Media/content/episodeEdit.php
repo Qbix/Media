@@ -13,6 +13,7 @@
 	'priceStream' => $priceStream,
 	'pricePerMinute' => $pricePerMinute,
 	'allowPerMinute' => $allowPerMinute,
+	'allowTeaser' => $allowTeaser,
 	'manifest' => $manifest,
 	'rootKey' => $rootKey
 )) ?>

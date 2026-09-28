@@ -32,6 +32,7 @@
 	 *   @param {Number} [options.priceStream]
 	 *   @param {Number} [options.pricePerMinute]
 	 *   @param {Boolean} [options.allowPerMinute]
+	 *   @param {Boolean} [options.allowTeaser]
 	 *   @param {Object} [options.manifest] Safecloud public manifest, for the standalone-player link
 	 *   @param {String} [options.rootKey] Safecloud root key, for the standalone-player link
 	 *   @param {Q.Event} [options.onSaved] Fires with (err, stream) after the update POST completes.
@@ -57,6 +58,7 @@
 		priceStream: 0,
 		pricePerMinute: 0,
 		allowPerMinute: false,
+		allowTeaser: false,
 		manifest: null,
 		rootKey: null,
 		onSaved: new Q.Event(),
@@ -82,6 +84,7 @@
 					priceStream: state.priceStream,
 					pricePerMinute: state.pricePerMinute,
 					allowPerMinute: state.allowPerMinute,
+					allowTeaser: state.allowTeaser,
 					onSiteUrl: state.onSiteUrl,
 					onSave: function (fields) {
 						tool.save(fields);
@@ -112,33 +115,50 @@
 			var tool = this;
 			var state = tool.state;
 
-			Q.req(state.action, ["result", "stream"], function (err, response) {
-				var msg = Q.firstErrorMessage(err, response && response.errors);
-				if (msg) {
-					tool.formTool.showError(msg);
-					Q.handle(state.onError, tool, [new Error(msg)]);
-					return;
-				}
-				var stream = Q.getObject(["slots", "stream"], response);
-				tool.formTool.setSaving(false);
-				Q.handle(state.onSaved, tool, [null, stream]);
-				// Back to the clip page to see the result, same as any
-				// other "edit this, then view it" flow in this app.
-				location.href = (stream && stream.url) || state.onSiteUrl || Q.url('clips');
-			}, {
-				method: "post",
-				fields: {
-					streamName: state.streamName,
-					publisherId: state.publisherId,
-					title: fields.title,
-					content: fields.content,
-					categories: JSON.stringify(fields.categories),
-					visibility: fields.visibility,
-					priceStream: fields.priceStream,
-					pricePerMinute: fields.pricePerMinute,
-					allowPerMinute: fields.allowPerMinute ? "1" : "",
-					videoDuration: fields.videoDuration
-				}
+			// Only the creator's own browser holds the rootKey needed to
+			// compute a teaser capability (a grant limited to the first 15
+			// seconds — see Q.Safecloud.Client.createShareLink's teaser
+			// mode and Media/dropVideo/post.php's allowTeaser handling);
+			// state.manifest/state.rootKey are the same pair already used
+			// above for the standalone-player share link.
+			var teaserPromise = (fields.allowTeaser && state.manifest && state.rootKey
+				&& Q.Safecloud && Q.Safecloud.Client && Q.Safecloud.Client.createShareLink)
+				? Q.Safecloud.Client.createShareLink(state.manifest, state.rootKey, { teaser: 15 })
+					.then(function (r) { return r && r.capability ? JSON.stringify(r.capability) : ""; })
+					.catch(function () { return ""; })
+				: Promise.resolve("");
+
+			teaserPromise.then(function (teaserCapabilityJson) {
+				Q.req(state.action, ["result", "stream"], function (err, response) {
+					var msg = Q.firstErrorMessage(err, response && response.errors);
+					if (msg) {
+						tool.formTool.showError(msg);
+						Q.handle(state.onError, tool, [new Error(msg)]);
+						return;
+					}
+					var stream = Q.getObject(["slots", "stream"], response);
+					tool.formTool.setSaving(false);
+					Q.handle(state.onSaved, tool, [null, stream]);
+					// Back to the clip page to see the result, same as any
+					// other "edit this, then view it" flow in this app.
+					location.href = (stream && stream.url) || state.onSiteUrl || Q.url('clips');
+				}, {
+					method: "post",
+					fields: {
+						streamName: state.streamName,
+						publisherId: state.publisherId,
+						title: fields.title,
+						content: fields.content,
+						categories: JSON.stringify(fields.categories),
+						visibility: fields.visibility,
+						priceStream: fields.priceStream,
+						pricePerMinute: fields.pricePerMinute,
+						allowPerMinute: fields.allowPerMinute ? "1" : "",
+						allowTeaser: fields.allowTeaser ? "1" : "",
+						teaserCapability: teaserCapabilityJson,
+						videoDuration: fields.videoDuration
+					}
+				});
 			});
 		},
 

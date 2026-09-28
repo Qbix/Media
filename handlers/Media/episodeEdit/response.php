@@ -82,6 +82,7 @@ function Media_episodeEdit_response($params)
 		'priceStream' => floatval(Q::ifset($payment, 'amount', 0)),
 		'pricePerMinute' => floatval(Q::ifset($payment, 'perMinute', 0)),
 		'allowPerMinute' => $allowPerMinute,
+		'allowTeaser' => (bool) $episode->getAttribute('allowTeaser'),
 		'manifest' => $safecloud ? $safecloud['manifest'] : null,
 		'rootKey' => $safecloud ? $safecloud['rootKey'] : null
 	));

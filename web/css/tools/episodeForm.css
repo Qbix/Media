@@ -497,8 +497,32 @@
 .Media_episodeForm_tool .Media_episodeForm_pricing:has(.Media_episodeForm_allowPerMinute:disabled) .Media_episodeForm_perMinutePreview { opacity: .55; }
 .Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel:has(:disabled) { cursor: not-allowed; }
 
-/* Switch (styled native checkbox) */
-.Media_episodeForm_tool .Media_episodeForm_allowPerMinute {
+/* Teaser toggle — a standalone box (no paired preview row underneath, unlike
+   the per-minute one above), so it gets full corner rounding on its own. */
+.Media_episodeForm_tool .Media_episodeForm_allowTeaserLabel {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--ef-card-2);
+  border: 1px solid var(--ef-line);
+  border-radius: 14px;
+  cursor: pointer;
+}
+.Media_episodeForm_tool .Media_episodeForm_allowTeaserLabel > span {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ef-text);
+}
+
+/* Switch (styled native checkbox) — shared by allowPerMinute and allowTeaser */
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute,
+.Media_episodeForm_tool .Media_episodeForm_allowTeaser {
   -webkit-appearance: none;
           appearance: none;
   position: relative;
@@ -512,7 +536,8 @@
   cursor: pointer;
   transition: background-color .15s;
 }
-.Media_episodeForm_tool .Media_episodeForm_allowPerMinute::before {
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute::before,
+.Media_episodeForm_tool .Media_episodeForm_allowTeaser::before {
   content: "";
   position: absolute;
   top: 3px;
@@ -523,10 +548,14 @@
   background: var(--ef-knob);
   transition: left .15s, background-color .15s;
 }
-.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:checked { background: var(--ef-accent); }
-.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:checked::before { left: 23px; background: var(--ef-accent-ink); }
-.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:disabled { cursor: not-allowed; }
-.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:focus-visible { outline: 2px solid var(--ef-accent); outline-offset: 2px; }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:checked,
+.Media_episodeForm_tool .Media_episodeForm_allowTeaser:checked { background: var(--ef-accent); }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:checked::before,
+.Media_episodeForm_tool .Media_episodeForm_allowTeaser:checked::before { left: 23px; background: var(--ef-accent-ink); }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:disabled,
+.Media_episodeForm_tool .Media_episodeForm_allowTeaser:disabled { cursor: not-allowed; }
+.Media_episodeForm_tool .Media_episodeForm_allowPerMinute:focus-visible,
+.Media_episodeForm_tool .Media_episodeForm_allowTeaser:focus-visible { outline: 2px solid var(--ef-accent); outline-offset: 2px; }
 
 /* ---------- Footer (sits under the left card, visually part of it) ---------- */
 .Media_episodeForm_tool .Media_episodeForm_footer {
@@ -707,6 +736,7 @@
   .Media_episodeForm_tool .Media_episodeForm_priceStreamLabel { grid-row: 2; margin-bottom: 16px; }
   .Media_episodeForm_tool .Media_episodeForm_allowPerMinuteLabel { grid-column: 1; grid-row: 3; }
   .Media_episodeForm_tool .Media_episodeForm_perMinutePreview { grid-column: 1; grid-row: 4; padding-right: 18px; }
+  .Media_episodeForm_tool .Media_episodeForm_allowTeaserLabel { grid-row: 5; }
   .Media_episodeForm_tool .Media_episodeForm_save { width: 100%; }
   .Media_episodeForm_tool .Media_episodeForm_footer { flex-wrap: wrap; }
   .Media_episodeForm_tool .Media_episodeForm_delete { width: 100%; margin-right: 0; order: 3; }

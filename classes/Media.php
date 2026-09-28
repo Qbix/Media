@@ -481,6 +481,36 @@ abstract class Media
 	}
 
 	/**
+	 * Updates just the teaserCapability field of an existing safecloud
+	 * video's on-disk file, preserving its manifest/rootKey — used for the
+	 * "watch 15 seconds before signing in" feature. The capability itself
+	 * (a grant-based, time-range-limited decryption capability — see
+	 * Safecloud's Client/createShareLink.js teaser mode and
+	 * Client/grant.js) is computed client-side, in the creator's own
+	 * browser at save time (it needs the rootKey, which the server never
+	 * holds in memory outside a page load), and posted here for storage —
+	 * this never touches the rootKey itself.
+	 * @method safecloudTeaserWrite
+	 * @static
+	 * @param {string} $rootCid
+	 * @param {array|null} $teaserCapability Pass null to remove/disable the teaser.
+	 */
+	static function safecloudTeaserWrite($rootCid, $teaserCapability)
+	{
+		$file = self::safecloudVideoFile($rootCid);
+		if (!$rootCid || !is_file($file)) {
+			return;
+		}
+		$data = self::safecloudVideoRead($rootCid) ?: array();
+		if ($teaserCapability) {
+			$data['teaserCapability'] = $teaserCapability;
+		} else {
+			unset($data['teaserCapability']);
+		}
+		file_put_contents($file, Q::json_encode($data));
+	}
+
+	/**
 	 * Deletes the server's own copy of a Safecloud video's manifest/rootKey.
 	 * This is the one thing that actually enforces "delete this video" —
 	 * Safecloud has no mechanism for an owner to instruct every Drop that

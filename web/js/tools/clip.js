@@ -424,9 +424,13 @@
                 // uses for paid events) and, if payment is required, never
                 // sends the safecloud manifest/rootKey down in the first
                 // place, so there's no player to instantiate here at all;
-                // show an unlock button instead.
+                // show an unlock button instead — UNLESS the episode allows
+                // a teaser and this viewer isn't logged in (see below),
+                // in which case column.php sends a time-limited capability
+                // instead and a player DOES get instantiated.
                 var payment = Q.getObject("Media.clip.payment", Q.plugins) || {};
-                if (payment.required) {
+                var safecloudVideo = Q.getObject("Media.clip.video", Q.plugins);
+                if (payment.required && !(safecloudVideo && safecloudVideo.teaser)) {
                     // rootCid itself isn't secret (only the manifest/rootKey
                     // that's withheld above are) — it's always present in the
                     // stream's own "video" attribute regardless of payment
@@ -445,7 +449,6 @@
                 // beforeSet_attributes()), so Media/clip/response/column.php
                 // reads them back from disk (Media::safecloudVideoRead())
                 // and injects them as script data for this one page load.
-                var safecloudVideo = Q.getObject("Media.clip.video", Q.plugins);
                 if (video.source === "safecloud" && safecloudVideo && safecloudVideo.manifest) {
                     // Safecloud-encrypted upload (see Media/videoUpload,
                     // Media/dropVideo) — plays via the same Safecloud/video
@@ -453,12 +456,21 @@
                     // (which has no Safecloud awareness at all). clipStart/
                     // clipEnd/ads/floating are not supported for these yet —
                     // known v1 limitation, not an oversight.
+                    //
+                    // Teaser viewers get a grant-based capability straight
+                    // from the server (see column.php) instead of the
+                    // rootKey — sw.js already accepts either shape.
                     $(".Media_video", tool.element).tool("Safecloud/video", Q.extend({
                         manifest: safecloudVideo.manifest,
-                        capability: { rootKey: safecloudVideo.rootKey },
+                        capability: safecloudVideo.teaser
+                            ? safecloudVideo.capability
+                            : { rootKey: safecloudVideo.rootKey },
                         jetUrl: Q.getObject("Media.clip.jetUrl", Q.plugins) || undefined,
                         onPlay: tool.joinClip.bind(tool),
-                        onPlaying: tool.watchClip.bind(tool)
+                        onPlaying: tool.watchClip.bind(tool),
+                        onTeaserEnd: safecloudVideo.teaser
+                            ? tool.handleTeaserEnd.bind(tool)
+                            : undefined
                     }, state.qVideoOptions)).activate(function () {
                         tool.videoTool = this;
                         pipeToolActivated.fill("media")();
@@ -1128,6 +1140,36 @@
                 fields: {
                     publisherId: state.publisherId,
                     streamName: state.streamName
+                }
+            });
+        },
+        /**
+         * Fired by the Safecloud/video tool when a not-logged-in viewer's
+         * teaser playback reaches the end of its granted range (see
+         * Media/clip/response/column.php, which hands out a time-limited
+         * capability instead of the full rootKey for exactly this case).
+         * The video is already paused by the time this fires.
+         * @method handleTeaserEnd
+         */
+        handleTeaserEnd: function () {
+            var tool = this;
+            // Two independent detectors (the hls.js 403 handler and
+            // _prefetchLoop's own videoElement 'waiting' listener, see
+            // Client/stream.js and Client/_prefetchLoop.js) can both call
+            // this for the same stream — belt-and-suspenders against
+            // different flavors of grant-boundary failure. Guard here so
+            // a viewer only ever sees the sign-in dialog once.
+            if (tool._teaserEndHandled) { return; }
+            tool._teaserEndHandled = true;
+            Q.Users.login({
+                explanation: tool.text.TeaserSignInExplanation
+                    || "Sign in to buy and keep watching this video.",
+                onSuccess: function () {
+                    // Reload so column.php re-evaluates this viewer as
+                    // logged-in — showing the normal paywall (or the full
+                    // video, if it's free/already paid) instead of the
+                    // teaser capability just exhausted.
+                    location.reload();
                 }
             });
         },
