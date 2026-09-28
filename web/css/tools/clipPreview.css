@@ -57,3 +57,52 @@ button.Media_clip_preview_tool {
 .Media_clip_dialog input {
     height: 40px;
 }
+
+.Media_clip_composer_rangeHint {
+    margin: 10px 5%;
+    font-size: 12px;
+    color: #888;
+}
+.Media_clip_composer_rangeError {
+    margin: 6px 5% 0;
+    font-size: 12px;
+    color: red;
+}
+.Media_clip_composer_rangeError:empty {
+    display: none;
+}
+
+.Media_clip_createdDialog {
+    min-width: 280px;
+}
+.Media_clip_created {
+    padding: 10px 16px 16px;
+}
+.Media_clip_created_explanation {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+.Media_clip_created_linkRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.Media_clip_created_linkRow a {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.Media_clip_created_copy {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
+}
+.Media_clip_created_copy.Media_clip_created_copied {
+    color: green;
+}

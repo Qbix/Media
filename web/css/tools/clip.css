@@ -73,9 +73,12 @@ html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
     height: 100%;
     flex-basis: 100%;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
 }
 .Media_clip_player_inner .Media_player {
-    height: 100%;
+    /* height: 100%; */
+    flex: 1;
 }
 .Media_clip_tool.Media_clip_live .Streams_chat_call,
 .Media_clip_tool.Media_clip_live .Media_clip_player,

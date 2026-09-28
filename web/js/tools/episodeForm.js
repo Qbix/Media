@@ -33,6 +33,11 @@
 	 *   @param {Number} [options.priceStream] Initial one-time full-episode price
 	 *   @param {Number} [options.pricePerMinute] Initial per-minute price (perMinute-only mechanism)
 	 *   @param {Boolean} [options.allowPerMinute] Initial state of the "also allow per-minute" checkbox
+ *   @param {Boolean} [options.allowTeaser] Initial state of the "Allow teaser video" checkbox —
+ *     lets a not-logged-in viewer watch the first 15 seconds before being asked to sign in
+ *   @param {Boolean} [options.allowClips] Initial state of the "Allow people to share a clip"
+ *     checkbox — lets any logged-in viewer with access to this episode pick their own
+ *     up-to-15-second range and get a shareable link anyone can watch (see Media/clip/preview.js)
 	 *   @param {String} [options.onSiteUrl] Link to this episode's own clip page. Pass null while unknown yet — shows a "Creating…" placeholder.
 	 *   @param {String} [options.standaloneUrl] Link to the standalone Safecloud player. Pass null while unknown yet.
 	 *   @param {String} [options.visibility="public"] "private" | "unlisted" | "public"
@@ -56,6 +61,8 @@
 		priceStream: 0,
 		pricePerMinute: 0,
 		allowPerMinute: false,
+		allowTeaser: false,
+		allowClips: false,
 		onSiteUrl: null,
 		standaloneUrl: null,
 		visibility: 'public',
@@ -213,7 +220,7 @@
 			var mechanisms = Q.getObject("Media.episode.paymentMechanism", Q.plugins) || ["perStream", "perMinute"];
 			var hasStream = mechanisms.indexOf("perStream") >= 0;
 			var hasMinute = mechanisms.indexOf("perMinute") >= 0;
-			var $priceStream = null, $pricePerMinute = null, $allowPerMinute = null;
+			var $priceStream = null, $pricePerMinute = null, $allowPerMinute = null, $allowTeaser = null, $allowClips = null;
 			var $perMinutePreview = null;
 
 			if (hasStream) {
@@ -224,6 +231,30 @@
 					"</label>"
 				).appendTo($pricing).find(".Media_episodeForm_priceStream")
 					.val(state.priceStream || 0);
+
+				// Lets a not-logged-in viewer watch the first 15 seconds
+				// before Media/clip.js prompts them to sign in — see
+				// Media/dropVideo/post.php's allowTeaser handling.
+				$allowTeaser = $(
+					"<label class='Media_episodeForm_label Media_episodeForm_allowTeaserLabel'>" +
+						"<input type='checkbox' class='Media_episodeForm_allowTeaser'/>" +
+						"<span>" + (text.AllowTeaser || "Allow teaser video (15 seconds, no sign-in required)") + "</span>" +
+					"</label>"
+				).appendTo($pricing).find(".Media_episodeForm_allowTeaser")
+					.prop("checked", !!state.allowTeaser);
+
+				// Lets any logged-in viewer with access to this episode pick
+				// their own up-to-15-second range and share it with anyone —
+				// distinct from allowTeaser above (a single, fixed range the
+				// creator themselves picks at upload/edit time) — see
+				// Media/clip/preview.js's "Add clip" composer.
+				$allowClips = $(
+					"<label class='Media_episodeForm_label Media_episodeForm_allowClipsLabel'>" +
+						"<input type='checkbox' class='Media_episodeForm_allowClips'/>" +
+						"<span>" + (text.AllowClips || "Allow people to share a clip of this video (up to 15 seconds)") + "</span>" +
+					"</label>"
+				).appendTo($pricing).find(".Media_episodeForm_allowClips")
+					.prop("checked", !!state.allowClips);
 			}
 
 			if (hasStream && hasMinute) {
@@ -404,6 +435,8 @@
 					priceStream: Math.max(0, parseFloat($priceStream ? $priceStream.val() : 0) || 0),
 					pricePerMinute: Math.max(0, parseFloat($pricePerMinute ? $pricePerMinute.val() : 0) || 0),
 					allowPerMinute: $allowPerMinute ? $allowPerMinute.prop("checked") : false,
+					allowTeaser: $allowTeaser ? $allowTeaser.prop("checked") : false,
+					allowClips: $allowClips ? $allowClips.prop("checked") : false,
 					videoDuration: state.videoDuration || 0
 				};
 				tool.setSaving(true);
