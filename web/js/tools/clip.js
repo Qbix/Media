@@ -1191,8 +1191,9 @@
         /**
          * Fired by the Safecloud/video tool when playback reaches the end
          * of a time-limited capability's granted range — either a
-         * not-logged-in viewer's teaser (see Media/clip/response/column.php's
-         * allowTeaser branch), or anyone's playback of a shared clip (see
+         * paywalled episode's teaser (see Media/clip/response/column.php's
+         * allowTeaser branch, handed to anonymous AND logged-in-unpaid
+         * viewers alike), or anyone's playback of a shared clip (see
          * its own, unconditionally-bounded branch there — a clip stays
          * bounded to its own range for EVERY viewer, logged in or not,
          * regardless of the underlying episode's price). The video is
@@ -1246,6 +1247,19 @@
                     );
                     return;
                 }
+            }
+
+            // An episode's own teaser ran out. A still-anonymous viewer
+            // needs to sign in first (the teaser was their "watch a bit
+            // before signing in" carrot); a viewer who's already logged in
+            // but hasn't paid just needs the paywall, in place, right now —
+            // no reload, and no pointless sign-in prompt for someone
+            // already signed in.
+            if (Q.Users.loggedInUserId()) {
+                var payment = Q.getObject("Media.clip.payment", Q.plugins) || {};
+                var video = tool.stream.getAttribute("video") || {};
+                tool.renderPaywall(payment, video.rootCid);
+                return;
             }
 
             Q.Users.login({

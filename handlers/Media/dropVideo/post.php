@@ -67,9 +67,10 @@
  *     regardless of this param, until the first Save). Defaults to "public"
  *     if missing/invalid.
  *   @param {string} [$_REQUEST.allowTeaser] "1" if the creator checked
- *     "Allow teaser video" (publish/edit only). Gates whether a
- *     not-logged-in viewer can watch the first 15 seconds before being
- *     prompted to sign in — see Media_clip_response_column.php.
+ *     "Allow teaser video" (publish/edit only). Gates whether any viewer
+ *     who hasn't paid — anonymous or logged in — can watch the first 15
+ *     seconds free before hitting a sign-in prompt or the paywall — see
+ *     Media_clip_response_column.php.
  *   @param {string} [$_REQUEST.teaserCapability] JSON-encoded grant-based
  *     capability limited to the teaser range, computed client-side (see
  *     Q.Safecloud.Client.createShareLink's teaser mode) since only the
@@ -313,11 +314,13 @@ function _Media_dropVideo_publish($publisherId, $streamName, $params, $categorie
 		'perMinute' => $pricePerMinute
 	));
 
-	// Teaser: lets a NOT-logged-in viewer watch the first 15 seconds of a
-	// paywalled episode before Media/clip.js prompts them to sign in (see
-	// Media_clip_response_column.php, which hands out this capability
-	// instead of the full rootKey to such a viewer). The capability itself
-	// — a grant limited to that time range, computed via
+	// Teaser: lets any viewer who hasn't paid — anonymous or logged in —
+	// watch the first 15 seconds of a paywalled episode before Media/clip.js
+	// prompts an anonymous viewer to sign in, or shows the paywall in place
+	// for one who's already signed in (see Media_clip_response_column.php,
+	// which hands out this capability instead of the full rootKey to such
+	// a viewer). The capability itself — a grant limited to that time range,
+	// computed via
 	// Q.Safecloud.Client.createShareLink(manifest, rootKey, {teaser: 15})
 	// — is computed client-side (episodeForm.js's embedder: videoUpload.js
 	// or episodeEdit.js) since only the creator's own browser holds the
