@@ -22,12 +22,27 @@ function Media_clip_post($params = array())
 	$params = array_merge($_REQUEST, $params);
 	$publisherId = Q::ifset($params, 'publisherId', Users::loggedInUser(true)->id);
 
-    // check if paid
+	$attributes = Q::ifset($params, "params", "attributes", null);
+	$relatedPublisherId = Q::ifset($params, "related", "publisherId", null);
+	$relatedStreamName = Q::ifset($params, "related", "streamName", null);
+	$relatedType = Q::ifset($params, "related", "type", null);
+	$video = Q::ifset($attributes, "video", null);
+	$isSafecloud = (Q::ifset($video, "source", null) === "safecloud");
+
+    // check if paid — waived entirely for a Safecloud shared clip: this
+	// createCost was designed for the original, unrelated "make a clip of
+	// any video" feature (a distinct piece of content anyone could charge
+	// for creating), whereas a Safecloud clip is a short, view-limited
+	// preview of a video whose OWNER already explicitly opted in via the
+	// "allow people to share a clip" checkbox at upload time (see
+	// Media_clip_saveSafecloudClip's own allowClips check just below) —
+	// a promotional tool for content the sharer already has access to,
+	// not a new billable creation.
 	$paidInfo = Q_Config::get("Media", "clip", "createCost", null);
 	$amount = Q::ifset($paidInfo, "amount", null);
 	$isAdmin = (bool)Users::roles(array(Users::communityId(), Users::currentCommunityId()), Q_Config::expect("Media", "admins"));
 	$assets_credits = null;
-	if (!$isAdmin && !empty($paidInfo) && $amount) {
+	if (!$isSafecloud && !$isAdmin && !empty($paidInfo) && $amount) {
 		$assets_credits = Assets_Credits::select()
 			->where(array(
 				'fromUserId' => $publisherId,
@@ -37,17 +52,27 @@ function Media_clip_post($params = array())
 			->limit(1)
 			->fetchDbRow();
 		if (!$assets_credits || $assets_credits->getAttribute("processed") || ($assets_credits->amount < $amount)) {
-			return Q_Response::setSlot("result", "needPayment");
+			Q_Response::setSlot("result", "needPayment");
+			// Explicitly false, not just omitted — Q_Response::fillSlot()
+			// treats an ABSENT slot as "nothing set it yet" and falls back
+			// to looking for a "Media/clip/response/stream" event handler
+			// (isset() on a slots array entry that was never touched at
+			// all returns false, same as if it were never requested).
+			// There's no such handler (this is a POST action, not a page
+			// response), so a client that requested the "stream" slot
+			// alongside "result" — reasonably, since it needs it on the
+			// success path — got a hard "missing slot event" error instead
+			// of the needPayment result it was actually asking about, the
+			// instant payment was required. No stream exists yet at this
+			// point (payment is still pending), so false is the correct,
+			// honest value here — the caller should already be branching
+			// on slots.result === "needPayment" before ever looking at
+			// slots.stream.
+			return Q_Response::setSlot("stream", false);
 		}
 	}
 
-	$attributes = Q::ifset($params, "params", "attributes", null);
-	$relatedPublisherId = Q::ifset($params, "related", "publisherId", null);
-	$relatedStreamName = Q::ifset($params, "related", "streamName", null);
-	$relatedType = Q::ifset($params, "related", "type", null);
-	$video = Q::ifset($attributes, "video", null);
-
-	if (Q::ifset($video, "source", null) === "safecloud") {
+	if ($isSafecloud) {
 		$clipStream = Media_clip_saveSafecloudClip(
 			$publisherId, $params, $attributes, $video, $relatedPublisherId, $relatedStreamName, $relatedType
 		);
@@ -70,7 +95,13 @@ function Media_clip_post($params = array())
 	}
 
 	Q_Response::setSlot("result", true);
-    Q_Response::setSlot("stream", $clipStream);
+	// exportArray(), not the raw object — matches Media/dropVideo/post.php's
+	// own proven pattern. A raw Streams_Stream (Db_Row) doesn't implement
+	// JsonSerializable, so json_encode() on it directly produces {} (its
+	// actual field data lives in protected internals, not public
+	// properties) — confirmed live: the client-side publisherId/name the
+	// "clip created" dialog needs came back undefined.
+    Q_Response::setSlot("stream", $clipStream->exportArray());
 }
 
 /**

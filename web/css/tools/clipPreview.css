@@ -58,25 +58,51 @@ button.Media_clip_preview_tool {
     height: 40px;
 }
 
-.Media_clip_composer_range {
-    padding: 0 5%;
-}
-.Media_clip_composer_range label {
-    display: block;
-    margin-top: 10px;
-    font-size: 13px;
-    color: #666;
-}
-.Media_clip_composer_range input {
-    display: block;
-    width: 100%;
-    margin-top: 4px;
-}
-.Media_clip_composer_range input.Q_error {
-    border-color: red;
-}
 .Media_clip_composer_rangeHint {
-    margin-top: 8px;
+    margin: 10px 5%;
     font-size: 12px;
     color: #888;
+}
+.Media_clip_composer_rangeError {
+    margin: 6px 5% 0;
+    font-size: 12px;
+    color: red;
+}
+.Media_clip_composer_rangeError:empty {
+    display: none;
+}
+
+.Media_clip_createdDialog {
+    min-width: 280px;
+}
+.Media_clip_created {
+    padding: 10px 16px 16px;
+}
+.Media_clip_created_explanation {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+.Media_clip_created_linkRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.Media_clip_created_linkRow a {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.Media_clip_created_copy {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
+}
+.Media_clip_created_copy.Media_clip_created_copied {
+    color: green;
 }
