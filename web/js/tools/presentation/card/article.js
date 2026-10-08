@@ -46,6 +46,10 @@ Q.Tool.define("Media/presentation/card/article", function (options) {
 
 })(Q, Q.jQuery, window);
 
+// No Media_presentation_caption here -- Q/card/article already renders
+// its own title internally (.Q_card_article_title, from this same title
+// value, as a link when a source url is given), so a caption duplicating
+// it underneath showed the title twice.
 Q.Template.set('Media/presentation/card/article',
   '<div class="Media_presentation_hero">'
   + '{{#if imageUrl}}'
@@ -55,6 +59,5 @@ Q.Template.set('Media/presentation/card/article',
   + '</div>'
   + '{{/if}}'
   + '{{{tool "Q/card/article"}}}'
-  + '<div class="Media_presentation_caption">{{title}}</div>'
   + '</div>'
 );

@@ -116,6 +116,21 @@
     50%       { box-shadow: 0 0 0 8px rgba(232, 84, 71, 0); }
 }
 
+/* Stalled state: engine confirmed listening, then went silent with no
+   results/errors/onend -- amber instead of red so it reads as "needs
+   attention", distinct from the normal active/listening red. */
+.Media_presentation_commands_tool .Media_presentation_commands_mic_btn.Media_presentation_commands_mic_stalled {
+    background: rgba(232, 168, 35, 0.18);
+    border-color: #e8a823;
+    color: #e8a823;
+    animation: Media_mic_stall_pulse 1s ease infinite;
+}
+
+@keyframes Media_mic_stall_pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(232, 168, 35, 0.4); }
+    50%       { box-shadow: 0 0 0 8px rgba(232, 168, 35, 0); }
+}
+
 /* ── Live caption strip ── */
 .Media_presentation_commands_tool .Media_presentation_commands_caption {
     padding: 8px 16px;

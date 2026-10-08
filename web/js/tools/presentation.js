@@ -113,6 +113,8 @@
             cardSizing: {
                 'Media/card/slide':      '90%',
                 'Media/card/comparison': '70%',
+                'Media/visualization/graph': '95%',
+                'Media/visualization/table': '95%',
                 'default':               'max-width: 860px'
             },
             animation: {
@@ -322,16 +324,13 @@
             _initEphemerals: function (stream) {
                 var tool = this;
 
-                stream.onEphemeral('Media/presentation/graph/update').set(function (e) {
-                    if (e && e.action) {
-                        tool._updateGraph(e);
-                    }
-                }, tool);
-                stream.onEphemeral('Media/presentation/table/update').set(function (e) {
-                    if (e && e.action) {
-                        tool._updateTable(e);
-                    }
-                }, tool);
+                // graph/table ephemeral listeners (-> _updateGraph/
+                // _updateTable, both still defined but unused) removed --
+                // CardCommit no longer sends these ephemerals at all per
+                // explicit request (see its _ephemeralUpdate doc comment);
+                // graph/table now arrive the same way every other card
+                // type does, via the durable Media/presentation/card/show
+                // message below, handled by _applyByType -> _showInlineCard.
                 stream.onEphemeral('Media/presentation/reaction/burst').set(function (e) {
                     if (e && e.emoji) {
                         tool._showReaction(e.emoji);
@@ -542,6 +541,38 @@
                     var sizing = tool.state.cardSizing || {};
                     var rule = sizing[streamType] || sizing['default'] || 'max-width: 860px';
                     cardEl.style.cssText += ';' + rule;
+                    // Flat mode has no scale to compute, but cardEl can
+                    // still visibly reflow after attach -- most commonly a
+                    // hero image (article, profile, quote...) whose box
+                    // settles a moment after the card itself appears,
+                    // making the card briefly look stretched/wrong-sized
+                    // before snapping to normal. _showInlineCard already
+                    // hid cardEl (visibility, not display/opacity -- stays
+                    // measurable) for exactly this -- wait for layout to
+                    // actually settle before revealing, same as percent
+                    // mode below, instead of showing it the instant it's
+                    // attached.
+                    //
+                    // Also wait for Media_presentation_transition_rise
+                    // (added to cardEl's className above) to actually
+                    // finish before revealing, and kill it via inline
+                    // style first -- its animation-fill-mode: forwards
+                    // keeps holding opacity/transform with top cascade
+                    // priority over ANY style (including inline) for as
+                    // long as it's "active", which with forwards is
+                    // indefinitely. Revealing while that hold is still in
+                    // effect (it plays for 0.4s, longer than
+                    // _whenSizeSettled's 120ms quiet window can easily
+                    // resolve in) would mean _revealScaledCard's own
+                    // opacity:0 reset gets silently overridden by
+                    // whatever the animation currently holds, exposing
+                    // the card mid-rise instead of a clean fade from 0.
+                    tool._whenSizeSettled(cardEl, function () {
+                        tool._whenAnimationSettled(cardEl, function () {
+                            cardEl.style.animation = 'none';
+                            tool._revealScaledCard(cardEl);
+                        });
+                    });
                 }
             },
 
@@ -796,6 +827,12 @@
                     'Media/chart/line': 'Media/presentation/chart/line',
                     'Media/card/slide': 'Media/presentation/card/slide',
 			        'Media/card/map': 'Places/directions',
+                    // No Media/presentation/* wrapper for these -- unlike
+                    // the rest, they're used directly; _showInlineCard's
+                    // own classList additions below (sizing, entrance
+                    // animation) apply to their root element the same way.
+                    'Media/visualization/table': 'Q/visualization/table',
+                    'Media/visualization/graph': 'Q/visualization/graph',
                 };
                 var toolName = displayTools[streamType];
                 if (!toolName) return;
@@ -809,20 +846,21 @@
                     null, tool.prefix
                 );
                 cardEl.className += ' Media_ai_tool Media_presentation_screen Media_presentation_card_screen Media_presentation_transition_rise';
-                // Percent-sized cards need async measurement (see
-                // _fitCardToPercent) before their final size is known --
-                // without this, the card briefly appears and plays its
-                // entrance animation at the WRONG (natural, unscaled) size,
-                // then visibly snaps to the correct one a moment later.
-                // Hiding via visibility (not display:none, which would
-                // report 0 for offsetWidth/offsetHeight and break
+                // Every card needs async measurement before its final,
+                // settled size is known -- without this, a card briefly
+                // appears and plays its entrance animation at whatever
+                // size it happens to have at attach time (wrong for a
+                // percent-sized card still waiting to be scaled; for a
+                // flat-sized card, still potentially wrong if content
+                // like a hero image reflows a moment after attach), then
+                // visibly snaps/stretches to the correct one shortly
+                // after. Hiding via visibility (not display:none, which
+                // would report 0 for offsetWidth/offsetHeight and break
                 // measurement, and not opacity, which the entrance
                 // animation is already driving) keeps it fully measurable
-                // while invisible; _fitCardToPercent reveals it with its
-                // own fade-in once the real scale is applied.
-                if (tool._percentSizingFor(streamType) != null) {
-                    cardEl.style.visibility = 'hidden';
-                }
+                // while invisible; _applyCardSizing (percent OR flat mode)
+                // reveals it with its own fade-in once settled.
+                cardEl.style.visibility = 'hidden';
 
                 var prev = tool._currentForeground;
                 if (prev) {
@@ -928,6 +966,15 @@
 
             /**
              * Apply a graph update to the current graph tool, or activate one.
+             *
+             * UNUSED for now, per explicit request -- nothing calls this
+             * (the graph/table ephemeral listeners that used to are
+             * removed from _initEphemerals, and CardCommit no longer
+             * sends those ephemerals). graph/table are rebuilt fresh each
+             * time via _showInlineCard instead, like every other card
+             * type, since there's not yet a reliable way for the model to
+             * know what's actually on screen before deciding to mutate it
+             * in place. Left defined for when that's built.
              * @method _updateGraph
              */
             _updateGraph: function (data) {
@@ -947,6 +994,14 @@
                 var el = Q.Tool.prepare('div', 'Q/visualization/graph', opts, null, tool.prefix);
                 el.className += ' Media_presentation_card_screen Media_presentation_transition_scale';
                 if (!el.id) el.id = 'Q_vis_graph_' + Date.now();
+                // See the matching pre-hide in _showInlineCard -- percent
+                // sizing needs an async measure-then-scale pass (see
+                // _fitCardToPercent), so without this, a percent-sized
+                // graph would flash at its wrong, unscaled size before
+                // snapping to the correct one a moment later.
+                if (tool._percentSizingFor('Media/visualization/graph') != null) {
+                    el.style.visibility = 'hidden';
+                }
                 var prev = tool._currentForeground;
                 if (prev) {
                     prev.classList.add('Media_presentation_leaving');
@@ -957,12 +1012,22 @@
                 Q.activate(el, function () {
                     var t = Q.Tool.from(el, 'Q/visualization/graph');
                     if (t) el._graphTool = t;
+                    // _showInlineCard is the only other place that calls
+                    // this -- graph/table build their own card element
+                    // directly instead of going through it, so without
+                    // this call here state.cardSizing's entry for
+                    // 'Media/visualization/graph' (if any) was never even
+                    // being looked up.
+                    tool._applyCardSizing(el, 'Media/visualization/graph');
                 });
             },
 
             /**
              * Apply a table update to the current table tool, or activate one.
              * Handles both flat array rows (legacy) and {image, cells} row objects (new format).
+             *
+             * UNUSED for now -- see the matching note on _updateGraph
+             * above; same reason, same disabled-pending-a-real-fix status.
              * @method _updateTable
              */
             _updateTable: function (data) {
@@ -1009,6 +1074,10 @@
                 var el = Q.Tool.prepare('div', 'Q/visualization/table', opts, null, tool.prefix);
                 el.className += ' Media_presentation_card_screen Media_presentation_transition_scale';
                 if (!el.id) el.id = 'Q_vis_table_' + Date.now();
+                // See the matching pre-hide in _updateGraph/_showInlineCard.
+                if (tool._percentSizingFor('Media/visualization/table') != null) {
+                    el.style.visibility = 'hidden';
+                }
                 var prev = tool._currentForeground;
                 if (prev) {
                     prev.classList.add('Media_presentation_leaving');
@@ -1019,6 +1088,12 @@
                 Q.activate(el, function () {
                     var t = Q.Tool.from(el, 'Q/visualization/table');
                     if (t) el._tableTool = t;
+                    // See the matching call in _updateGraph -- this tool
+                    // builds its own card element directly instead of
+                    // going through _showInlineCard, so without this,
+                    // state.cardSizing's entry for 'Media/visualization/table'
+                    // (if any) was never even being looked up.
+                    tool._applyCardSizing(el, 'Media/visualization/table');
                 });
             },
 
@@ -1237,7 +1312,15 @@
                     'Media/presentation/reorder',
                     'Streams/gallery/query',
                     'Streams/gallery/pause',
-                    'Streams/gallery/resume'
+                    'Streams/gallery/resume',
+                    // Last AI-proposed card/chart/table/graph shown -- was
+                    // missing entirely, so NO card type (not just table/
+                    // graph) survived a late join or reconstruction before
+                    // this; _applyByType('Media/presentation/card/show')
+                    // now routes table/graph to _updateTable/_updateGraph
+                    // and everything else to _showInlineCard, same as the
+                    // live path.
+                    'Media/presentation/card/show'
                 ];
 
                 var CONTENT_STATE_TYPES = [
@@ -1390,6 +1473,15 @@
                             tool.show(instr.publisherId, instr.streamName);
                         } */
                         if (instr.visualizationData && instr.streamType) {
+                            // table/graph used to route to _updateTable/
+                            // _updateGraph (in-place widget update) here --
+                            // disabled per explicit request until there's a
+                            // reliable way to know what's actually on
+                            // screen before mutating it. Every
+                            // visualizationType, table/graph included, now
+                            // goes through _showInlineCard the same way
+                            // (see its displayTools map for the
+                            // Media/visualization/table|graph entries).
                             tool._showInlineCard(
                                 instr.streamType,
                                 instr.visualizationType,
