@@ -2,6 +2,17 @@
 
 var Streams = Q.Streams;
 
+// The model has been observed putting the article's own page URL in
+// imageUrl instead of a real image file (Q/card/article.js has the full
+// recovery for that -- it can use the misplaced link for the headline).
+// This wrapper has no title/link of its own to recover into, but it
+// SHOULD still skip trying to load that same URL as a hero image --
+// that's a guaranteed-failing request otherwise (caught by onerror, but
+// only after a wasted round trip and a brief broken-image flash).
+function _looksLikeImageUrl(url) {
+    return /\.(jpe?g|png|gif|webp|avif|svg)(?:[?#]|$)/i.test(url || '');
+}
+
 /**
  * Full-screen presentation wrapper for Q/card/article.
  * Shows article hero image above the card when imageUrl is present.
@@ -17,7 +28,7 @@ Q.Tool.define("Media/presentation/card/article", function (options) {
         });
         Q.Template.render('Media/presentation/card/article', {
             title:       state.title       || '',
-            imageUrl:    state.imageUrl    || null,
+            imageUrl:    _looksLikeImageUrl(state.imageUrl) ? state.imageUrl : null,
             imageCredit: state.imageCredit || null,
             'Q/card/article': attrs
         }, function (err, html) {
@@ -33,7 +44,7 @@ Q.Tool.define("Media/presentation/card/article", function (options) {
         var attrs = stream.getAllAttributes();
         Q.Template.render('Media/presentation/card/article', {
             title:       stream.fields.title,
-            imageUrl:    attrs.imageUrl    || null,
+            imageUrl:    _looksLikeImageUrl(attrs.imageUrl) ? attrs.imageUrl : null,
             imageCredit: attrs.imageCredit || null,
             'Q/card/article': attrs
         }, function (err, html) {

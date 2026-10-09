@@ -115,6 +115,8 @@
                 'Media/card/comparison': '70%',
                 'Media/visualization/graph': '95%',
                 'Media/visualization/table': '95%',
+                'Media/presentation/card/article': '50%',
+                'Q/card/article': '50%',
                 'default':               'max-width: 860px'
             },
             animation: {
@@ -541,6 +543,18 @@
                     var sizing = tool.state.cardSizing || {};
                     var rule = sizing[streamType] || sizing['default'] || 'max-width: 860px';
                     cardEl.style.cssText += ';' + rule;
+                    // Flat mode's rule (above) only ever constrains WIDTH
+                    // (max-width) -- nothing caps height, so sufficiently
+                    // long content (e.g. an article keyClaim far more
+                    // verbose than the "2-3 sentences" the schema asks
+                    // for) can still grow cardEl well past the viewport
+                    // vertically with no correction at all -- observed at
+                    // 984px tall against a 911px-tall window. Cap it
+                    // defensively regardless of what the rule said, with
+                    // scroll as the fallback rather than silently
+                    // overflowing off the bottom of the screen.
+                    cardEl.style.maxHeight = 'calc(100vh - 80px)';
+                    cardEl.style.overflowY = 'auto';
                     // Flat mode has no scale to compute, but cardEl can
                     // still visibly reflow after attach -- most commonly a
                     // hero image (article, profile, quote...) whose box
@@ -570,6 +584,23 @@
                     tool._whenSizeSettled(cardEl, function () {
                         tool._whenAnimationSettled(cardEl, function () {
                             cardEl.style.animation = 'none';
+                            // .Media_presentation_card_screen's static CSS
+                            // still has transform: translateY(-50%) (dead
+                            // leftover from an old top:50%-based centering
+                            // technique -- see _fitCardToPercent's own
+                            // comment on this). It's normally invisible
+                            // because Media_rise's animation-fill-mode:
+                            // forwards holds transform at a higher cascade
+                            // priority the whole time -- percent mode
+                            // happens to neutralize it as a side effect of
+                            // setting its OWN transform (scale(...)) right
+                            // after killing the animation above, but flat
+                            // mode has no scale to set, so without this it
+                            // falls straight through to that translateY
+                            // rule the instant the animation stops holding
+                            // the cascade -- an abrupt upward jump by half
+                            // the card's own height, right as it reveals.
+                            cardEl.style.transform = 'none';
                             tool._revealScaledCard(cardEl);
                         });
                     });
@@ -737,11 +768,36 @@
             },
 
             /**
-             * Call cb once el's size stops changing (debounced via
-             * ResizeObserver), instead of assuming any single fixed delay
-             * is long enough for whatever async work el's content is still
-             * doing. Falls back to a fixed delay only if ResizeObserver
-             * isn't available at all.
+             * Call cb once el's size AND el's subtree stop changing
+             * (debounced via ResizeObserver + MutationObserver together),
+             * instead of assuming any single fixed delay is long enough
+             * for whatever async work el's content is still doing. Falls
+             * back to a fixed delay only if ResizeObserver isn't
+             * available at all.
+             *
+             * MutationObserver is not just a nice-to-have alongside
+             * ResizeObserver -- a card wrapper tool (e.g.
+             * Media/presentation/card/article) activates its INNER tool
+             * (Q/card/article) via its own Q.Template.render callback,
+             * which is itself async (Q.loadHandlebars + Q.Template.load,
+             * neither guaranteed synchronous even for an already-cached
+             * template). _showInlineCard's Q.activate(cardEl, {}, cb)
+             * callback -- which calls _applyCardSizing, the caller of
+             * this method -- fires as soon as the WRAPPER's constructor
+             * function call returns, which is BEFORE that nested async
+             * render has replaced cardEl's real content. If cardEl's
+             * premature (near-empty) size happens to stay unchanged for
+             * the ResizeObserver's own 120ms quiet window -- entirely
+             * possible if the nested render's callback is still a tick or
+             * two away -- this would lock in that WRONG early reading and
+             * reveal the card at it, before the real content (and its
+             * real size) ever arrives: observed as the card briefly
+             * appearing at some wrong/stretched size, then snapping to
+             * normal once the nested render actually lands. Watching for
+             * DOM mutations too catches that content swap directly,
+             * resetting the SAME quiet window, instead of hoping the
+             * resulting resize event happens to follow closely enough
+             * behind it.
              * @method _whenSizeSettled
              * @param {HTMLElement} el
              * @param {Function} cb
@@ -754,20 +810,27 @@
                 var done = false;
                 var settleTimer = null;
                 var capTimer = null;
+                function bump() {
+                    clearTimeout(settleTimer);
+                    settleTimer = setTimeout(finish, 120);
+                }
                 function finish() {
                     if (done) return;
                     done = true;
                     clearTimeout(settleTimer);
                     clearTimeout(capTimer);
                     ro.disconnect();
+                    if (mo) mo.disconnect();
                     cb();
                 }
-                var ro = new ResizeObserver(function () {
-                    clearTimeout(settleTimer);
-                    settleTimer = setTimeout(finish, 120);
-                });
+                var ro = new ResizeObserver(bump);
                 ro.observe(el);
-                // Absolute cap in case something prevents ResizeObserver
+                var mo = null;
+                if (typeof MutationObserver !== 'undefined') {
+                    mo = new MutationObserver(bump);
+                    mo.observe(el, { childList: true, subtree: true, attributes: true });
+                }
+                // Absolute cap in case something prevents either observer
                 // from ever settling (or firing at all) -- better to
                 // measure a possibly-still-growing size late than to hang
                 // forever and never apply any sizing.
