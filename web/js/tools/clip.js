@@ -129,7 +129,7 @@
         facesDebounce: 30,
         facesUse: false,
         showDescription: true,
-        qVideoOptions: null,
+        qVideoOptions: { path: 'auto' },
         qAudioOptions: null,
         earnPeriod: parseInt(Q.getObject("Media.clip.watching.earnPeriod", Q)) || 60,
         credits: parseInt(Q.getObject("Assets.credits.amounts.watching", Q)) || 1,
