@@ -10,7 +10,20 @@ Q.page('Media/presentation', function () {
             });
         }
     } else {
-        content.addEventListener('click', function () {
+        content.addEventListener('click', function (e) {
+            // "Click empty space to enter fullscreen" must not also hijack
+            // a click that landed on an actual interactive control -- this
+            // fired unconditionally on EVERY click anywhere in #content,
+            // including e.g. an article card's headline/"Read more" link,
+            // the mic button, reaction buttons, proposal commit/cancel
+            // buttons, etc. Requesting fullscreen in the same gesture as a
+            // target="_blank" link click raced the browser's own
+            // navigation -- the fullscreen transition won, so the new tab
+            // opened silently in the background (or was dropped) while the
+            // visible result was just "it went fullscreen" instead.
+            if (e.target.closest('a, button, input, select, textarea, [role="button"], [contenteditable]')) {
+                return;
+            }
             Q.Visual.requestFullscreen(content);
         });
     }

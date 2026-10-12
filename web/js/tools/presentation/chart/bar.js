@@ -56,9 +56,11 @@ Q.Tool.define("Media/presentation/chart/bar", function (options) {
 
 })(Q, Q.jQuery, window);
 
+// No Media_presentation_caption here -- Q/chart/bar already renders its
+// own title internally (.Q_chart_title, from this same title value), so a
+// caption duplicating it underneath showed the title twice.
 Q.Template.set('Media/presentation/chart/bar',
   '<div class="Media_presentation_hero">'
   + '  {{{tool "Q/chart/bar"}}}'
-  + '  <div class="Media_presentation_caption">{{title}}</div>'
   + '</div>'
 );

@@ -526,17 +526,63 @@
                 var tool = this;
                 var state = tool.state;
 
+                console.log('[Media/presentation/commands] _startMic() called', {
+                    alreadyActive: !!state._micActive,
+                    hasAudioTrack: !!tool.state.audioTrack
+                });
+
                 // Load Recognition method and start — both happen inside the gesture stack
                 // Q.Speech.Recognition() loads the method file if not already loaded.
                 // On iOS Safari, script loads that are already cached are synchronous,
                 // so the gesture chain is preserved. On first load (cold start), there
                 // is a small risk of gesture chain break — mitigate by pre-loading
                 // Q.Speech.Recognition() during page init (before any user tap).
+                //
+                // onEnd/onStart/onSpeechEnd were previously unwired here --
+                // only onError was. Start.js now logs every lifecycle event
+                // (including the two previously-silent catch(e){} blocks
+                // around restart failures) regardless of these callbacks,
+                // but wiring them here too surfaces the SAME events from
+                // this tool's own perspective, with its own state attached
+                // (_micActive etc.), to help correlate "recognition's own
+                // onend fired" with "did this tool's UI/state notice".
                 Q.Speech.Recognition.start({
                     lang: navigator.language || navigator.userLanguage,
-                    source: tool.state.audioTrack ?? 'microphone', 
-                    interimResults: false, 
+                    source: tool.state.audioTrack ?? 'microphone',
+                    interimResults: false,
                     autoRestart: true,   // iOS Safari stops on silence — auto-restart
+                    onError: function (e) {
+                        console.error('[Media/presentation/commands] Speech.Recognition onError', e, {
+                            micActive: state._micActive
+                        });
+                    },
+                    onEnd: function () {
+                        console.log('[Media/presentation/commands] Speech.Recognition onEnd', {
+                            micActive: state._micActive
+                        });
+                    },
+                    onStart: function () {
+                        console.log('[Media/presentation/commands] Speech.Recognition onStart (engine actually listening)');
+                        // Clears any 'stalled' indicator left over from a
+                        // previous onStall -- a (re)start reconfirms the
+                        // engine is actually listening again.
+                        if (state._micActive) { tool._updateMicUI('active'); }
+                    },
+                    onSpeechEnd: function () {
+                        console.log('[Media/presentation/commands] Speech.Recognition onSpeechEnd');
+                    },
+                    onStall: function () {
+                        // Engine confirmed it was listening, then went
+                        // completely silent (no results, no errors, no
+                        // onend) -- start.js's watchdog already tries to
+                        // force a restart on its own, but the user has no
+                        // way to tell that's happening unless the mic
+                        // button visibly reflects it in the meantime.
+                        console.error('[Media/presentation/commands] Speech.Recognition onStall -- stopped responding, attempting auto-recovery', {
+                            micActive: state._micActive
+                        });
+                        if (state._micActive) { tool._updateMicUI('stalled'); }
+                    },
                 });
 
 
@@ -580,6 +626,16 @@
             _stopMic: function () {
                 var tool = this;
                 var state = tool.state;
+                // Logged with a stack trace (not just a message) since
+                // this is the other place (besides autoRestart failing
+                // inside start.js) that could explain "recognition just
+                // stopped reacting" -- something calling _stopMic
+                // unexpectedly would show up here with its call path.
+                console.log('[Media/presentation/commands] _stopMic() called', {
+                    micActive: state._micActive,
+                    aiStarted: state._aiStarted
+                });
+                console.trace('[Media/presentation/commands] _stopMic() call path');
                 Q.Speech.Recognition.stop && Q.Speech.Recognition.stop();
                 if (state._aiStarted) {
                     Q.Streams.Transcript.stop();
@@ -640,7 +696,18 @@
                 if (state == 'active') {
                     var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
                     $btn.toggleClass('Media_presentation_commands_mic_active', true);
+                    $btn.toggleClass('Media_presentation_commands_mic_stalled', false);
                     $btn.attr('title', 'Stop microphone');
+                } else if (state == 'stalled') {
+                    // Engine confirmed listening earlier, then went silent
+                    // for too long with no results/errors/onend at all --
+                    // start.js's watchdog is attempting a forced restart,
+                    // but until/unless that succeeds (onStart clears this
+                    // again), tell the user so they can toggle the mic
+                    // button themselves instead of talking to a dead mic.
+                    var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
+                    $btn.toggleClass('Media_presentation_commands_mic_stalled', true);
+                    $btn.attr('title', 'Microphone stopped responding — click to restart');
                 } else if (state == 'startedListening' || state == 'endedListening') {
                     var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
                     if(state == 'startedListening') {
@@ -653,6 +720,7 @@
                     var $btn = $(this.element).find('.Media_presentation_commands_mic_btn');
                     $btn.toggleClass('Media_presentation_commands_mic_active', false);
                     $btn.toggleClass('Media_presentation_commands_mic_listening', false);
+                    $btn.toggleClass('Media_presentation_commands_mic_stalled', false);
                     $btn.attr('title', 'Start microphone');
                 }
                 // Pulsing red dot appears via CSS when active class is set
