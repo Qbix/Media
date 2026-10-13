@@ -201,7 +201,8 @@ function Media_clip_response_column(&$params, &$result)
 
 	$clipParams = array_merge(array(
 		'publisherId' => $stream->publisherId,
-		'streamName' => $stream->name
+		'streamName' => $stream->name,
+		'layout' => 'columns'
 	), Q::ifset($params, "clipParams", array()));
 
 	$episodeParams = compact('transcript');

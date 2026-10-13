@@ -8,6 +8,7 @@
 }
 .Media_episode_tool .Media_clip_tool {
     height: 100%;
+    padding: 10px;
 }
 html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
     display: none;
@@ -290,4 +291,365 @@ button[name=addClip] img, button.Media_newEpisode img {
 }
 .Media_tab.Q_current {
     background: rgba(100, 100, 100, 0.5);
+}
+
+/* 'columns' layout — player and clips list as permanent side-by-side
+   columns (see Media/clip/columns in clip.js). No tabs: both are always
+   visible, so there's nothing to toggle here the way .Media_tabs does. */
+.Media_clip_tool .Media_clip_columns {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    /* flex: 1; */
+    min-height: 0;
+}
+.Media_clip_tool .Media_clip_columns_video {
+    position: relative; /* anchors .Media_clip_credits, same as .Media_clip_player elsewhere */
+    flex: 1 1 65%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.Media_clip_tool .Media_clip_columns_video .Media_player {
+    width: 100%;
+    /* flex: 1; */
+}
+.Media_clip_tool .Media_clip_columns_clips {
+    flex: 1 1 35%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.Media_clip_tool .Media_clip_columns_clips .Media_clips_list_segments {
+    height: auto;
+    overflow-y: auto;
+    /* flex: 1; */
+}
+.Media_clip_tool .Media_clip_columns_clips .Q_button[name="addClip"] {
+    flex-basis: 40px;
+}
+
+/* CSS-only degrade for narrow viewports — stack instead of side-by-side.
+   No JS needed: both columns are already always rendered and visible,
+   this just changes their arrangement. */
+@media (max-width: 760px) {
+    .Media_clip_tool .Media_clip_columns {
+        flex-direction: column;
+    }
+    .Media_clip_tool .Media_clip_columns_video,
+    .Media_clip_tool .Media_clip_columns_clips {
+        flex: none;
+        width: 100%;
+    }
+}
+
+.Media_clip_tool[data-layout="columns"] .Media_clip_columns_video .Media_player {
+    max-width: none;
+    max-height: none;
+}
+
+
+
+
+
+/* ==========================================================================
+   Media/clip — clips list redesign for both layouts
+   .Media_clip_tool[data-layout="columns"]  — side panel next to the player
+   .Media_clip_tool[data-layout="tabs"]     — "Clips" tab inside the player
+   Theme-agnostic: currentColor mixes + app CSS variables only.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. SHARED — tokens + segment rows (both layouts)
+   ========================================================================== */
+
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) {
+	--clip-accent: var(--button-bg-color, #888);
+	--clip-accent-fg: var(--tabs-color, #000);
+	--clip-line: color-mix(in srgb, currentColor 12%, transparent);
+	--clip-hover: color-mix(in srgb, currentColor 7%, transparent);
+	--clip-tint: color-mix(in srgb, currentColor 3%, transparent);
+	--clip-muted: color-mix(in srgb, currentColor 60%, transparent);
+	--clip-radius: 10px;
+}
+
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments {
+	counter-reset: clipSeg;
+	height: auto;
+	padding: 8px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	box-sizing: border-box;
+}
+
+/* "View Full Episode" — header row with ▶ icon */
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clips_list_segments_viewFull {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	margin-bottom: 6px;
+	border-bottom: 1px solid var(--clip-line);
+	border-radius: 8px 8px 0 0;
+	font-weight: 600;
+	font-size: 14px;
+	letter-spacing: .02em;
+	transition: background-color .15s;
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clips_list_segments_viewFull::before {
+	content: "\25B6\FE0E"; /* ▶ text presentation */
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 26px;
+	height: 26px;
+	padding-left: 2px;
+	box-sizing: border-box;
+	border-radius: 50%;
+	background: var(--clip-accent);
+	color: var(--clip-accent-fg);
+	font-size: 10px;
+	line-height: 1;
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clips_list_segments_viewFull:hover {
+	background: var(--clip-hover);
+}
+
+/* Segment row (specificity beats .Q_column_slot .Streams_preview_tool tile sizing) */
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool {
+	counter-increment: clipSeg;
+	position: relative;
+	flex: none;
+	width: auto;
+	height: auto;
+	margin: 0;
+	border-radius: 8px;
+	transition: background-color .15s, box-shadow .15s;
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool .Streams_preview_container {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 8px 10px;
+	min-height: 40px;
+	box-sizing: border-box;
+}
+/* numbered badge */
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool .Streams_preview_container::before {
+	content: counter(clipSeg);
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 6px;
+	font-size: 12px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	background: var(--clip-hover);
+	color: var(--clip-muted);
+	transition: background-color .15s, color .15s;
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool .Streams_preview_contents {
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool .Streams_preview_title {
+	margin: 0;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.35;
+	padding-top: 4px; /* optically centre line 1 against the 26px badge */
+	white-space: normal;
+	overflow-wrap: anywhere;
+	font-variant-numeric: tabular-nums;
+	/* long titles: wrap, clamp to 2 lines */
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
+}
+
+/* hover / focus / current */
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool:is(:hover, :focus-within) {
+	background: var(--clip-hover);
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool:is(:hover, .Q_selected, .Q_current) .Streams_preview_container::before {
+	background: var(--clip-accent);
+	color: var(--clip-accent-fg);
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool:is(.Q_selected, .Q_current) {
+	background: var(--clip-hover);
+	color: inherit;
+	border-color: transparent;
+	outline: none;
+	box-shadow: inset 3px 0 0 var(--clip-accent);
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Media_clips_list_segments .Media_clip_preview_tool:is(.Q_selected, .Q_current) .Streams_preview_title {
+	color: inherit;
+	font-weight: 600;
+}
+
+/* "Make a New Clip" — keeps the app's button skin, only layout + "+" */
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Q_button[name=addClip] {
+	flex: none;
+	align-self: stretch;
+	margin: 8px;
+	padding: 10px 14px;
+	border-radius: 8px;
+	font-weight: 600;
+}
+.Media_clip_tool:is([data-layout="columns"], [data-layout="tabs"]) .Q_button[name=addClip]::before {
+	content: "+";
+	margin-right: 6px;
+	font-weight: 700;
+}
+
+
+/* ==========================================================================
+   2. COLUMNS layout — clips as a card panel beside the player
+   ========================================================================== */
+
+.Media_clip_tool[data-layout="columns"] .Media_clip_columns {
+	gap: 20px;
+	align-items: flex-start;
+}
+
+.Media_clip_tool[data-layout="columns"] .Media_clip_columns_clips {
+	position: sticky;
+	top: 0;
+	max-height: 100%;
+	border: 1px solid var(--clip-line);
+	border-radius: var(--clip-radius);
+	background: var(--clip-tint);
+	overflow: hidden;
+}
+
+.Media_clip_tool[data-layout="columns"] .Media_clip_columns_clips .Media_clips_list_segments {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+@media (max-width: 800px) {
+	.Media_clip_tool[data-layout="columns"] .Media_clip_columns_clips {
+		position: static;
+		max-height: none;
+	}
+	.Media_clip_tool[data-layout="columns"] .Media_clip_columns_clips .Media_clips_list_segments {
+		max-height: 260px;
+	}
+}
+
+
+/* ==========================================================================
+   3. TABS layout — segmented tab switcher + clips panel inside the player
+   ========================================================================== */
+
+/* --- Tab switcher → segmented control --- */
+.Media_clip_tool[data-layout="tabs"] .Media_tabs {
+	display: flex;
+	justify-content: center;
+	width: fit-content;
+	gap: 4px;
+	margin: 10px auto;
+	padding: 4px;
+	border: 1px solid var(--clip-line);
+	border-radius: 999px;
+	background: var(--clip-tint);
+}
+.Media_clip_tool[data-layout="tabs"] .Media_tabs .Media_tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 32px;
+	line-height: 32px;
+	padding: 0 16px;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--clip-muted);
+	font-size: 13px;
+	font-weight: 600;
+	transition: background-color .15s, color .15s;
+}
+.Media_clip_tool[data-layout="tabs"] .Media_tabs .Media_tab:hover {
+	background: var(--clip-hover);
+	color: inherit;
+}
+.Media_clip_tool[data-layout="tabs"] .Media_tabs .Media_tab.Q_current {
+	background: var(--clip-accent);
+	color: var(--clip-accent-fg);
+}
+/* clips count → small badge */
+.Media_clip_tool[data-layout="tabs"] .Media_tabs .Media_clips_list_count {
+	display: inline-grid;
+	place-items: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	box-sizing: border-box;
+	border-radius: 999px;
+	background: var(--clip-hover);
+	font-size: 11px;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+}
+.Media_clip_tool[data-layout="tabs"] .Media_tabs .Media_clips_list_count:empty {
+	display: none;
+}
+.Media_clip_tool[data-layout="tabs"] .Media_tabs .Media_tab.Q_current .Media_clips_list_count {
+	background: color-mix(in srgb, var(--clip-accent-fg) 15%, transparent);
+}
+
+/* --- Clips panel (fills the player area when its tab is current) --- */
+.Media_clip_tool[data-layout="tabs"] .Media_clip_player_inner .Media_clips_list.Q_current {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	border: 1px solid var(--clip-line);
+	border-radius: var(--clip-radius);
+	background: var(--clip-tint);
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+/* segments as a vertical list — room for long clip titles */
+.Media_clip_tool[data-layout="tabs"] .Media_clips_list .Media_clips_list_segments {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px;
+}
+.Media_clip_tool[data-layout="tabs"] .Media_clips_list .Media_clips_list_segments .Media_clips_list_segments_viewFull {
+	margin-bottom: 4px;
+}
+/* full title visible in the roomier tabs panel */
+.Media_clip_tool[data-layout="tabs"] .Media_clips_list .Media_clips_list_segments .Media_clip_preview_tool .Streams_preview_title {
+	-webkit-line-clamp: unset;
+	line-clamp: unset;
+	display: block;
+}
+
+/* footer button: compact and centered rather than full-bleed */
+.Media_clip_tool[data-layout="tabs"] .Media_clips_list .Q_button[name=addClip] {
+	align-self: center;
+	min-width: 220px;
+	max-width: 320px; /* Media.css sets width:90% with #content specificity — cap it instead */
+	margin: 4px 10px 10px;
+}
+
+@media (max-width: 600px) {
+	.Media_clip_tool[data-layout="tabs"] .Media_clips_list .Q_button[name=addClip] {
+		align-self: stretch;
+		min-width: 0;
+		max-width: none;
+	}
 }
