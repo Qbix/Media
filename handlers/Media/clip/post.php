@@ -135,6 +135,14 @@ function Media_clip_saveSafecloudClip(
 		throw new Q_Exception("This video doesn't allow sharing clips");
 	}
 
+	// Same reasoning as the allowClips check above — Media/clip.js's
+	// showAddClip only hides the button for this config, it doesn't stop
+	// a direct POST, so it has to be re-checked here too.
+	$allowCreateForRole = Q_Config::get('Media', 'clip', 'allowCreateForRole', 'allUsers');
+	if ($allowCreateForRole === 'publisher' && $publisherId !== $relatedPublisherId) {
+		throw new Q_Exception("Only this video's creator can create a clip of it");
+	}
+
 	$clipStart = floatval(Q::ifset($video, 'clipStart', 0));
 	$clipEnd = floatval(Q::ifset($video, 'clipEnd', 0));
 	// A small epsilon tolerance for float rounding on the client — not an

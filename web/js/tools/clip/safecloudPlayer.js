@@ -64,6 +64,11 @@
             var tool = this;
             var state = tool.state;
             var stream = state.stream;
+            // Same config Media/clip.js's watchClip()/watching.earnPeriod
+            // already uses, just the Streams.Metrics batching interval
+            // instead — see Media.clip.watching.metricsPeriod's own config
+            // comment (plugin.json) for what this actually controls.
+            var metricsPeriod = Q.getObject("Media.clip.watching.metricsPeriod", Q.plugins) || 60;
 
             // Mirrors Media/clip/response/column.php's own withholding: the
             // Safecloud manifest/rootKey are never sent to script data at
@@ -113,6 +118,14 @@
                     capability: safecloudVideo.teaser
                         ? safecloudVideo.capability
                         : { rootKey: safecloudVideo.rootKey },
+                    // Was missing entirely — see Safecloud/video's own
+                    // metrics doc comment for why streams_metrics needs
+                    // this to ever get populated for Safecloud playback.
+                    metrics: {
+                        publisherId: state.publisherId,
+                        streamName: state.streamName,
+                        period: metricsPeriod
+                    },
                     jetUrl: Q.getObject("Media.clip.jetUrl", Q.plugins) || undefined,
                     at: teaserRange ? teaserRange[0] : 0,
                     stopAt: teaserRange ? teaserRange[1] : undefined,
@@ -133,7 +146,8 @@
                     image: stream.iconUrl(400),
                     metrics: {
                         publisherId: state.publisherId,
-                        streamName: state.streamName
+                        streamName: state.streamName,
+                        period: metricsPeriod
                     },
                     onPlaying: state.onPlaying,
                     onPlay: state.onPlay

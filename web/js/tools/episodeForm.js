@@ -249,14 +249,22 @@
 				// their own up-to-15-second range and share it with anyone —
 				// distinct from allowTeaser above (a single, fixed range the
 				// creator themselves picks at upload/edit time) — see
-				// Media/clip/preview.js's "Add clip" composer.
-				$allowClips = $(
-					"<label class='Media_episodeForm_label Media_episodeForm_allowClipsLabel'>" +
-						"<input type='checkbox' class='Media_episodeForm_allowClips'/>" +
-						"<span>" + (text.AllowClips || "Allow people to share a clip of this video (up to 15 seconds)") + "</span>" +
-					"</label>"
-				).appendTo($pricing).find(".Media_episodeForm_allowClips")
-					.prop("checked", !!state.allowClips);
+				// Media/clip/preview.js's "Add clip" composer. Hidden
+				// entirely when Media.clip.allowCreateForRole is
+				// "publisher" (Q_Config, exposed app-wide by
+				// Media_before_Q_responseExtras) — that policy means only
+				// the episode's own creator can ever make a clip of it, so
+				// this per-episode opt-in toggle would be moot either way.
+				var allowCreateForRole = Q.getObject("Media.clip.allowCreateForRole", Q.plugins) || "allUsers";
+				if (allowCreateForRole !== "publisher") {
+					$allowClips = $(
+						"<label class='Media_episodeForm_label Media_episodeForm_allowClipsLabel'>" +
+							"<input type='checkbox' class='Media_episodeForm_allowClips'/>" +
+							"<span>" + (text.AllowClips || "Allow people to share a clip of this video (up to 15 seconds)") + "</span>" +
+						"</label>"
+					).appendTo($pricing).find(".Media_episodeForm_allowClips")
+						.prop("checked", !!state.allowClips);
+				}
 			}
 
 			if (hasStream && hasMinute) {

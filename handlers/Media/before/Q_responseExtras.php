@@ -6,6 +6,7 @@ function Media_before_Q_responseExtras() {
 
 	Q_Response::setScriptData("Q.plugins.Assets.credits.amounts.watching", Q_Config::expect("Assets", "credits", "amounts", "watching"));
 	Q_Response::setScriptData("Q.plugins.Media.clip.watching.earnPeriod", Q_Config::expect("Media", "clip", "watching", "earnPeriod"));
+	Q_Response::setScriptData("Q.plugins.Media.clip.watching.metricsPeriod", Q_Config::get("Media", "clip", "watching", "metricsPeriod", 60));
 	Q_Response::setScriptData("Q.plugins.Media.isFeedsAdmin", Media::isFeedsAdmin());
 	Q_Response::setScriptData("Q.plugins.Media.rtmp.port", Q_Config::get("Media", "rtmp_server", "rtmp", "port", null));
 	Q_Response::setScriptData("Q.plugins.Media.admins", Q_Config::expect("Media", "admins"));
@@ -16,6 +17,8 @@ function Media_before_Q_responseExtras() {
 	Q_Response::setScriptData("Q.plugins.Media.episode.templateStyle", Q_Config::get("Media", "episode", "templateStyle", null));
 	Q_Response::setScriptData("Q.plugins.Media.episode.payment", Q_Config::get("Media", "episode", "payment", array()));
 	Q_Response::setScriptData("Q.plugins.Media.episode.paymentMechanism", Q_Config::get("Media", "episode", "paymentMechanism", array("perStream", "perMinute")));
+	Q_Response::setScriptData("Q.plugins.Media.clip.allowCreateForRole", Q_Config::get("Media", "clip", "allowCreateForRole", "allUsers"));
+	Q_Response::setScriptData("Q.plugins.Media.clip.clipToolLayout", Q_Config::get("Media", "clip", "clipToolLayout", "columns"));
 
 	// collect user id's with label Users/hosts
 	$hosts = Users_Contact::select()->where(array(

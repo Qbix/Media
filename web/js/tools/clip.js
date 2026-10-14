@@ -135,13 +135,21 @@
         credits: parseInt(Q.getObject("Assets.credits.amounts.watching", Q)) || 1,
         withQuestions: false,
         minChatHeight: 200,
-        // 'tabs' (default) | 'columns' — which Media/clip/<layout> template
-        // renders. Both share the same Media/clip/player and
-        // Media/clip/clipsListContent partials, so adding a third layout
-        // later means a third small template, not touching either of
-        // these or the activation code below, which looks up its
-        // containers by class name regardless of which layout rendered them.
-        layout: 'tabs'
+        // 'tabs' | 'columns' | 'playerOnly' — which Media/clip/<layout>
+        // template renders. All three share the same Media/clip/player
+        // partial ('playerOnly' is the only one that doesn't also use
+        // Media/clip/clipsListContent, since it has no clips list at all —
+        // see its own template comment), so adding a fourth layout means
+        // another small template, not touching any of these or the
+        // activation code below, which looks up its containers by class
+        // name regardless of which layout rendered them (and simply finds
+        // nothing, harmlessly, for whatever a given layout omits).
+        // Defaults to the app-wide config (Media.clip.clipToolLayout, set
+        // by Media_before_Q_responseExtras from Q_Config — "columns" on
+        // the platform, overridden to "tabs" in Fans's own local/app.json)
+        // rather than a fixed value, so most callers never need to pass
+        // this explicitly at all.
+        layout: Q.getObject("Media.clip.clipToolLayout", Q.plugins) || 'columns'
     }, {
         refresh: function () {
             var tool = this;
@@ -162,8 +170,16 @@
             // Media_clip_saveSafecloudClip's own server-side re-check) —
             // unlike the pre-existing plain-URL clip feature below, which
             // predates that setting and stays available unconditionally.
+            // Media.clip.allowCreateForRole (Q_Config, exposed app-wide by
+            // Media_before_Q_responseExtras) can additionally restrict clip
+            // creation to the episode's own publisher only — this is just
+            // the UI-hiding half; Media_clip_saveSafecloudClip re-checks
+            // the same config server-side, since hiding a button doesn't
+            // stop a direct POST.
+            var allowCreateForRole = Q.getObject("Media.clip.allowCreateForRole", Q.plugins) || "allUsers";
             var showAddClip = userId && tool.stream.fields.type !== "Media/clip" && !tool.isLive()
-                && (video.source !== "safecloud" || !!tool.stream.getAttribute("allowClips"));
+                && (video.source !== "safecloud" || !!tool.stream.getAttribute("allowClips"))
+                && (allowCreateForRole !== "publisher" || userId === tool.stream.fields.publisherId);
             var showSegmentClips = !tool.isLive();
             var fields = {
                 video: video,
@@ -478,7 +494,8 @@
                         clipEnd: audio.clipEnd,
                         metrics: {
                             publisherId: state.publisherId,
-                            streamName: state.streamName
+                            streamName: state.streamName,
+                            period: Q.getObject("Media.clip.watching.metricsPeriod", Q.plugins) || 60
                         },
                         onPlaying: tool.watchClip.bind(tool),
                         onPlay: tool.joinClip.bind(tool),
@@ -1180,6 +1197,40 @@
         + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
         {
             partials: ['Media/clip/player', 'Media/clip/clipsListContent'],
+            text: ['Media/content']
+        }
+    );
+
+    // Just the player (plus the same hosts/participants/chat/questions
+    // chrome every layout has) — no clips list, no tabs, nothing to
+    // switch between. Deliberately doesn't include the
+    // Media/clip/clipsListContent partial at all: the "add clip" button
+    // lives inside that partial, so this layout has no way to create a
+    // shareable clip either — a direct, intended consequence of omitting
+    // the clips list entirely, not a separate thing to work around.
+    // The $segmentsContainers lookup in refresh() above and the
+    // Media_tab click handler both already no-op safely when their
+    // target elements don't exist (same reason 'columns' doesn't need
+    // its own tab-handling branch) — no JS changes needed for this
+    // layout beyond this template.
+    Q.Template.set('Media/clip/playerOnly',
+        '{{#if showHosts}}'
+        + '<div class="Media_clip_hosts">'
+        + '		<div class="Media_clip_hosts_participants"></div>'
+        + '		<button class="Media_clip_switch_visualization Q_button">{{text.switchVisualization}}</button>'
+        + '		<button class="Media_clip_join_main_room Q_button">{{text.joinLiveShow}}</button>'
+        + '</div>'
+        + '{{/if}}'
+        + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
+        + '{{> Media/clip/player}}'
+        + '</div></div>'
+        + '<div class="Media_clip_participants"></div>'
+        + '{{#if withQuestions}}'
+        + '		<div class="Media_clip_questions"></div>'
+        + '{{/if}}'
+        + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
+        {
+            partials: ['Media/clip/player'],
             text: ['Media/content']
         }
     );
