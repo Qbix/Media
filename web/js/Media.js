@@ -61,6 +61,10 @@
 			css: "{{Media}}/css/tools/clip.css",
 			text: ["Streams/content", "Media/content"]
 		},
+		"Media/clip/safecloudPlayer": {
+			js: "{{Media}}/js/tools/clip/safecloudPlayer.js",
+			text: ["Media/content"]
+		},
 		"Media/clip/preview": {
 			js: "{{Media}}/js/tools/clip/preview.js",
 			css: "{{Media}}/css/tools/episodePreview.css"

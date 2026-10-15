@@ -474,7 +474,14 @@
 				"mobile": false
 			},
 			"watching": {
-				"earnPeriod": 60 /* seconds */
+				"earnPeriod": 60, /* seconds */
+				"metricsPeriod": 60 /* seconds — how often Streams.Metrics
+				   batches up watched-ranges and POSTs them to Streams/metrics;
+				   see Media/clip/videoPlayer's (Safecloud/video, Q/video,
+				   Q/audio) metrics option. Anyone watching less than this
+				   many seconds produces zero streams_metrics rows at all —
+				   not a partial record, nothing — since the POST only
+				   happens on this timer, never on page unload/pause. */
 			},
 			"createCost": { /* charge credits for clip create */
 				"amount": 20,
@@ -485,7 +492,19 @@
 					"main": "Media/webrtc/main",
 					"waiting": "Media/webrtc/waiting"
 				}
-			}
+			},
+			/* "allUsers" (default): any logged-in viewer with access to an
+			   episode can create their own clip of it (and the "Allow
+			   people to share a clip" checkbox shows at upload/edit time).
+			   "publisher": only the episode's own creator can create clips
+			   from it — the checkbox is hidden entirely, and the server
+			   (Media_clip_saveSafecloudClip) rejects anyone else's attempt
+			   even via a direct POST, not just a hidden button. */
+			"allowCreateForRole": "allUsers",
+			/* "tabs" | "columns" — which Media/clip/<layout> template
+			   Media/clip.js renders by default (see its own "layout" state
+			   option doc comment). */
+			"clipToolLayout": "columns"
 		},
 		"episode": {
 			"templateStyle": "classic", /* can be "classic", "square", "tall" */

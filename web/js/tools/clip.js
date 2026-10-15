@@ -129,12 +129,27 @@
         facesDebounce: 30,
         facesUse: false,
         showDescription: true,
-        qVideoOptions: null,
+        qVideoOptions: { path: 'auto' },
         qAudioOptions: null,
         earnPeriod: parseInt(Q.getObject("Media.clip.watching.earnPeriod", Q)) || 60,
         credits: parseInt(Q.getObject("Assets.credits.amounts.watching", Q)) || 1,
         withQuestions: false,
-        minChatHeight: 200
+        minChatHeight: 200,
+        // 'tabs' | 'columns' | 'playerOnly' — which Media/clip/<layout>
+        // template renders. All three share the same Media/clip/player
+        // partial ('playerOnly' is the only one that doesn't also use
+        // Media/clip/clipsListContent, since it has no clips list at all —
+        // see its own template comment), so adding a fourth layout means
+        // another small template, not touching any of these or the
+        // activation code below, which looks up its containers by class
+        // name regardless of which layout rendered them (and simply finds
+        // nothing, harmlessly, for whatever a given layout omits).
+        // Defaults to the app-wide config (Media.clip.clipToolLayout, set
+        // by Media_before_Q_responseExtras from Q_Config — "columns" on
+        // the platform, overridden to "tabs" in Fans's own local/app.json)
+        // rather than a fixed value, so most callers never need to pass
+        // this explicitly at all.
+        layout: Q.getObject("Media.clip.clipToolLayout", Q.plugins) || 'columns'
     }, {
         refresh: function () {
             var tool = this;
@@ -155,8 +170,16 @@
             // Media_clip_saveSafecloudClip's own server-side re-check) —
             // unlike the pre-existing plain-URL clip feature below, which
             // predates that setting and stays available unconditionally.
+            // Media.clip.allowCreateForRole (Q_Config, exposed app-wide by
+            // Media_before_Q_responseExtras) can additionally restrict clip
+            // creation to the episode's own publisher only — this is just
+            // the UI-hiding half; Media_clip_saveSafecloudClip re-checks
+            // the same config server-side, since hiding a button doesn't
+            // stop a direct POST.
+            var allowCreateForRole = Q.getObject("Media.clip.allowCreateForRole", Q.plugins) || "allUsers";
             var showAddClip = userId && tool.stream.fields.type !== "Media/clip" && !tool.isLive()
-                && (video.source !== "safecloud" || !!tool.stream.getAttribute("allowClips"));
+                && (video.source !== "safecloud" || !!tool.stream.getAttribute("allowClips"))
+                && (allowCreateForRole !== "publisher" || userId === tool.stream.fields.publisherId);
             var showSegmentClips = !tool.isLive();
             var fields = {
                 video: video,
@@ -175,7 +198,9 @@
                 description: state.showDescription ? tool.stream.fields.content : null
             };
 
-            Q.Template.render('Media/clip', fields, function (err, html) {
+            var layout = state.layout || 'tabs';
+            $toolElement.attr("data-layout", layout);
+            Q.Template.render('Media/clip/' + layout, fields, function (err, html) {
                 tool.element.innerHTML = html;
                 var $hostsParticipants = $(".Media_clip_hosts_participants", $toolElement);
                 var $participants = $(".Media_clip_participants", $toolElement);
@@ -425,104 +450,32 @@
                     }, tool);
                 });
 
-                // One-time full-episode payment gate — Media/clip/response/
-                // column.php computes this server-side (using
-                // Assets_Credits::getPaymentsInfo(), same check Calendars
-                // uses for paid events) and, if payment is required, never
-                // sends the safecloud manifest/rootKey down in the first
-                // place, so there's no player to instantiate here at all;
-                // show an unlock button instead — UNLESS the episode allows
-                // a teaser and this viewer isn't logged in (see below),
-                // in which case column.php sends a time-limited capability
-                // instead and a player DOES get instantiated.
+                // Deciding which player (if any) renders this episode's
+                // video, and gating that on payment/teaser status, is all
+                // Media/clip/safecloudPlayer's responsibility now — see its own
+                // class comment for why this one piece was pulled out
+                // (Safecloud payment/DRM playback is used by exactly one
+                // app today, unlike chat/participants/segment-clips below).
+                // It's instantiated directly onto ".Media_video" — the same
+                // element Q/video/Safecloud/video used to be attached to
+                // directly — so nothing about where their own markup lives
+                // has changed, just who decides which of them to create.
                 var payment = Q.getObject("Media.clip.payment", Q.plugins) || {};
-                var safecloudVideo = Q.getObject("Media.clip.video", Q.plugins);
-                if (payment.required && !(safecloudVideo && safecloudVideo.teaser)) {
-                    // rootCid itself isn't secret (only the manifest/rootKey
-                    // that's withheld above are) — it's always present in the
-                    // stream's own "video" attribute regardless of payment
-                    // status, so it's safe to read here to let the paywall
-                    // pre-flight-check content availability before charging.
-                    var videoRef = tool.stream.getAttribute("video") || {};
-                    tool.renderPaywall(payment, videoRef.rootCid);
-                    return pipeToolActivated.fill("media")();
-                }
-
-                var video = tool.stream.getAttribute("video") || {};
-                // The stream's own "video" attribute only ever holds a tiny
-                // {source, rootCid} reference for safecloud uploads — the
-                // full manifest/rootKey are too large for the attributes
-                // column's 1023-char limit (Base_Streams_Stream::
-                // beforeSet_attributes()), so Media/clip/response/column.php
-                // reads them back from disk (Media::safecloudVideoRead())
-                // and injects them as script data for this one page load.
-                if (video.source === "safecloud" && safecloudVideo && safecloudVideo.manifest) {
-                    // Safecloud-encrypted upload (see Media/videoUpload,
-                    // Media/dropVideo) — plays via the same Safecloud/video
-                    // tool already proven out on /safecloud/demo, not Q/video
-                    // (which has no Safecloud awareness at all). clipStart/
-                    // clipEnd/ads/floating are not supported for these yet —
-                    // known v1 limitation, not an oversight.
-                    //
-                    // Teaser viewers get a grant-based capability straight
-                    // from the server (see column.php) instead of the
-                    // rootKey — sw.js already accepts either shape.
-                    //
-                    // Both the fixed-range teaser and a shared clip carry
-                    // their own [from, to) range as capability.teaserRange
-                    // (see Q.Safecloud.Client.createShareLink's teaser mode
-                    // — "teaser" here just means "grant-based, time-bounded
-                    // capability," a clip is exactly that with an arbitrary
-                    // range instead of always [0, 15]). Used for two
-                    // things: starting playback AT the range (not always
-                    // from 0 — a clip's whole point is to open right where
-                    // its creator chose, e.g. 5s into a 20s clip, not force
-                    // the viewer to scrub past the start themselves), and
-                    // stopping it exactly at the range's end (state.stopAt,
-                    // below) rather than wherever the grant's own chunk-
-                    // rounded boundary happens to fall, which can run a
-                    // couple of seconds past the intended cutoff.
-                    var teaserRange = safecloudVideo.teaser
-                        ? Q.getObject("capability.teaserRange", safecloudVideo) : null;
-                    $(".Media_video", tool.element).tool("Safecloud/video", Q.extend({
-                        manifest: safecloudVideo.manifest,
-                        capability: safecloudVideo.teaser
-                            ? safecloudVideo.capability
-                            : { rootKey: safecloudVideo.rootKey },
-                        jetUrl: Q.getObject("Media.clip.jetUrl", Q.plugins) || undefined,
-                        at: teaserRange ? teaserRange[0] : 0,
-                        stopAt: teaserRange ? teaserRange[1] : undefined,
-                        onPlay: tool.joinClip.bind(tool),
-                        onPlaying: tool.watchClip.bind(tool),
-                        onTeaserEnd: safecloudVideo.teaser
-                            ? tool.handleTeaserEnd.bind(tool)
-                            : undefined
-                    }, state.qVideoOptions)).activate(function () {
-                        tool.videoTool = this;
+                $(".Media_video", tool.element).tool("Media/clip/safecloudPlayer", {
+                    stream: tool.stream,
+                    publisherId: state.publisherId,
+                    streamName: state.streamName,
+                    qVideoOptions: state.qVideoOptions,
+                    onPlay: tool.joinClip.bind(tool),
+                    onPlaying: tool.watchClip.bind(tool),
+                    onPlayerReady: function (playerTool) {
+                        tool.videoTool = playerTool;
                         pipeToolActivated.fill("media")();
-                    });
-                } else if (video.url) {
-                    $(".Media_video", tool.element).tool("Q/video", Q.extend({
-                        url: video.url,
-                        clipStart: video.clipStart,
-                        clipEnd: video.clipEnd,
-                        ads: video.ads || [],
-                        image: tool.stream.iconUrl(400),
-                        metrics: {
-                            publisherId: state.publisherId,
-                            streamName: state.streamName
-                        },
-                        onPlaying: tool.watchClip.bind(tool),
-                        onPlay: tool.joinClip.bind(tool)
-                    }, state.qVideoOptions)).activate(function () {
-						tool.videoTool = this;
-                        pipeToolActivated.fill("media")();
-
-                        // set Q/video tool height
-                        // var $toolElement = $(this.element);
-                        // $toolElement.css("height", Math.min($toolElement.parent().width()/1.78, 300));
-                    });
-                }
+                    },
+                    onNeedsRefresh: function () {
+                        tool.refresh();
+                    }
+                }).activate();
 
                 // Persistent, non-blocking "buy full access" upsell — shown
                 // alongside a per-minute-billed video that's actively
@@ -541,7 +494,8 @@
                         clipEnd: audio.clipEnd,
                         metrics: {
                             publisherId: state.publisherId,
-                            streamName: state.streamName
+                            streamName: state.streamName,
+                            period: Q.getObject("Media.clip.watching.metricsPeriod", Q.plugins) || 60
                         },
                         onPlaying: tool.watchClip.bind(tool),
                         onPlay: tool.joinClip.bind(tool),
@@ -929,113 +883,11 @@
             return this.state.streamName.includes("Media/live/");
         },
         /**
-         * Shown instead of a player when the episode requires a one-time
-         * payment the current user hasn't made yet (see the payment.required
-         * check in refresh()). Clicking "Unlock" goes through Q.Assets.pay(),
-         * which already handles spending existing credits vs. falling
-         * through to a credit-purchase dialog if the user is short — no
-         * custom "not enough credits" UI needs to be built here.
-         * @method renderPaywall
-         * @param {Object} payment {upsell: {amount, currency}, ...} — the
-         *   full script-data object from Media/clip/response/column.php;
-         *   only reachable here when perStream is the sole mechanism and
-         *   not yet paid, so payment.upsell.amount === the full price.
-         * @param {String} [rootCid] Safecloud rootCid, if this episode's
-         *   video is Safecloud-sourced — used to confirm at least one Drop
-         *   can actually serve the content BEFORE charging, so a user isn't
-         *   charged only to hit "No Drops available" once they try to play.
-         */
-        renderPaywall: function (payment, rootCid) {
-            var tool = this;
-            var state = tool.state;
-            var amount = payment.upsell.amount;
-            var currency = payment.upsell.currency;
-            var label = (tool.text.UnlockEpisode || "Unlock this episode for {{amount}} {{currency}}")
-                .interpolate({amount: amount, currency: currency});
-            var $wrap = $(".Media_video", tool.element)
-                .empty()
-                .addClass("Media_clip_paywall");
-            var $button = $("<button class='Q_button Media_clip_unlock'>")
-                .text(label)
-                .appendTo($wrap);
-            var $status = $("<div class='Media_clip_paywall_status'>").appendTo($wrap);
-
-            function pay() {
-                Q.Assets.pay({
-                    amount: amount,
-                    currency: currency,
-                    reason: "EpisodeAccess",
-                    toStream: {
-                        publisherId: state.publisherId,
-                        streamName: state.streamName
-                    },
-                    onSuccess: function () {
-                        // The server withholds the safecloud manifest/rootKey
-                        // (Q.plugins.Media.clip.video) from script data
-                        // entirely while payment.required is true (see
-                        // Media/clip/response/column.php) — a pure
-                        // client-side refresh() has no way to get the
-                        // now-unlockable key, so at least one round-trip is
-                        // unavoidable. But it doesn't need a full page
-                        // reload: re-request just this route's "column"
-                        // slot, apply its scriptData/scriptLines the same
-                        // way Q.loadUrl would (Q.loadUrl is itself the only
-                        // normal caller of processScriptDataAndLines — nothing
-                        // stops calling it directly), then let refresh()
-                        // re-render in place from the now-updated globals.
-                        var url = Q.url('clip/' + state.publisherId + '/'
-                            + state.streamName.split('/').pop());
-                        Q.req(url, ['column'], function (err, response) {
-                            var msg = Q.firstErrorMessage(err);
-                            if (msg) {
-                                $status.text(msg);
-                                $button.prop("disabled", false);
-                                return;
-                            }
-                            Q.Response.processScriptDataAndLines(response);
-                            tool.refresh();
-                        }, { method: 'get', quiet: true });
-                    },
-                    onFailure: function () {
-                        $button.prop("disabled", false);
-                    }
-                });
-            }
-
-            $button.on(Q.Pointer.fastclick, function () {
-                $button.prop("disabled", true);
-
-                if (!rootCid || !Q.Safecloud || !Q.Safecloud.Jets) {
-                    return pay(); // nothing to pre-flight-check, e.g. non-Safecloud video
-                }
-
-                $status.text(tool.text.CheckingAvailability || "Checking availability…");
-                Q.Safecloud.Jets.checkAvailable(rootCid, function (err, result) {
-                    if (err) {
-                        // The check itself failing (timeout, Jet unreachable)
-                        // isn't proof the content is unavailable — fail open
-                        // rather than permanently blocking a legitimate
-                        // purchase over a flaky side-channel query.
-                        console.warn("Media/clip: checkAvailable failed, proceeding anyway:", err);
-                        $status.text("");
-                        return pay();
-                    }
-                    if (!result || !result.available) {
-                        $status.text(tool.text.ContentUnavailable
-                            || "This video isn't available to play right now — please try again later.");
-                        $button.prop("disabled", false);
-                        return;
-                    }
-                    $status.text("");
-                    pay();
-                });
-            });
-        },
-        /**
          * Persistent, non-blocking "buy full access" button shown alongside
          * a video that's already playing (per-minute billing, if any, is
          * active independently of this) — clicking it works exactly like
-         * renderPaywall's button, just not gating anything.
+         * Media/clip/safecloudPlayer's renderPaywall button, just not
+         * gating anything.
          *
          * The displayed/charged amount is kept up to date client-side as
          * per-minute charges come in (see watchClip's "charged" handling)
@@ -1188,92 +1040,6 @@
                 }
             });
         },
-        /**
-         * Fired by the Safecloud/video tool when playback reaches the end
-         * of a time-limited capability's granted range — either a
-         * paywalled episode's teaser (see Media/clip/response/column.php's
-         * allowTeaser branch, handed to anonymous AND logged-in-unpaid
-         * viewers alike), or anyone's playback of a shared clip (see
-         * its own, unconditionally-bounded branch there — a clip stays
-         * bounded to its own range for EVERY viewer, logged in or not,
-         * regardless of the underlying episode's price). The video is
-         * already paused by the time this fires.
-         * @method handleTeaserEnd
-         */
-        handleTeaserEnd: function () {
-            var tool = this;
-            // Two independent detectors (the hls.js 403 handler and
-            // _prefetchLoop's own videoElement 'waiting' listener, see
-            // Client/stream.js and Client/_prefetchLoop.js) can both call
-            // this for the same stream — belt-and-suspenders against
-            // different flavors of grant-boundary failure. Guard here so
-            // a viewer only ever sees the sign-in dialog/redirect once.
-            if (tool._teaserEndHandled) { return; }
-            tool._teaserEndHandled = true;
-
-            if (tool.stream.fields.type === "Media/clip") {
-                // A shared clip's own range ended — since a clip is ALWAYS
-                // bounded (see column.php's comment on why it can't just
-                // hand out full access to a viewer who happens to already
-                // have it), "sign in to buy" doesn't even apply here: an
-                // already-logged-in viewer (confirmed live: including the
-                // clip's own creator, sampling their own free video) was
-                // getting that exact nonsensical prompt before this fix,
-                // since this method used to unconditionally call
-                // Q.Users.login() regardless of who was watching. The
-                // episode's own page already has every access case
-                // (sign-in, payment, free, already-paid) fully handled —
-                // simplest and most correct is to send the viewer there
-                // instead of duplicating any of that logic here — but only
-                // if they choose to (an automatic redirect the instant
-                // playback stops is jarring and easy to misread as the
-                // page itself failing, especially since it happens with no
-                // warning right as the video is still visibly paused on
-                // screen), not the instant the range ends.
-                var video = tool.stream.getAttribute("video") || {};
-                if (video.episodePublisherId && video.episodeStreamName) {
-                    var episodeUrl = Q.url('clip/' + video.episodePublisherId + '/'
-                        + video.episodeStreamName.split('/').pop());
-                    Q.confirm(
-                        tool.text.ClipEndedExplanation
-                            || "That's the end of this clip.",
-                        function (result) {
-                            if (result) { location.href = episodeUrl; }
-                        },
-                        {
-                            ok: tool.text.WatchFullVideo || "Watch full video",
-                            cancel: tool.text.Close || "Close"
-                        }
-                    );
-                    return;
-                }
-            }
-
-            // An episode's own teaser ran out. A still-anonymous viewer
-            // needs to sign in first (the teaser was their "watch a bit
-            // before signing in" carrot); a viewer who's already logged in
-            // but hasn't paid just needs the paywall, in place, right now —
-            // no reload, and no pointless sign-in prompt for someone
-            // already signed in.
-            if (Q.Users.loggedInUserId()) {
-                var payment = Q.getObject("Media.clip.payment", Q.plugins) || {};
-                var video = tool.stream.getAttribute("video") || {};
-                tool.renderPaywall(payment, video.rootCid);
-                return;
-            }
-
-            Q.Users.login({
-                explanation: tool.text.TeaserSignInExplanation
-                    || "Sign in to buy and keep watching this video.",
-                onSuccess: function () {
-                    // Reload so column.php re-evaluates this viewer as
-                    // logged-in — showing the normal paywall (or the full
-                    // video, if it's free/already paid) instead of the
-                    // teaser capability just exhausted.
-                    location.reload();
-                }
-            });
-        },
         joinClip: function () {
             let tool = this;
 
@@ -1327,7 +1093,42 @@
         }
     });
 
-    Q.Template.set('Media/clip',
+    // Shared by both layout templates below — the credits counter plus
+    // whichever of .Media_video/.Media_audio is relevant. Kept as its own
+    // partial (rather than duplicated per layout) specifically so a third
+    // layout later reuses it instead of re-describing this markup again.
+    Q.Template.set('Media/clip/player',
+        '<div class="Media_clip_credits">{{text.CreditsEarned}}: <span>0</span></div>'
+        + '{{#if hasVideo}}'
+        + '		<div class="{{videoCurrent}} Media_video Media_player"></div>'
+        + '{{/if}}'
+        + '{{#if audio.url}}'
+        + '		<div class="{{audioCurrent}} Media_audio Media_player"></div>'
+        + '{{/if}}',
+        {
+            text: ['Media/content']
+        }
+    );
+
+    // Shared by both layout templates below — just the clips-list's own
+    // inner content. Each layout wraps this in whatever container suits
+    // its own arrangement (a Q_current-toggled tab panel for 'tabs', an
+    // always-visible column for 'columns') rather than this partial
+    // owning any layout-specific wrapper itself.
+    Q.Template.set('Media/clip/clipsListContent',
+        '<div class="Media_clips_list_segments"></div>'
+        + '{{#if showAddClip}}'
+        + '<button class="Q_button" name="addClip">{{text.NewClip}}</button>'
+        + '{{/if}}',
+        {
+            text: ['Media/content']
+        }
+    );
+
+    // Default layout — functionally identical to the single template this
+    // replaced: player and clips-list share one tabbed panel, switched via
+    // the Media_tab click handler in refresh() above.
+    Q.Template.set('Media/clip/tabs',
         '{{#if showHosts}}'
         + '<div class="Media_clip_hosts">'
         + '		<div class="Media_clip_hosts_participants"></div>'
@@ -1336,18 +1137,9 @@
         + '</div>'
         + '{{/if}}'
         + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
-        + '		<div class="Media_clip_credits">{{text.CreditsEarned}}: <span>0</span></div>'
-        + '{{#if hasVideo}}'
-        + '		<div class="{{videoCurrent}} Media_video Media_player"></div>'
-        + '{{/if}}'
-        + '{{#if audio.url}}'
-        + '		<div class="{{audioCurrent}} Media_audio Media_player"></div>'
-        + '{{/if}}'
+        + '{{> Media/clip/player}}'
         + '<div class="Media_clips_list Media_player">'
-        + '<div class="Media_clips_list_segments"></div>'
-        + '{{#if showAddClip}}'
-        + '<button class="Q_button" name="addClip">{{text.NewClip}}</button>'
-        + '{{/if}}'
+        + '{{> Media/clip/clipsListContent}}'
         + '</div></div>'
         + '{{#if showSwitch}}'
         + '		<div class="Media_tabs">'
@@ -1369,6 +1161,76 @@
         + '{{/if}}'
         + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
         {
+            partials: ['Media/clip/player', 'Media/clip/clipsListContent'],
+            text: ['Media/content']
+        }
+    );
+
+    // Player and clips-list as permanent side-by-side columns — no tabs,
+    // nothing to switch, both always visible (see clip.css's
+    // .Media_clip_columns rules, including the CSS-only mobile degrade
+    // to a stacked layout). Deliberately does NOT reuse the ".Media_clips_list"
+    // class the tabs layout's panel-switching depends on (that class is
+    // display:none by default globally, toggled via Q_current) — this
+    // layout's clips column needs to just always be visible, so it gets
+    // its own class instead of needing to fight that rule.
+    Q.Template.set('Media/clip/columns',
+        '{{#if showHosts}}'
+        + '<div class="Media_clip_hosts">'
+        + '		<div class="Media_clip_hosts_participants"></div>'
+        + '		<button class="Media_clip_switch_visualization Q_button">{{text.switchVisualization}}</button>'
+        + '		<button class="Media_clip_join_main_room Q_button">{{text.joinLiveShow}}</button>'
+        + '</div>'
+        + '{{/if}}'
+        + '<div class="Media_clip_columns">'
+        + '		<div class="Media_clip_columns_video">'
+        + '{{> Media/clip/player}}'
+        + '		</div>'
+        + '		<div class="Media_clip_columns_clips">'
+        + '{{> Media/clip/clipsListContent}}'
+        + '		</div>'
+        + '</div>'
+        + '<div class="Media_clip_participants"></div>'
+        + '{{#if withQuestions}}'
+        + '		<div class="Media_clip_questions"></div>'
+        + '{{/if}}'
+        + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
+        {
+            partials: ['Media/clip/player', 'Media/clip/clipsListContent'],
+            text: ['Media/content']
+        }
+    );
+
+    // Just the player (plus the same hosts/participants/chat/questions
+    // chrome every layout has) — no clips list, no tabs, nothing to
+    // switch between. Deliberately doesn't include the
+    // Media/clip/clipsListContent partial at all: the "add clip" button
+    // lives inside that partial, so this layout has no way to create a
+    // shareable clip either — a direct, intended consequence of omitting
+    // the clips list entirely, not a separate thing to work around.
+    // The $segmentsContainers lookup in refresh() above and the
+    // Media_tab click handler both already no-op safely when their
+    // target elements don't exist (same reason 'columns' doesn't need
+    // its own tab-handling branch) — no JS changes needed for this
+    // layout beyond this template.
+    Q.Template.set('Media/clip/playerOnly',
+        '{{#if showHosts}}'
+        + '<div class="Media_clip_hosts">'
+        + '		<div class="Media_clip_hosts_participants"></div>'
+        + '		<button class="Media_clip_switch_visualization Q_button">{{text.switchVisualization}}</button>'
+        + '		<button class="Media_clip_join_main_room Q_button">{{text.joinLiveShow}}</button>'
+        + '</div>'
+        + '{{/if}}'
+        + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
+        + '{{> Media/clip/player}}'
+        + '</div></div>'
+        + '<div class="Media_clip_participants"></div>'
+        + '{{#if withQuestions}}'
+        + '		<div class="Media_clip_questions"></div>'
+        + '{{/if}}'
+        + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
+        {
+            partials: ['Media/clip/player'],
             text: ['Media/content']
         }
     );

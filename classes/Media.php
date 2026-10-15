@@ -709,6 +709,61 @@ abstract class Media
 		);
 	}
 
+	/**
+	 * Most-viewed Media/episode streams, ranked by a time-decayed score
+	 * computed from streams_metrics — one row per (userId, publisherId,
+	 * streamName) ever, with updatedTime refreshed on every watch tick (see
+	 * Streams.Metrics client-side and Streams_metrics_post()). Since that
+	 * table has no per-event log, this necessarily measures "how recently
+	 * each distinct logged-in viewer engaged," not raw play count — a
+	 * viewer who rewatched 10 times this week contributes the same as one
+	 * who watched once. Anonymous viewers are never recorded at all, by
+	 * streams_metrics' own write path (Streams_metrics_post() returns
+	 * immediately for a logged-out request).
+	 *
+	 * Score = SUM over distinct viewers of 0.5^(daysSinceLastWatch / halfLifeDays)
+	 * — a viewer active today contributes 1.0, one active $halfLifeDays ago
+	 * contributes 0.5, continuously decaying rather than a hard cutoff at
+	 * $windowDays (which $windowDays still bounds, just as a query-size
+	 * limit, not the actual ranking signal).
+	 * @method mostViewedEpisodes
+	 * @static
+	 * @param {integer} [$limit=10]
+	 * @param {integer} [$windowDays=30] Only consider viewer activity at least
+	 *   this recent — purely a bound on how much of the table to scan;
+	 *   the decay curve (not this cutoff) is what actually shapes the ranking.
+	 * @param {float} [$halfLifeDays=5] How many days until a viewer's
+	 *   contribution to a stream's score halves.
+	 * @return {array} Each: {publisherId, streamName, score}, ordered by
+	 *   score descending. Empty array if nothing qualifies.
+	 */
+	static function mostViewedEpisodes($limit = 10, $windowDays = 30, $halfLifeDays = 5)
+	{
+		$limit = (int)$limit;
+		$windowDays = (int)$windowDays;
+		$halfLifeDays = (float)$halfLifeDays;
+
+		$rows = Streams_Metrics::select(
+			"m.publisherId, m.streamName, "
+			. "SUM(POW(0.5, DATEDIFF(NOW(), m.updatedTime) / $halfLifeDays)) score",
+			'm'
+		)->join(Streams_Stream::table(true, 's'), array(
+			's.publisherId' => 'm.publisherId',
+			's.name' => 'm.streamName'
+		))->where(array(
+			'm.updatedTime' => new Db_Range(
+				new Db_Expression("NOW() - INTERVAL $windowDays DAY"), true, false, null
+			),
+			's.type' => 'Media/episode',
+			's.closedTime' => null
+		))->groupBy('m.publisherId, m.streamName')
+		  ->orderBy('score', false)
+		  ->limit($limit)
+		  ->fetchAll(PDO::FETCH_ASSOC);
+
+		return $rows ?: array();
+	}
+
 	static $columns = array();
 	static $options = array();
 }

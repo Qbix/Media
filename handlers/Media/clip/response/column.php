@@ -199,6 +199,13 @@ function Media_clip_response_column(&$params, &$result)
 		$transcript .= "</tbody>\n</table>\n";
 	}
 
+	// No explicit 'layout' here — Media/clip.js's own "layout" state default
+	// now reads Q.plugins.Media.clip.clipToolLayout (set app-wide by
+	// Media_before_Q_responseExtras from Q_Config's Media/clip/clipToolLayout
+	// — "columns" on the platform, "tabs" in Fans's own local/app.json), so
+	// every caller gets the right default for free instead of needing to
+	// pass it explicitly. A specific page can still force one way or the
+	// other via clipParams.layout.
 	$clipParams = array_merge(array(
 		'publisherId' => $stream->publisherId,
 		'streamName' => $stream->name
