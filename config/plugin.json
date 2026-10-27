@@ -2,7 +2,7 @@
 	"Q": {
 		"pluginInfo": {
 			"Media": {
-				"version": "0.4.4",
+				"version": "0.4.5",
 				"compatible": "0.1",
 				"requires": {
 					"Q": "1.0",
@@ -504,7 +504,31 @@
 			/* "tabs" | "columns" — which Media/clip/<layout> template
 			   Media/clip.js renders by default (see its own "layout" state
 			   option doc comment). */
-			"clipToolLayout": "columns"
+			"clipToolLayout": "columns",
+			/* "default" | "cards" | "largeThumbCard" — which layout
+			   Media/episode/preview.js renders by default (see its own
+			   "layout" state option doc comment). */
+			"episodePreviewLayout": "default",
+			/* Minimum width in px each "cards"/"largeThumbCard" preview is
+			   allowed to shrink to before another grid column is added, i.e.
+			   how many fit per row (see Media/episode/preview.js's own
+			   "cardMinWidth" state option doc comment). null leaves the
+			   grid's own CSS default (300px) in place. */
+			"episodePreviewCardMinWidth": null,
+			/* Whether clicking a Media/episode/preview card while another
+			   episode's detail column is already open updates that column's
+			   content in place (see Q/columns open()'s own "replace" option
+			   doc comment) instead of closing it and animating in a new one.
+			   false leaves the platform default (close + reopen) behavior. */
+			"episodePreviewReplaceColumn": false,
+			/* "searchAndColumnTitle" | "searchBarOnly" -- which layout
+			   Media/clip/search.js renders by default (see its own
+			   "layout" state option doc comment). */
+			"clipSearchLayout": "searchAndColumnTitle",
+			/* "cards" | "searchResultCard" -- which Media/episode/preview
+			   layout clipSearch.js's own results use (see its own comment
+			   right above where it reads this). */
+			"clipSearchResultLayout": "cards"
 		},
 		"episode": {
 			"templateStyle": "classic", /* can be "classic", "square", "tall" */

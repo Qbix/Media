@@ -126,9 +126,6 @@
     text-align: right;
     padding-left: 3px;
 }
-.Q_columns_stretchFirstColumn[data-column-count='1'] .Media_episodes_cards {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
 .Q_notMobile .Q_column_slot .Streams_preview_tool {
     flex: 0 0 290px;
 }
@@ -163,9 +160,33 @@
 }
 .Media_episodes_cards {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    /* min(..., 100%) caps the column's minimum at the container's own
+       width, so a configured --Media_episode_card_minWidth wider than the
+       viewport (e.g. Fans' 420px on a ~390px phone) can't force the grid
+       wider than the screen -- auto-fill would otherwise produce a single
+       column pinned at the full configured minimum and overflow. Multi-
+       column by default: this grid is used on plenty of normal full-width
+       columns (the main clips listing, a channel page's own related-clips
+       section, search results) where data-column-count having more than 1
+       open column (e.g. a channel's own list+detail pair) doesn't mean
+       THIS particular column is narrow -- only html.Media_clip (an episode's
+       own detail column open) reliably means that, see the override below. */
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--Media_episode_card_minWidth, 300px), 100%), 1fr));
     grid-auto-rows: auto;
     grid-gap: 1rem;
+}
+html.Media_clip .Media_episodes_cards {
+    grid-template-columns: repeat(1, 1fr);
+}
+/* searchResultCard is a wide YouTube-search-result-style row (thumbnail
+   left, text filling the rest), meant to stack one per row like a results
+   list -- not get squeezed into this grid's normal multi-column card
+   layout the way "cards"/"largeThumbCard" want. Detected via :has() rather
+   than a container-specific class, since the results container's own
+   markup (e.g. Fans' clips.php) is written once for whichever result
+   layout config selects, not aware of which one is actually active. */
+.Media_episodes_cards:has(> .Media_episode_preview_tool .Media_episode_searchResultCard) {
+    grid-template-columns: 1fr;
 }
 .Media_episodes_cards .Media_episode_preview_tool .Streams_preview_episode_card_bg {
     position: absolute;
@@ -317,3 +338,247 @@
         color: #fff;
     }
 }
+
+/* <largeThumbCard layout> — a YouTube-home-style card: thumbnail with a
+   duration badge, title, author avatar + name, upload date. On an episode's
+   own page, it instead renders as a horizontal thumb-left/text-right row —
+   see the html.Media_clip rules near the end of this block. */
+.Media_episode_preview_tool .Media_episode_largeThumbCard_thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    background-color: #e3e3e3;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow: hidden;
+}
+.Media_episode_largeThumbCard_duration {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+/* Hover/selected background behind the whole card is deliberately NOT
+   defined here — it's a Fans-specific stylistic choice, not part of the
+   reusable largeThumbCard layout mechanism (unlike this file's other rules,
+   which any app opting into the layout gets), so it lives in Fans' own
+   web/css/Fans.css instead, scoped the same way via :has(). */
+.Media_episode_largeThumbCard_meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 2px 0;
+}
+.Media_episode_largeThumbCard_avatar {
+    flex: 0 0 auto;
+}
+.Media_episode_largeThumbCard_avatar .Users_avatar_icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0;
+}
+.Media_episode_largeThumbCard_text {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+}
+.Media_episode_largeThumbCard_title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-shadow: none;
+}
+.Media_episode_largeThumbCard_sub {
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: normal;
+    color: #606060;
+}
+.Media_episode_largeThumbCard_sub .Media_episode_largeThumbCard_author .Users_avatar_name {
+    color: inherit;
+}
+.Media_episode_largeThumbCard_sub .Media_episode_largeThumbCard_date:before {
+    content: "\2022";
+    margin: 0 4px;
+}
+.Media_episode_largeThumbCard_sub .Media_episode_largeThumbCard_date:empty:before {
+    content: "";
+}
+@media (prefers-color-scheme: dark) {
+    .Media_episode_preview_tool .Media_episode_largeThumbCard_thumb {
+        background-color: #3f3f3f;
+    }
+    .Media_episode_largeThumbCard_sub {
+        color: #aaa;
+    }
+}
+/* Whenever an episode's own detail column is open, the listing grid next to
+   it is always the narrowed sidebar column, so always render the
+   YouTube-up-next row style: thumbnail on the left, title/author/date on
+   the right, no avatar — regardless of the column's actual rendered width
+   (this was previously keyed off an @container width query, but that only
+   fires once the column gets narrow enough, which isn't guaranteed on wide
+   screens — e.g. a 1920px window still leaves the sidebar column wider than
+   any reasonable breakpoint). "html.Media_clip" is kept in sync in
+   episode/preview.js: Q's router adds it on a real full page load to
+   /clip/..., but Q/columns opens the clip column as an in-place AJAX push
+   that never goes through the router, so preview.js also toggles it
+   directly off Media/clip tool activation/removal — see its own comment. */
+html.Media_clip .Media_episode_largeThumbCard {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+html.Media_clip .Media_episode_largeThumbCard_thumb {
+    width: 60%;
+    flex: 0 0 60%;
+    border-radius: 8px;
+}
+html.Media_clip .Media_episode_largeThumbCard_meta {
+    padding: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+html.Media_clip .Media_episode_largeThumbCard_avatar {
+    display: none;
+}
+html.Media_clip .Media_episode_largeThumbCard_title {
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+}
+html.Media_clip .Media_episode_largeThumbCard_sub {
+    white-space: normal;
+}
+/* </largeThumbCard layout> */
+
+html.Media_clip .Media_episode_searchResultCard_thumb {
+    width: 60%;
+    flex: 0 0 60%;
+    border-radius: 8px;
+}
+html.Media_clip .Media_episode_searchResultCard_title {
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+}
+
+/* <searchResultCard layout> — a YouTube-search-result-style row: thumbnail
+   with a duration badge on the left, title/views/date/author/one-line
+   description on the right. */
+.Media_episode_searchResultCard {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+.Media_episode_searchResultCard_thumb {
+    position: relative;
+    flex: 0 0 240px;
+    width: 240px;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    background-color: #e3e3e3;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    overflow: hidden;
+}
+.Media_episode_searchResultCard_duration {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+.Media_episode_searchResultCard_meta {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: left;
+}
+.Media_episode_searchResultCard_title {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-shadow: none;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.Media_episode_searchResultCard_stats {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #606060;
+}
+.Media_episode_searchResultCard_stats .Media_episode_searchResultCard_date:before {
+    content: "\2022";
+    margin: 0 4px;
+}
+.Media_episode_searchResultCard_stats .Media_episode_searchResultCard_date:empty:before {
+    content: "";
+}
+.Media_episode_searchResultCard_authorRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+.Media_episode_searchResultCard_avatar .Users_avatar_icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0;
+}
+.Media_episode_searchResultCard_author .Users_avatar_name {
+    font-size: 13px;
+    color: #606060;
+}
+.Media_episode_searchResultCard_description {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #606060;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+@media (prefers-color-scheme: dark) {
+    .Media_episode_searchResultCard_thumb {
+        background-color: #3f3f3f;
+    }
+    .Media_episode_searchResultCard_stats,
+    .Media_episode_searchResultCard_author .Users_avatar_name,
+    .Media_episode_searchResultCard_description {
+        color: #aaa;
+    }
+}
+@media (max-width: 680px) {
+    .Media_episode_searchResultCard_thumb {
+        flex-basis: 140px;
+        width: 140px;
+    }
+    .Media_episode_searchResultCard_title {
+        font-size: 14px;
+    }
+}
+/* </searchResultCard layout> */

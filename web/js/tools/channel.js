@@ -217,7 +217,14 @@ Q.Tool.define("Media/channel", function(options) {
 					editable: true,
 					sortable: false,
 					specificOptions: {
-						layout: "cards",
+						// Was hardcoded to "cards", silently overriding
+						// Media/episode/preview's own config-driven default
+						// (Media.clip.episodePreviewLayout) -- read the same
+						// config here instead, same fix as Fans' clips.php,
+						// so apps that set it to "largeThumbCard" (e.g. Fans)
+						// get that here too, while anyone not setting it
+						// keeps today's "cards" behavior unchanged.
+						layout: Q.getObject("Media.clip.episodePreviewLayout", Q.plugins) || "cards",
 						templateStyle: "square"
 					},
 					creatable: {

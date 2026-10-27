@@ -188,7 +188,15 @@
 				title: '&#8987 ...',
 				url: url,
 				trigger: options.trigger,
-				className: 'Streams_chat_streams_video'
+				className: 'Streams_chat_streams_video',
+				// See Q/columns open()'s own "replace" option doc comment:
+				// updates an already-open clip column's content in place
+				// instead of closing it and animating in a new one, so
+				// switching between clips has no close/reopen flash. Opt-in
+				// per caller (see Media/episode/preview.js's own use of
+				// this, driven by the Media.clip.episodePreviewReplaceColumn
+				// config) -- off by default here.
+				replace: !!options.replace
 			});
 
 			/*var textFillTools = $('.Q_textfill_tool');

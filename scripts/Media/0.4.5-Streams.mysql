@@ -1,0 +1,9 @@
+-- Media/clips/response/search.php (clip title search) needs a FULLTEXT
+-- index to run MATCH() ... AGAINST() queries. Title-only: streams_stream's
+-- shared "content" column is VARBINARY (binary-safe storage used by many
+-- stream types across the whole platform, not just Media/clip), and MySQL's
+-- FULLTEXT indexes flatly refuse binary columns -- "title" is already a
+-- plain VARCHAR, so it's the only column of the pair that can be indexed
+-- without changing that shared column's type platform-wide.
+ALTER TABLE {{prefix}}stream
+ADD FULLTEXT INDEX titleFulltext (title);
