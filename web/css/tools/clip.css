@@ -245,6 +245,35 @@ html.Media_clip #content .Media_clip_tool .Media_clip_unlock.Q_button {
     padding: 5px 0;
 }
 
+.Media_clip_unavailable_player {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 20px;
+}
+.Media_clip_unavailable_message {
+    color: #ccc;
+    font-size: 15px;
+    text-align: center;
+    max-width: 80%;
+    margin: 0;
+}
+.Media_clip_unavailable_title {
+    margin: 16px 0 8px;
+}
+.Media_clip_unavailable_byline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.Media_clip_unavailable_content {
+    color: #888;
+    font-size: 14px;
+}
+
 .Media_clips_settings_btn,
 .Media_clips_call_btn {
     position: absolute;

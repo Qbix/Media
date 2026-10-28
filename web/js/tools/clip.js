@@ -31,6 +31,24 @@
             throw new Q.Error("Media/clip tool: missing options.streamName");
         }
 
+        // Offline (no Drops currently serving this episode) -- see
+        // Media_clip_response_column's own "isOffline" handling, which sets
+        // this instead of letting the normal Streams.get.force(...) fetch
+        // below run (it would just fail silently for any non-owner here,
+        // the exact same way it already does for the unrelated "Private"
+        // video case: Streams_Stream::exportArray() returns {} once
+        // testReadLevel('see') fails, see that function's own closedTime
+        // short-circuit, so Media/clip.js would never even learn the
+        // episode's title to show a message around). PHP hands over the
+        // bare minimum (title/description) it already has unrestricted
+        // access to, since the client has no other way to get it.
+        var unavailable = Q.getObject("Media.clip.unavailable", Q.plugins);
+        if (unavailable
+        && unavailable.publisherId === state.publisherId
+        && unavailable.streamName === state.streamName) {
+            return tool.renderUnavailable(unavailable);
+        }
+
         $toolElement.attr("data-visualization", "clip");
 
         var pipe = new Q.pipe(['stream', 'webrtc'], function () {
@@ -151,6 +169,67 @@
         // this explicitly at all.
         layout: Q.getObject("Media.clip.clipToolLayout", Q.plugins) || 'columns'
     }, {
+        /**
+         * Renders the episode page's title/description/author with a
+         * warning in place of the player, for a viewer who currently can't
+         * read this stream because it's offline (closedTime set, not the
+         * publisher) -- see Media_clip_response_column's own "isOffline"
+         * branch, which is the only thing that calls this (by setting
+         * Q.plugins.Media.clip.unavailable before this tool activates).
+         * Polls for the episode coming back online instead of a genuine
+         * realtime subscription: Q.Streams.Stream.observe() (what actually
+         * joins a stream's realtime room) only ever runs after a successful
+         * fetch, which by definition never happens here, so there's no
+         * live connection to receive a push event on even if one fired.
+         * @method renderUnavailable
+         * @param {Object} info {publisherId, streamName, title, content}
+         */
+        renderUnavailable: function (info) {
+            var tool = this;
+            var $toolElement = $(tool.element);
+            $toolElement.addClass('Media_clip_unavailable_tool');
+            Q.Template.render('Media/clip/unavailable', {
+                title: info.title,
+                content: info.content,
+                message: tool.text.ContentUnavailable
+            }, function (err, html) {
+                if (err) {
+                    return;
+                }
+                tool.element.innerHTML = html;
+                $('.Media_clip_unavailable_avatar', tool.element).tool('Users/avatar', {
+                    userId: info.publisherId,
+                    icon: 40,
+                    contents: false
+                }).activate();
+                $('.Media_clip_unavailable_author', tool.element).tool('Users/avatar', {
+                    userId: info.publisherId,
+                    icon: false,
+                    "short": true
+                }).activate();
+            });
+
+            var pollMs = Q.getObject("Media.clip.unavailablePollMs", Q.plugins) || 20000;
+            var pollTimeout = setTimeout(function _pollAvailability() {
+                Streams.get.force(info.publisherId, info.streamName, function (err) {
+                    if (err) {
+                        pollTimeout = setTimeout(_pollAvailability, pollMs);
+                        return;
+                    }
+                    // Fetch succeeded -- testReadLevel('see') now passes,
+                    // meaning closedTime cleared (a Drop reconnected).
+                    // Simplest correct way to pick that back up is to let
+                    // the whole page load normally, same as if the viewer
+                    // had just navigated here fresh (same reload pattern
+                    // used elsewhere, e.g. Streams/tools/basic.js).
+                    Q.handle(window.location);
+                });
+            }, pollMs);
+
+            tool.Q.beforeRemove.set(function () {
+                clearTimeout(pollTimeout);
+            }, tool);
+        },
         refresh: function () {
             var tool = this;
             var state = this.state;
@@ -1231,6 +1310,29 @@
         + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
         {
             partials: ['Media/clip/player'],
+            text: ['Media/content']
+        }
+    );
+
+    // Rendered instead of the normal layout entirely (see
+    // tool.renderUnavailable above) -- deliberately NOT one of the
+    // templates above: those all assume a fully-fetched, access-granted
+    // stream (chat, hosts, participants, clips list), none of which a
+    // viewer in this state can have.
+    Q.Template.set('Media/clip/unavailable',
+        '<div class="Media_clip_unavailable">'
+        + '		<div class="Media_clip_unavailable_player">'
+        + '				<p class="Media_clip_unavailable_message">{{message}}</p>'
+        + '		</div>'
+        + '		<h2 class="Media_clip_unavailable_title">{{title}}</h2>'
+        + '		<div class="Media_clip_unavailable_byline">'
+        + '				<span class="Media_clip_unavailable_avatar"></span>'
+        + '				<span class="Media_clip_unavailable_author"></span>'
+        + '		</div>'
+        + '{{#if content}}'
+        + '		<p class="Media_clip_unavailable_content">{{content}}</p>'
+        + '{{/if}}',
+        {
             text: ['Media/content']
         }
     );

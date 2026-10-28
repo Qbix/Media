@@ -12,6 +12,15 @@ function Media_clips_response_search($params = array()) {
 
     // 2. Safely escape your search term to prevent syntax injections
     $searchTerm = $db->quote($queryString);
+
+    // Closed (offline) episodes should still be findable by their own
+    // publisher -- e.g. so they can locate and manage a video that went
+    // offline -- but stay excluded for everyone else, matching the /clips
+    // listings' own closedTime behavior (see Streams_Stream::testReadLevel,
+    // which already grants the publisher full access to their own closed
+    // streams via publishedByFetcher).
+    $user = Users::loggedInUser();
+    $loggedInUserId = $user ? $user->id : null;
     // Title only -- streams_stream's shared "content" column is VARBINARY
     // (binary-safe storage used by many stream types across the whole
     // platform, not just Media/clip), and MySQL's FULLTEXT indexes don't
@@ -26,6 +35,13 @@ function Media_clips_response_search($params = array()) {
     // the stream -- i.e. a distinct-viewer count. Read by Media/clip/search.js
     // and threaded into Media/episode/preview's "viewsCount" option for the
     // searchResultCard layout (see that option's own doc comment).
+    // Closed episodes are visible in results only to their own publisher
+    // (see the comment above) -- everyone else only ever matches the
+    // closedTime IS NULL side of this.
+    $visibilityExpr = $loggedInUserId
+        ? "(closedTime IS NULL OR publisherId = " . $db->quote($loggedInUserId) . ")"
+        : "closedTime IS NULL";
+
     $streamTable = Streams_Stream::table();
     $metricsTable = Streams_Metrics::table();
     $streams = Streams_Stream::select(
@@ -44,6 +60,7 @@ function Media_clips_response_search($params = array()) {
             // of the search query.
             'type' => 'Media/episode'
         ))
+        ->where(new Db_Expression($visibilityExpr))
         ->orderBy(new Db_Expression('score'), false)
         ->limit(100) //TODO: refactor into pagination/load more
         ->fetchDbRows();

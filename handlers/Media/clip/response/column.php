@@ -17,7 +17,33 @@ function Media_clip_response_column(&$params, &$result)
 	// silently rendering a blank/broken page around empty stream fields.
 	$loggedInUser = Users::loggedInUser(false, false);
 	$isPublisher = $loggedInUser && $loggedInUser->id === $stream->publisherId;
-	if (!$isPublisher && !$stream->testReadLevel('content')) {
+
+	// Offline (no Drops currently serving this episode's video — see the
+	// Safecloud availability sweep in Q.Safecloud.Jets) is a DIFFERENT
+	// reason testReadLevel can fail than genuinely "Private": closedTime
+	// alone blocks it (Streams_Stream::testReadLevel's own closedTime
+	// short-circuit, which Private never touches), and unlike Private it's
+	// not a deliberate, permanent choice by the publisher — any viewer
+	// should still see the normal episode page (title, description, etc.),
+	// just with a warning in place of the player instead of the stronger
+	// "this doesn't exist for you" treatment Private gets. Distinguish the
+	// two by asking testReadLevel again with closedTime temporarily (not
+	// persisted) cleared: if that alone would restore access, this is the
+	// "offline" case, not genuinely Private. Use 'see' (not a stricter
+	// level like 'content') since that's the exact level
+	// Streams_Stream::exportArray() itself gates on (Stream.php ~2311) —
+	// the same check that empties the data Media/clip.js's own
+	// Streams.get.force(...) fetch receives, which is the real thing
+	// being predicted here.
+	$isOffline = false;
+	if (!empty($stream->closedTime) && !$isPublisher) {
+		$actualClosedTime = $stream->closedTime;
+		$stream->closedTime = null;
+		$isOffline = $stream->testReadLevel('see');
+		$stream->closedTime = $actualClosedTime;
+	}
+
+	if (!$isPublisher && !$isOffline && !$stream->testReadLevel('see')) {
 		Q_Response::setScriptData('Q.plugins.Media.clip.private', true);
 		$text = Q_Text::get('Media/content');
 		$message = Q::ifset($text, 'clip', 'PrivateVideo', 'This video is private.');
@@ -52,6 +78,22 @@ function Media_clip_response_column(&$params, &$result)
 
 	Q_Response::setSlot('title', $title);
 	Q_Response::addStylesheet("{{Media}}/css/columns/episode.css");
+
+	if ($isOffline) {
+		// Media/clip.js's own Streams.get.force(...) fetch will fail for
+		// this viewer exactly like it does for the "Private" case (same
+		// testReadLevel/exportArray mechanism — see that case's own
+		// comment above), so it has no other way to get even basic
+		// metadata for the page it still needs to render (title,
+		// description, author) -- hand it over directly instead, using
+		// title/description PHP already computed above unrestricted.
+		Q_Response::setScriptData('Q.plugins.Media.clip.unavailable', array(
+			'publisherId' => $stream->publisherId,
+			'streamName' => $stream->name,
+			'title' => $title,
+			'content' => $description
+		));
+	}
 
 	// Payment gate. Media::episodePaymentStatus() reads prices straight off
 	// this episode's own "payment" attribute (set at upload time via
@@ -126,7 +168,16 @@ function Media_clip_response_column(&$params, &$result)
 		// point of sharing a bounded clip at all. The actual fix for that
 		// original bug belongs client-side, in Media/clip.js's
 		// handleTeaserEnd — see its own updated comment.)
-		if (isset($video['clipStart']) && isset($video['clipEnd'])) {
+		// No Drops available means nothing could actually be decrypted
+		// from the manifest/rootKey anyway, but withhold it regardless —
+		// same "withhold the key, don't just hide the player" principle
+		// the payment gate above uses, and simpler than threading $isOffline
+		// through all three branches below individually.
+		if ($isOffline) {
+			// Q.plugins.Media.clip.video stays at the explicit null default
+			// set above; Media/clip.js shows the warning in place of a
+			// player and polls to pick back up once this clears.
+		} else if (isset($video['clipStart']) && isset($video['clipEnd'])) {
 			$safecloudVideo = Media::safecloudVideoRead(Q::ifset($video, 'rootCid', null));
 			$clipCapability = Media::safecloudClipCapabilityRead($stream->publisherId, $stream->name);
 			if ($safecloudVideo && $clipCapability) {
