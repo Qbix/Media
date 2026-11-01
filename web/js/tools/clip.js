@@ -396,12 +396,22 @@
                 }
 
                 $participants[0] && $participants[0].forEachTool("Users/avatar", _setHostAvatar);
-                $participants.tool("Streams/participants", {
-                    publisherId: state.publisherId,
-                    streamName: state.streamName,
-                    ordering: tool.hostsUsers,
-                    showBlanks: true
-                }).activate();
+                // 'playerOnly' keeps the .Media_clip_participants div (it's
+                // still the shared insertBefore() anchor the Edit-video
+                // link/description/categories block below relies on finding
+                // in every layout) but skips activating a Streams/participants
+                // tool into it -- this is literally the one-line effect of
+                // "remove Streams/participants from this layout, show a
+                // Share button instead" (see the playerOnly template's own
+                // comment for the Share button half of that).
+                if (layout !== 'playerOnly') {
+                    $participants.tool("Streams/participants", {
+                        publisherId: state.publisherId,
+                        streamName: state.streamName,
+                        ordering: tool.hostsUsers,
+                        showBlanks: true
+                    }).activate();
+                }
 
                 // make default visualization for regular user "clip" but for hosts user "hosts"
                 $switchVisualizationBtn.on(Q.Pointer.fastclick, function () {
@@ -420,6 +430,13 @@
                    if(state.callsTool) {
                        state.callsTool.initMainRoom();
                    }
+                });
+
+                // Only present in the 'playerOnly' layout's template (see its
+                // own comment) -- no-ops safely for every other layout, same
+                // as the other optional-element handlers in this function.
+                $(".Media_clip_share_btn", $toolElement).on(Q.Pointer.fastclick, function () {
+                    Q.Streams.invite(state.publisherId, state.streamName, { dontAutoAccept: false });
                 });
 
                 // set valid height for chat tool and make it scrollable
@@ -1280,18 +1297,31 @@
         }
     );
 
-    // Just the player (plus the same hosts/participants/chat/questions
-    // chrome every layout has) — no clips list, no tabs, nothing to
-    // switch between. Deliberately doesn't include the
-    // Media/clip/clipsListContent partial at all: the "add clip" button
-    // lives inside that partial, so this layout has no way to create a
-    // shareable clip either — a direct, intended consequence of omitting
-    // the clips list entirely, not a separate thing to work around.
+    // Just the player (plus the same hosts/chat/questions chrome every
+    // layout has) — no clips list, no tabs, nothing to switch between.
+    // Deliberately doesn't include the Media/clip/clipsListContent
+    // partial at all: the "add clip" button lives inside that partial,
+    // so this layout has no way to create a shareable clip either — a
+    // direct, intended consequence of omitting the clips list entirely,
+    // not a separate thing to work around.
+    // Unlike 'tabs'/'columns', this layout never activates a
+    // Streams/participants tool (see the `layout !== 'playerOnly'` guard
+    // in refresh() above) -- a Share button takes its place instead,
+    // since a single-player page with no sidebar has no other visible
+    // way to invite someone to the video. The Media_clip_participants
+    // div below is STILL needed even though nothing mounts into it here:
+    // it's also the shared insertBefore() anchor that refresh()'s
+    // creator-only "Edit video" link, the description, and the category
+    // links all position themselves against in every layout -- removing
+    // it silently breaks those three elsewhere in the function instead
+    // of just disabling participants, which is the bug this comment is
+    // here to warn against reintroducing.
     // The $segmentsContainers lookup in refresh() above and the
     // Media_tab click handler both already no-op safely when their
     // target elements don't exist (same reason 'columns' doesn't need
-    // its own tab-handling branch) — no JS changes needed for this
-    // layout beyond this template.
+    // its own tab-handling branch) — no other JS changes needed for this
+    // layout beyond this template plus the one new click handler for
+    // .Media_clip_share_btn (see refresh()).
     Q.Template.set('Media/clip/playerOnly',
         '{{#if showHosts}}'
         + '<div class="Media_clip_hosts">'
@@ -1303,6 +1333,18 @@
         + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
         + '{{> Media/clip/player}}'
         + '</div></div>'
+        + '<div class="Media_clip_playerOnly_actions">'
+        + '		<button class="Media_clip_share_btn Q_button" type="button">'
+        + '			<svg viewBox="0 0 24 24" width="18" height="18" fill="none"'
+        + '				stroke="currentColor" stroke-width="2" stroke-linecap="round"'
+        + '				stroke-linejoin="round">'
+        + '				<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>'
+        + '				<polyline points="16 6 12 2 8 6"/>'
+        + '				<line x1="12" y1="2" x2="12" y2="15"/>'
+        + '			</svg>'
+        + '			<span>{{text.Share}}</span>'
+        + '		</button>'
+        + '</div>'
         + '<div class="Media_clip_participants"></div>'
         + '{{#if withQuestions}}'
         + '		<div class="Media_clip_questions"></div>'

@@ -82,6 +82,19 @@ html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
     width: 100%;
     flex: 1;
 }
+.Media_clip_tool .Media_clip_playerOnly_actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 0;
+}
+.Media_clip_tool .Media_clip_share_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.Media_clip_tool .Media_clip_share_btn svg {
+    flex: none;
+}
 .Media_clip_tool.Media_clip_live .Streams_chat_call,
 .Media_clip_tool.Media_clip_live .Media_clip_player,
 .Media_clip_tool.Media_clip_live .Media_tabs {
