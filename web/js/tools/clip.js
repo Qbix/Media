@@ -12,6 +12,63 @@
         hungUp: '<svg version="1.1" x="0px" y="0px" width="90.182373" height="62.977245" viewBox="-0.067 -0.378 90.182373 62.977245" enable-background="new -0.067 -0.378 101 101" xml:space="preserve" id="svg66" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <defs id="defs58"> </defs> <path fill="#FFFFFF" d="M 40.67337,-0.345341 C -5.9408979,0.549606 -0.37124761,23.629725 0.69580429,27.016099 1.8415328,32.774245 6.252342,35.655777 10.727075,34.024876 l 8.516746,-2.66681 c 4.589471,-1.673518 7.500506,-7.916837 6.499018,-13.947073 l -0.190135,-1.140812 c 15.486185,-4.382944 28.839905,-3.256885 39.261281,-0.357323 l -0.08523,0.486812 c -0.996571,6.030236 1.911187,12.275194 6.503935,13.950351 l 8.513468,3.547005 c 3.850238,1.404706 7.648025,-1.299803 9.365798,-5.622101 0.02295,0.01967 0.03442,0.03442 0.03442,0.03442 0,0 0.23603,-0.581879 0.473699,-1.57845 0.01967,-0.07704 0.03442,-0.16391 0.05409,-0.239308 0.03606,-0.183579 0.07704,-0.372075 0.116376,-0.576962 0.02459,-0.114737 0.05081,-0.224556 0.07376,-0.342571 l -0.0098,-0.0066 C 91.100177,18.219067 89.816765,-1.282904 40.67337,-0.345341 Z" style="fill:#d40000;stroke-width:1.6391" id="path62" /> <path fill="#FFFFFF" d="m 58.354305,43.518523 -9.001918,3.555201 V 26.230971 c 0,-0.396661 -0.321263,-0.719563 -0.717924,-0.719563 H 41.41752 c -0.399939,0 -0.721202,0.321263 -0.721202,0.719563 V 47.070446 L 31.69276,43.516884 c -0.299955,-0.121293 -0.647443,-0.02131 -0.842496,0.234391 -0.09671,0.131128 -0.142601,0.283564 -0.142601,0.440917 0,0.152436 0.04917,0.30815 0.149158,0.440917 l 13.596306,17.680935 c 0.136045,0.180301 0.349128,0.285203 0.573684,0.285203 0.224556,0 0.437639,-0.104902 0.572045,-0.285203 L 59.196801,44.633109 c 0.198331,-0.265534 0.198331,-0.617939 0.0016,-0.876917 -0.195052,-0.260616 -0.542541,-0.357323 -0.844135,-0.237669 z" style="fill:#d40000;stroke-width:1.6391" id="path64" /></svg>'
     };
     /**
+     * Wraps a description element's content in a 2-line-clamp/expand
+     * toggle, for the 'playerOnly' layout's about card (ported from
+     * /var/www/Unaligned/web/js/tools/Media/clip.js's own
+     * setupExpandableText() -- same class names/technique: a collapsed/
+     * expanded class pair toggling -webkit-line-clamp on the text, not
+     * an animated height transition).
+     * @method _setupExpandableDescription
+     * @private
+     * @param {jQuery} $el
+     */
+    function _setupExpandableDescription($el) {
+        var fullHtml = $el.html();
+        var $wrapper = $('<div class="Media_episode_desc_wrapper Media_episode_desc_collapsed">');
+        var $text = $('<div class="Media_episode_desc_text">').html(fullHtml);
+        var $toggle = $('<span class="Media_episode_desc_toggle">').text('...more');
+        $wrapper.append($text, $toggle);
+        $el.empty().append($wrapper);
+
+        $toggle.on(Q.Pointer.fastclick, function () {
+            var collapsed = $wrapper.hasClass('Media_episode_desc_collapsed');
+            $wrapper.toggleClass('Media_episode_desc_collapsed', !collapsed)
+                .toggleClass('Media_episode_desc_expanded', collapsed);
+            $toggle.text(collapsed ? 'show less' : '...more');
+        });
+
+        updateToggleVisibility();
+        $(window).on('resize', updateToggleVisibility);
+
+        function updateToggleVisibility() {
+            var isOverflowing = $text[0].scrollHeight > $text[0].clientHeight + 1;
+            $toggle.css('display', isOverflowing ? 'inline' : 'none');
+        }
+    }
+
+    /**
+     * Format a count as an abbreviated string ("696K", "2.3M"), for the
+     * 'playerOnly' layout's "<N> views" line. Matches Media/episode/
+     * preview.js's own private _formatCount() exactly -- that function
+     * isn't exported for reuse elsewhere, so this is a copy, not a
+     * shared call.
+     * @method _formatViewsCount
+     * @private
+     * @param {Number} count
+     * @return {String}
+     */
+    function _formatViewsCount(count) {
+        count = Math.max(0, Math.round(count || 0));
+        if (count < 1000) {
+            return String(count);
+        }
+        if (count < 1000000) {
+            return (Math.round(count / 100) / 10) + 'K';
+        }
+        return (Math.round(count / 100000) / 10) + 'M';
+    }
+
+    /**
      * Interface for rendering clip
      * @class Media clip
      * @constructor
@@ -411,6 +468,152 @@
                         ordering: tool.hostsUsers,
                         showBlanks: true
                     }).activate();
+                } else {
+                    // Twitch-style byline under the player -- the uploader's
+                    // own avatar+name (linking to their channel), their
+                    // follower count, and (when the app has opted into the
+                    // follow feature) a Follow button, all in place of the
+                    // participants list. Built directly off Q.Streams.Avatar.get
+                    // rather than activating a Users/avatar tool -- a plain
+                    // avatar+name tool has no room to grow a follower count
+                    // or a Follow button into, where this is just more markup
+                    // appended alongside once the avatar data is in hand.
+                    var $metaAuthor = $(".Media_clip_meta_author", $toolElement);
+                    if ($metaAuthor.length && !$metaAuthor.data('Media_clip_author_added')) {
+                        $metaAuthor.data('Media_clip_author_added', true);
+                        var authorUserId = tool.stream.fields.publisherId;
+
+                        Q.Streams.Avatar.get(authorUserId, function (err, avatar) {
+                            if (err || !avatar) {
+                                return;
+                            }
+                            var name = avatar.displayName();
+                            var iconUrl = avatar.iconUrl(40);
+
+                            // The channel stream, not the episode -- Follow/
+                            // followers/the link all belong to the uploader's
+                            // channel. "Media/channel/main" is the one
+                            // canonical channel per user (see Media/dropVideo's
+                            // own _Media_dropVideo_ensureRelation(), which
+                            // relates every episode to exactly this stream).
+                            // Retained (not .get.force()'d) so the Follow
+                            // button's own subscribe()/unsubscribe()/leave()
+                            // calls keep updating a stream object this tool
+                            // instance keeps a live reference to, not one
+                            // that gets evicted from cache mid-session.
+                            Q.Streams.retainWith(tool).get(authorUserId, 'Media/channel/main', function (err) {
+                                var channelStream = Q.Streams.isStream(this) ? this : null;
+
+                                // A real <a> when we have somewhere to send
+                                // people (clicking the avatar/name opens the
+                                // channel); a plain <span> with the same
+                                // classes otherwise, so the layout doesn't
+                                // depend on the channel stream existing.
+                                var $authorLink = channelStream
+                                    ? $('<a class="Media_clip_author_link">').attr('href', channelStream.url())
+                                    : $('<span class="Media_clip_author_link">');
+                                $authorLink.appendTo($metaAuthor);
+                                $('<img class="Media_clip_author_icon">').attr('src', iconUrl).appendTo($authorLink);
+                                var $authorInfo = $('<div class="Media_clip_author_info">').appendTo($authorLink);
+                                $('<span class="Media_clip_author_name">').text(name).appendTo($authorInfo);
+
+                                if (!channelStream) {
+                                    return;
+                                }
+
+                                var allowFollow = !!Q.getObject("Media.channel.allowFollow", Q.plugins);
+                                if (!allowFollow) {
+                                    return;
+                                }
+
+                                // "<N> followers" -- same endpoint and
+                                // pluralization Media/channel.js's own
+                                // followers count uses.
+                                var $followersCount = $('<span class="Media_clip_author_followersCount"></span>').appendTo($authorInfo);
+                                Q.req('Media/channel', ['followersCount'], function (err, response) {
+                                    var count = !err && response && response.slots
+                                        ? response.slots.followersCount : 0;
+                                    var text = tool.text.channels;
+                                    $followersCount.text(count + ' ' + (count === 1 ? text.Follower : text.Followers));
+                                }, {
+                                    method: 'get',
+                                    fields: {
+                                        publisherId: authorUserId,
+                                        streamName: 'Media/channel/main'
+                                    }
+                                });
+
+                                if (channelStream.testWriteLevel('close')) {
+                                    return; // never shown to the channel's own owner
+                                }
+
+                                // Same partial + wiring Media/channel.js's own
+                                // Follow button uses (see Media.js).
+                                Q.Template.render('Media/followButton', {
+                                    channelsText: tool.text.channels
+                                }, function (err, html) {
+                                    if (err) {
+                                        return;
+                                    }
+                                    var $follow = $(html).appendTo($metaAuthor);
+                                    Q.Media.wireFollowButton(tool, $follow, channelStream);
+                                });
+                            });
+                        });
+                    }
+
+                    // "<N> views · <uploaded> ago" at the top of the about
+                    // card, above the description/tags -- those land there
+                    // via this same template's own .Media_clip_about wrapper,
+                    // populated later from the chat tool's onRefresh below,
+                    // so prepending to the card itself (rather than
+                    // anchoring next to either of those) is what makes this
+                    // not depend on whether a video even has a description
+                    // or tags at all.
+                    var $about = $(".Media_clip_about", $toolElement);
+                    if ($about.length && !$about.data('Media_clip_viewsDate_added')) {
+                        $about.data('Media_clip_viewsDate_added', true);
+                        var $viewsDate = $(
+                            '<div class="Media_clip_viewsDate">' +
+                            '<span class="Media_clip_views"></span>' +
+                            '<span class="Media_clip_uploaded"></span>' +
+                            '</div>'
+                        ).prependTo($about);
+
+                        // There's no simple per-stream view counter column to
+                        // just read off the stream itself -- same situation,
+                        // same fix, as Media_clips_response_search's own
+                        // "viewsCount" field and Media::mostViewedEpisodes()'s
+                        // own ranking query: COUNT(DISTINCT userId) from
+                        // Streams_Metrics (see this endpoint's own doc
+                        // comment, plugins/Media/handlers/Media/clip/
+                        // response/viewsCount.php).
+                        Q.req('Media/clip', ['viewsCount'], function (err, response) {
+                            var count = !err && response && response.slots
+                                ? response.slots.viewsCount : 0;
+                            $('.Media_clip_views', $viewsDate).text(
+                                _formatViewsCount(count) + (count === 1 ? ' view' : ' views')
+                            );
+                        }, {
+                            method: 'get',
+                            fields: {
+                                publisherId: tool.stream.fields.publisherId,
+                                streamName: tool.stream.fields.name
+                            }
+                        });
+
+                        // Date.fromDateTime (not `new Date(...)` directly):
+                        // the stream's insertedTime is a MySQL DATETIME
+                        // string ("2026-10-28 20:55:00"), not ISO 8601 --
+                        // the same conversion Streams/chat.js itself uses
+                        // for message timestamps elsewhere in this codebase.
+                        var uploadedElement = Q.Tool.setUpElement('span', 'Q/timestamp', {
+                            time: Date.fromDateTime(tool.stream.fields.insertedTime).getTime() / 1000,
+                            format: '{date+week} {year+year}'
+                        }, 'Media_clip_uploaded');
+                        $('.Media_clip_uploaded', $viewsDate).replaceWith(uploadedElement);
+                        Q.activate(uploadedElement);
+                    }
                 }
 
                 // make default visualization for regular user "clip" but for hosts user "hosts"
@@ -458,14 +661,41 @@
                             // shown right above the description (inserted first,
                             // so the description's own insertBefore below ends up
                             // right after it, not before).
+                            //
+                            // The existence checks below (for this link, the
+                            // description, and the categories) all look under
+                            // tool.element, not $chatMessages: all three are
+                            // inserted via insertBefore(tool.$('.Media_clip_participants'))
+                            // -- as its SIBLINGS, landing outside chatTool's own
+                            // element entirely, never inside $chatMessages. Checking
+                            // $chatMessages for them can never find them, so this
+                            // handler re-running (e.g. Q/tabs' "retain" tab-caching
+                            // reconstructing this chat tool on DOM that survived its
+                            // own teardown -- these three are plain, non-tool
+                            // elements, so Q.Tool.remove() leaves them untouched)
+                            // always inserted a second copy alongside the first,
+                            // confirmed live as the cause of a duplicated
+                            // description/categories block after switching tabs
+                            // and back. tool.$(...) matches where they really are.
                             var editClassName = "Media_episode_edit";
                             if (tool.stream.fields.type === "Media/episode"
                             && tool.stream.testWriteLevel("edit")
-                            && !$("." + editClassName, $chatMessages).length) {
-                                $("<a class='" + editClassName + "'>")
+                            && !tool.$("." + editClassName).length) {
+                                var $editLink = $("<a class='" + editClassName + "'>")
                                     .attr("href", tool.stream.url() + "/edit")
                                     .text(Q.getObject(["clip", "EditVideo"], tool.text) || "Edit video")
                                     .insertBefore(tool.$(".Media_clip_participants"));
+                                // Twitch-style layout: Edit/Share read as a
+                                // matched pair of owner-action pills next to
+                                // each other, under the player, rather than
+                                // sitting above the description down in the
+                                // about card.
+                                if (layout === 'playerOnly') {
+                                    var $metaActions = tool.$('.Media_clip_meta_actions');
+                                    if ($metaActions.length) {
+                                        $editLink.addClass('Q_button').prependTo($metaActions);
+                                    }
+                                }
                             }
 
                             var description = tool.stream.fields.content;
@@ -477,10 +707,17 @@
                                 });
 
                                 var className = "Media_episode_description";
-                                if (!$("." + className, $chatMessages).length) {
+                                if (!tool.$("." + className).length) {
                                     var $description = $("<div class='" + className + "'>").html(description);
                                     $description.insertBefore(tool.$('.Media_clip_participants'));
-                                    if ($description[0].isOverflowed()) {
+                                    if (layout === 'playerOnly') {
+                                        // Twitch-style: a 2-line clamp with an
+                                        // expand/collapse toggle, not the
+                                        // shrink-to-fit Q/textfill treatment
+                                        // the other layouts use -- there's no
+                                        // fixed-height box to shrink into here.
+                                        _setupExpandableDescription($description);
+                                    } else if ($description[0].isOverflowed()) {
                                         var fontSize = parseInt($description.css('font-size'));
                                         $description.plugin('Q/textfill', {
                                             minFontPixels: fontSize * 3 / 4,
@@ -495,7 +732,7 @@
                             // under the description, independent of whether one exists.
                             var categories = tool.stream.getAttribute("categories") || [];
                             var categoriesClassName = "Media_episode_categories";
-                            if (categories.length && !$("." + categoriesClassName, $chatMessages).length) {
+                            if (categories.length && !tool.$("." + categoriesClassName).length) {
                                 var $categories = $("<div class='" + categoriesClassName + "'>");
                                 Q.each(categories, function (i, category) {
                                     // A real link, not a span — Q's own
@@ -1146,6 +1383,12 @@
             // join episode
             Streams.Stream.join(tool.state.publisherId, tool.state.streamName);
 
+            if (Q.getObject("Media.channel.allowFollow", Q.plugins)) {
+                // Media/channel.js's own Follow button is the explicit
+                // path to joining/subscribing to the channel now.
+                return;
+            }
+
             // join to all Media/channel streams this episode related to
             Streams.related(tool.state.publisherId, tool.state.streamName, "Media/episode", false, {
                 withParticipant: false,
@@ -1322,6 +1565,17 @@
     // its own tab-handling branch) — no other JS changes needed for this
     // layout beyond this template plus the one new click handler for
     // .Media_clip_share_btn (see refresh()).
+    // Twitch-style single-player page: avatar+name (left) / Edit+Share
+    // (right) directly under the player, then description/tags/chat in
+    // their own card below. .Media_clip_meta_author is populated and
+    // .Media_clip_about is used as the insertBefore() anchor for the
+    // creator-only Edit link / description / category tags the same way
+    // refresh()'s chatTool.state.onRefresh handler below already does
+    // for every layout (see the `layout === 'playerOnly'` branches
+    // there) — .Media_clip_participants is kept as that same anchor,
+    // same reason as the other two layouts, even though nothing mounts
+    // into it here (a Share button takes its place — see the
+    // `layout !== 'playerOnly'` guard in refresh() above).
     Q.Template.set('Media/clip/playerOnly',
         '{{#if showHosts}}'
         + '<div class="Media_clip_hosts">'
@@ -1333,19 +1587,24 @@
         + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
         + '{{> Media/clip/player}}'
         + '</div></div>'
-        + '<div class="Media_clip_playerOnly_actions">'
-        + '		<button class="Media_clip_share_btn Q_button" type="button">'
-        + '			<svg viewBox="0 0 24 24" width="18" height="18" fill="none"'
-        + '				stroke="currentColor" stroke-width="2" stroke-linecap="round"'
-        + '				stroke-linejoin="round">'
-        + '				<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>'
-        + '				<polyline points="16 6 12 2 8 6"/>'
-        + '				<line x1="12" y1="2" x2="12" y2="15"/>'
-        + '			</svg>'
-        + '			<span>{{text.Share}}</span>'
-        + '		</button>'
+        + '<div class="Media_clip_meta">'
+        + '		<div class="Media_clip_meta_author"></div>'
+        + '		<div class="Media_clip_meta_actions">'
+        + '			<button class="Media_clip_share_btn Q_button" type="button">'
+        + '				<svg viewBox="0 0 24 24" width="18" height="18" fill="none"'
+        + '					stroke="currentColor" stroke-width="2" stroke-linecap="round"'
+        + '					stroke-linejoin="round">'
+        + '					<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>'
+        + '					<polyline points="16 6 12 2 8 6"/>'
+        + '					<line x1="12" y1="2" x2="12" y2="15"/>'
+        + '				</svg>'
+        + '				<span>{{text.Share}}</span>'
+        + '			</button>'
+        + '		</div>'
         + '</div>'
-        + '<div class="Media_clip_participants"></div>'
+        + '<div class="Media_clip_about">'
+        + '		<div class="Media_clip_participants"></div>'
+        + '</div>'
         + '{{#if withQuestions}}'
         + '		<div class="Media_clip_questions"></div>'
         + '{{/if}}'

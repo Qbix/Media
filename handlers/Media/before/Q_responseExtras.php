@@ -24,6 +24,9 @@ function Media_before_Q_responseExtras() {
 	Q_Response::setScriptData("Q.plugins.Media.clip.episodePreviewReplaceColumn", Q_Config::get("Media", "clip", "episodePreviewReplaceColumn", false));
 	Q_Response::setScriptData("Q.plugins.Media.clip.clipSearchLayout", Q_Config::get("Media", "clip", "clipSearchLayout", "searchAndColumnTitle"));
 	Q_Response::setScriptData("Q.plugins.Media.clip.clipSearchResultLayout", Q_Config::get("Media", "clip", "clipSearchResultLayout", "cards"));
+	Q_Response::setScriptData("Q.plugins.Media.channel.allowFollow", Q_Config::get("Media", "channel", "allowFollow", false));
+	Q_Response::setScriptData("Q.plugins.Media.channel.showParticipants", Q_Config::get("Media", "channel", "showParticipants", true));
+	Q_Response::setScriptData("Q.plugins.Media.channel.previewLayout", Q_Config::get("Media", "channel", "previewLayout", "default"));
 
 	// collect user id's with label Users/hosts
 	$hosts = Users_Contact::select()->where(array(

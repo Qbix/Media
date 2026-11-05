@@ -10,6 +10,16 @@
     height: 100%;
     padding: 10px;
 }
+/* 'playerOnly' is a flex column (player, meta row, about card, chat)
+   whose content height varies with the player's own aspect ratio at
+   the page's current width -- pinning it to exactly the parent's
+   height like the other two layouts (which size their fixed-height
+   player+chat arrangement around that on purpose) squeezes/clips
+   whatever doesn't fit instead of letting the tool grow and the page
+   scroll normally. */
+.Media_episode_tool .Media_clip_tool[data-layout="playerOnly"] {
+    height: auto;
+}
 html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
     display: none;
 }
@@ -82,11 +92,9 @@ html body .Media_clip_tool[data-type="Media/clip"] button[name=addClip] {
     width: 100%;
     flex: 1;
 }
-.Media_clip_tool .Media_clip_playerOnly_actions {
-    display: flex;
-    justify-content: flex-end;
-    padding: 8px 0;
-}
+/* .Media_clip_meta_actions (the 'playerOnly' layout's own wrapper for
+   this button, alongside the Edit link) is styled in this file's own
+   "4. PLAYERONLY" section below. */
 .Media_clip_tool .Media_clip_share_btn {
     display: inline-flex;
     align-items: center;
@@ -694,4 +702,191 @@ button[name=addClip] img, button.Media_newEpisode img {
 		min-width: 0;
 		max-width: none;
 	}
+}
+
+/* ==========================================================================
+   4. PLAYERONLY layout — Twitch-style single-player page
+   .Media_clip_tool[data-layout="playerOnly"] — avatar+name below the
+   player (left), Edit/Share actions (right), then description/tags in
+   their own card. Theme-agnostic defaults (currentColor mixes + the
+   same --clip-* token convention section 1 above uses for tabs/columns,
+   scoped separately here since that section's own header specifically
+   covers the clips-list redesign, not this layout) -- an app with its
+   own color scheme overrides the tokens and/or the specific color
+   properties below, same as Fans.css does for its own dark theme.
+   ========================================================================== */
+.Media_clip_tool[data-layout="playerOnly"] {
+	--clip-accent: var(--button-bg-color, #888);
+	--clip-accent-fg: var(--tabs-color, #000);
+	--clip-hover: color-mix(in srgb, currentColor 7%, transparent);
+	--clip-tint: color-mix(in srgb, currentColor 3%, transparent);
+	--clip-muted: color-mix(in srgb, currentColor 60%, transparent);
+	--clip-radius: 10px;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_player {
+	border-radius: var(--clip-radius);
+	overflow: hidden;
+}
+/* Avatar+name (left) / Edit+Share (right), directly under the player. */
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 14px 4px;
+}
+/* No room for avatar+name and two action pills on one line at phone
+   widths -- wrap onto their own row instead of squeezing/overlapping. */
+.Q_mobile .Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta {
+	flex-wrap: wrap;
+}
+.Q_mobile .Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_actions {
+	flex-basis: 100%;
+	justify-content: flex-start;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_author {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+/* The avatar/name/followers link (or plain span, if there's nowhere to
+   link to -- see clip.js) and the Follow button (appended after it,
+   via the shared 'Media/followButton' partial -- see Media.js) are
+   both direct children of .Media_clip_meta_author above, so this one
+   flex row is what actually puts Follow "to the right of the author
+   name" -- neither element positions itself. */
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_author_link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+	color: inherit;
+	text-decoration: none;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_author_icon {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	flex: none;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_author_info {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_author_name {
+	font-size: 15px;
+	font-weight: 700;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_author_followersCount {
+	font-size: 12px;
+	color: var(--clip-muted);
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_author .Media_channel_follow {
+	flex: none;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_actions {
+	flex: 0 0 auto;
+	display: flex;
+	gap: 8px;
+}
+/* Edit/Share read as a matched pair of "owner action" pills -- same
+   size/shape, Edit (plain text, no icon) first since that's the order
+   they end up in relative to each other (see clip.js's refresh(),
+   which prepends Edit in front of the Share button already in the
+   template), which also reads naturally left-to-right as "manage, then
+   share". Specificity matches Media.css's own "html.Media_clip #content
+   .Q_button" (which both of these are, once Edit gets .Q_button added
+   in clip.js) plus two extra classes, so this overrides that default
+   green pill-button styling without needing !important. */
+html.Media_clip #content .Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_actions .Media_episode_edit,
+html.Media_clip #content .Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_actions .Media_clip_share_btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 36px;
+	padding: 0 16px;
+	margin: 0;
+	border-radius: 999px;
+	background: var(--clip-hover);
+	color: inherit;
+	font-size: 13.5px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background .15s;
+}
+html.Media_clip #content .Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_actions .Media_episode_edit:hover,
+html.Media_clip #content .Media_clip_tool[data-layout="playerOnly"] .Media_clip_meta_actions .Media_clip_share_btn:hover {
+	background: color-mix(in srgb, currentColor 14%, transparent);
+	text-decoration: none;
+}
+
+/* Description + tags card -- a flat surface, no border. */
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_about {
+	margin: 14px 4px;
+	padding: 16px;
+	background: var(--clip-tint);
+	border-radius: var(--clip-radius);
+}
+/* "<N> views · <uploaded> ago" -- always the first thing in the card
+   (clip.js prepends it), above the description/tags. */
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_viewsDate {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 10px;
+	color: var(--clip-muted);
+	font-size: 13px;
+	font-weight: 600;
+}
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_views::after {
+	content: "\00b7";
+	margin-left: 6px;
+}
+/* Nothing uploaded-date-wise to show until clip.js replaces this with
+   the activated Q/timestamp tool -- avoids a lone "·" separator sitting
+   there by itself for the brief moment before that happens. */
+.Media_clip_tool[data-layout="playerOnly"] .Media_clip_views:empty::after {
+	content: none;
+}
+/* The platform default above (.Q_mobile .Media_episode_description)
+   gives mobile a fixed 50-75px height + overflow:auto -- conflicts with
+   the clamp/expand treatment below (a scrollbar INSIDE a 2-line-clamped
+   box, and expanding never actually growing past 75px). The collapsed/
+   expanded classes on the inner .Media_episode_desc_text size this
+   correctly on their own, so the fixed height/scroll is turned off here
+   instead, scoped to this layout only -- the other two still want it. */
+.Q_mobile .Media_clip_tool[data-layout="playerOnly"] .Media_episode_description {
+	min-height: 0;
+	max-height: none;
+	overflow: visible;
+}
+/* Expandable description -- ported from
+   /var/www/Unaligned/web/js/tools/Media/clip.js's setupExpandableText()
+   (same class names/technique: a collapsed/expanded class pair toggling
+   -webkit-line-clamp on the text, not an animated height transition). */
+.Media_episode_desc_collapsed .Media_episode_desc_text {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+.Media_episode_desc_expanded .Media_episode_desc_text {
+	display: block;
+}
+.Media_episode_desc_toggle {
+	display: none;
+	margin-top: 6px;
+	color: var(--clip-muted);
+	font-weight: 600;
+	font-size: 13px;
+	cursor: pointer;
+}
+.Media_episode_desc_toggle:hover {
+	color: inherit;
 }

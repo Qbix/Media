@@ -252,7 +252,21 @@
 					}, stream.fields.name.split("/").pop());
                 });
 
-				$toolElement.on(Q.Pointer.fastclick, function () {
+				// refresh() (this whole method) can run more than once on the
+				// SAME tool element -- it's wired as a direct onRefresh
+				// handler (see activate() above), which fires again on any
+				// stream refresh, not just once at creation. Without .off()
+				// first, each re-run stacked another fastclick handler here,
+				// so a single real click fired state.onInvoke (and thus
+				// openFullEpisode -> Q.Media.loadClip -> columns.open) once
+				// per accumulated handler -- confirmed live as two
+				// columns.open() calls ~7ms apart for the same index with
+				// replace:true, which is what left a Q_columns_mask stuck
+				// forever over the opened column (the second, redundant
+				// open's own pipe never resolved, while the first's belated
+				// completion cleared the shared column div's loading class
+				// out from under it).
+				$toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
                     Q.handle(state.onInvoke, tool);
                 });
             } else if (state.layout === 'largeThumbCard') {
@@ -297,7 +311,11 @@
                     }
                 });
 
-                $toolElement.on(Q.Pointer.fastclick, function () {
+                // See the identical .off() comment in the 'cards' branch
+                // above -- refresh() re-running on the same element without
+                // unbinding first stacks duplicate fastclick handlers here
+                // too.
+                $toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
                     Q.handle(state.onInvoke, tool);
                 });
             } else if (state.layout === 'searchResultCard') {
@@ -338,7 +356,9 @@
                     }
                 });
 
-                $toolElement.on(Q.Pointer.fastclick, function () {
+                // See the identical .off() comment in the 'cards' branch
+                // above.
+                $toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
                     Q.handle(state.onInvoke, tool);
                 });
             } else {
@@ -353,8 +373,12 @@
 						onInvoke: new Q.Event(function () {}, 'Streams/default/preview')
                     }).activate();
 
-                    // "view full episode" button
-					$toolElement.on(Q.Pointer.fastclick, function () {
+                    // "view full episode" button -- see the identical
+                    // .off() comment in the 'cards' branch above; this is
+                    // the branch actually exercised by the default (square
+                    // thumbnail) layout, i.e. the one confirmed live to
+                    // double-fire columns.open() without this.
+					$toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
 						Q.handle(state.onInvoke, tool);
 					});
 

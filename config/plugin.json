@@ -352,7 +352,42 @@
 					"attributes"
 				],
 				"uri": "Media/channel publisherId={{publisherId}} channelId={{streamName.[2]}}",
-				"url": "{{baseUrl}}/channel/{{publisherId}}/{{streamName.[2]}}"
+				"url": "{{baseUrl}}/channel/{{publisherId}}/{{streamName.[2]}}",
+				"messages": {
+					/* Media/dropVideo relates each new episode to the uploader's
+					   channel, which posts a "Streams/relatedTo" message here.
+					   By default (Streams/types/[]), notify() only emails/
+					   notifies a participant who is OFFLINE -- someone online
+					   just gets a silent socket push with no visible notice
+					   (see Streams/notifications/notices, fixed separately)
+					   and no Streams_Notification row at all. A channel
+					   follower who happens to be online when the creator
+					   uploads should still get a real notification, so this
+					   type overrides evenIfOnline to true, scoped to
+					   Media/channel only (see Streams_Stream::getConfigField /
+					   Node Streams_Stream.getConfigField, which merges this
+					   over the Streams/types/[] default per stream type). */
+					"Streams/relatedTo": {
+						"evenIfOnline": true,
+						/* Without this, the email subject falls back to the
+						   platform default ("{{{call 'message.getInstruction'
+						   'description'}}}"), which here resolves to the raw,
+						   unrendered relate() config array stored verbatim in
+						   the message's own instructions (confirmed live --
+						   a real sent email had the literal subject
+						   "Streams/content,notifications,Streams/relatedTo/[]"
+						   -- that array's own toString(), not a template bug
+						   on our end). fromAvatar is fetched specifically for
+						   this (see Streams_Message.prototype.deliver in
+						   classes/Streams/Message.js, gated by fetchAvatar
+						   below) as the uploader's avatar, as seen by the
+						   recipient, so a nickname the recipient set for
+						   them is respected same as elsewhere on the
+						   platform. */
+						"subject": "{{{call 'fromAvatar.displayName'}}} uploaded a new video",
+						"fetchAvatar": true
+					}
+				}
 			},
 			"Media/clip": {
 				"emoji": "🎬",
@@ -529,6 +564,34 @@
 			   layout clipSearch.js's own results use (see its own comment
 			   right above where it reads this). */
 			"clipSearchResultLayout": "cards"
+		},
+		"channel": {
+			/* Whether channels get an explicit Follow/Subscribe/Mute/Unfollow
+			   mechanism (see Media/channel.js and Media/clip.js's joinClip()).
+			   Defaults to false so existing apps keep today's original behavior
+			   unchanged -- watching a video still auto-joins the viewer to the
+			   uploader's channel as a bare (unsubscribed) participant, and no
+			   Follow button is shown. Apps that want the new mechanism (e.g.
+			   Fans, via its own local/app.json) override this to true. */
+			"allowFollow": false,
+			/* Whether Media/channel.js shows the full Streams/participants
+			   list (today's original behavior) or just a "<N> followers"
+			   count in its place. Defaults to true so existing apps keep
+			   seeing the list unchanged; apps that want the compact count
+			   instead (e.g. Fans, via its own local/app.json) override
+			   this to false. */
+			"showParticipants": true,
+			/* Which Q.Template.render(...) Media/channel/preview.js uses for
+			   each row of a channel list (see views/Media/column/channels.php).
+			   "default" (the platform default) keeps today's original
+			   behavior unchanged -- the generic Streams/default/preview tool,
+			   icon+title only, same as every other stream type gets by
+			   default. "mediaChannel" uses the dedicated 'Media/channel/
+			   mediaChannel' template instead (avatar, title, follower count,
+			   description, and a Follow button, Spotify-podcast-style) --
+			   opt in app by app (e.g. Fans, via its own local/app.json), not
+			   a platform-wide default, since it assumes a dark background. */
+			"previewLayout": "default"
 		},
 		"episode": {
 			"templateStyle": "classic", /* can be "classic", "square", "tall" */

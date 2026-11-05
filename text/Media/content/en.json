@@ -22,7 +22,15 @@
         "MyChannels": "My Channels",
         "AllChannels": "All Channels",
         "AddChannel": "Add Channel",
-        "ChannelClosed": "Channel closed"
+        "ChannelClosed": "Channel closed",
+        "Follow": "Follow",
+        "Followed": "Followed",
+        "Mute": "Mute",
+        "Subscribe": "Subscribe",
+        "Unfollow": "Unfollow",
+        "Share": "Share",
+        "Follower": "follower",
+        "Followers": "followers"
     },
     "NewClip": "Make a New Clip",
     "NewClipTitlePlaceholder": "Enter Clip Title",
