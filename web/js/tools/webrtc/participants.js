@@ -719,10 +719,6 @@
                     }
 					let name = avatar.displayName();
 					let iconUrl = avatar.iconUrl();
-                    let avatarImg = document.createElement('IMG');
-					avatarImg.src = iconUrl;
-					participantIdentityIcon.appendChild(avatarImg);
-					participantIdentityText.innerHTML = name;
 				})
 
                 /*var audioVisualization = document.createElement('DIV')

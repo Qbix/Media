@@ -38,9 +38,52 @@
 .Media_column_channel h2.Q_title_slot {
     display: block;
 }
+/* Follow + Share sit side by side, directly under the title. The
+   Follow button's own styling (.Media_channel_follow*) is shared with
+   Media/clip.js's playerOnly layout and lives, unscoped, in the
+   plugin's own Media.css instead of here. */
+.Media_channel_tool .Media_channel_actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px;
+}
+/* Same pill shape as the Follow button's own "none" state (the Share
+   button has no state of its own to vary), matching the look of
+   Media/clip.js's own Share button (.Media_clip_share_btn, see its
+   icon/label layout rules in Media/web/css/tools/clip.css) adapted to
+   this tool's Follow-button pill instead of that one's playerOnly
+   actions row, since .Media_clip_tool-scoped rules don't reach here. */
+.Media_channel_tool .Media_channel_share_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #000;
+    color: #fff;
+}
+.Media_channel_tool .Media_channel_share_btn svg {
+    flex: none;
+}
+.Media_channel_tool .Media_channel_followersCount {
+    margin: 4px 0 10px;
+    color: #777;
+    font-size: 13px;
+    font-weight: 600;
+}
 
 @media (prefers-color-scheme: dark) {
     .Media_channel_tool .Media_channel_cover i {
         background-color: #3f3f3f;
+    }
+    .Media_channel_tool .Media_channel_share_btn {
+        background-color: #fff;
+        color: #000;
+    }
+    .Media_channel_tool .Media_channel_followersCount {
+        color: #aaa;
     }
 }

@@ -22,7 +22,15 @@
         "MyChannels": "My Channels",
         "AllChannels": "All Channels",
         "AddChannel": "Add Channel",
-        "ChannelClosed": "Channel closed"
+        "ChannelClosed": "Channel closed",
+        "Follow": "Follow",
+        "Followed": "Followed",
+        "Mute": "Mute",
+        "Subscribe": "Subscribe",
+        "Unfollow": "Unfollow",
+        "Share": "Share",
+        "Follower": "follower",
+        "Followers": "followers"
     },
     "NewClip": "Make a New Clip",
     "NewClipTitlePlaceholder": "Enter Clip Title",
@@ -34,11 +42,17 @@
     "LiveShow": "Live Show",
     "AreYouSureKick": "Are you sure you want to kick off this user?",
     "Save": "Save",
+    "Share": "Share",
     "ViewFullEpisode": "View Full Episode",
     "CreditsEarned": "Credits earned",
     "UnlockEpisode": "Unlock this episode for {{amount}} {{currency}}",
     "CheckingAvailability": "Checking availability…",
     "ContentUnavailable": "This video isn't available to play right now — please try again later.",
+    "email": {
+        "videoOffline": {
+            "subject": "Your video \"{{title}}\" is temporarily hidden"
+        }
+    },
     "UnlockRemaining": "Unlock full access for {{amount}} {{currency}}",
     "VideoTitle": "Video Title or URL",
     "AreYouSureDeleteEpisode": "Are you sure you want to delete this episode?",

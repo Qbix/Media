@@ -12,6 +12,63 @@
         hungUp: '<svg version="1.1" x="0px" y="0px" width="90.182373" height="62.977245" viewBox="-0.067 -0.378 90.182373 62.977245" enable-background="new -0.067 -0.378 101 101" xml:space="preserve" id="svg66" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <defs id="defs58"> </defs> <path fill="#FFFFFF" d="M 40.67337,-0.345341 C -5.9408979,0.549606 -0.37124761,23.629725 0.69580429,27.016099 1.8415328,32.774245 6.252342,35.655777 10.727075,34.024876 l 8.516746,-2.66681 c 4.589471,-1.673518 7.500506,-7.916837 6.499018,-13.947073 l -0.190135,-1.140812 c 15.486185,-4.382944 28.839905,-3.256885 39.261281,-0.357323 l -0.08523,0.486812 c -0.996571,6.030236 1.911187,12.275194 6.503935,13.950351 l 8.513468,3.547005 c 3.850238,1.404706 7.648025,-1.299803 9.365798,-5.622101 0.02295,0.01967 0.03442,0.03442 0.03442,0.03442 0,0 0.23603,-0.581879 0.473699,-1.57845 0.01967,-0.07704 0.03442,-0.16391 0.05409,-0.239308 0.03606,-0.183579 0.07704,-0.372075 0.116376,-0.576962 0.02459,-0.114737 0.05081,-0.224556 0.07376,-0.342571 l -0.0098,-0.0066 C 91.100177,18.219067 89.816765,-1.282904 40.67337,-0.345341 Z" style="fill:#d40000;stroke-width:1.6391" id="path62" /> <path fill="#FFFFFF" d="m 58.354305,43.518523 -9.001918,3.555201 V 26.230971 c 0,-0.396661 -0.321263,-0.719563 -0.717924,-0.719563 H 41.41752 c -0.399939,0 -0.721202,0.321263 -0.721202,0.719563 V 47.070446 L 31.69276,43.516884 c -0.299955,-0.121293 -0.647443,-0.02131 -0.842496,0.234391 -0.09671,0.131128 -0.142601,0.283564 -0.142601,0.440917 0,0.152436 0.04917,0.30815 0.149158,0.440917 l 13.596306,17.680935 c 0.136045,0.180301 0.349128,0.285203 0.573684,0.285203 0.224556,0 0.437639,-0.104902 0.572045,-0.285203 L 59.196801,44.633109 c 0.198331,-0.265534 0.198331,-0.617939 0.0016,-0.876917 -0.195052,-0.260616 -0.542541,-0.357323 -0.844135,-0.237669 z" style="fill:#d40000;stroke-width:1.6391" id="path64" /></svg>'
     };
     /**
+     * Wraps a description element's content in a 2-line-clamp/expand
+     * toggle, for the 'playerOnly' layout's about card (ported from
+     * /var/www/Unaligned/web/js/tools/Media/clip.js's own
+     * setupExpandableText() -- same class names/technique: a collapsed/
+     * expanded class pair toggling -webkit-line-clamp on the text, not
+     * an animated height transition).
+     * @method _setupExpandableDescription
+     * @private
+     * @param {jQuery} $el
+     */
+    function _setupExpandableDescription($el) {
+        var fullHtml = $el.html();
+        var $wrapper = $('<div class="Media_episode_desc_wrapper Media_episode_desc_collapsed">');
+        var $text = $('<div class="Media_episode_desc_text">').html(fullHtml);
+        var $toggle = $('<span class="Media_episode_desc_toggle">').text('...more');
+        $wrapper.append($text, $toggle);
+        $el.empty().append($wrapper);
+
+        $toggle.on(Q.Pointer.fastclick, function () {
+            var collapsed = $wrapper.hasClass('Media_episode_desc_collapsed');
+            $wrapper.toggleClass('Media_episode_desc_collapsed', !collapsed)
+                .toggleClass('Media_episode_desc_expanded', collapsed);
+            $toggle.text(collapsed ? 'show less' : '...more');
+        });
+
+        updateToggleVisibility();
+        $(window).on('resize', updateToggleVisibility);
+
+        function updateToggleVisibility() {
+            var isOverflowing = $text[0].scrollHeight > $text[0].clientHeight + 1;
+            $toggle.css('display', isOverflowing ? 'inline' : 'none');
+        }
+    }
+
+    /**
+     * Format a count as an abbreviated string ("696K", "2.3M"), for the
+     * 'playerOnly' layout's "<N> views" line. Matches Media/episode/
+     * preview.js's own private _formatCount() exactly -- that function
+     * isn't exported for reuse elsewhere, so this is a copy, not a
+     * shared call.
+     * @method _formatViewsCount
+     * @private
+     * @param {Number} count
+     * @return {String}
+     */
+    function _formatViewsCount(count) {
+        count = Math.max(0, Math.round(count || 0));
+        if (count < 1000) {
+            return String(count);
+        }
+        if (count < 1000000) {
+            return (Math.round(count / 100) / 10) + 'K';
+        }
+        return (Math.round(count / 100000) / 10) + 'M';
+    }
+
+    /**
      * Interface for rendering clip
      * @class Media clip
      * @constructor
@@ -29,6 +86,24 @@
         }
         if (!state.streamName) {
             throw new Q.Error("Media/clip tool: missing options.streamName");
+        }
+
+        // Offline (no Drops currently serving this episode) -- see
+        // Media_clip_response_column's own "isOffline" handling, which sets
+        // this instead of letting the normal Streams.get.force(...) fetch
+        // below run (it would just fail silently for any non-owner here,
+        // the exact same way it already does for the unrelated "Private"
+        // video case: Streams_Stream::exportArray() returns {} once
+        // testReadLevel('see') fails, see that function's own closedTime
+        // short-circuit, so Media/clip.js would never even learn the
+        // episode's title to show a message around). PHP hands over the
+        // bare minimum (title/description) it already has unrestricted
+        // access to, since the client has no other way to get it.
+        var unavailable = Q.getObject("Media.clip.unavailable", Q.plugins);
+        if (unavailable
+        && unavailable.publisherId === state.publisherId
+        && unavailable.streamName === state.streamName) {
+            return tool.renderUnavailable(unavailable);
         }
 
         $toolElement.attr("data-visualization", "clip");
@@ -135,22 +210,92 @@
         credits: parseInt(Q.getObject("Assets.credits.amounts.watching", Q)) || 1,
         withQuestions: false,
         minChatHeight: 200,
-        // 'tabs' | 'columns' | 'playerOnly' — which Media/clip/<layout>
-        // template renders. All three share the same Media/clip/player
-        // partial ('playerOnly' is the only one that doesn't also use
-        // Media/clip/clipsListContent, since it has no clips list at all —
-        // see its own template comment), so adding a fourth layout means
-        // another small template, not touching any of these or the
-        // activation code below, which looks up its containers by class
-        // name regardless of which layout rendered them (and simply finds
-        // nothing, harmlessly, for whatever a given layout omits).
+        // 'tabs' | 'columns' | 'playerOnly' | 'playerAndClips' — which
+        // Media/clip/<layout> template renders. 'tabs'/'columns'/'playerOnly'
+        // share the same Media/clip/player partial ('playerOnly' is the only
+        // one of those that doesn't also use Media/clip/clipsListContent,
+        // since it has no clips list at all — see its own template comment),
+        // so most of the activation code below just looks up containers by
+        // class name regardless of which layout rendered them (and simply
+        // finds nothing, harmlessly, for whatever a given layout omits).
+        // 'playerAndClips' (ported from Unaligned's own former standalone
+        // Media/clip.js override) is the one exception that doesn't just
+        // drop in a template: on desktop it replaces the clips list with a
+        // YouTube-style always-visible sidebar that seeks the same player in
+        // place instead of opening a new/same column (see showClipsInSidebar
+        // and renderClipsOverlay() in refresh() below); on mobile it falls
+        // back to the same Video/Audio/Clips tabs 'tabs' uses.
         // Defaults to the app-wide config (Media.clip.clipToolLayout, set
         // by Media_before_Q_responseExtras from Q_Config — "columns" on
-        // the platform, overridden to "tabs" in Fans's own local/app.json)
+        // the platform, overridden to "tabs" in Fans's own local/app.json,
+        // "playerAndClips" in Unaligned's own local/app.json)
         // rather than a fixed value, so most callers never need to pass
-        // this explicitly at all.
+        // this explicitly at all. When Media.clip.clipToolLayoutBySource is
+        // on (see refresh() below), this value is only the fallback used
+        // for episodes whose video source isn't recognized.
         layout: Q.getObject("Media.clip.clipToolLayout", Q.plugins) || 'columns'
     }, {
+        /**
+         * Renders the episode page's title/description/author with a
+         * warning in place of the player, for a viewer who currently can't
+         * read this stream because it's offline (closedTime set, not the
+         * publisher) -- see Media_clip_response_column's own "isOffline"
+         * branch, which is the only thing that calls this (by setting
+         * Q.plugins.Media.clip.unavailable before this tool activates).
+         * Polls for the episode coming back online instead of a genuine
+         * realtime subscription: Q.Streams.Stream.observe() (what actually
+         * joins a stream's realtime room) only ever runs after a successful
+         * fetch, which by definition never happens here, so there's no
+         * live connection to receive a push event on even if one fired.
+         * @method renderUnavailable
+         * @param {Object} info {publisherId, streamName, title, content}
+         */
+        renderUnavailable: function (info) {
+            var tool = this;
+            var $toolElement = $(tool.element);
+            $toolElement.addClass('Media_clip_unavailable_tool');
+            Q.Template.render('Media/clip/unavailable', {
+                title: info.title,
+                content: info.content,
+                message: tool.text.ContentUnavailable
+            }, function (err, html) {
+                if (err) {
+                    return;
+                }
+                tool.element.innerHTML = html;
+                $('.Media_clip_unavailable_avatar', tool.element).tool('Users/avatar', {
+                    userId: info.publisherId,
+                    icon: 40,
+                    contents: false
+                }).activate();
+                $('.Media_clip_unavailable_author', tool.element).tool('Users/avatar', {
+                    userId: info.publisherId,
+                    icon: false,
+                    "short": true
+                }).activate();
+            });
+
+            var pollMs = Q.getObject("Media.clip.unavailablePollMs", Q.plugins) || 20000;
+            var pollTimeout = setTimeout(function _pollAvailability() {
+                Streams.get.force(info.publisherId, info.streamName, function (err) {
+                    if (err) {
+                        pollTimeout = setTimeout(_pollAvailability, pollMs);
+                        return;
+                    }
+                    // Fetch succeeded -- testReadLevel('see') now passes,
+                    // meaning closedTime cleared (a Drop reconnected).
+                    // Simplest correct way to pick that back up is to let
+                    // the whole page load normally, same as if the viewer
+                    // had just navigated here fresh (same reload pattern
+                    // used elsewhere, e.g. Streams/tools/basic.js).
+                    Q.handle(window.location);
+                });
+            }, pollMs);
+
+            tool.Q.beforeRemove.set(function () {
+                clearTimeout(pollTimeout);
+            }, tool);
+        },
         refresh: function () {
             var tool = this;
             var state = this.state;
@@ -181,6 +326,39 @@
                 && (video.source !== "safecloud" || !!tool.stream.getAttribute("allowClips"))
                 && (allowCreateForRole !== "publisher" || userId === tool.stream.fields.publisherId);
             var showSegmentClips = !tool.isLive();
+            var layout = state.layout || 'tabs';
+            // Media.clip.clipToolLayoutBySource (default off -- platform
+            // and existing apps keep using a single fixed layout for every
+            // episode regardless of where its video came from): when on,
+            // picks the layout per-episode from the "video" attribute
+            // instead of the fixed config/state value above, which becomes
+            // just the fallback for a video source this doesn't recognize.
+            // Safecloud-sourced episodes (video.source === "safecloud")
+            // get 'playerOnly' -- Safecloud's own encrypted, non-public
+            // manifest has no related-clips concept to show a sidebar/tab
+            // for. Everything else with a plain video.url whose host is
+            // youtube.com (the only other source Media currently imports --
+            // see Media_YoutubeClipGenerator) gets 'playerAndClips'.
+            if (Q.getObject("Media.clip.clipToolLayoutBySource", Q.plugins)) {
+                if (video.source === "safecloud") {
+                    layout = 'playerOnly';
+                } else if (video.url) {
+                    var videoHost = null;
+                    try {
+                        videoHost = new URL(video.url).host;
+                    } catch (e) {}
+                    if (videoHost === 'www.youtube.com') {
+                        layout = 'playerAndClips';
+                    }
+                }
+            }
+            // 'playerAndClips' only — desktop gets an always-visible clips
+            // sidebar instead of a Clips tab (see showClipsInSidebar's use
+            // in the template and in refresh()'s render callback below), so
+            // there's nothing to switch between there; mobile still has no
+            // room for both, so it falls back to the same tabs every other
+            // layout uses.
+            var showClipsInSidebar = layout === 'playerAndClips' && !Q.info.isMobile;
             var fields = {
                 video: video,
                 audio: audio,
@@ -191,14 +369,14 @@
                 publisherId: state.publisherId,
                 streamName: state.streamName,
                 withQuestions: state.withQuestions,
-                showSwitch: !tool.isLive(), //tool.stream.fields.type == 'Media/episode'
+                showSwitch: !tool.isLive() && !showClipsInSidebar, //tool.stream.fields.type == 'Media/episode'
+                showClipsInSidebar: showClipsInSidebar,
                 showHosts: tool.isLive(),
                 showAddClip: showAddClip,
                 text: tool.text,
                 description: state.showDescription ? tool.stream.fields.content : null
             };
 
-            var layout = state.layout || 'tabs';
             $toolElement.attr("data-layout", layout);
             Q.Template.render('Media/clip/' + layout, fields, function (err, html) {
                 tool.element.innerHTML = html;
@@ -207,6 +385,31 @@
                 var $switchVisualizationBtn = $(".Media_clip_switch_visualization", $toolElement);
                 var $joinMainRoomBtn = $(".Media_clip_join_main_room", $toolElement);
                 var $clipsCount = $(".Media_clips_list_count", $toolElement);
+
+                // 'playerAndClips' layout only (ported from Unaligned's own
+                // former Media/clip.js override) -- on mobile, where the
+                // clips sidebar is replaced by the Video/Audio/Clips tabs
+                // (see showClipsInSidebar above), keeps the hidden
+                // .Media_clips_list panel's min-height matched to the video
+                // player's own height so switching to it via the tab
+                // doesn't visibly jump the page.
+                if (layout === 'playerAndClips' && Q.info.isMobile) {
+                    var $playerInner = $(".Media_clip_player_inner", $toolElement);
+                    var $playerWrapper = $(".Media_clip_player_wrapper", $toolElement);
+                    if ($playerWrapper.length) {
+                        var latestVideoHeight = 0;
+                        var videoHeightObserver = new ResizeObserver(function (entries) {
+                            entries.forEach(function (entry) {
+                                if (entry.contentRect.height < latestVideoHeight) {
+                                    return;
+                                }
+                                latestVideoHeight = entry.contentRect.height;
+                                $playerInner.css('min-height', entry.contentRect.height + 'px');
+                            });
+                        });
+                        videoHeightObserver.observe($playerWrapper[0]);
+                    }
+                }
 
                 function switchToVoiceChatLayout() {
                     $toolElement.attr("data-visualization", "hosts");
@@ -317,12 +520,168 @@
                 }
 
                 $participants[0] && $participants[0].forEachTool("Users/avatar", _setHostAvatar);
-                $participants.tool("Streams/participants", {
-                    publisherId: state.publisherId,
-                    streamName: state.streamName,
-                    ordering: tool.hostsUsers,
-                    showBlanks: true
-                }).activate();
+                // 'playerOnly' keeps the .Media_clip_participants div (it's
+                // still the shared insertBefore() anchor the Edit-video
+                // link/description/categories block below relies on finding
+                // in every layout) but skips activating a Streams/participants
+                // tool into it -- this is literally the one-line effect of
+                // "remove Streams/participants from this layout, show a
+                // Share button instead" (see the playerOnly template's own
+                // comment for the Share button half of that).
+                if (layout !== 'playerOnly') {
+                    $participants.tool("Streams/participants", {
+                        publisherId: state.publisherId,
+                        streamName: state.streamName,
+                        ordering: tool.hostsUsers,
+                        showBlanks: true
+                    }).activate();
+                } else {
+                    // Twitch-style byline under the player -- the uploader's
+                    // own avatar+name (linking to their channel), their
+                    // follower count, and (when the app has opted into the
+                    // follow feature) a Follow button, all in place of the
+                    // participants list. Built directly off Q.Streams.Avatar.get
+                    // rather than activating a Users/avatar tool -- a plain
+                    // avatar+name tool has no room to grow a follower count
+                    // or a Follow button into, where this is just more markup
+                    // appended alongside once the avatar data is in hand.
+                    var $metaAuthor = $(".Media_clip_meta_author", $toolElement);
+                    if ($metaAuthor.length && !$metaAuthor.data('Media_clip_author_added')) {
+                        $metaAuthor.data('Media_clip_author_added', true);
+                        var authorUserId = tool.stream.fields.publisherId;
+
+                        Q.Streams.Avatar.get(authorUserId, function (err, avatar) {
+                            if (err || !avatar) {
+                                return;
+                            }
+                            var name = avatar.displayName();
+                            var iconUrl = avatar.iconUrl(40);
+
+                            // The channel stream, not the episode -- Follow/
+                            // followers/the link all belong to the uploader's
+                            // channel. "Media/channel/main" is the one
+                            // canonical channel per user (see Media/dropVideo's
+                            // own _Media_dropVideo_ensureRelation(), which
+                            // relates every episode to exactly this stream).
+                            // Retained (not .get.force()'d) so the Follow
+                            // button's own subscribe()/unsubscribe()/leave()
+                            // calls keep updating a stream object this tool
+                            // instance keeps a live reference to, not one
+                            // that gets evicted from cache mid-session.
+                            Q.Streams.retainWith(tool).get(authorUserId, 'Media/channel/main', function (err) {
+                                var channelStream = Q.Streams.isStream(this) ? this : null;
+
+                                // A real <a> when we have somewhere to send
+                                // people (clicking the avatar/name opens the
+                                // channel); a plain <span> with the same
+                                // classes otherwise, so the layout doesn't
+                                // depend on the channel stream existing.
+                                var $authorLink = channelStream
+                                    ? $('<a class="Media_clip_author_link">').attr('href', channelStream.url())
+                                    : $('<span class="Media_clip_author_link">');
+                                $authorLink.appendTo($metaAuthor);
+                                $('<img class="Media_clip_author_icon">').attr('src', iconUrl).appendTo($authorLink);
+                                var $authorInfo = $('<div class="Media_clip_author_info">').appendTo($authorLink);
+                                $('<span class="Media_clip_author_name">').text(name).appendTo($authorInfo);
+
+                                if (!channelStream) {
+                                    return;
+                                }
+
+                                var allowFollow = !!Q.getObject("Media.channel.allowFollow", Q.plugins);
+                                if (!allowFollow) {
+                                    return;
+                                }
+
+                                // "<N> followers" -- same endpoint and
+                                // pluralization Media/channel.js's own
+                                // followers count uses.
+                                var $followersCount = $('<span class="Media_clip_author_followersCount"></span>').appendTo($authorInfo);
+                                Q.req('Media/channel', ['followersCount'], function (err, response) {
+                                    var count = !err && response && response.slots
+                                        ? response.slots.followersCount : 0;
+                                    var text = tool.text.channels;
+                                    $followersCount.text(count + ' ' + (count === 1 ? text.Follower : text.Followers));
+                                }, {
+                                    method: 'get',
+                                    fields: {
+                                        publisherId: authorUserId,
+                                        streamName: 'Media/channel/main'
+                                    }
+                                });
+
+                                if (channelStream.testWriteLevel('close')) {
+                                    return; // never shown to the channel's own owner
+                                }
+
+                                // Same partial + wiring Media/channel.js's own
+                                // Follow button uses (see Media.js).
+                                Q.Template.render('Media/followButton', {
+                                    channelsText: tool.text.channels
+                                }, function (err, html) {
+                                    if (err) {
+                                        return;
+                                    }
+                                    var $follow = $(html).appendTo($metaAuthor);
+                                    Q.Media.wireFollowButton(tool, $follow, channelStream);
+                                });
+                            });
+                        });
+                    }
+
+                    // "<N> views · <uploaded> ago" at the top of the about
+                    // card, above the description/tags -- those land there
+                    // via this same template's own .Media_clip_about wrapper,
+                    // populated later from the chat tool's onRefresh below,
+                    // so prepending to the card itself (rather than
+                    // anchoring next to either of those) is what makes this
+                    // not depend on whether a video even has a description
+                    // or tags at all.
+                    var $about = $(".Media_clip_about", $toolElement);
+                    if ($about.length && !$about.data('Media_clip_viewsDate_added')) {
+                        $about.data('Media_clip_viewsDate_added', true);
+                        var $viewsDate = $(
+                            '<div class="Media_clip_viewsDate">' +
+                            '<span class="Media_clip_views"></span>' +
+                            '<span class="Media_clip_uploaded"></span>' +
+                            '</div>'
+                        ).prependTo($about);
+
+                        // There's no simple per-stream view counter column to
+                        // just read off the stream itself -- same situation,
+                        // same fix, as Media_clips_response_search's own
+                        // "viewsCount" field and Media::mostViewedEpisodes()'s
+                        // own ranking query: COUNT(DISTINCT userId) from
+                        // Streams_Metrics (see this endpoint's own doc
+                        // comment, plugins/Media/handlers/Media/clip/
+                        // response/viewsCount.php).
+                        Q.req('Media/clip', ['viewsCount'], function (err, response) {
+                            var count = !err && response && response.slots
+                                ? response.slots.viewsCount : 0;
+                            $('.Media_clip_views', $viewsDate).text(
+                                _formatViewsCount(count) + (count === 1 ? ' view' : ' views')
+                            );
+                        }, {
+                            method: 'get',
+                            fields: {
+                                publisherId: tool.stream.fields.publisherId,
+                                streamName: tool.stream.fields.name
+                            }
+                        });
+
+                        // Date.fromDateTime (not `new Date(...)` directly):
+                        // the stream's insertedTime is a MySQL DATETIME
+                        // string ("2026-10-28 20:55:00"), not ISO 8601 --
+                        // the same conversion Streams/chat.js itself uses
+                        // for message timestamps elsewhere in this codebase.
+                        var uploadedElement = Q.Tool.setUpElement('span', 'Q/timestamp', {
+                            time: Date.fromDateTime(tool.stream.fields.insertedTime).getTime() / 1000,
+                            format: '{date+week} {year+year}'
+                        }, 'Media_clip_uploaded');
+                        $('.Media_clip_uploaded', $viewsDate).replaceWith(uploadedElement);
+                        Q.activate(uploadedElement);
+                    }
+                }
 
                 // make default visualization for regular user "clip" but for hosts user "hosts"
                 $switchVisualizationBtn.on(Q.Pointer.fastclick, function () {
@@ -341,6 +700,13 @@
                    if(state.callsTool) {
                        state.callsTool.initMainRoom();
                    }
+                });
+
+                // Only present in the 'playerOnly' layout's template (see its
+                // own comment) -- no-ops safely for every other layout, same
+                // as the other optional-element handlers in this function.
+                $(".Media_clip_share_btn", $toolElement).on(Q.Pointer.fastclick, function () {
+                    Q.Streams.invite(state.publisherId, state.streamName, { dontAutoAccept: false });
                 });
 
                 // set valid height for chat tool and make it scrollable
@@ -362,14 +728,41 @@
                             // shown right above the description (inserted first,
                             // so the description's own insertBefore below ends up
                             // right after it, not before).
+                            //
+                            // The existence checks below (for this link, the
+                            // description, and the categories) all look under
+                            // tool.element, not $chatMessages: all three are
+                            // inserted via insertBefore(tool.$('.Media_clip_participants'))
+                            // -- as its SIBLINGS, landing outside chatTool's own
+                            // element entirely, never inside $chatMessages. Checking
+                            // $chatMessages for them can never find them, so this
+                            // handler re-running (e.g. Q/tabs' "retain" tab-caching
+                            // reconstructing this chat tool on DOM that survived its
+                            // own teardown -- these three are plain, non-tool
+                            // elements, so Q.Tool.remove() leaves them untouched)
+                            // always inserted a second copy alongside the first,
+                            // confirmed live as the cause of a duplicated
+                            // description/categories block after switching tabs
+                            // and back. tool.$(...) matches where they really are.
                             var editClassName = "Media_episode_edit";
                             if (tool.stream.fields.type === "Media/episode"
                             && tool.stream.testWriteLevel("edit")
-                            && !$("." + editClassName, $chatMessages).length) {
-                                $("<a class='" + editClassName + "'>")
+                            && !tool.$("." + editClassName).length) {
+                                var $editLink = $("<a class='" + editClassName + "'>")
                                     .attr("href", tool.stream.url() + "/edit")
                                     .text(Q.getObject(["clip", "EditVideo"], tool.text) || "Edit video")
                                     .insertBefore(tool.$(".Media_clip_participants"));
+                                // Twitch-style layout: Edit/Share read as a
+                                // matched pair of owner-action pills next to
+                                // each other, under the player, rather than
+                                // sitting above the description down in the
+                                // about card.
+                                if (layout === 'playerOnly') {
+                                    var $metaActions = tool.$('.Media_clip_meta_actions');
+                                    if ($metaActions.length) {
+                                        $editLink.addClass('Q_button').prependTo($metaActions);
+                                    }
+                                }
                             }
 
                             var description = tool.stream.fields.content;
@@ -381,10 +774,22 @@
                                 });
 
                                 var className = "Media_episode_description";
-                                if (!$("." + className, $chatMessages).length) {
+                                if (!tool.$("." + className).length) {
                                     var $description = $("<div class='" + className + "'>").html(description);
                                     $description.insertBefore(tool.$('.Media_clip_participants'));
-                                    if ($description[0].isOverflowed()) {
+                                    if (layout === 'playerOnly' || layout === 'playerAndClips') {
+                                        // Twitch-style: a 2-line clamp with an
+                                        // expand/collapse toggle, not the
+                                        // shrink-to-fit Q/textfill treatment
+                                        // the other layouts use -- there's no
+                                        // fixed-height box to shrink into here.
+                                        // 'playerAndClips' uses this same
+                                        // treatment because Unaligned's own
+                                        // former standalone tool (the source
+                                        // this layout was ported from) always
+                                        // did, for every layout it had.
+                                        _setupExpandableDescription($description);
+                                    } else if ($description[0].isOverflowed()) {
                                         var fontSize = parseInt($description.css('font-size'));
                                         $description.plugin('Q/textfill', {
                                             minFontPixels: fontSize * 3 / 4,
@@ -399,7 +804,7 @@
                             // under the description, independent of whether one exists.
                             var categories = tool.stream.getAttribute("categories") || [];
                             var categoriesClassName = "Media_episode_categories";
-                            if (categories.length && !$("." + categoriesClassName, $chatMessages).length) {
+                            if (categories.length && !tool.$("." + categoriesClassName).length) {
                                 var $categories = $("<div class='" + categoriesClassName + "'>");
                                 Q.each(categories, function (i, category) {
                                     // A real link, not a span — Q's own
@@ -568,6 +973,136 @@
                         strName = Q.getObject([1,1], parentStream) || Q.getObject([0,1], parentStream) || state.streamName;
                     }
 
+                    // 'playerAndClips' layout only (ported from Unaligned's
+                    // own former Media/clip.js override) -- a YouTube-style
+                    // sidebar of this episode's own clips, each one seeking
+                    // the SAME player to its own clipStart in place, instead
+                    // of opening a new/same column the way openClipInSameColumn
+                    // below (used by every other layout's clips list) does.
+                    // Fed by the very same Streams/related tool mounted on
+                    // $segmentsContainers below (see its onUpdate option) --
+                    // on mobile that tool's own default Streams/preview-based
+                    // rendering is what's actually shown instead (inside the
+                    // Clips tab), so this sidebar and its data source only
+                    // matter together when showClipsInSidebar is true.
+                    if (showClipsInSidebar) {
+                        var secondaryColumn = tool.secondaryColumnElement = tool.element.querySelector('.Media_clip_secondary');
+                        var clipsListContainer = tool.clipsListContainer = document.createElement('DIV');
+                        clipsListContainer.className = 'Media_clips_side_list';
+                        secondaryColumn.appendChild(clipsListContainer);
+                    }
+
+                    function renderClipsOverlay() {
+                        if (!tool.episodeClipsList) {
+                            tool.episodeClipsList = [];
+                        }
+                        var relatedStreams = tool.relatedClipsStreams;
+
+                        for (var s in relatedStreams) {
+                            var stream = relatedStreams[s];
+                            var clipExists;
+                            for (var c in tool.episodeClipsList) {
+                                if (stream.fields.name == tool.episodeClipsList[c].clipStream.fields.name) {
+                                    clipExists = tool.episodeClipsList[c];
+                                    break;
+                                }
+                            }
+                            if (clipExists != null) {
+                                continue;
+                            }
+                            if (stream.fields.name.indexOf('/yt_') === -1) {
+                                continue;
+                            }
+
+                            var videoInfo = stream.getAttribute('video');
+                            var clipDataObject = {
+                                title: stream.fields.title,
+                                clipStream: stream,
+                                clipStart: videoInfo.clipStart,
+                                clipEnd: videoInfo.clipEnd
+                            };
+
+                            createRoomItemElement(clipDataObject);
+                            tool.episodeClipsList.unshift(clipDataObject);
+                            tool.episodeClipsList.sort(function (x, y) {
+                                return x.clipStart - y.clipStart;
+                            });
+                        }
+
+                        if (tool.episodeClipsList.length !== 0 && tool.secondaryColumnElement) {
+                            tool.secondaryColumnElement.classList.add('Media_clip_secondary_active');
+                        }
+
+                        for (var c in tool.episodeClipsList) {
+                            tool.clipsListContainer.appendChild(tool.episodeClipsList[c].listItemElement);
+                        }
+
+                        if (!tool.activeClipItem) {
+                            for (var i in tool.episodeClipsList) {
+                                if (state.streamName == tool.episodeClipsList[i].clipStream.fields.name) {
+                                    makeActive(tool.episodeClipsList[i]);
+                                    break;
+                                }
+                            }
+                        }
+
+                        function createRoomItemElement(clipDataObject) {
+                            var clipItemCon = document.createElement('DIV');
+                            clipItemCon.className = 'Media_clips_side_list_item';
+                            clipDataObject.listItemElement = clipItemCon;
+
+                            var clipItemTimeStart = document.createElement('DIV');
+                            clipItemTimeStart.className = 'Media_clips_side_list_item_start';
+                            clipItemCon.appendChild(clipItemTimeStart);
+                            var clipItemTime = document.createElement('DIV');
+                            clipItemTime.className = 'Media_clips_side_list_item_time';
+                            clipItemTime.innerHTML = formatTime(clipDataObject.clipStart);
+                            clipItemTimeStart.appendChild(clipItemTime);
+
+                            var clipItemTitle = document.createElement('DIV');
+                            clipItemTitle.className = 'Media_clips_side_list_item_title';
+                            clipItemTitle.innerHTML = clipDataObject.title;
+                            clipItemCon.appendChild(clipItemTitle);
+
+                            clipItemCon.addEventListener('click', function () {
+                                tool.videoTool.state.clipStart = null;
+                                tool.videoTool.state.clipEnd = null;
+                                tool.videoTool.setCurrentPosition(clipDataObject.clipStart);
+
+                                var clipId = clipDataObject.clipStream.fields.name.split('/').pop();
+                                var url = Q.url('clip/' + (clipDataObject.clipStream.fields.publisherId ? clipDataObject.clipStream.fields.publisherId + '/' : '') + clipId);
+
+                                window.history.pushState({}, '', url);
+                                tool.activeClipItem = clipDataObject;
+                                makeActive(clipDataObject);
+                            });
+                        }
+
+                        function makeActive(clipDataObject) {
+                            for (var i in tool.episodeClipsList) {
+                                if (tool.episodeClipsList[i] == clipDataObject) {
+                                    continue;
+                                }
+                                tool.episodeClipsList[i].listItemElement.classList.remove('Media_clips_side_list_item_active');
+                            }
+                            clipDataObject.listItemElement.classList.add('Media_clips_side_list_item_active');
+                        }
+
+                        function formatTime(ms) {
+                            var totalSeconds = Math.floor(ms / 1000);
+                            var hrs = Math.floor(totalSeconds / 3600);
+                            var mins = Math.floor((totalSeconds % 3600) / 60);
+                            var secs = totalSeconds % 60;
+                            var pad = function (n) {
+                                return String(n).padStart(2, "0");
+                            };
+                            if (hrs > 0) {
+                                return hrs + ':' + pad(mins) + ':' + pad(secs);
+                            }
+                            return mins + ':' + pad(secs);
+                        }
+                    }
+
                     $segmentsContainers.each(function (el) {
                         let toolEl = this;
                         $(toolEl).tool("Streams/related", {
@@ -581,6 +1116,13 @@
                             relatedOptions: {
                                 withParticipant: false,
                                 ascending: true
+                            },
+                            onUpdate: function (result) {
+                                if (!showClipsInSidebar) {
+                                    return;
+                                }
+                                tool.relatedClipsStreams = result.relatedStreams;
+                                renderClipsOverlay();
                             }
                         }).activate(function () {
                             this.state.onUpdate.add(function () {
@@ -1050,6 +1592,12 @@
             // join episode
             Streams.Stream.join(tool.state.publisherId, tool.state.streamName);
 
+            if (Q.getObject("Media.channel.allowFollow", Q.plugins)) {
+                // Media/channel.js's own Follow button is the explicit
+                // path to joining/subscribing to the channel now.
+                return;
+            }
+
             // join to all Media/channel streams this episode related to
             Streams.related(tool.state.publisherId, tool.state.streamName, "Media/episode", false, {
                 withParticipant: false,
@@ -1201,18 +1749,42 @@
         }
     );
 
-    // Just the player (plus the same hosts/participants/chat/questions
-    // chrome every layout has) — no clips list, no tabs, nothing to
-    // switch between. Deliberately doesn't include the
-    // Media/clip/clipsListContent partial at all: the "add clip" button
-    // lives inside that partial, so this layout has no way to create a
-    // shareable clip either — a direct, intended consequence of omitting
-    // the clips list entirely, not a separate thing to work around.
+    // Just the player (plus the same hosts/chat/questions chrome every
+    // layout has) — no clips list, no tabs, nothing to switch between.
+    // Deliberately doesn't include the Media/clip/clipsListContent
+    // partial at all: the "add clip" button lives inside that partial,
+    // so this layout has no way to create a shareable clip either — a
+    // direct, intended consequence of omitting the clips list entirely,
+    // not a separate thing to work around.
+    // Unlike 'tabs'/'columns', this layout never activates a
+    // Streams/participants tool (see the `layout !== 'playerOnly'` guard
+    // in refresh() above) -- a Share button takes its place instead,
+    // since a single-player page with no sidebar has no other visible
+    // way to invite someone to the video. The Media_clip_participants
+    // div below is STILL needed even though nothing mounts into it here:
+    // it's also the shared insertBefore() anchor that refresh()'s
+    // creator-only "Edit video" link, the description, and the category
+    // links all position themselves against in every layout -- removing
+    // it silently breaks those three elsewhere in the function instead
+    // of just disabling participants, which is the bug this comment is
+    // here to warn against reintroducing.
     // The $segmentsContainers lookup in refresh() above and the
     // Media_tab click handler both already no-op safely when their
     // target elements don't exist (same reason 'columns' doesn't need
-    // its own tab-handling branch) — no JS changes needed for this
-    // layout beyond this template.
+    // its own tab-handling branch) — no other JS changes needed for this
+    // layout beyond this template plus the one new click handler for
+    // .Media_clip_share_btn (see refresh()).
+    // Twitch-style single-player page: avatar+name (left) / Edit+Share
+    // (right) directly under the player, then description/tags/chat in
+    // their own card below. .Media_clip_meta_author is populated and
+    // .Media_clip_about is used as the insertBefore() anchor for the
+    // creator-only Edit link / description / category tags the same way
+    // refresh()'s chatTool.state.onRefresh handler below already does
+    // for every layout (see the `layout === 'playerOnly'` branches
+    // there) — .Media_clip_participants is kept as that same anchor,
+    // same reason as the other two layouts, even though nothing mounts
+    // into it here (a Share button takes its place — see the
+    // `layout !== 'playerOnly'` guard in refresh() above).
     Q.Template.set('Media/clip/playerOnly',
         '{{#if showHosts}}'
         + '<div class="Media_clip_hosts">'
@@ -1224,13 +1796,128 @@
         + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
         + '{{> Media/clip/player}}'
         + '</div></div>'
-        + '<div class="Media_clip_participants"></div>'
+        + '<div class="Media_clip_meta">'
+        + '		<div class="Media_clip_meta_author"></div>'
+        + '		<div class="Media_clip_meta_actions">'
+        + '			<button class="Media_clip_share_btn Q_button" type="button">'
+        + '				<svg viewBox="0 0 24 24" width="18" height="18" fill="none"'
+        + '					stroke="currentColor" stroke-width="2" stroke-linecap="round"'
+        + '					stroke-linejoin="round">'
+        + '					<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>'
+        + '					<polyline points="16 6 12 2 8 6"/>'
+        + '					<line x1="12" y1="2" x2="12" y2="15"/>'
+        + '				</svg>'
+        + '				<span>{{text.Share}}</span>'
+        + '			</button>'
+        + '		</div>'
+        + '</div>'
+        + '<div class="Media_clip_about">'
+        + '		<div class="Media_clip_participants"></div>'
+        + '</div>'
         + '{{#if withQuestions}}'
         + '		<div class="Media_clip_questions"></div>'
         + '{{/if}}'
         + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
         {
             partials: ['Media/clip/player'],
+            text: ['Media/content']
+        }
+    );
+
+    // Player and clips as two top-level columns, side by side on desktop —
+    // ported from Unaligned's own former standalone Media/clip.js override.
+    // Unlike 'columns' (clips list as a sibling INSIDE the player's own flex
+    // column, via Media_clip_columns), this one puts .Media_clip_main (the
+    // player, hosts, participants, chat — a column of its own) and
+    // .Media_clip_secondary (the clips sidebar) as direct siblings of the
+    // tool's root element, side by side via clip.css's own
+    // [data-layout="playerAndClips"] { flex-direction: row } (see that
+    // file's own comment for why the row direction has to go on the root
+    // here rather than a nested wrapper the way 'columns' does it).
+    // Doesn't reuse the Media/clip/player partial: the video needs an extra
+    // .Media_clip_player_wrapper around it (ResizeObserver target on mobile
+    // — see refresh()'s own comment on that) that no other layout needs.
+    // The wrapper, not the inner .Media_video, is what's toggled by the
+    // shared .Media_tab click handler on mobile — it carries .Media_player
+    // itself (data-clip="Media_clip_player_wrapper") specifically so that
+    // handler's sibling lookup clears it the same way it clears
+    // .Media_audio/.Media_clips_list, matching every other layout's tabs
+    // without needing a bespoke click handler the way Unaligned's original
+    // standalone tool had. On desktop (showClipsInSidebar true) showSwitch
+    // is false so these tabs never render at all — the sidebar, populated
+    // by renderClipsOverlay() in refresh() below from the very same
+    // Streams/related tool mounted on Media/clip/clipsListContent's own
+    // .Media_clips_list_segments, takes their place instead.
+    Q.Template.set('Media/clip/playerAndClips',
+        '<div class="Media_clip_main">'
+        + '{{#if showHosts}}'
+        + '<div class="Media_clip_hosts">'
+        + '		<div class="Media_clip_hosts_participants"></div>'
+        + '		<button class="Media_clip_switch_visualization Q_button">{{text.switchVisualization}}</button>'
+        + '		<button class="Media_clip_join_main_room Q_button">{{text.joinLiveShow}}</button>'
+        + '</div>'
+        + '{{/if}}'
+        + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
+        + '<div class="Media_clip_credits">{{text.CreditsEarned}}: <span>0</span></div>'
+        + '{{#if hasVideo}}'
+        + '		<div class="Media_clip_player_wrapper Media_player {{videoCurrent}}">'
+        + '			<div class="{{videoCurrent}} Media_video"></div>'
+        + '		</div>'
+        + '{{/if}}'
+        + '{{#if audio.url}}'
+        + '		<div class="{{audioCurrent}} Media_audio Media_player"></div>'
+        + '{{/if}}'
+        + '<div class="Media_clips_list Media_player">'
+        + '{{> Media/clip/clipsListContent}}'
+        + '</div>'
+        + '</div></div>'
+        + '{{#if showSwitch}}'
+        + '		<div class="Media_tabs">'
+        + '     {{#if hasVideo}}'
+        + '		    <div class="Media_tab {{videoCurrent}}" data-clip="Media_clip_player_wrapper">{{Video}}</div>'
+        + '     {{/if}}'
+        + '     {{#if audio.url}}'
+        + '		    <div class="Media_tab {{audioCurrent}}" data-clip="Media_audio">{{Audio}}</div>'
+        + '     {{/if}}'
+        + '     {{#if hasVideo}}'
+        + '		    <div class="Media_tab" data-clip="Media_clips_list"><span class="Media_clips_list_count"></span> {{Clips}}</div>'
+        + '     {{/if}}'
+        + '		</div>'
+        + '{{/if}}'
+        + '<div class="Media_clip_participants"></div>'
+        + '{{#if withQuestions}}'
+        + '		<div class="Media_clip_questions"></div>'
+        + '{{/if}}'
+        + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}'
+        + '</div>'
+        + '{{#if showClipsInSidebar}}'
+        + '		<div class="Media_clip_secondary"></div>'
+        + '{{/if}}',
+        {
+            partials: ['Media/clip/clipsListContent'],
+            text: ['Media/content']
+        }
+    );
+
+    // Rendered instead of the normal layout entirely (see
+    // tool.renderUnavailable above) -- deliberately NOT one of the
+    // templates above: those all assume a fully-fetched, access-granted
+    // stream (chat, hosts, participants, clips list), none of which a
+    // viewer in this state can have.
+    Q.Template.set('Media/clip/unavailable',
+        '<div class="Media_clip_unavailable">'
+        + '		<div class="Media_clip_unavailable_player">'
+        + '				<p class="Media_clip_unavailable_message">{{message}}</p>'
+        + '		</div>'
+        + '		<h2 class="Media_clip_unavailable_title">{{title}}</h2>'
+        + '		<div class="Media_clip_unavailable_byline">'
+        + '				<span class="Media_clip_unavailable_avatar"></span>'
+        + '				<span class="Media_clip_unavailable_author"></span>'
+        + '		</div>'
+        + '{{#if content}}'
+        + '		<p class="Media_clip_unavailable_content">{{content}}</p>'
+        + '{{/if}}',
+        {
             text: ['Media/content']
         }
     );

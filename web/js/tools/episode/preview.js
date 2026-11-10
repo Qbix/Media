@@ -1,15 +1,91 @@
 (function (Q, $, window, undefined) {
 
 	/**
+	 * Format a duration in seconds as "m:ss" (or "h:mm:ss" past an hour),
+	 * for the largeThumbCard layout's over-thumbnail duration badge.
+	 * @method _formatDuration
+	 * @private
+	 * @param {Number} seconds
+	 * @return {String}
+	 */
+	function _formatDuration(seconds) {
+		seconds = Math.max(0, Math.round(seconds || 0));
+		var h = Math.floor(seconds / 3600);
+		var m = Math.floor((seconds % 3600) / 60);
+		var s = seconds % 60;
+		var ss = (s < 10 ? "0" : "") + s;
+		if (h > 0) {
+			return h + ":" + (m < 10 ? "0" : "") + m + ":" + ss;
+		}
+		return m + ":" + ss;
+	}
+
+	/**
+	 * Format a count as an abbreviated string ("696K", "2.3M"), for the
+	 * searchResultCard layout's views stat.
+	 * @method _formatCount
+	 * @private
+	 * @param {Number} count
+	 * @return {String}
+	 */
+	function _formatCount(count) {
+		count = Math.max(0, Math.round(count || 0));
+		if (count < 1000) {
+			return String(count);
+		}
+		if (count < 1000000) {
+			return (Math.round(count / 100) / 10) + "K";
+		}
+		return (Math.round(count / 100000) / 10) + "M";
+	}
+
+	// Keep <html>.Media_clip in sync with whether an episode's own detail
+	// column is actually open, for the largeThumbCard layout's row-style CSS
+	// (see episodePreview.css). Q's router already adds this class on a real
+	// full page load to /clip/..., but Q/columns opens/closes the clip
+	// column as an in-place AJAX column push/pop — it never touches
+	// Q.info.uri or re-runs the router's page-class logic, so that alone
+	// misses the common "click a thumbnail" path entirely. Media/clip tool
+	// instances activate/get removed exactly when that column opens/closes
+	// (regardless of navigation path), so hook those instead.
+	Q.Tool.onActivate('Media/clip').add(function () {
+		document.documentElement.classList.add('Media_clip');
+	}, 'Media/episode/preview');
+	Q.Tool.beforeRemove('Media/clip').add(function () {
+		document.documentElement.classList.remove('Media_clip');
+	}, 'Media/episode/preview');
+
+	/**
 	 * Media/episode/preview tool.
 	 * Renders a tool to preview Media episode
 	 * @class Media/episode/preview
 	 * @constructor
 	 * @param {Object} [options] options to pass besides the ones to Streams/preview tool
 	 * @param {boolean|object} [options.expandable=false] If true - make preview expandable. Also can be {expanded: [false|true]} to expand/collapse loaded tools
-	 * @param {function} [options.layout="default"] Can be "default" or "cards".
+	 * @param {function} [options.layout] Can be "default", "cards", "largeThumbCard"
+	 *   (a YouTube-home-style card: thumbnail with duration overlay, title,
+	 *   author avatar + name, and upload date), or "searchResultCard" (a
+	 *   YouTube-search-result-style row: thumbnail with duration overlay on
+	 *   the left, title/views/date/author/one-line description on the
+	 *   right). Defaults to the app-wide config Media.clip.episodePreviewLayout
+	 *   (set by Media_before_Q_responseExtras from Q_Config — "default" on the
+	 *   platform, overridden per-app, e.g. "largeThumbCard" in Fans's own
+	 *   local/app.json) rather than a fixed value, so most callers never
+	 *   need to pass this explicitly at all.
+	 * @param {Number} [options.viewsCount] For the "searchResultCard" layout,
+	 *   the number to show as the views stat. Unlike duration/date/author,
+	 *   this isn't derivable from the stream itself (there's no per-stream
+	 *   view counter on the model) — callers that want it shown (e.g.
+	 *   Media/clip/search.js, which gets it from its own search response)
+	 *   must pass it explicitly; omitted entirely when not provided.
 	 * @param {String} [options.templateStyle=classic] Template style. Can be "classic", "square" (icon square on the left) and "tall" (icon on the top).
 	 * @param {function} [options.onResults] Set here function to update results before render.
+	 * @param {Number} [options.cardMinWidth] For "cards"/"largeThumbCard" layouts, the
+	 *   minimum width (in px) each card is allowed to shrink to in the
+	 *   surrounding .Media_episodes_cards grid, before another column is
+	 *   added — i.e. this controls how many cards fit per row. Defaults to
+	 *   the app-wide config Media.clip.episodePreviewCardMinWidth, falling
+	 *   back to the grid's own CSS default (300px) when neither is set.
 	 */
 	Q.Tool.define("Media/episode/preview", ["Streams/preview"], function _Media_episode_preview (options, preview) {
 		var tool = this;
@@ -69,7 +145,9 @@
 		expandable: false,
 		templateStyle: Q.Media.episode.templateStyle || "classic",
 		onResults: null,
-		layout: "default",
+		layout: Q.getObject("Media.clip.episodePreviewLayout", Q.plugins) || "default",
+		cardMinWidth: Q.getObject("Media.clip.episodePreviewCardMinWidth", Q.plugins) || null,
+		viewsCount: null,
 		onInvoke: function () {
 			this.openFullEpisode();
 		}
@@ -137,6 +215,13 @@
 				}
 			};
 
+			if (state.cardMinWidth) {
+				var $cardsContainer = $toolElement.closest('.Media_episodes_cards');
+				if ($cardsContainer.length) {
+					$cardsContainer[0].style.setProperty('--Media_episode_card_minWidth', state.cardMinWidth + 'px');
+				}
+			}
+
 			if(state.layout === 'cards') {
 				Q.Template.render('Media/episode/card', {
 					iconURL:stream.iconUrl(400),
@@ -167,7 +252,113 @@
 					}, stream.fields.name.split("/").pop());
                 });
 
-				$toolElement.on(Q.Pointer.fastclick, function () {
+				// refresh() (this whole method) can run more than once on the
+				// SAME tool element -- it's wired as a direct onRefresh
+				// handler (see activate() above), which fires again on any
+				// stream refresh, not just once at creation. Without .off()
+				// first, each re-run stacked another fastclick handler here,
+				// so a single real click fired state.onInvoke (and thus
+				// openFullEpisode -> Q.Media.loadClip -> columns.open) once
+				// per accumulated handler -- confirmed live as two
+				// columns.open() calls ~7ms apart for the same index with
+				// replace:true, which is what left a Q_columns_mask stuck
+				// forever over the opened column (the second, redundant
+				// open's own pipe never resolved, while the first's belated
+				// completion cleared the shared column div's loading class
+				// out from under it).
+				$toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
+                    Q.handle(state.onInvoke, tool);
+                });
+            } else if (state.layout === 'largeThumbCard') {
+                // videoDuration is its own top-level stream attribute (see
+                // Media/episodeEdit/response.php); the "video" attribute itself
+                // only holds source/rootCid/clipStart/clipEnd for Safecloud-hosted
+                // clips. Older YouTube-imported episodes instead nest duration
+                // inside "video", so fall back to that.
+                var videoDuration = stream.getAttribute('videoDuration')
+                    || Q.getObject('duration', stream.getAttribute('video'));
+                var duration = videoDuration ? _formatDuration(videoDuration) : null;
+
+                Q.Template.render('Media/episode/largeThumbCard', {
+                    iconURL: stream.iconUrl(400),
+                    title: stream.fields.title,
+                    duration: duration
+                }, function (err, html) {
+                    if (err) {
+                        return;
+                    }
+
+                    tool.element.innerHTML = html;
+
+                    // icon-only avatar (contents:false hides the name)
+                    $('.Media_episode_largeThumbCard_avatar', tool.element).tool('Users/avatar', {
+                        userId: publisherId,
+                        icon: 40,
+                        contents: false
+                    }).activate();
+
+                    // name-only avatar (icon:false hides the icon image)
+                    $('.Media_episode_largeThumbCard_author', tool.element).tool('Users/avatar', {
+                        userId: publisherId,
+                        icon: false,
+                        "short": true
+                    }).activate();
+
+                    if (publishDate) {
+                        $('.Media_episode_largeThumbCard_date', tool.element).tool('Q/timestamp', {
+                            time: Math.floor(publishDate.getTime() / 1000)
+                        }).activate();
+                    }
+                });
+
+                // See the identical .off() comment in the 'cards' branch
+                // above -- refresh() re-running on the same element without
+                // unbinding first stacks duplicate fastclick handlers here
+                // too.
+                $toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
+                    Q.handle(state.onInvoke, tool);
+                });
+            } else if (state.layout === 'searchResultCard') {
+                var searchVideoDuration = stream.getAttribute('videoDuration')
+                    || Q.getObject('duration', stream.getAttribute('video'));
+                var searchDuration = searchVideoDuration ? _formatDuration(searchVideoDuration) : null;
+                var viewsText = state.viewsCount ? _formatCount(state.viewsCount) : null;
+
+                Q.Template.render('Media/episode/searchResultCard', {
+                    iconURL: stream.iconUrl(400),
+                    title: stream.fields.title,
+                    duration: searchDuration,
+                    viewsText: viewsText,
+                    description: stream.fields.content || ''
+                }, function (err, html) {
+                    if (err) {
+                        return;
+                    }
+
+                    tool.element.innerHTML = html;
+
+                    $('.Media_episode_searchResultCard_avatar', tool.element).tool('Users/avatar', {
+                        userId: publisherId,
+                        icon: 40,
+                        contents: false
+                    }).activate();
+
+                    $('.Media_episode_searchResultCard_author', tool.element).tool('Users/avatar', {
+                        userId: publisherId,
+                        icon: false,
+                        "short": true
+                    }).activate();
+
+                    if (publishDate) {
+                        $('.Media_episode_searchResultCard_date', tool.element).tool('Q/timestamp', {
+                            time: Math.floor(publishDate.getTime() / 1000)
+                        }).activate();
+                    }
+                });
+
+                // See the identical .off() comment in the 'cards' branch
+                // above.
+                $toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
                     Q.handle(state.onInvoke, tool);
                 });
             } else {
@@ -182,8 +373,12 @@
 						onInvoke: new Q.Event(function () {}, 'Streams/default/preview')
                     }).activate();
 
-                    // "view full episode" button
-					$toolElement.on(Q.Pointer.fastclick, function () {
+                    // "view full episode" button -- see the identical
+                    // .off() comment in the 'cards' branch above; this is
+                    // the branch actually exercised by the default (square
+                    // thumbnail) layout, i.e. the one confirmed live to
+                    // double-fire columns.open() without this.
+					$toolElement.off(Q.Pointer.fastclick).on(Q.Pointer.fastclick, function () {
 						Q.handle(state.onInvoke, tool);
 					});
 
@@ -267,7 +462,12 @@
 
 			Q.Media.loadClip(stream.fields.name.split('/').pop(), {
 				publisherId: stream.fields.publisherId,
-				trigger: tool.element
+				trigger: tool.element,
+				// Config-driven, app-specific opt-in (see loadClip's own
+				// comment) -- off by default on the platform, on for Fans
+				// via Media.clip.episodePreviewReplaceColumn in its
+				// local/app.json, same wiring pattern as episodePreviewLayout.
+				replace: !!Q.getObject("Media.clip.episodePreviewReplaceColumn", Q.plugins)
 			});
 		},
 		/**
@@ -409,5 +609,51 @@
         <div class="Streams_preview_episode_users_inner"></div>
     </div>
 </div>`);
-	
+
+	Q.Template.set("Media/episode/largeThumbCard", `
+<div class="Media_episode_largeThumbCard">
+    <div class="Media_episode_largeThumbCard_thumb"
+         style="background-image: url({{iconURL}});">
+        {{#if duration}}
+        <span class="Media_episode_largeThumbCard_duration">{{duration}}</span>
+        {{/if}}
+    </div>
+    <div class="Media_episode_largeThumbCard_meta">
+        <div class="Media_episode_largeThumbCard_avatar"></div>
+        <div class="Media_episode_largeThumbCard_text">
+            <div class="Media_episode_largeThumbCard_title">{{{title}}}</div>
+            <div class="Media_episode_largeThumbCard_sub">
+                <span class="Media_episode_largeThumbCard_author"></span>
+                <span class="Media_episode_largeThumbCard_date"></span>
+            </div>
+        </div>
+    </div>
+</div>`);
+
+	Q.Template.set("Media/episode/searchResultCard", `
+<div class="Media_episode_searchResultCard">
+    <div class="Media_episode_searchResultCard_thumb"
+         style="background-image: url({{iconURL}});">
+        {{#if duration}}
+        <span class="Media_episode_searchResultCard_duration">{{duration}}</span>
+        {{/if}}
+    </div>
+    <div class="Media_episode_searchResultCard_meta">
+        <div class="Media_episode_searchResultCard_title">{{{title}}}</div>
+        <div class="Media_episode_searchResultCard_stats">
+            {{#if viewsText}}
+            <span class="Media_episode_searchResultCard_views">{{viewsText}}</span>
+            {{/if}}
+            <span class="Media_episode_searchResultCard_date"></span>
+        </div>
+        <div class="Media_episode_searchResultCard_authorRow">
+            <div class="Media_episode_searchResultCard_avatar"></div>
+            <span class="Media_episode_searchResultCard_author"></span>
+        </div>
+        {{#if description}}
+        <div class="Media_episode_searchResultCard_description">{{description}}</div>
+        {{/if}}
+    </div>
+</div>`);
+
 })(Q, Q.jQuery, window);

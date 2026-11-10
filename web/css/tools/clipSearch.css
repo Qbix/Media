@@ -152,6 +152,36 @@
     content: "\e91c";
 }
 
+/* <searchBarOnly layout> -- the bar isn't a reveal-on-demand overlay here
+   (there's no title to reveal it from, nor a close icon to hide it again --
+   see clipSearch.js's own template for this layout), so it just needs to
+   sit in normal flow instead of absolutely positioned/collapsed by default,
+   and the icons/input need their own explicit sizing since they can no
+   longer size themselves as a percentage of the (absolutely positioned)
+   .Media_clip_search_input_bar's own height. */
+.Media_clip_search.Media_clip_search_layout_searchBarOnly {
+    min-height: 0;
+    overflow: visible;
+    background: none;
+    box-shadow: none;
+}
+.Media_clip_search_layout_searchBarOnly .Media_clip_search_input_bar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 0;
+}
+.Media_clip_search_layout_searchBarOnly .Media_clip_search_input_bar input {
+    height: 36px;
+    margin: 0;
+}
+.Media_clip_search_layout_searchBarOnly .Media_clip_search_icons_item {
+    height: 36px;
+    width: 36px;
+    line-height: 36px;
+    font-size: 18px;
+}
+
 
 
 /* .Media_clip_search_loader {

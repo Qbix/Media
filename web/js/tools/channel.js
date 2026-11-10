@@ -1,4 +1,25 @@
 (function (Q, $, window, undefined) {
+
+/**
+ * Background for .Media_channel_cover when no cover image has been set
+ * (either no Media/channel/cover relation at all yet, or one exists but
+ * its own icon is still Streams/image's own unset default -- same "/Q/
+ * plugins/" detection used for the channel icon's own avatar fallback,
+ * see refresh() below). A plain inline SVG data URL, not a real asset
+ * file, so there's nothing to upload/host for a placeholder -- built
+ * with encodeURIComponent() rather than hand-escaped, so the quotes and
+ * "#" in the fill colors don't need any manual care.
+ * @property _coverPlaceholderUrl
+ * @private
+ */
+var _coverPlaceholderUrl = "url('data:image/svg+xml," + encodeURIComponent(
+	'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300">'
+	+ '<rect width="1000" height="300" fill="#2a2a2e"/>'
+	+ '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"'
+	+ ' font-family="sans-serif" font-size="36" fill="#7a7a82">No cover image</text>'
+	+ '</svg>'
+) + "')";
+
 /**
  * Media/channel tool.
  * Renders interface for Media channel
@@ -80,6 +101,11 @@ Q.Tool.define("Media/channel", function(options) {
 				state.show.closeChannel = true;
 			}
 
+			// Follow button -- never shown to the channel's own owner,
+			// and only when the app has opted into the feature (see
+			// Media.channel.allowFollow, default false)
+			state.showFollow = !isAdmin && !!Q.getObject("Media.channel.allowFollow", Q.plugins);
+
 			if (!tool.stream.testReadLevel('participants')) {
 				state.show.participants = false;
 			}
@@ -89,9 +115,28 @@ Q.Tool.define("Media/channel", function(options) {
 				state.show.participants = false;
 			}
 
+			// Whether to show the full Streams/participants list, or just
+			// a "<N> followers" count in its place (see Media.channel.
+			// showParticipants's own doc comment, default true -- Fans
+			// overrides this to false). Read-level/hideParticipants above
+			// can only ever turn the list off, never back on, so this is
+			// applied as a further restriction on top, not a replacement.
+			var showParticipants = Q.getObject("Media.channel.showParticipants", Q.plugins) !== false;
+			if (!showParticipants) {
+				state.show.participants = false;
+			}
+			state.show.followersCount = !showParticipants;
+
 			var fields = Q.extend({
 				stream: tool.stream,
-				text: tool.text.channels
+				text: tool.text.channels,
+				// Read by the shared 'Media/followButton' partial (see
+				// Media.js) -- a separate field from "text" above since
+				// Media/clip.js's own playerOnly template, which includes
+				// the same partial, already uses "text" for its own,
+				// differently-shaped tool.text (the whole object, not
+				// just .channels).
+				channelsText: tool.text.channels
 			}, state);
 
 			Q.Template.render("Media/channel", fields, function (err, html) {
@@ -103,6 +148,12 @@ Q.Tool.define("Media/channel", function(options) {
 
 				var $cover = tool.$(".Media_channel_cover");
 				var $coverEdit = tool.$(".Media_channel_cover i");
+
+				// Show the placeholder immediately, before the async
+				// _getOrCreateCoverImageStream() call below resolves, so
+				// there's no flash of blank background while it loads.
+				$cover[0].style['background-image'] = _coverPlaceholderUrl;
+
 				// close event button handler
 				tool.$("button[name=closeChannel]").on(Q.Pointer.fastclick, function () {
 					var $this = $(this);
@@ -153,7 +204,18 @@ Q.Tool.define("Media/channel", function(options) {
 						return coverStream.iconUrl(Q.image.defaultSize['Users/cover']) + '?' + new Date().getTime();
 					};
 
-					$cover[0].style['background-image'] = "url(" + _getCoverUrl() + ")";
+					// Same "/Q/plugins/" detection used for the channel
+					// icon's own avatar fallback -- a real uploaded cover
+					// lives under "/Q/uploads/...", while the platform's
+					// own built-in default icon (never actually a real
+					// cover photo) lives under "/Q/plugins/...". Only
+					// override the placeholder set above when there's an
+					// actual uploaded cover to show.
+					var hasOwnCover = coverStream.fields.icon
+						&& coverStream.fields.icon.indexOf('/Q/plugins/') === -1;
+					if (hasOwnCover) {
+						$cover[0].style['background-image'] = "url(" + _getCoverUrl() + ")";
+					}
 
 					if (!isAdmin) {
 						return;
@@ -189,7 +251,48 @@ Q.Tool.define("Media/channel", function(options) {
 						showSize: "80"
 					}
 				}, state)).activate(function () {
-					this.icon(tool.$("img.Media_channel_icon")[0]);
+					var $icon = tool.$("img.Media_channel_icon");
+					this.icon($icon[0]);
+
+					// A very new channel can have no real icon of its own
+					// yet -- fields.icon either still Media/channel's own
+					// configured default (confirmed live to be an already-
+					// expanded "/Q/plugins/..." path, not the short symbolic
+					// name from config -- same detection Media/channel/
+					// preview.js's own mediaChannel row already uses) or,
+					// for a channel created through a path that never even
+					// filled that default in, genuinely empty -- either way
+					// icon() above just rendered a blank/broken <img>. Fall
+					// back to the creator's own avatar, same as the
+					// channels list does. Checked (and, for the broken-
+					// image case, re-checked on the element's own native
+					// error event, since icon()'s onLoad callback is itself
+					// gated on the ORIGINAL image successfully loading --
+					// it never fires at all for a 404, so it can't be used
+					// to trigger this) right after calling icon() above,
+					// not before -- icon() unconditionally sets element.src
+					// itself, so setting it first would just get
+					// overwritten. Only ever changes src, never touches the
+					// imagepicker click-to-change wiring icon() just set up
+					// on this same element, so that keeps working exactly
+					// as before.
+					var _fallbackToAvatar = function () {
+						if ($icon.data('Media_channel_icon_fallback')) {
+							return;
+						}
+						$icon.data('Media_channel_icon_fallback', true);
+						Q.Streams.Avatar.get(tool.stream.fields.publisherId, function (err, avatar) {
+							if (!err && avatar) {
+								$icon.attr('src', avatar.iconUrl(80));
+							}
+						});
+					};
+					var icon = tool.stream.fields.icon;
+					if (!icon || icon.indexOf('/Q/plugins/') >= 0) {
+						_fallbackToAvatar();
+					} else {
+						$icon.one('error', _fallbackToAvatar);
+					}
 				});
 
 				// title
@@ -200,6 +303,23 @@ Q.Tool.define("Media/channel", function(options) {
 					inplaceType: "text"
 				}).activate();
 
+				// follow / subscribe / mute / unfollow -- shared with
+				// Media/clip.js's own Follow button (see Media.js's own
+				// Q.Media.wireFollowButton and 'Media/followButton'
+				// template, used by both via {{> Media/followButton}}).
+				var $follow = tool.$(".Media_channel_follow");
+				if ($follow.length) {
+					Q.Media.wireFollowButton(tool, $follow, tool.stream);
+				}
+
+				// share -- same Q.Streams.invite(publisherId, streamName)
+				// call Media/clip.js's own Share button uses (see its
+				// refresh()), just for the channel stream instead of the
+				// episode/clip stream.
+				tool.$(".Media_channel_share_btn").on(Q.Pointer.fastclick, function () {
+					Q.Streams.invite(state.publisherId, state.streamName, { dontAutoAccept: false });
+				});
+
 				// participants
 				tool.$(".Media_channel_participants").tool("Streams/participants", {
 					showSummary: false,
@@ -207,6 +327,25 @@ Q.Tool.define("Media/channel", function(options) {
 					publisherId: state.publisherId,
 					streamName: state.streamName
 				}).activate();
+
+				// followers count -- shown instead of the participants list
+				// when Media.channel.showParticipants is false (see
+				// state.show.followersCount, set in refresh() above).
+				var $followersCount = tool.$(".Media_channel_followersCount");
+				if ($followersCount.length) {
+					Q.req('Media/channel', ['followersCount'], function (err, response) {
+						var count = !err && response && response.slots
+							? response.slots.followersCount : 0;
+						var text = tool.text.channels;
+						$followersCount.text(count + ' ' + (count === 1 ? text.Follower : text.Followers));
+					}, {
+						method: 'get',
+						fields: {
+							publisherId: state.publisherId,
+							streamName: state.streamName
+						}
+					});
+				}
 
 				// related clips
 				tool.$(".Media_episodes").tool("Streams/related", {
@@ -217,7 +356,14 @@ Q.Tool.define("Media/channel", function(options) {
 					editable: true,
 					sortable: false,
 					specificOptions: {
-						layout: "cards",
+						// Was hardcoded to "cards", silently overriding
+						// Media/episode/preview's own config-driven default
+						// (Media.clip.episodePreviewLayout) -- read the same
+						// config here instead, same fix as Fans' clips.php,
+						// so apps that set it to "largeThumbCard" (e.g. Fans)
+						// get that here too, while anyone not setting it
+						// keeps today's "cards" behavior unchanged.
+						layout: Q.getObject("Media.clip.episodePreviewLayout", Q.plugins) || "cards",
 						templateStyle: "square"
 					},
 					creatable: {
@@ -286,6 +432,24 @@ Q.Template.set('Media/channel',`
 	<div class="Media_channel_cover">{{#if isAdmin}}<i class="qp-media-pencil"></i>{{/if}}</div>
 	<img class="Media_channel_icon">
 	<div class="Media_channel_title"></div>
+	{{#if show.followersCount}}
+		<div class="Media_channel_followersCount"></div>
+	{{/if}}
+	<div class="Media_channel_actions">
+		{{#if showFollow}}
+			{{> Media/followButton}}
+		{{/if}}
+		<button class="Media_channel_share_btn Media_clip_share_btn Q_button" type="button">
+			<svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+				stroke="currentColor" stroke-width="2" stroke-linecap="round"
+				stroke-linejoin="round">
+				<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>
+				<polyline points="16 6 12 2 8 6"/>
+				<line x1="12" y1="2" x2="12" y2="15"/>
+			</svg>
+			<span>{{text.Share}}</span>
+		</button>
+	</div>
 	{{#if show.participants}}
 		<div class="Media_channel_participants"></div>
 	{{/if}}
@@ -293,6 +457,10 @@ Q.Template.set('Media/channel',`
 		<button class="Q_button" name="closeChannel">Close channel</button>
 	{{/if}}
 	<div class="Media_episodes Media_episodes_cards"></div>
-`);
+`,
+	{
+		partials: ['Media/followButton']
+	}
+);
 
 })(Q, Q.jQuery, window);

@@ -19,6 +19,15 @@ function Media_before_Q_responseExtras() {
 	Q_Response::setScriptData("Q.plugins.Media.episode.paymentMechanism", Q_Config::get("Media", "episode", "paymentMechanism", array("perStream", "perMinute")));
 	Q_Response::setScriptData("Q.plugins.Media.clip.allowCreateForRole", Q_Config::get("Media", "clip", "allowCreateForRole", "allUsers"));
 	Q_Response::setScriptData("Q.plugins.Media.clip.clipToolLayout", Q_Config::get("Media", "clip", "clipToolLayout", "columns"));
+	Q_Response::setScriptData("Q.plugins.Media.clip.clipToolLayoutBySource", Q_Config::get("Media", "clip", "clipToolLayoutBySource", false));
+	Q_Response::setScriptData("Q.plugins.Media.clip.episodePreviewLayout", Q_Config::get("Media", "clip", "episodePreviewLayout", "default"));
+	Q_Response::setScriptData("Q.plugins.Media.clip.episodePreviewCardMinWidth", Q_Config::get("Media", "clip", "episodePreviewCardMinWidth", null));
+	Q_Response::setScriptData("Q.plugins.Media.clip.episodePreviewReplaceColumn", Q_Config::get("Media", "clip", "episodePreviewReplaceColumn", false));
+	Q_Response::setScriptData("Q.plugins.Media.clip.clipSearchLayout", Q_Config::get("Media", "clip", "clipSearchLayout", "searchAndColumnTitle"));
+	Q_Response::setScriptData("Q.plugins.Media.clip.clipSearchResultLayout", Q_Config::get("Media", "clip", "clipSearchResultLayout", "cards"));
+	Q_Response::setScriptData("Q.plugins.Media.channel.allowFollow", Q_Config::get("Media", "channel", "allowFollow", false));
+	Q_Response::setScriptData("Q.plugins.Media.channel.showParticipants", Q_Config::get("Media", "channel", "showParticipants", true));
+	Q_Response::setScriptData("Q.plugins.Media.channel.previewLayout", Q_Config::get("Media", "channel", "previewLayout", "default"));
 
 	// collect user id's with label Users/hosts
 	$hosts = Users_Contact::select()->where(array(

@@ -1,12 +1,82 @@
-.Media_channel_preview_tool:not(.Streams_preview_composer) {
+.Media_channel_preview_tool:not(.Streams_preview_composer):not(.Media_channel_mediaChannel_tool) {
     border: 1px solid silver;
     border-radius: 5px;
     background-color: #f0f0f0;
 }
 @media (prefers-color-scheme: dark) {
-    .Media_channel_preview_tool:not(.Streams_preview_composer),
-    .Media_channel_preview_tool.Q_selected:not(.Streams_preview_composer) {
+    .Media_channel_preview_tool:not(.Streams_preview_composer):not(.Media_channel_mediaChannel_tool),
+    .Media_channel_preview_tool.Q_selected:not(.Streams_preview_composer):not(.Media_channel_mediaChannel_tool) {
         background-color: #3f3f3f;
         color: unset;
     }
+}
+
+/* The channels list (plugins/Media/web/css/columns/channels.css) is a
+   CSS grid that auto-fills multiple ~300px-wide cards per row on a wide
+   stretched-first-column layout -- fine for the plain icon+title card
+   above, but the mediaChannel row below is a full-width list row (avatar
+   left, text in the middle, Follow button flush right), not a card, so
+   it needs to force back to a single column. :has() (not !important)
+   for a one-class specificity edge over that rule's own 4 classes/attrs
+   -- scoped to :has(.Media_channel_mediaChannel_tool) so it only kicks
+   in for this layout; a channel list still using the default preview
+   keeps the multi-column card grid unchanged. */
+.Q_columns_stretchFirstColumn[data-column-count='1'] .Streams_related_tool.Media_channels:has(.Media_channel_mediaChannel_tool) {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+/* ==========================================================================
+   "Media/channel/mediaChannel" row layout (Media.channel.previewLayout,
+   opt-in per app -- see that config's own doc comment in plugins/Media/
+   config/plugin.json) -- a plain list row, not the card look above:
+   avatar left, title/followers/description in the middle, Follow button
+   on the far right (Spotify-podcast-list style). Theme-agnostic
+   defaults (currentColor mixes, no hardcoded light/dark assumption) --
+   an app with its own color scheme (e.g. Fans) overrides specific
+   properties, the same split this whole redesign has used throughout.
+   ========================================================================== */
+.Media_channel_mediaChannel_tool {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 4px;
+    cursor: pointer;
+}
+.Media_channel_mediaChannel_icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    flex: none;
+    object-fit: cover;
+}
+.Media_channel_mediaChannel_info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.Media_channel_mediaChannel_title {
+    font-size: 17px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.Media_channel_mediaChannel_followersCount {
+    margin-top: 2px;
+    font-size: 13px;
+    color: color-mix(in srgb, currentColor 60%, transparent);
+}
+.Media_channel_mediaChannel_description {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: color-mix(in srgb, currentColor 60%, transparent);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.Media_channel_mediaChannel_actions {
+    flex: none;
+    margin-left: auto;
 }

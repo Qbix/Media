@@ -170,3 +170,86 @@ input[name=query].Media_feedChooser_input, input[name=query].Media_feedChooser_i
 .Q_notMobile.Media_clip .Q_columns_stretchFirstColumn[data-column-count='3'] .Q_column_2 {
 	width: calc(30% - var(--column-margin));
 }
+
+/* ==========================================================================
+   Follow button ('Media/followButton' template + Q.Media.wireFollowButton,
+   see Media.js) -- shared, unscoped, between Media/channel.js's own
+   Follow button and Media/clip.js's playerOnly layout, which embeds the
+   same partial in its author byline. Not scoped to either tool's own
+   wrapper class (.Media_channel_tool / .Media_clip_tool) so it renders
+   identically wherever the partial is used.
+   ========================================================================== */
+/* #content prefix: Media.css's own "html.Media_clip #content .Q_button"
+   (an ID selector) paints every .Q_button on a clip page green by
+   default -- the Follow button carries .Q_button too (same as Edit/
+   Share already do, see clip.css's own playerOnly section), and that
+   rule's ID-level specificity otherwise beats this button's shape/color
+   rules on clip pages specifically (never an issue on the channel page,
+   which has no such rule at all). Matched at #content (an ID too, so
+   specificity ties and this wins on source order) rather than fought
+   with !important. */
+/* [data-state] (matching any value, always present once rendered) isn't
+   here to select a particular state -- it's extra specificity. Without
+   it this rule's (1 id, 1 class, 0 elements) still loses to the green-
+   button rule's (1 id, 2 classes, 1 element): ids tie, then classes
+   decide (1 < 2), so the extra class here (2 classes, 0 elements) is
+   what's needed to win outright at that same comparison step. */
+#content .Media_channel_follow[data-state] .Media_channel_follow_btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 18px;
+	border-radius: 20px;
+	font-weight: bold;
+	cursor: pointer;
+}
+#content .Media_channel_follow[data-state="none"] .Media_channel_follow_btn {
+	background-color: #000;
+	color: #fff;
+}
+#content .Media_channel_follow[data-state="subscribed"] .Media_channel_follow_btn,
+#content .Media_channel_follow[data-state="muted"] .Media_channel_follow_btn {
+	background-color: #efefef;
+	color: #000;
+}
+#content .Media_channel_follow[data-state="loading"] .Media_channel_follow_btn {
+	opacity: 0.6;
+	cursor: default;
+	pointer-events: none;
+}
+.Media_channel_follow_btn_caret {
+	display: none;
+	width: 0;
+	height: 0;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 5px solid currentColor;
+}
+.Media_channel_follow[data-state="subscribed"] .Media_channel_follow_btn_caret,
+.Media_channel_follow[data-state="muted"] .Media_channel_follow_btn_caret {
+	display: inline-block;
+}
+.Media_channel_follow_btn_bell_on,
+.Media_channel_follow_btn_bell_off {
+	display: none;
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+.Media_channel_follow[data-state="subscribed"] .Media_channel_follow_btn_bell_on {
+	display: inline-block;
+}
+.Media_channel_follow[data-state="muted"] .Media_channel_follow_btn_bell_off {
+	display: inline-block;
+}
+@media (prefers-color-scheme: dark) {
+	#content .Media_channel_follow[data-state="none"] .Media_channel_follow_btn {
+		background-color: #fff;
+		color: #000;
+	}
+	#content .Media_channel_follow[data-state="subscribed"] .Media_channel_follow_btn,
+	#content .Media_channel_follow[data-state="muted"] .Media_channel_follow_btn {
+		background-color: #3f3f3f;
+		color: #fff;
+	}
+}

@@ -726,8 +726,23 @@ abstract class Media
 	 * contributes 0.5, continuously decaying rather than a hard cutoff at
 	 * $windowDays (which $windowDays still bounds, just as a query-size
 	 * limit, not the actual ranking signal).
+	 *
+	 * Results are scoped to episodes currently related to $episodesStream
+	 * under one of $relationType — joined against Streams_RelatedTo, the
+	 * same relation an episode gets when it's posted (see
+	 * Streams_create_Media_episode.php for 'Media/episode', and
+	 * Media_YoutubeClipGenerator for 'Media/episode/youtube'). Without this
+	 * join, the ranking would match s.type='Media/episode' rows from any
+	 * publisher/hub in the whole install, not just this community's own
+	 * listing — pass an array to rank several relation types (e.g. both
+	 * platform uploads and YouTube imports) together in one list.
 	 * @method mostViewedEpisodes
 	 * @static
+	 * @param {Streams_Stream} $episodesStream The hub stream episodes are
+	 *   related to under $relationType (e.g. the community's Media/episodes
+	 *   stream).
+	 * @param {string|array} [$relationType='Media/episode'] One relation
+	 *   type, or an array of them, to match against Streams_RelatedTo.type.
 	 * @param {integer} [$limit=10]
 	 * @param {integer} [$windowDays=30] Only consider viewer activity at least
 	 *   this recent — purely a bound on how much of the table to scan;
@@ -737,11 +752,15 @@ abstract class Media
 	 * @return {array} Each: {publisherId, streamName, score}, ordered by
 	 *   score descending. Empty array if nothing qualifies.
 	 */
-	static function mostViewedEpisodes($limit = 10, $windowDays = 30, $halfLifeDays = 5)
+	static function mostViewedEpisodes(
+		$episodesStream, $relationType = 'Media/episode',
+		$limit = 10, $windowDays = 30, $halfLifeDays = 5
+	)
 	{
 		$limit = (int)$limit;
 		$windowDays = (int)$windowDays;
 		$halfLifeDays = (float)$halfLifeDays;
+		$relationTypes = is_array($relationType) ? $relationType : array($relationType);
 
 		$rows = Streams_Metrics::select(
 			"m.publisherId, m.streamName, "
@@ -750,12 +769,18 @@ abstract class Media
 		)->join(Streams_Stream::table(true, 's'), array(
 			's.publisherId' => 'm.publisherId',
 			's.name' => 'm.streamName'
+		))->join(Streams_RelatedTo::table(true, 'r'), array(
+			'r.fromPublisherId' => 'm.publisherId',
+			'r.fromStreamName' => 'm.streamName'
 		))->where(array(
 			'm.updatedTime' => new Db_Range(
 				new Db_Expression("NOW() - INTERVAL $windowDays DAY"), true, false, null
 			),
 			's.type' => 'Media/episode',
-			's.closedTime' => null
+			's.closedTime' => null,
+			'r.toPublisherId' => $episodesStream->publisherId,
+			'r.toStreamName' => $episodesStream->name,
+			'r.type' => $relationTypes
 		))->groupBy('m.publisherId, m.streamName')
 		  ->orderBy('score', false)
 		  ->limit($limit)
