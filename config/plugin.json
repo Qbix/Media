@@ -540,6 +540,16 @@
 			   Media/clip.js renders by default (see its own "layout" state
 			   option doc comment). */
 			"clipToolLayout": "columns",
+			/* Whether Media/clip.js picks its layout per-episode from the
+			   episode's own video source instead of always using the fixed
+			   clipToolLayout above -- safecloud-sourced episodes get
+			   "playerOnly", youtube-sourced ones get "playerAndClips" (see
+			   Media/clip.js's refresh()). Defaults to false so existing
+			   apps keep using a single fixed layout for every episode,
+			   unchanged. Apps that want the per-source behavior (e.g.
+			   Unaligned, via its own local/app.json) override this to
+			   true. */
+			"clipToolLayoutBySource": false,
 			/* "default" | "cards" | "largeThumbCard" — which layout
 			   Media/episode/preview.js renders by default (see its own
 			   "layout" state option doc comment). */

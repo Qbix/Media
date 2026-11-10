@@ -210,20 +210,29 @@
         credits: parseInt(Q.getObject("Assets.credits.amounts.watching", Q)) || 1,
         withQuestions: false,
         minChatHeight: 200,
-        // 'tabs' | 'columns' | 'playerOnly' — which Media/clip/<layout>
-        // template renders. All three share the same Media/clip/player
-        // partial ('playerOnly' is the only one that doesn't also use
-        // Media/clip/clipsListContent, since it has no clips list at all —
-        // see its own template comment), so adding a fourth layout means
-        // another small template, not touching any of these or the
-        // activation code below, which looks up its containers by class
-        // name regardless of which layout rendered them (and simply finds
-        // nothing, harmlessly, for whatever a given layout omits).
+        // 'tabs' | 'columns' | 'playerOnly' | 'playerAndClips' — which
+        // Media/clip/<layout> template renders. 'tabs'/'columns'/'playerOnly'
+        // share the same Media/clip/player partial ('playerOnly' is the only
+        // one of those that doesn't also use Media/clip/clipsListContent,
+        // since it has no clips list at all — see its own template comment),
+        // so most of the activation code below just looks up containers by
+        // class name regardless of which layout rendered them (and simply
+        // finds nothing, harmlessly, for whatever a given layout omits).
+        // 'playerAndClips' (ported from Unaligned's own former standalone
+        // Media/clip.js override) is the one exception that doesn't just
+        // drop in a template: on desktop it replaces the clips list with a
+        // YouTube-style always-visible sidebar that seeks the same player in
+        // place instead of opening a new/same column (see showClipsInSidebar
+        // and renderClipsOverlay() in refresh() below); on mobile it falls
+        // back to the same Video/Audio/Clips tabs 'tabs' uses.
         // Defaults to the app-wide config (Media.clip.clipToolLayout, set
         // by Media_before_Q_responseExtras from Q_Config — "columns" on
-        // the platform, overridden to "tabs" in Fans's own local/app.json)
+        // the platform, overridden to "tabs" in Fans's own local/app.json,
+        // "playerAndClips" in Unaligned's own local/app.json)
         // rather than a fixed value, so most callers never need to pass
-        // this explicitly at all.
+        // this explicitly at all. When Media.clip.clipToolLayoutBySource is
+        // on (see refresh() below), this value is only the fallback used
+        // for episodes whose video source isn't recognized.
         layout: Q.getObject("Media.clip.clipToolLayout", Q.plugins) || 'columns'
     }, {
         /**
@@ -317,6 +326,39 @@
                 && (video.source !== "safecloud" || !!tool.stream.getAttribute("allowClips"))
                 && (allowCreateForRole !== "publisher" || userId === tool.stream.fields.publisherId);
             var showSegmentClips = !tool.isLive();
+            var layout = state.layout || 'tabs';
+            // Media.clip.clipToolLayoutBySource (default off -- platform
+            // and existing apps keep using a single fixed layout for every
+            // episode regardless of where its video came from): when on,
+            // picks the layout per-episode from the "video" attribute
+            // instead of the fixed config/state value above, which becomes
+            // just the fallback for a video source this doesn't recognize.
+            // Safecloud-sourced episodes (video.source === "safecloud")
+            // get 'playerOnly' -- Safecloud's own encrypted, non-public
+            // manifest has no related-clips concept to show a sidebar/tab
+            // for. Everything else with a plain video.url whose host is
+            // youtube.com (the only other source Media currently imports --
+            // see Media_YoutubeClipGenerator) gets 'playerAndClips'.
+            if (Q.getObject("Media.clip.clipToolLayoutBySource", Q.plugins)) {
+                if (video.source === "safecloud") {
+                    layout = 'playerOnly';
+                } else if (video.url) {
+                    var videoHost = null;
+                    try {
+                        videoHost = new URL(video.url).host;
+                    } catch (e) {}
+                    if (videoHost === 'www.youtube.com') {
+                        layout = 'playerAndClips';
+                    }
+                }
+            }
+            // 'playerAndClips' only — desktop gets an always-visible clips
+            // sidebar instead of a Clips tab (see showClipsInSidebar's use
+            // in the template and in refresh()'s render callback below), so
+            // there's nothing to switch between there; mobile still has no
+            // room for both, so it falls back to the same tabs every other
+            // layout uses.
+            var showClipsInSidebar = layout === 'playerAndClips' && !Q.info.isMobile;
             var fields = {
                 video: video,
                 audio: audio,
@@ -327,14 +369,14 @@
                 publisherId: state.publisherId,
                 streamName: state.streamName,
                 withQuestions: state.withQuestions,
-                showSwitch: !tool.isLive(), //tool.stream.fields.type == 'Media/episode'
+                showSwitch: !tool.isLive() && !showClipsInSidebar, //tool.stream.fields.type == 'Media/episode'
+                showClipsInSidebar: showClipsInSidebar,
                 showHosts: tool.isLive(),
                 showAddClip: showAddClip,
                 text: tool.text,
                 description: state.showDescription ? tool.stream.fields.content : null
             };
 
-            var layout = state.layout || 'tabs';
             $toolElement.attr("data-layout", layout);
             Q.Template.render('Media/clip/' + layout, fields, function (err, html) {
                 tool.element.innerHTML = html;
@@ -343,6 +385,31 @@
                 var $switchVisualizationBtn = $(".Media_clip_switch_visualization", $toolElement);
                 var $joinMainRoomBtn = $(".Media_clip_join_main_room", $toolElement);
                 var $clipsCount = $(".Media_clips_list_count", $toolElement);
+
+                // 'playerAndClips' layout only (ported from Unaligned's own
+                // former Media/clip.js override) -- on mobile, where the
+                // clips sidebar is replaced by the Video/Audio/Clips tabs
+                // (see showClipsInSidebar above), keeps the hidden
+                // .Media_clips_list panel's min-height matched to the video
+                // player's own height so switching to it via the tab
+                // doesn't visibly jump the page.
+                if (layout === 'playerAndClips' && Q.info.isMobile) {
+                    var $playerInner = $(".Media_clip_player_inner", $toolElement);
+                    var $playerWrapper = $(".Media_clip_player_wrapper", $toolElement);
+                    if ($playerWrapper.length) {
+                        var latestVideoHeight = 0;
+                        var videoHeightObserver = new ResizeObserver(function (entries) {
+                            entries.forEach(function (entry) {
+                                if (entry.contentRect.height < latestVideoHeight) {
+                                    return;
+                                }
+                                latestVideoHeight = entry.contentRect.height;
+                                $playerInner.css('min-height', entry.contentRect.height + 'px');
+                            });
+                        });
+                        videoHeightObserver.observe($playerWrapper[0]);
+                    }
+                }
 
                 function switchToVoiceChatLayout() {
                     $toolElement.attr("data-visualization", "hosts");
@@ -710,12 +777,17 @@
                                 if (!tool.$("." + className).length) {
                                     var $description = $("<div class='" + className + "'>").html(description);
                                     $description.insertBefore(tool.$('.Media_clip_participants'));
-                                    if (layout === 'playerOnly') {
+                                    if (layout === 'playerOnly' || layout === 'playerAndClips') {
                                         // Twitch-style: a 2-line clamp with an
                                         // expand/collapse toggle, not the
                                         // shrink-to-fit Q/textfill treatment
                                         // the other layouts use -- there's no
                                         // fixed-height box to shrink into here.
+                                        // 'playerAndClips' uses this same
+                                        // treatment because Unaligned's own
+                                        // former standalone tool (the source
+                                        // this layout was ported from) always
+                                        // did, for every layout it had.
                                         _setupExpandableDescription($description);
                                     } else if ($description[0].isOverflowed()) {
                                         var fontSize = parseInt($description.css('font-size'));
@@ -901,6 +973,136 @@
                         strName = Q.getObject([1,1], parentStream) || Q.getObject([0,1], parentStream) || state.streamName;
                     }
 
+                    // 'playerAndClips' layout only (ported from Unaligned's
+                    // own former Media/clip.js override) -- a YouTube-style
+                    // sidebar of this episode's own clips, each one seeking
+                    // the SAME player to its own clipStart in place, instead
+                    // of opening a new/same column the way openClipInSameColumn
+                    // below (used by every other layout's clips list) does.
+                    // Fed by the very same Streams/related tool mounted on
+                    // $segmentsContainers below (see its onUpdate option) --
+                    // on mobile that tool's own default Streams/preview-based
+                    // rendering is what's actually shown instead (inside the
+                    // Clips tab), so this sidebar and its data source only
+                    // matter together when showClipsInSidebar is true.
+                    if (showClipsInSidebar) {
+                        var secondaryColumn = tool.secondaryColumnElement = tool.element.querySelector('.Media_clip_secondary');
+                        var clipsListContainer = tool.clipsListContainer = document.createElement('DIV');
+                        clipsListContainer.className = 'Media_clips_side_list';
+                        secondaryColumn.appendChild(clipsListContainer);
+                    }
+
+                    function renderClipsOverlay() {
+                        if (!tool.episodeClipsList) {
+                            tool.episodeClipsList = [];
+                        }
+                        var relatedStreams = tool.relatedClipsStreams;
+
+                        for (var s in relatedStreams) {
+                            var stream = relatedStreams[s];
+                            var clipExists;
+                            for (var c in tool.episodeClipsList) {
+                                if (stream.fields.name == tool.episodeClipsList[c].clipStream.fields.name) {
+                                    clipExists = tool.episodeClipsList[c];
+                                    break;
+                                }
+                            }
+                            if (clipExists != null) {
+                                continue;
+                            }
+                            if (stream.fields.name.indexOf('/yt_') === -1) {
+                                continue;
+                            }
+
+                            var videoInfo = stream.getAttribute('video');
+                            var clipDataObject = {
+                                title: stream.fields.title,
+                                clipStream: stream,
+                                clipStart: videoInfo.clipStart,
+                                clipEnd: videoInfo.clipEnd
+                            };
+
+                            createRoomItemElement(clipDataObject);
+                            tool.episodeClipsList.unshift(clipDataObject);
+                            tool.episodeClipsList.sort(function (x, y) {
+                                return x.clipStart - y.clipStart;
+                            });
+                        }
+
+                        if (tool.episodeClipsList.length !== 0 && tool.secondaryColumnElement) {
+                            tool.secondaryColumnElement.classList.add('Media_clip_secondary_active');
+                        }
+
+                        for (var c in tool.episodeClipsList) {
+                            tool.clipsListContainer.appendChild(tool.episodeClipsList[c].listItemElement);
+                        }
+
+                        if (!tool.activeClipItem) {
+                            for (var i in tool.episodeClipsList) {
+                                if (state.streamName == tool.episodeClipsList[i].clipStream.fields.name) {
+                                    makeActive(tool.episodeClipsList[i]);
+                                    break;
+                                }
+                            }
+                        }
+
+                        function createRoomItemElement(clipDataObject) {
+                            var clipItemCon = document.createElement('DIV');
+                            clipItemCon.className = 'Media_clips_side_list_item';
+                            clipDataObject.listItemElement = clipItemCon;
+
+                            var clipItemTimeStart = document.createElement('DIV');
+                            clipItemTimeStart.className = 'Media_clips_side_list_item_start';
+                            clipItemCon.appendChild(clipItemTimeStart);
+                            var clipItemTime = document.createElement('DIV');
+                            clipItemTime.className = 'Media_clips_side_list_item_time';
+                            clipItemTime.innerHTML = formatTime(clipDataObject.clipStart);
+                            clipItemTimeStart.appendChild(clipItemTime);
+
+                            var clipItemTitle = document.createElement('DIV');
+                            clipItemTitle.className = 'Media_clips_side_list_item_title';
+                            clipItemTitle.innerHTML = clipDataObject.title;
+                            clipItemCon.appendChild(clipItemTitle);
+
+                            clipItemCon.addEventListener('click', function () {
+                                tool.videoTool.state.clipStart = null;
+                                tool.videoTool.state.clipEnd = null;
+                                tool.videoTool.setCurrentPosition(clipDataObject.clipStart);
+
+                                var clipId = clipDataObject.clipStream.fields.name.split('/').pop();
+                                var url = Q.url('clip/' + (clipDataObject.clipStream.fields.publisherId ? clipDataObject.clipStream.fields.publisherId + '/' : '') + clipId);
+
+                                window.history.pushState({}, '', url);
+                                tool.activeClipItem = clipDataObject;
+                                makeActive(clipDataObject);
+                            });
+                        }
+
+                        function makeActive(clipDataObject) {
+                            for (var i in tool.episodeClipsList) {
+                                if (tool.episodeClipsList[i] == clipDataObject) {
+                                    continue;
+                                }
+                                tool.episodeClipsList[i].listItemElement.classList.remove('Media_clips_side_list_item_active');
+                            }
+                            clipDataObject.listItemElement.classList.add('Media_clips_side_list_item_active');
+                        }
+
+                        function formatTime(ms) {
+                            var totalSeconds = Math.floor(ms / 1000);
+                            var hrs = Math.floor(totalSeconds / 3600);
+                            var mins = Math.floor((totalSeconds % 3600) / 60);
+                            var secs = totalSeconds % 60;
+                            var pad = function (n) {
+                                return String(n).padStart(2, "0");
+                            };
+                            if (hrs > 0) {
+                                return hrs + ':' + pad(mins) + ':' + pad(secs);
+                            }
+                            return mins + ':' + pad(secs);
+                        }
+                    }
+
                     $segmentsContainers.each(function (el) {
                         let toolEl = this;
                         $(toolEl).tool("Streams/related", {
@@ -914,6 +1116,13 @@
                             relatedOptions: {
                                 withParticipant: false,
                                 ascending: true
+                            },
+                            onUpdate: function (result) {
+                                if (!showClipsInSidebar) {
+                                    return;
+                                }
+                                tool.relatedClipsStreams = result.relatedStreams;
+                                renderClipsOverlay();
                             }
                         }).activate(function () {
                             this.state.onUpdate.add(function () {
@@ -1611,6 +1820,81 @@
         + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}',
         {
             partials: ['Media/clip/player'],
+            text: ['Media/content']
+        }
+    );
+
+    // Player and clips as two top-level columns, side by side on desktop —
+    // ported from Unaligned's own former standalone Media/clip.js override.
+    // Unlike 'columns' (clips list as a sibling INSIDE the player's own flex
+    // column, via Media_clip_columns), this one puts .Media_clip_main (the
+    // player, hosts, participants, chat — a column of its own) and
+    // .Media_clip_secondary (the clips sidebar) as direct siblings of the
+    // tool's root element, side by side via clip.css's own
+    // [data-layout="playerAndClips"] { flex-direction: row } (see that
+    // file's own comment for why the row direction has to go on the root
+    // here rather than a nested wrapper the way 'columns' does it).
+    // Doesn't reuse the Media/clip/player partial: the video needs an extra
+    // .Media_clip_player_wrapper around it (ResizeObserver target on mobile
+    // — see refresh()'s own comment on that) that no other layout needs.
+    // The wrapper, not the inner .Media_video, is what's toggled by the
+    // shared .Media_tab click handler on mobile — it carries .Media_player
+    // itself (data-clip="Media_clip_player_wrapper") specifically so that
+    // handler's sibling lookup clears it the same way it clears
+    // .Media_audio/.Media_clips_list, matching every other layout's tabs
+    // without needing a bespoke click handler the way Unaligned's original
+    // standalone tool had. On desktop (showClipsInSidebar true) showSwitch
+    // is false so these tabs never render at all — the sidebar, populated
+    // by renderClipsOverlay() in refresh() below from the very same
+    // Streams/related tool mounted on Media/clip/clipsListContent's own
+    // .Media_clips_list_segments, takes their place instead.
+    Q.Template.set('Media/clip/playerAndClips',
+        '<div class="Media_clip_main">'
+        + '{{#if showHosts}}'
+        + '<div class="Media_clip_hosts">'
+        + '		<div class="Media_clip_hosts_participants"></div>'
+        + '		<button class="Media_clip_switch_visualization Q_button">{{text.switchVisualization}}</button>'
+        + '		<button class="Media_clip_join_main_room Q_button">{{text.joinLiveShow}}</button>'
+        + '</div>'
+        + '{{/if}}'
+        + '<div class="Media_clip_player"><div class="Media_clip_player_inner">'
+        + '<div class="Media_clip_credits">{{text.CreditsEarned}}: <span>0</span></div>'
+        + '{{#if hasVideo}}'
+        + '		<div class="Media_clip_player_wrapper Media_player {{videoCurrent}}">'
+        + '			<div class="{{videoCurrent}} Media_video"></div>'
+        + '		</div>'
+        + '{{/if}}'
+        + '{{#if audio.url}}'
+        + '		<div class="{{audioCurrent}} Media_audio Media_player"></div>'
+        + '{{/if}}'
+        + '<div class="Media_clips_list Media_player">'
+        + '{{> Media/clip/clipsListContent}}'
+        + '</div>'
+        + '</div></div>'
+        + '{{#if showSwitch}}'
+        + '		<div class="Media_tabs">'
+        + '     {{#if hasVideo}}'
+        + '		    <div class="Media_tab {{videoCurrent}}" data-clip="Media_clip_player_wrapper">{{Video}}</div>'
+        + '     {{/if}}'
+        + '     {{#if audio.url}}'
+        + '		    <div class="Media_tab {{audioCurrent}}" data-clip="Media_audio">{{Audio}}</div>'
+        + '     {{/if}}'
+        + '     {{#if hasVideo}}'
+        + '		    <div class="Media_tab" data-clip="Media_clips_list"><span class="Media_clips_list_count"></span> {{Clips}}</div>'
+        + '     {{/if}}'
+        + '		</div>'
+        + '{{/if}}'
+        + '<div class="Media_clip_participants"></div>'
+        + '{{#if withQuestions}}'
+        + '		<div class="Media_clip_questions"></div>'
+        + '{{/if}}'
+        + '{{{tool "Streams/chat" "" publisherId=publisherId streamName=streamName}}}'
+        + '</div>'
+        + '{{#if showClipsInSidebar}}'
+        + '		<div class="Media_clip_secondary"></div>'
+        + '{{/if}}',
+        {
+            partials: ['Media/clip/clipsListContent'],
             text: ['Media/content']
         }
     );

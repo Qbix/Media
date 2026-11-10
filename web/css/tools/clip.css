@@ -890,3 +890,114 @@ html.Media_clip #content .Media_clip_tool[data-layout="playerOnly"] .Media_clip_
 .Media_episode_desc_toggle:hover {
 	color: inherit;
 }
+/* ==========================================================================
+   5. PLAYERANDCLIPS layout — player + clips sidebar, side by side
+   .Media_clip_tool[data-layout="playerAndClips"] — ported from Unaligned's
+   own former standalone Media/clip.js override (see clip.js's own
+   Q.Template.set('Media/clip/playerAndClips', ...) for the markup this
+   targets). Unlike 'columns' (clips list as a sibling INSIDE the player's
+   own flex column, via .Media_clip_columns), this one puts .Media_clip_main
+   (player/hosts/participants/chat) and .Media_clip_secondary (the clips
+   sidebar) as direct siblings of the tool's own root element, so the row
+   direction goes on the root itself rather than a nested wrapper.
+   On mobile there's no room for a permanent sidebar, so it's swapped for
+   the same Video/Audio/Clips tabs 'tabs' uses (see showClipsInSidebar in
+   clip.js's refresh()) -- the .Q_mobile rules below are what make that
+   swap actually show/hide the right panel.
+   ========================================================================== */
+.Media_clip_tool[data-layout="playerAndClips"] {
+	flex-direction: row;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clip_main {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clip_secondary {
+	position: relative;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-left: 16px;
+	display: none;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clip_secondary.Media_clip_secondary_active {
+	display: block;
+}
+/* Visible (and the ResizeObserver target, see clip.js's refresh()) on
+   desktop at all times -- the .Q_mobile rules below are what turn it into
+   one of the Video/Audio/Clips tab panels instead. */
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clip_player_wrapper {
+	height: 100%;
+	display: block;
+}
+.Q_mobile .Media_clip_tool[data-layout="playerAndClips"] .Media_clip_player_wrapper,
+.Q_mobile .Media_clip_tool[data-layout="playerAndClips"] .Media_clips_list {
+	display: none;
+}
+.Q_mobile .Media_clip_tool[data-layout="playerAndClips"] .Media_clip_player_wrapper.Q_current {
+	display: block;
+}
+.Q_mobile .Media_clip_tool[data-layout="playerAndClips"] .Media_clips_list {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	flex-direction: column;
+}
+.Q_mobile .Media_clip_tool[data-layout="playerAndClips"] .Media_clips_list.Q_current {
+	display: flex;
+}
+/* CSS-only degrade for narrow viewports -- stack instead of side by side
+   (same approach 'columns' uses for its own two-column arrangement). */
+@media (max-width: 760px) {
+	.Media_clip_tool[data-layout="playerAndClips"] {
+		flex-direction: column;
+	}
+}
+
+/* YouTube-style clips sidebar list, populated by clip.js's own
+   renderClipsOverlay() -- each item seeks the same player in place
+   (clipDataObject's own click handler) rather than opening a new/same
+   column the way 'tabs'/'columns' own clips lists do. */
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clips_side_list {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-width: 300px;
+	width: 400px;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clips_side_list:empty {
+	display: none;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clips_side_list_item {
+	cursor: pointer;
+	padding: 3px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	margin-top: 4px;
+	display: flex;
+	align-items: center;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clips_side_list_item:hover {
+	background-color: rgba(128, 128, 128, 0.23);
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clips_side_list_item.Media_clips_side_list_item_active {
+	background: rgba(61, 156, 239, 0.4);
+	border: 1px solid #005fff;
+	box-shadow: 0 0 4px 1px #4990ff, inset 0 0 1px #1764dd;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clips_side_list_item_start {
+	min-width: 80px;
+	display: flex;
+	justify-content: center;
+}
+.Media_clip_tool[data-layout="playerAndClips"] .Media_clips_side_list_item_time {
+	background: rgba(128, 128, 128, 0.3);
+	display: flex;
+	width: fit-content;
+	height: fit-content;
+	padding: 3px 5px;
+	border-radius: 3px;
+	margin-right: 5px;
+}
